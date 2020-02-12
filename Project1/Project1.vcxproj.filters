@@ -1,0 +1,294 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="소스 파일">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="헤더 파일">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;hm;inl;inc;ipp;xsd</Extensions>
+    </Filter>
+    <Filter Include="리소스 파일">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="Manager">
+      <UniqueIdentifier>{28d55269-f1c1-4ba4-a741-4c3ded7fb081}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SingletonBase">
+      <UniqueIdentifier>{8bd46074-5465-425c-ab92-ca74f114fad4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Manager\DeviceManager">
+      <UniqueIdentifier>{f58033ee-b71c-4c2e-9896-ae9ae5bb93b0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Manager\SceneManager">
+      <UniqueIdentifier>{2123ddf4-35c1-4a40-b29b-81dc513d4b67}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Timer">
+      <UniqueIdentifier>{39db6013-d622-4f29-a59b-9296c0efead6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Manager\ObjectManager">
+      <UniqueIdentifier>{5ded5ca2-67e3-4ed3-9452-b9be1c820a72}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GameObject">
+      <UniqueIdentifier>{a4f4dc3d-e899-4463-af89-6723da9db73a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GameObject\Mesh">
+      <UniqueIdentifier>{3b451373-8ccd-4975-8c36-2a4b813eeda8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GameObject\Mesh\HeightMapMesh">
+      <UniqueIdentifier>{252247be-94a0-4928-a076-48f285cb2d89}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GameObject\Mesh\SkyBoxMesh">
+      <UniqueIdentifier>{544de1ad-bb29-47c5-9028-ed1b0b1d81aa}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GameObject\Mesh\AircraftMesh">
+      <UniqueIdentifier>{3d9187fd-9ecb-4537-ad77-f6411e9652d2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GameObject\Camera">
+      <UniqueIdentifier>{36f5c420-97b2-44f7-89b0-039d8bea7984}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GameObject\Mesh\AnimationController">
+      <UniqueIdentifier>{4cb4773f-7512-423c-91c3-385adffb54ea}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GameObject\Player">
+      <UniqueIdentifier>{753d3c74-0b87-487c-b5a9-26bad3f41066}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GameObject\Terrain">
+      <UniqueIdentifier>{31bec0f2-f5ad-4a63-b243-dd5aee6a5364}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Manager\ShaderManager">
+      <UniqueIdentifier>{f91b9170-1271-4b93-bdc0-aba311924a41}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="HLSL">
+      <UniqueIdentifier>{cc3012c2-8c67-4475-b4cd-28661ac01c4f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Scene">
+      <UniqueIdentifier>{1a67b4ba-8c48-4694-860b-834d72923ea6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GameObject\SkyBox">
+      <UniqueIdentifier>{ccef541b-0d43-403f-aeb2-493a97cab273}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GameObject\Helicopter">
+      <UniqueIdentifier>{1d54291f-61be-46d7-b424-7b4b951a897f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GameObject\Helicopter\SuperCobra">
+      <UniqueIdentifier>{3c731564-716e-436a-9779-4ce700bdedf2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GameObject\Helicopter\Gunship">
+      <UniqueIdentifier>{8ec1a363-21e3-4cb0-9bc8-d77fc02b8034}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GameObject\CAngrybot">
+      <UniqueIdentifier>{80516383-150d-4d58-b6be-6b93bcd76c68}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Core">
+      <UniqueIdentifier>{b8de33d6-7621-4f04-9921-5befb43ae7f1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Scene\TestScene">
+      <UniqueIdentifier>{dbb89c9c-32f5-443d-ba77-556c90665c7f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GameObject\Mesh\SkinnedMesh">
+      <UniqueIdentifier>{d64cc2d1-10af-4537-a671-89daabe89815}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="targetver.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="Resource.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="DDSTextureLoader12.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="d3dx12.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="SingletonBase.h">
+      <Filter>SingletonBase</Filter>
+    </ClInclude>
+    <ClInclude Include="DeviceManager.h">
+      <Filter>Manager\DeviceManager</Filter>
+    </ClInclude>
+    <ClInclude Include="SceneManager.h">
+      <Filter>Manager\SceneManager</Filter>
+    </ClInclude>
+    <ClInclude Include="Timer.h">
+      <Filter>Timer</Filter>
+    </ClInclude>
+    <ClInclude Include="ObjectManager.h">
+      <Filter>Manager\ObjectManager</Filter>
+    </ClInclude>
+    <ClInclude Include="Enum.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="CGameObject.h">
+      <Filter>GameObject</Filter>
+    </ClInclude>
+    <ClInclude Include="Define.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="CMesh.h">
+      <Filter>GameObject\Mesh</Filter>
+    </ClInclude>
+    <ClInclude Include="CHeightMapMesh.h">
+      <Filter>GameObject\Mesh\HeightMapMesh</Filter>
+    </ClInclude>
+    <ClInclude Include="CSkyBoxMesh.h">
+      <Filter>GameObject\Mesh\SkyBoxMesh</Filter>
+    </ClInclude>
+    <ClInclude Include="CAnimationController.h">
+      <Filter>GameObject\Mesh\AnimationController</Filter>
+    </ClInclude>
+    <ClInclude Include="CAircraftMesh.h">
+      <Filter>GameObject\Mesh\AircraftMesh</Filter>
+    </ClInclude>
+    <ClInclude Include="CSkinnedMesh.h">
+      <Filter>GameObject\Mesh\SkinnedMesh</Filter>
+    </ClInclude>
+    <ClInclude Include="CCamera.h">
+      <Filter>GameObject\Camera</Filter>
+    </ClInclude>
+    <ClInclude Include="CPlayer.h">
+      <Filter>GameObject\Player</Filter>
+    </ClInclude>
+    <ClInclude Include="CHeightMapTerrain.h">
+      <Filter>GameObject\Terrain</Filter>
+    </ClInclude>
+    <ClInclude Include="WICTextureLoader12.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="CShaderManager.h">
+      <Filter>Manager\ShaderManager</Filter>
+    </ClInclude>
+    <ClInclude Include="CSkyBox.h">
+      <Filter>GameObject\SkyBox</Filter>
+    </ClInclude>
+    <ClInclude Include="CSuperCobraObject.h">
+      <Filter>GameObject\Helicopter\SuperCobra</Filter>
+    </ClInclude>
+    <ClInclude Include="CGunshipObject.h">
+      <Filter>GameObject\Helicopter\Gunship</Filter>
+    </ClInclude>
+    <ClInclude Include="CAngrybotObject.h">
+      <Filter>GameObject\CAngrybot</Filter>
+    </ClInclude>
+    <ClInclude Include="Project1.h">
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="CTestScene.h">
+      <Filter>Scene\TestScene</Filter>
+    </ClInclude>
+    <ClInclude Include="CScene.h">
+      <Filter>Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="framework.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="stdafx.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="DDSTextureLoader12.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="SingletonBase.cpp">
+      <Filter>SingletonBase</Filter>
+    </ClCompile>
+    <ClCompile Include="DeviceManager.cpp">
+      <Filter>Manager\DeviceManager</Filter>
+    </ClCompile>
+    <ClCompile Include="SceneManager.cpp">
+      <Filter>Manager\SceneManager</Filter>
+    </ClCompile>
+    <ClCompile Include="Timer.cpp">
+      <Filter>Timer</Filter>
+    </ClCompile>
+    <ClCompile Include="ObjectManager.cpp">
+      <Filter>Manager\ObjectManager</Filter>
+    </ClCompile>
+    <ClCompile Include="CGameObject.cpp">
+      <Filter>GameObject</Filter>
+    </ClCompile>
+    <ClCompile Include="CMesh.cpp">
+      <Filter>GameObject\Mesh</Filter>
+    </ClCompile>
+    <ClCompile Include="CHeightMapMesh.cpp">
+      <Filter>GameObject\Mesh\HeightMapMesh</Filter>
+    </ClCompile>
+    <ClCompile Include="CSkyBoxMesh.cpp">
+      <Filter>GameObject\Mesh\SkyBoxMesh</Filter>
+    </ClCompile>
+    <ClCompile Include="CAnimationController.cpp">
+      <Filter>GameObject\Mesh\AnimationController</Filter>
+    </ClCompile>
+    <ClCompile Include="CAircraftMesh.cpp">
+      <Filter>GameObject\Mesh\AircraftMesh</Filter>
+    </ClCompile>
+    <ClCompile Include="CSkinnedMesh.cpp">
+      <Filter>GameObject\Mesh\SkinnedMesh</Filter>
+    </ClCompile>
+    <ClCompile Include="CCamera.cpp">
+      <Filter>GameObject\Camera</Filter>
+    </ClCompile>
+    <ClCompile Include="CPlayer.cpp">
+      <Filter>GameObject\Player</Filter>
+    </ClCompile>
+    <ClCompile Include="CHeightMapTerrain.cpp">
+      <Filter>GameObject\Terrain</Filter>
+    </ClCompile>
+    <ClCompile Include="WICTextureLoader12.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="CShaderManager.cpp">
+      <Filter>Manager\ShaderManager</Filter>
+    </ClCompile>
+    <ClCompile Include="CSkyBox.cpp">
+      <Filter>GameObject\SkyBox</Filter>
+    </ClCompile>
+    <ClCompile Include="CSuperCobraObject.cpp">
+      <Filter>GameObject\Helicopter\SuperCobra</Filter>
+    </ClCompile>
+    <ClCompile Include="CGunshipObject.cpp">
+      <Filter>GameObject\Helicopter\Gunship</Filter>
+    </ClCompile>
+    <ClCompile Include="CAngrybotObject.cpp">
+      <Filter>GameObject\CAngrybot</Filter>
+    </ClCompile>
+    <ClCompile Include="Project1.cpp">
+      <Filter>Core</Filter>
+    </ClCompile>
+    <ClCompile Include="CTestScene.cpp">
+      <Filter>Scene\TestScene</Filter>
+    </ClCompile>
+    <ClCompile Include="CScene.cpp">
+      <Filter>Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="stdafx.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="Project1.rc">
+      <Filter>리소스 파일</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="small.ico">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="Project1.ico">
+      <Filter>리소스 파일</Filter>
+    </Image>
+  </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="Light.hlsl">
+      <Filter>HLSL</Filter>
+    </FxCompile>
+    <FxCompile Include="Shaders.hlsl">
+      <Filter>HLSL</Filter>
+    </FxCompile>
+  </ItemGroup>
+</Project>
