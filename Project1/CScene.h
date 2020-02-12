@@ -2,11 +2,12 @@
 #include "CCamera.h"
 #include "CGameObject.h"
 
+class ObjectManager;
 class CScene
 {
 public:
-	CScene() {};
-	virtual ~CScene() {};
+	CScene();
+	virtual ~CScene();
 
 public:
  	virtual bool OnProcessingMouseMessage(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam) PURE;
@@ -30,6 +31,7 @@ public:
 	virtual void ReleaseUploadBuffers() PURE;
 
 	CPlayer* m_pPlayer = NULL;
+	ObjectManager* m_ObjManager = nullptr;
 
 protected:
 	ID3D12RootSignature* m_pd3dGraphicsRootSignature = NULL;

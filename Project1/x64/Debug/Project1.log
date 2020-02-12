@@ -1,3 +1,40 @@
-﻿  DeviceManager.cpp
-D:\학교수업\3D겜플\졸작\DKSProject\Project1\DeviceManager.cpp(278,42): warning C4305: '인수': 'double'에서 'float'(으)로 잘립니다.
-  Project1.vcxproj -> D:\학교수업\3D겜플\졸작\DKSProject\Project1\x64\Debug\Project1.exe
+﻿  stdafx.cpp
+  CAngrybotObject.cpp
+  CAnimationController.cpp
+  CCamera.cpp
+  CGameObject.cpp
+  CGunshipObject.cpp
+  CHeightMapTerrain.cpp
+  CMesh.cpp
+  CAircraftMesh.cpp
+  CPlayer.cpp
+  CScene.cpp
+  CShaderManager.cpp
+  CSkinnedMesh.cpp
+  CSkyBox.cpp
+  CSkyBoxMesh.cpp
+  CSuperCobraObject.cpp
+  CTestScene.cpp
+D:\학교수업\3D겜플\졸작\DKS_Project\Project1\CTestScene.cpp(8,62): warning C4356: 'CScene::m_pd3dCbvSrvDescriptorHeap': 정적 데이터 멤버는 파생 클래스를 통해 초기화할 수 없습니다.
+D:\학교수업\3D겜플\졸작\DKS_Project\Project1\CTestScene.cpp(10,73): warning C4356: 'CScene::m_d3dCbvCPUDescriptorStartHandle': 정적 데이터 멤버는 파생 클래스를 통해 초기화할 수 없습니다.
+D:\학교수업\3D겜플\졸작\DKS_Project\Project1\CTestScene.cpp(11,73): warning C4356: 'CScene::m_d3dCbvGPUDescriptorStartHandle': 정적 데이터 멤버는 파생 클래스를 통해 초기화할 수 없습니다.
+D:\학교수업\3D겜플\졸작\DKS_Project\Project1\CTestScene.cpp(12,73): warning C4356: 'CScene::m_d3dSrvCPUDescriptorStartHandle': 정적 데이터 멤버는 파생 클래스를 통해 초기화할 수 없습니다.
+D:\학교수업\3D겜플\졸작\DKS_Project\Project1\CTestScene.cpp(13,73): warning C4356: 'CScene::m_d3dSrvGPUDescriptorStartHandle': 정적 데이터 멤버는 파생 클래스를 통해 초기화할 수 없습니다.
+D:\학교수업\3D겜플\졸작\DKS_Project\Project1\CTestScene.cpp(15,72): warning C4356: 'CScene::m_d3dCbvCPUDescriptorNextHandle': 정적 데이터 멤버는 파생 클래스를 통해 초기화할 수 없습니다.
+D:\학교수업\3D겜플\졸작\DKS_Project\Project1\CTestScene.cpp(16,72): warning C4356: 'CScene::m_d3dCbvGPUDescriptorNextHandle': 정적 데이터 멤버는 파생 클래스를 통해 초기화할 수 없습니다.
+D:\학교수업\3D겜플\졸작\DKS_Project\Project1\CTestScene.cpp(17,72): warning C4356: 'CScene::m_d3dSrvCPUDescriptorNextHandle': 정적 데이터 멤버는 파생 클래스를 통해 초기화할 수 없습니다.
+D:\학교수업\3D겜플\졸작\DKS_Project\Project1\CTestScene.cpp(18,72): warning C4356: 'CScene::m_d3dSrvGPUDescriptorNextHandle': 정적 데이터 멤버는 파생 클래스를 통해 초기화할 수 없습니다.
+  DDSTextureLoader12.cpp
+  DeviceManager.cpp
+D:\학교수업\3D겜플\졸작\DKS_Project\Project1\DeviceManager.cpp(278,42): warning C4305: '인수': 'double'에서 'float'(으)로 잘립니다.
+  CHeightMapMesh.cpp
+  ObjectManager.cpp
+  코드를 생성하고 있습니다...
+  컴파일하고 있습니다...
+  Project1.cpp
+  SceneManager.cpp
+  SingletonBase.cpp
+  Timer.cpp
+  WICTextureLoader12.cpp
+  코드를 생성하고 있습니다...
+  Project1.vcxproj -> D:\학교수업\3D겜플\졸작\DKS_Project\Project1\x64\Debug\Project1.exe

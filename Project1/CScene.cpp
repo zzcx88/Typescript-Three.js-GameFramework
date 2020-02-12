@@ -1,6 +1,15 @@
 #include "stdafx.h"
 #include "CScene.h"
 
+CScene::CScene()
+{
+	m_ObjManager = GET_MANAGER<ObjectManager>();
+}
+
+CScene::~CScene()
+{
+}
+
 ID3D12RootSignature* CScene::CreateGraphicsRootSignature(ID3D12Device* pd3dDevice)
 {
 	ID3D12RootSignature* pd3dGraphicsRootSignature = NULL;
@@ -285,3 +294,5 @@ D3D12_GPU_DESCRIPTOR_HANDLE CScene::CreateShaderResourceViews(ID3D12Device* pd3d
 	}
 	return(d3dSrvGPUDescriptorHandle);
 }
+
+
