@@ -9,11 +9,9 @@ public:
 	virtual ~CSkinnedMesh();
 
 protected:
-	char							m_pstrSkinnedMeshName[64] = { 0 };
-
 	int								m_nBonesPerVertex = 4;
 
-	XMUINT4* m_pxmu4BoneIndices = NULL;
+	XMINT4* m_pxmn4BoneIndices = NULL;
 	XMFLOAT4* m_pxmf4BoneWeights = NULL;
 
 	ID3D12Resource* m_pd3dBoneIndexBuffer = NULL;
@@ -28,17 +26,18 @@ public:
 	int								m_nSkinningBones = 0;
 
 	char(*m_ppstrSkinningBoneNames)[64];
-	XMFLOAT4X4* m_pxmf4x4BindPoseBoneOffsets = NULL;
+	CGameObject** m_ppSkinningBoneFrameCaches = NULL; //[m_nSkinningBones]
 
-	CGameObject** m_ppSkinningBoneFrameCaches = NULL;
+	XMFLOAT4X4* m_pxmf4x4BindPoseBoneOffsets = NULL; //Transposed
 
-	ID3D12Resource* m_pd3dcbBoneOffsets = NULL;
-	XMFLOAT4X4* m_pcbxmf4x4BoneOffsets = NULL;
+	ID3D12Resource* m_pd3dcbBindPoseBoneOffsets = NULL;
+	XMFLOAT4X4* m_pcbxmf4x4MappedBindPoseBoneOffsets = NULL;
 
-	ID3D12Resource* m_pd3dcbBoneTransforms = NULL;
-	XMFLOAT4X4* m_pcbxmf4x4BoneTransforms = NULL;
+	ID3D12Resource* m_pd3dcbSkinningBoneTransforms = NULL;
+	XMFLOAT4X4* m_pcbxmf4x4MappedSkinningBoneTransforms = NULL;
 
 public:
+	void PrepareSkinning(CGameObject* pModelRootObject);
 	void LoadSkinInfoFromFile(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList, FILE* pInFile);
 
 	virtual void CreateShaderVariables(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList);

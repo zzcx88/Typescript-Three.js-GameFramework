@@ -12,6 +12,7 @@ protected:
 	XMFLOAT3* m_pxmf3Normals = NULL;
 	XMFLOAT3* m_pxmf3Tangents = NULL;
 	XMFLOAT3* m_pxmf3BiTangents = NULL;
+
 	XMFLOAT2* m_pxmf2TextureCoords0 = NULL;
 	XMFLOAT2* m_pxmf2TextureCoords1 = NULL;
 

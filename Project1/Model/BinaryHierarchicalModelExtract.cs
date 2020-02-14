@@ -556,6 +556,7 @@ public class BinaryHierarchicalModelExtract : MonoBehaviour
     void WriteFrameInfo(Transform current)
     {
         int nTextures = GetTexturesCount(current);
+        WriteString("<Hierarchy>:");
         WriteObjectName("<Frame>:", m_nFrames++, nTextures, current.gameObject);
 
         WriteTransform("<Transform>:", current);

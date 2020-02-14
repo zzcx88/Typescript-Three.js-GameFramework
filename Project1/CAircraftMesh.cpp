@@ -40,21 +40,15 @@ void CAircraftMesh::ReleaseUploadBuffers()
 void CAircraftMesh::LoadMeshFromFile(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList, FILE* pInFile)
 {
 	char pstrToken[64] = { '\0' };
-	BYTE nStrLength = 0;
-
 	int nPositions = 0, nColors = 0, nNormals = 0, nTangents = 0, nBiTangents = 0, nTextureCoords = 0, nIndices = 0, nSubMeshes = 0, nSubIndices = 0;
 
 	UINT nReads = (UINT)::fread(&m_nVertices, sizeof(int), 1, pInFile);
-	nReads = (UINT)::fread(&nStrLength, sizeof(BYTE), 1, pInFile);
-	nReads = (UINT)::fread(m_pstrMeshName, sizeof(char), nStrLength, pInFile);
-	m_pstrMeshName[nStrLength] = '\0';
+
+	::ReadStringFromFile(pInFile, m_pstrMeshName);
 
 	for (; ; )
 	{
-		nReads = (UINT)::fread(&nStrLength, sizeof(BYTE), 1, pInFile);
-		nReads = (UINT)::fread(pstrToken, sizeof(char), nStrLength, pInFile);
-		pstrToken[nStrLength] = '\0';
-
+		::ReadStringFromFile(pInFile, pstrToken);
 		if (!strcmp(pstrToken, "<Bounds>:"))
 		{
 			nReads = (UINT)::fread(&m_xmf3AABBCenter, sizeof(XMFLOAT3), 1, pInFile);
@@ -179,13 +173,11 @@ void CAircraftMesh::LoadMeshFromFile(ID3D12Device* pd3dDevice, ID3D12GraphicsCom
 
 				for (int i = 0; i < m_nSubMeshes; i++)
 				{
-					nReads = (UINT)::fread(&nStrLength, sizeof(BYTE), 1, pInFile);
-					nReads = (UINT)::fread(pstrToken, sizeof(char), nStrLength, pInFile);
-					pstrToken[nStrLength] = '\0';
+					::ReadStringFromFile(pInFile, pstrToken);
 					if (!strcmp(pstrToken, "<SubMesh>:"))
 					{
 						int nIndex = 0;
-						nReads = (UINT)::fread(&nIndex, sizeof(int), 1, pInFile);
+						nReads = (UINT)::fread(&nIndex, sizeof(int), 1, pInFile); //i
 						nReads = (UINT)::fread(&(m_pnSubSetIndices[i]), sizeof(int), 1, pInFile);
 						if (m_pnSubSetIndices[i] > 0)
 						{

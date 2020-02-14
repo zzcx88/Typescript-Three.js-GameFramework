@@ -145,12 +145,12 @@ public:
 	void SetShader(CShader* pShader);
 	void SetShader(int nMaterial, CShader* pShader);
 	void SetMaterial(int nMaterial, CMaterial* pMaterial);
+	void SetObjectType(OBJTYPE type);
 
 	void SetChild(CGameObject* pChild, bool bReferenceUpdate = false);
 
 	virtual void BuildMaterials(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList) { }
 
-	virtual void Update() {}
 	virtual void OnPrepareAnimate() { }
 	virtual void Animate(float fTimeElapsed);
 
@@ -171,7 +171,8 @@ public:
 	XMFLOAT3 GetUp();
 	XMFLOAT3 GetRight();
 
-	void SetObjectType(OBJTYPE type);
+	const bool& GetState() { return m_isDead; }
+
 	void SetPosition(float x, float y, float z);
 	void SetPosition(XMFLOAT3 xmf3Position);
 	void SetScale(float x, float y, float z);
@@ -192,23 +193,21 @@ public:
 
 	UINT GetMeshType() { return((m_pMesh) ? m_pMesh->GetType() : 0x00); }
 
-	const bool& GetState() { return m_isDead; }
-
 public:
-	CAnimationController* m_pAnimationController = NULL;
+	CAnimationController* m_pSkinnedAnimationController = NULL;
 
-	CGameObject* GetRootSkinnedGameObject();
+	CSkinnedMesh* FindSkinnedMesh(char* pstrSkinnedMeshName);
+	void FindAndSetSkinnedMesh(CSkinnedMesh** ppSkinnedMeshes, int* pnSkinnedMesh);
 
-	void SetAnimationSet(int nAnimationSet);
-
-	void CacheSkinningBoneFrames(CGameObject* pRootFrame);
+	void SetTrackAnimationSet(int nAnimationTrack, int nAnimationSet);
+	void SetTrackAnimationPosition(int nAnimationTrack, float fPosition);
 
 	void LoadMaterialsFromFile(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList, CGameObject* pParent, FILE* pInFile, CShader* pShader);
-	void LoadAnimationFromFile(FILE* pInFile);
 
-	static CGameObject* LoadFrameHierarchyFromFile(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList, ID3D12RootSignature* pd3dGraphicsRootSignature, CGameObject* pParent, FILE* pInFile, CShader* pShader);
-	static CGameObject* LoadGeometryAndAnimationFromFile(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList, ID3D12RootSignature* pd3dGraphicsRootSignature, char* pstrFileName, CShader* pShader, bool bHasAnimation);
+	static void LoadAnimationFromFile(FILE* pInFile, CLoadedModelInfo* pLoadedModel);
+	static CGameObject* LoadFrameHierarchyFromFile(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList, ID3D12RootSignature* pd3dGraphicsRootSignature, CGameObject* pParent, FILE* pInFile, CShader* pShader, int* pnSkinnedMeshes);
+
+	static CLoadedModelInfo* LoadGeometryAndAnimationFromFile(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList, ID3D12RootSignature* pd3dGraphicsRootSignature, char* pstrFileName, CShader* pShader);
 
 	static void PrintFrameInfo(CGameObject* pGameObject, CGameObject* pParent);
 };
-

@@ -233,12 +233,14 @@ CAirplanePlayer::CAirplanePlayer(ID3D12Device* pd3dDevice, ID3D12GraphicsCommand
 {
 	m_pCamera = ChangeCamera(/*SPACESHIP_CAMERA*/THIRD_PERSON_CAMERA, 0.0f);
 
-	CGameObject* pGameObject = CGameObject::LoadGeometryAndAnimationFromFile(pd3dDevice, pd3dCommandList, pd3dGraphicsRootSignature, "Model/F-4E_Phantom_II.bin", NULL, false);
-	SetChild(pGameObject);
+	CLoadedModelInfo* pModel = CGameObject::LoadGeometryAndAnimationFromFile(pd3dDevice, pd3dCommandList, pd3dGraphicsRootSignature, "Model/F-4E_Phantom_II.bin", NULL);
+	SetChild(pModel->m_pModelRootObject);
 
 	OnPrepareAnimate();
 
 	CreateShaderVariables(pd3dDevice, pd3dCommandList);
+
+	if (pModel) delete pModel;
 }
 
 CAirplanePlayer::~CAirplanePlayer()
@@ -330,8 +332,8 @@ CTerrainPlayer::CTerrainPlayer(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandLi
 {
 	m_pCamera = ChangeCamera(THIRD_PERSON_CAMERA, 0.0f);
 
-	CGameObject* pGameObject = CGameObject::LoadGeometryAndAnimationFromFile(pd3dDevice, pd3dCommandList, pd3dGraphicsRootSignature, "Model/Player.bin", NULL, true);
-	SetChild(pGameObject);
+	CLoadedModelInfo* pAngrybotModel = CGameObject::LoadGeometryAndAnimationFromFile(pd3dDevice, pd3dCommandList, pd3dGraphicsRootSignature, "Model/Angrybot.bin", NULL);
+	SetChild(pAngrybotModel->m_pModelRootObject, true);
 
 	CreateShaderVariables(pd3dDevice, pd3dCommandList);
 
@@ -438,5 +440,5 @@ void CTerrainPlayer::Update(float fTimeElapsed)
 	CPlayer::Update(fTimeElapsed);
 
 	float fLength = sqrtf(m_xmf3Velocity.x * m_xmf3Velocity.x + m_xmf3Velocity.z * m_xmf3Velocity.z);
-	SetAnimationSet(::IsZero(fLength) ? 0 : 1);
+	SetTrackAnimationSet(0, ::IsZero(fLength) ? 0 : 1);
 }

@@ -128,7 +128,7 @@ struct VS_SKINNED_STANDARD_INPUT
 	float3 normal : NORMAL;
 	float3 tangent : TANGENT;
 	float3 bitangent : BITANGENT;
-	uint4 indices : BONEINDEX;
+	int4 indices : BONEINDEX;
 	float4 weights : BONEWEIGHT;
 };
 
@@ -136,19 +136,31 @@ VS_STANDARD_OUTPUT VSSkinnedAnimationStandard(VS_SKINNED_STANDARD_INPUT input)
 {
 	VS_STANDARD_OUTPUT output;
 
-	output.positionW = float3(0.0f, 0.0f, 0.0f);
-	output.normalW = float3(0.0f, 0.0f, 0.0f);
-	output.tangentW = float3(0.0f, 0.0f, 0.0f);
-	output.bitangentW = float3(0.0f, 0.0f, 0.0f);
-	matrix mtxVertexToBoneWorld;
+	//output.positionW = float3(0.0f, 0.0f, 0.0f);
+	//output.normalW = float3(0.0f, 0.0f, 0.0f);
+	//output.tangentW = float3(0.0f, 0.0f, 0.0f);
+	//output.bitangentW = float3(0.0f, 0.0f, 0.0f);
+	//matrix mtxVertexToBoneWorld;
+	//for (int i = 0; i < MAX_VERTEX_INFLUENCES; i++)
+	//{
+	//	mtxVertexToBoneWorld = mul(gpmtxBoneOffsets[input.indices[i]], gpmtxBoneTransforms[input.indices[i]]);
+	//	output.positionW += input.weights[i] * mul(float4(input.position, 1.0f), mtxVertexToBoneWorld).xyz;
+	//	output.normalW += input.weights[i] * mul(input.normal, (float3x3)mtxVertexToBoneWorld);
+	//	output.tangentW += input.weights[i] * mul(input.tangent, (float3x3)mtxVertexToBoneWorld);
+	//	output.bitangentW += input.weights[i] * mul(input.bitangent, (float3x3)mtxVertexToBoneWorld);
+	//}
+	float4x4 mtxVertexToBoneWorld = (float4x4)0.0f;
 	for (int i = 0; i < MAX_VERTEX_INFLUENCES; i++)
 	{
-		mtxVertexToBoneWorld = mul(gpmtxBoneOffsets[input.indices[i]], gpmtxBoneTransforms[input.indices[i]]);
-		output.positionW += input.weights[i] * mul(float4(input.position, 1.0f), mtxVertexToBoneWorld).xyz;
-		output.normalW += input.weights[i] * mul(input.normal, (float3x3)mtxVertexToBoneWorld);
-		output.tangentW += input.weights[i] * mul(input.tangent, (float3x3)mtxVertexToBoneWorld);
-		output.bitangentW += input.weights[i] * mul(input.bitangent, (float3x3)mtxVertexToBoneWorld);
+		//		mtxVertexToBoneWorld += input.weights[i] * gpmtxBoneTransforms[input.indices[i]];
+		mtxVertexToBoneWorld += input.weights[i] * mul(gpmtxBoneOffsets[input.indices[i]], gpmtxBoneTransforms[input.indices[i]]);
 	}
+	output.positionW = mul(float4(input.position, 1.0f), mtxVertexToBoneWorld).xyz;
+	output.normalW = mul(input.normal, (float3x3)mtxVertexToBoneWorld).xyz;
+	output.tangentW = mul(input.tangent, (float3x3)mtxVertexToBoneWorld).xyz;
+	output.bitangentW = mul(input.bitangent, (float3x3)mtxVertexToBoneWorld).xyz;
+
+	//	output.positionW = mul(float4(input.position, 1.0f), gmtxGameObject).xyz;
 
 	output.position = mul(mul(float4(output.positionW, 1.0f), gmtxView), gmtxProjection);
 	output.uv = input.uv;
@@ -193,10 +205,10 @@ float4 PSTerrain(VS_TERRAIN_OUTPUT input) : SV_TARGET
 {
 	float4 cBaseTexColor = gtxtTerrainBaseTexture.Sample(gssWrap, input.uv0);
 	float4 cDetailTexColor = gtxtTerrainDetailTexture.Sample(gssWrap, input.uv1);
-//	float4 cColor = saturate((cBaseTexColor * 0.5f) + (cDetailTexColor * 0.5f));
-	float4 cColor = input.color * saturate((cBaseTexColor * 0.5f) + (cDetailTexColor * 0.5f));
+	//	float4 cColor = saturate((cBaseTexColor * 0.5f) + (cDetailTexColor * 0.5f));
+		float4 cColor = input.color * saturate((cBaseTexColor * 0.5f) + (cDetailTexColor * 0.5f));
 
-	return(cColor);
+		return(cColor);
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

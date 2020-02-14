@@ -51,6 +51,9 @@
 #define ANIMATION_TYPE_LOOP			1
 #define ANIMATION_TYPE_PINGPONG		2
 
+//AnimationCallBackEpsilon
+#define ANIMATION_CALLBACK_EPSILON	0.015f
+
 //NumOfBones
 #define SKINNED_ANIMATION_BONES		128
 
