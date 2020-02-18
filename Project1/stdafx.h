@@ -14,6 +14,8 @@
 #include <windows.h>
 
 // C의 런타임 헤더 파일입니다.
+#include <iostream>
+
 #include <stdlib.h>
 #include <malloc.h>
 #include <memory.h>
@@ -54,8 +56,8 @@ using namespace DirectX::PackedVector;
 
 using Microsoft::WRL::ComPtr;
 
-#define FRAME_BUFFER_WIDTH		640
-#define FRAME_BUFFER_HEIGHT		480
+#define FRAME_BUFFER_WIDTH		1920
+#define FRAME_BUFFER_HEIGHT		1080
 
 //#define _WITH_CB_GAMEOBJECT_32BIT_CONSTANTS
 //#define _WITH_CB_GAMEOBJECT_ROOT_DESCRIPTOR
@@ -350,5 +352,16 @@ namespace Plane
 #include "SceneManager.h"
 #include "ObjectManager.h"
 #include "CShaderManager.h"
+
+// 디버깅용 콘솔 창
+#ifdef UNICODE 
+#ifdef _DEBUG
+#pragma comment(linker, "/entry:wWinMainCRTStartup /subsystem:console")
+#endif
+#else
+#ifdef _DEBUG
+#pragma comment(linker, "/entry:WinMainCRTStartup /subsystem:console")
+#endif
+#endif
 
 //#endif //PCH_H

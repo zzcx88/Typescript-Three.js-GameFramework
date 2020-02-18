@@ -41,17 +41,16 @@ void CDeviceManager::DeviceInitalize(HINSTANCE hInstance, HWND hMainWnd)
 {
 	m_hInstance = hInstance;
 	m_hWnd = hMainWnd;
-	//SceneManager* pSceneManager = GET_MANAGER<SceneManager>();
 
 	CreateD3DDevice();
 	CreateCommandQueueAndList();
 	CreateRtvAndDsvDescriptorHeaps();
 	CreateSwapChain();
 	CreateDepthStencilView();
-	BuildScene();
-	//pSceneManager->ChangeSceneState(SCENE_TEST, m_pd3dDevice, m_pd3dCommandList);
 
 	CoInitialize(NULL);
+
+	BuildScene();
 }
 
 void CDeviceManager::CreateD3DDevice()
@@ -274,11 +273,12 @@ void CDeviceManager::BuildScene()
 	m_pSceneManager->ChangeSceneState(SCENE_TEST, m_pd3dDevice, m_pd3dCommandList);
 
 	CAirplanePlayer* pPlayer = new CAirplanePlayer(m_pd3dDevice, m_pd3dCommandList, m_pSceneManager->GetGraphicsRootSignature(), NULL);
-	pPlayer->SetPosition(XMFLOAT3(340.0f, 280.0f, 640.0f));
-	pPlayer->SetScale(XMFLOAT3(0.8, 0.8, 0.8));
+	pPlayer->SetPosition(XMFLOAT3(340.0f, 480.0f, 640.0f));
+	//pPlayer->SetScale(XMFLOAT3(0.8, 0.8, 0.8));
 	//pPlayer->SetPosition(XMFLOAT3(0, 0, 0));
 	m_pPlayer = pPlayer;
 	m_pCamera = m_pPlayer->GetCamera();
+	//m_pPlayer->Rotate(0.f, 0.0f, 90.0f);
 
 	m_pd3dCommandList->Close();
 	ID3D12CommandList* ppd3dCommandLists[] = { m_pd3dCommandList };
@@ -291,25 +291,143 @@ void CDeviceManager::BuildScene()
 	m_GameTimer.Reset();
 }
 
+void CDeviceManager::OnProcessingMouseMessage(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam)
+{
+	//if (m_pScene) m_pScene->OnProcessingMouseMessage(hWnd, nMessageID, wParam, lParam);
+	switch (nMessageID)
+	{
+	case WM_LBUTTONDOWN:
+	case WM_RBUTTONDOWN:
+		::SetCapture(hWnd);
+		::GetCursorPos(&m_ptOldCursorPos);
+		break;
+	case WM_LBUTTONUP:
+	case WM_RBUTTONUP:
+		::ReleaseCapture();
+		break;
+	case WM_MOUSEMOVE:
+		break;
+	default:
+		break;
+	}
+}
+
+void CDeviceManager::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam)
+{
+	//if (m_pSceneManager) m_pSceneManager.->OnProcessingKeyboardMessage(hWnd, nMessageID, wParam, lParam);
+	switch (nMessageID)
+	{
+	case WM_KEYUP:
+		switch (wParam)
+		{
+		case VK_ESCAPE:
+			::PostQuitMessage(0);
+			break;
+		case VK_RETURN:
+			break;
+		case VK_F1:
+		case VK_F2:
+		case VK_F3:
+			m_pCamera = m_pPlayer->ChangeCamera((DWORD)(wParam - VK_F1 + 1), m_GameTimer.GetTimeElapsed());
+			break;
+		case VK_F9:
+			ChangeSwapChainState();
+			break;
+		default:
+			break;
+		}
+		break;
+	default:
+		break;
+	}
+}
+
+LRESULT CALLBACK CDeviceManager::OnProcessingWindowMessage(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam)
+{
+	switch (nMessageID)
+	{
+	case WM_ACTIVATE:
+	{
+		if (LOWORD(wParam) == WA_INACTIVE)
+			m_GameTimer.Stop();
+		else
+			m_GameTimer.Start();
+		break;
+	}
+	case WM_SIZE:
+		break;
+	case WM_LBUTTONDOWN:
+	case WM_RBUTTONDOWN:
+	case WM_LBUTTONUP:
+	case WM_RBUTTONUP:
+	case WM_MOUSEMOVE:
+		OnProcessingMouseMessage(hWnd, nMessageID, wParam, lParam);
+		break;
+	case WM_KEYDOWN:
+	case WM_KEYUP:
+		OnProcessingKeyboardMessage(hWnd, nMessageID, wParam, lParam);
+		break;
+	}
+	return(0);
+}
+
+void CDeviceManager::ProcessInput()
+{
+	static UCHAR pKeysBuffer[256];
+	bool bProcessedByScene = false;
+	GetKeyboardState(pKeysBuffer);
+	if (!bProcessedByScene)
+	{
+		DWORD dwDirection = 0;
+		if (pKeysBuffer[VK_UP] & 0xF0) 
+			dwDirection |= DIR_FORWARD;
+		if (pKeysBuffer[VK_DOWN] & 0xF0) dwDirection |= DIR_BACKWARD;
+		if (pKeysBuffer[VK_LEFT] & 0xF0) dwDirection |= DIR_LEFT;
+		if (pKeysBuffer[VK_RIGHT] & 0xF0) dwDirection |= DIR_RIGHT;
+		if (pKeysBuffer[VK_PRIOR] & 0xF0) dwDirection |= DIR_UP;
+		if (pKeysBuffer[VK_NEXT] & 0xF0) dwDirection |= DIR_DOWN;
+
+		float cxDelta = 0.0f, cyDelta = 0.0f;
+		POINT ptCursorPos;
+		if (GetCapture() == m_hWnd)
+		{
+			SetCursor(NULL);
+			GetCursorPos(&ptCursorPos);
+			cxDelta = (float)(ptCursorPos.x - m_ptOldCursorPos.x) / 3.0f;
+			cyDelta = (float)(ptCursorPos.y - m_ptOldCursorPos.y) / 3.0f;
+			SetCursorPos(m_ptOldCursorPos.x, m_ptOldCursorPos.y);
+		}
+
+		if ((dwDirection != 0) || (cxDelta != 0.0f) || (cyDelta != 0.0f))
+		{
+			if (cxDelta || cyDelta)
+			{
+				if (pKeysBuffer[VK_RBUTTON] & 0xF0)
+					m_pPlayer->Rotate(cyDelta, 0.0f, -cxDelta);
+				else
+					m_pPlayer->Rotate(cyDelta, cxDelta, 0.0f);
+			}
+			if (dwDirection) m_pPlayer->Move(dwDirection, 12.25f, true);
+		}
+	}
+	m_pPlayer->Move(0x01, 3.0f, true);
+	m_pPlayer->Update(m_GameTimer.GetTimeElapsed());
+}
+
 void CDeviceManager::AnimateObjects()
 {
-	/*float fTimeElapsed = m_GameTimer.GetTimeElapsed();
-
-	if (m_pScene) m_pScene->AnimateObjects(fTimeElapsed);
-
-	m_pPlayer->Animate(fTimeElapsed);*/
-
 	float fTimeElapsed = m_GameTimer.GetTimeElapsed();
 	m_pSceneManager->Update(fTimeElapsed);
 	m_pPlayer->Animate(fTimeElapsed);
-	m_pPlayer->Update(m_GameTimer.GetTimeElapsed());
+	m_pPlayer->Rotate(-1.0f, 0.0f, 0.0f);
+	m_pPlayer->Rotate(0.0f, 0.0f, 1.0f);
 }
 
 void CDeviceManager::FrameAdvance()
 {
 	m_GameTimer.Tick(75.0f);
 
-	//ProcessInput();
+	ProcessInput();
 
 	AnimateObjects();
 
