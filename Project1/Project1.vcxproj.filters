@@ -91,6 +91,9 @@
     <Filter Include="GameObject\Mesh\SkinnedMesh">
       <UniqueIdentifier>{d64cc2d1-10af-4537-a671-89daabe89815}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Manager\KeyManager">
+      <UniqueIdentifier>{8e8a86cf-9cc4-457b-80a7-4c535708a32e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="targetver.h">
@@ -189,6 +192,12 @@
     <ClInclude Include="stdafx.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
+    <ClInclude Include="KeyManager.h">
+      <Filter>Manager\KeyManager</Filter>
+    </ClInclude>
+    <ClInclude Include="Constant.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="DDSTextureLoader12.cpp">
@@ -268,6 +277,9 @@
     </ClCompile>
     <ClCompile Include="stdafx.cpp">
       <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="KeyManager.cpp">
+      <Filter>Manager\KeyManager</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

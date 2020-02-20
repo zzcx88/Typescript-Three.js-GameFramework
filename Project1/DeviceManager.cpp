@@ -419,15 +419,14 @@ void CDeviceManager::AnimateObjects()
 	float fTimeElapsed = m_GameTimer.GetTimeElapsed();
 	m_pSceneManager->Update(fTimeElapsed);
 	m_pPlayer->Animate(fTimeElapsed);
-	m_pPlayer->Rotate(-1.0f, 0.0f, 0.0f);
-	m_pPlayer->Rotate(0.0f, 0.0f, 1.0f);
+	m_pPlayer->Update(m_GameTimer.GetTimeElapsed());
 }
 
 void CDeviceManager::FrameAdvance()
 {
 	m_GameTimer.Tick(75.0f);
 
-	ProcessInput();
+	//ProcessInput();
 
 	AnimateObjects();
 

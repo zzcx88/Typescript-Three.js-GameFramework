@@ -11,7 +11,10 @@
 HINSTANCE hInst;                                // 현재 인스턴스입니다.
 WCHAR szTitle[MAX_LOADSTRING];                  // 제목 표시줄 텍스트입니다.
 WCHAR szWindowClass[MAX_LOADSTRING];            // 기본 창 클래스 이름입니다.
+
 CDeviceManager* pDeviceManager = GET_MANAGER<CDeviceManager>();
+// KeyManager 선언
+KeyManager* pKeyManager = GET_MANAGER<KeyManager>();
 
 // 이 코드 모듈에 포함된 함수의 선언을 전달합니다:
 ATOM                MyRegisterClass(HINSTANCE hInstance);
@@ -55,6 +58,12 @@ int APIENTRY _tWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpCm
         }
         else
         {
+            // Key Update
+            if (-1 == pKeyManager->UpdateKey())
+            {
+                exit(-1);
+                return -1;
+            }
             pDeviceManager->FrameAdvance();
         }
     }

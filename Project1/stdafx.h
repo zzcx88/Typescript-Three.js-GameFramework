@@ -347,9 +347,12 @@ namespace Plane
 	}
 }
 
+#include "Constant.h"
+
 // 매니저
 #include "DeviceManager.h"
 #include "SceneManager.h"
+#include "KeyManager.h"
 #include "ObjectManager.h"
 #include "CShaderManager.h"
 

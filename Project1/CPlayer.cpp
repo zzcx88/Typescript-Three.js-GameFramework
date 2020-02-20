@@ -134,7 +134,39 @@ void CPlayer::Rotate(float x, float y, float z)
 	m_xmf3Up = Vector3::CrossProduct(m_xmf3Look, m_xmf3Right, true);
 }
 
-void CPlayer::Update(float fTimeElapsed)
+int CPlayer::Update_Input(const float& TimeDelta)
+{
+	KeyManager* keyManager = GET_MANAGER<KeyManager>();
+	DWORD dwDirection = 0;
+
+	if (true == keyManager->GetKeyState(STATE_PUSH, VK_LEFT))
+	{
+		dwDirection |= DIR_LEFT;
+		Rotate(0.0f, 0.0f, 1.0f);
+	}
+
+	if (true == keyManager->GetKeyState(STATE_PUSH, VK_RIGHT))
+	{
+		dwDirection |= VK_RIGHT;
+		Rotate(0.0f, 0.0f, -1.0f);
+	}
+
+	if (true == keyManager->GetKeyState(STATE_PUSH, VK_UP))
+	{
+		dwDirection |= VK_UP;
+		Rotate(1.0f, 0.0f, 0.0f);
+	}
+
+	if (true == keyManager->GetKeyState(STATE_PUSH, VK_DOWN))
+	{
+		dwDirection |= VK_DOWN;
+		Rotate(-1.0f, 0.0f, 0.0f);
+	}
+	Move(DIR_FORWARD, 3.0f, false);
+	return 0;
+}
+
+int CPlayer::Update(float fTimeElapsed)
 {
 	m_xmf3Velocity = Vector3::Add(m_xmf3Velocity, m_xmf3Gravity);
 	float fLength = sqrtf(m_xmf3Velocity.x * m_xmf3Velocity.x + m_xmf3Velocity.z * m_xmf3Velocity.z);
@@ -164,6 +196,12 @@ void CPlayer::Update(float fTimeElapsed)
 	float fDeceleration = (m_fFriction * fTimeElapsed);
 	if (fDeceleration > fLength) fDeceleration = fLength;
 	m_xmf3Velocity = Vector3::Add(m_xmf3Velocity, Vector3::ScalarProduct(m_xmf3Velocity, -fDeceleration, true));
+
+	if (-1 == Update_Input(fTimeElapsed))
+	{
+		return -1;
+	}
+	//MoveForward(3);
 }
 
 CCamera* CPlayer::OnChangeCamera(DWORD nNewCameraMode, DWORD nCurrentCameraMode)
@@ -297,8 +335,8 @@ CCamera* CAirplanePlayer::ChangeCamera(DWORD nNewCameraMode, float fTimeElapsed)
 	case SPACESHIP_CAMERA:
 		SetFriction(100.5f);
 		SetGravity(XMFLOAT3(0.0f, 0.0f, 0.0f));
-		SetMaxVelocityXZ(40.0f);
-		SetMaxVelocityY(40.0f);
+		SetMaxVelocityXZ(250.0f);
+		SetMaxVelocityY(25.0f);
 		m_pCamera = OnChangeCamera(SPACESHIP_CAMERA, nCurrentCameraMode);
 		m_pCamera->SetTimeLag(0.0f);
 		m_pCamera->SetOffset(XMFLOAT3(0.0f, 1.0f, -5.0f));
@@ -437,10 +475,12 @@ void CTerrainPlayer::OnCameraUpdateCallback(float fTimeElapsed)
 	}
 }
 
-void CTerrainPlayer::Update(float fTimeElapsed)
+int CTerrainPlayer::Update(float fTimeElapsed)
 {
 	CPlayer::Update(fTimeElapsed);
 
 	float fLength = sqrtf(m_xmf3Velocity.x * m_xmf3Velocity.x + m_xmf3Velocity.z * m_xmf3Velocity.z);
 	SetTrackAnimationSet(0, ::IsZero(fLength) ? 0 : 1);
+
+	return 0;
 }
