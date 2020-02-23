@@ -165,12 +165,17 @@ void CMaterial::ReleaseUploadBuffers()
 
 CShader* CMaterial::m_pSkinnedAnimationShader = NULL;
 CShader* CMaterial::m_pStandardShader = NULL;
+CShader* CMaterial::m_pAceSahder = NULL;
 
 void CMaterial::PrepareShaders(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList, ID3D12RootSignature* pd3dGraphicsRootSignature)
 {
 	m_pStandardShader = new CStandardShader();
 	m_pStandardShader->CreateShader(pd3dDevice, pd3dCommandList, pd3dGraphicsRootSignature);
 	m_pStandardShader->CreateShaderVariables(pd3dDevice, pd3dCommandList);
+
+	m_pAceSahder = new CAceModelShader();
+	m_pAceSahder->CreateShader(pd3dDevice, pd3dCommandList, pd3dGraphicsRootSignature);
+	m_pAceSahder->CreateShaderVariables(pd3dDevice, pd3dCommandList);
 
 	m_pSkinnedAnimationShader = new CSkinnedAnimationShader();
 	m_pSkinnedAnimationShader->CreateShader(pd3dDevice, pd3dCommandList, pd3dGraphicsRootSignature);
@@ -585,7 +590,7 @@ CTexture* CGameObject::FindReplicatedTexture(_TCHAR* pstrTextureName)
 	return(NULL);
 }
 
-void CGameObject::LoadMaterialsFromFile(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList, CGameObject* pParent, FILE* pInFile, CShader* pShader)
+void CGameObject::LoadMaterialsFromFile(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList, CGameObject* pParent, FILE* pInFile, CShader* pShader, MODELTYPE modelType)
 {
 	char pstrToken[64] = { '\0' };
 	int nMaterial = 0;
@@ -619,7 +624,12 @@ void CGameObject::LoadMaterialsFromFile(ID3D12Device* pd3dDevice, ID3D12Graphics
 					}
 					else
 					{
-						pMaterial->SetStandardShader();
+						if (modelType == MODEL_ACE)
+						{
+							pMaterial->SetAceModelShader();
+						}
+						else
+							pMaterial->SetStandardShader();
 					}
 				}
 			}
@@ -692,7 +702,7 @@ void CGameObject::LoadMaterialsFromFile(ID3D12Device* pd3dDevice, ID3D12Graphics
 	}
 }
 
-CGameObject* CGameObject::LoadFrameHierarchyFromFile(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList, ID3D12RootSignature* pd3dGraphicsRootSignature, CGameObject* pParent, FILE* pInFile, CShader* pShader, int* pnSkinnedMeshes)
+CGameObject* CGameObject::LoadFrameHierarchyFromFile(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList, ID3D12RootSignature* pd3dGraphicsRootSignature, CGameObject* pParent, FILE* pInFile, CShader* pShader, int* pnSkinnedMeshes, MODELTYPE modelType)
 {
 	char pstrToken[64] = { '\0' };
 	UINT nReads = 0;
@@ -745,7 +755,7 @@ CGameObject* CGameObject::LoadFrameHierarchyFromFile(ID3D12Device* pd3dDevice, I
 		}
 		else if (!strcmp(pstrToken, "<Materials>:"))
 		{
-			pGameObject->LoadMaterialsFromFile(pd3dDevice, pd3dCommandList, pParent, pInFile, pShader);
+			pGameObject->LoadMaterialsFromFile(pd3dDevice, pd3dCommandList, pParent, pInFile, pShader, modelType);
 		}
 		else if (!strcmp(pstrToken, "<Children>:"))
 		{
@@ -754,7 +764,7 @@ CGameObject* CGameObject::LoadFrameHierarchyFromFile(ID3D12Device* pd3dDevice, I
 			{
 				for (int i = 0; i < nChilds; i++)
 				{
-					CGameObject* pChild = CGameObject::LoadFrameHierarchyFromFile(pd3dDevice, pd3dCommandList, pd3dGraphicsRootSignature, pGameObject, pInFile, pShader, pnSkinnedMeshes);
+					CGameObject* pChild = CGameObject::LoadFrameHierarchyFromFile(pd3dDevice, pd3dCommandList, pd3dGraphicsRootSignature, pGameObject, pInFile, pShader, pnSkinnedMeshes, modelType);
 					if (pChild) pGameObject->SetChild(pChild);
 #ifdef _WITH_DEBUG_FRAME_HIERARCHY
 					TCHAR pstrDebug[256] = { 0 };
@@ -853,7 +863,7 @@ void CGameObject::LoadAnimationFromFile(FILE* pInFile, CLoadedModelInfo* pLoaded
 	}
 }
 
-CLoadedModelInfo* CGameObject::LoadGeometryAndAnimationFromFile(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList, ID3D12RootSignature* pd3dGraphicsRootSignature, char* pstrFileName, CShader* pShader)
+CLoadedModelInfo* CGameObject::LoadGeometryAndAnimationFromFile(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList, ID3D12RootSignature* pd3dGraphicsRootSignature, char* pstrFileName, CShader* pShader, MODELTYPE modelType)
 {
 	FILE* pInFile = NULL;
 	::fopen_s(&pInFile, pstrFileName, "rb");
@@ -869,7 +879,7 @@ CLoadedModelInfo* CGameObject::LoadGeometryAndAnimationFromFile(ID3D12Device* pd
 		{
 			if (!strcmp(pstrToken, "<Hierarchy>:"))
 			{
-				pLoadedModel->m_pModelRootObject = CGameObject::LoadFrameHierarchyFromFile(pd3dDevice, pd3dCommandList, pd3dGraphicsRootSignature, NULL, pInFile, pShader, &pLoadedModel->m_nSkinnedMeshes);
+				pLoadedModel->m_pModelRootObject = CGameObject::LoadFrameHierarchyFromFile(pd3dDevice, pd3dCommandList, pd3dGraphicsRootSignature, NULL, pInFile, pShader, &pLoadedModel->m_nSkinnedMeshes, modelType);
 				::ReadStringFromFile(pInFile, pstrToken); //"</Hierarchy>"
 			}
 			else if (!strcmp(pstrToken, "<Animation>:"))

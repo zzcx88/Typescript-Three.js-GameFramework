@@ -100,11 +100,13 @@ public:
 
 public:
 	static CShader* m_pStandardShader;
+	static CShader* m_pAceSahder;
 	static CShader* m_pSkinnedAnimationShader;
 
 	static void CMaterial::PrepareShaders(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList, ID3D12RootSignature* pd3dGraphicsRootSignature);
 
 	void SetStandardShader() { CMaterial::SetShader(m_pStandardShader); }
+	void SetAceModelShader() { CMaterial::SetShader(m_pAceSahder); }
 	void SetSkinnedAnimationShader() { CMaterial::SetShader(m_pSkinnedAnimationShader); }
 };
 
@@ -202,12 +204,12 @@ public:
 	void SetTrackAnimationSet(int nAnimationTrack, int nAnimationSet);
 	void SetTrackAnimationPosition(int nAnimationTrack, float fPosition);
 
-	void LoadMaterialsFromFile(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList, CGameObject* pParent, FILE* pInFile, CShader* pShader);
+	void LoadMaterialsFromFile(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList, CGameObject* pParent, FILE* pInFile, CShader* pShader, MODELTYPE modelType);
 
 	static void LoadAnimationFromFile(FILE* pInFile, CLoadedModelInfo* pLoadedModel);
-	static CGameObject* LoadFrameHierarchyFromFile(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList, ID3D12RootSignature* pd3dGraphicsRootSignature, CGameObject* pParent, FILE* pInFile, CShader* pShader, int* pnSkinnedMeshes);
+	static CGameObject* LoadFrameHierarchyFromFile(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList, ID3D12RootSignature* pd3dGraphicsRootSignature, CGameObject* pParent, FILE* pInFile, CShader* pShader, int* pnSkinnedMeshes, MODELTYPE modelType);
 
-	static CLoadedModelInfo* LoadGeometryAndAnimationFromFile(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList, ID3D12RootSignature* pd3dGraphicsRootSignature, char* pstrFileName, CShader* pShader);
+	static CLoadedModelInfo* LoadGeometryAndAnimationFromFile(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList, ID3D12RootSignature* pd3dGraphicsRootSignature, char* pstrFileName, CShader* pShader, MODELTYPE modelType);
 
 	static void PrintFrameInfo(CGameObject* pGameObject, CGameObject* pParent);
 };

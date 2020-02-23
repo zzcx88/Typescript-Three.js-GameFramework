@@ -14,6 +14,13 @@ enum SCENESTATE
 	SCENE_END
 };
 
+enum MODELTYPE
+{
+	MODEL_STD,
+	MODEL_ANI,
+	MODEL_ACE
+};
+
 enum OBJTYPE
 {
 	OBJ_BACK,

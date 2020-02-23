@@ -118,7 +118,7 @@ D3D12_RASTERIZER_DESC CShader::CreateRasterizerState()
 	::ZeroMemory(&d3dRasterizerDesc, sizeof(D3D12_RASTERIZER_DESC));
 	//	d3dRasterizerDesc.FillMode = D3D12_FILL_MODE_WIREFRAME;
 	d3dRasterizerDesc.FillMode = D3D12_FILL_MODE_SOLID;
-	d3dRasterizerDesc.CullMode = D3D12_CULL_MODE_NONE;
+	d3dRasterizerDesc.CullMode = D3D12_CULL_MODE_BACK;
 	d3dRasterizerDesc.FrontCounterClockwise = FALSE;
 	d3dRasterizerDesc.DepthBias = 0;
 	d3dRasterizerDesc.DepthBiasClamp = 0.0f;
@@ -415,8 +415,8 @@ void CObjectsShader::BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsComman
 	m_nObjects = 0;
 	m_ppObjects = new CGameObject * [m_nObjects];
 
-	CLoadedModelInfo* pSuperCobraModel = CGameObject::LoadGeometryAndAnimationFromFile(pd3dDevice, pd3dCommandList, pd3dGraphicsRootSignature, "Model/SuperCobra.bin", this);
-	CLoadedModelInfo* pGunshipModel = CGameObject::LoadGeometryAndAnimationFromFile(pd3dDevice, pd3dCommandList, pd3dGraphicsRootSignature, "Model/Gunship.bin", this);
+	CLoadedModelInfo* pSuperCobraModel = CGameObject::LoadGeometryAndAnimationFromFile(pd3dDevice, pd3dCommandList, pd3dGraphicsRootSignature, "Model/SuperCobra.bin", this, MODEL_STD);
+	CLoadedModelInfo* pGunshipModel = CGameObject::LoadGeometryAndAnimationFromFile(pd3dDevice, pd3dCommandList, pd3dGraphicsRootSignature, "Model/Gunship.bin", this, MODEL_STD);
 
 	int nColumnSpace = 5, nColumnSize = 30;
 	int nFirstPassColumnSize = (m_nObjects % nColumnSize) > 0 ? (nColumnSize - 1) : nColumnSize;
@@ -518,4 +518,24 @@ CPlayerShader::CPlayerShader()
 
 CPlayerShader::~CPlayerShader()
 {
+}
+
+D3D12_RASTERIZER_DESC CAceModelShader::CreateRasterizerState()
+{
+	D3D12_RASTERIZER_DESC d3dRasterizerDesc;
+	::ZeroMemory(&d3dRasterizerDesc, sizeof(D3D12_RASTERIZER_DESC));
+	//	d3dRasterizerDesc.FillMode = D3D12_FILL_MODE_WIREFRAME;
+	d3dRasterizerDesc.FillMode = D3D12_FILL_MODE_SOLID;
+	d3dRasterizerDesc.CullMode = D3D12_CULL_MODE_BACK;
+	d3dRasterizerDesc.FrontCounterClockwise = TRUE;
+	d3dRasterizerDesc.DepthBias = 0;
+	d3dRasterizerDesc.DepthBiasClamp = 0.0f;
+	d3dRasterizerDesc.SlopeScaledDepthBias = 0.0f;
+	d3dRasterizerDesc.DepthClipEnable = TRUE;
+	d3dRasterizerDesc.MultisampleEnable = FALSE;
+	d3dRasterizerDesc.AntialiasedLineEnable = FALSE;
+	d3dRasterizerDesc.ForcedSampleCount = 0;
+	d3dRasterizerDesc.ConservativeRaster = D3D12_CONSERVATIVE_RASTERIZATION_MODE_OFF;
+
+	return(d3dRasterizerDesc);
 }

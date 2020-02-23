@@ -137,3 +137,13 @@ public:
 	virtual D3D12_SHADER_BYTECODE CreateVertexShader();
 };
 
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//
+class CAceModelShader : public CStandardShader
+{
+public:
+	CAceModelShader() {}
+	virtual ~CAceModelShader() {}
+
+	virtual D3D12_RASTERIZER_DESC CreateRasterizerState();
+};

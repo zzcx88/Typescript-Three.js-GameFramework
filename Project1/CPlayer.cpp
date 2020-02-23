@@ -273,7 +273,7 @@ CAirplanePlayer::CAirplanePlayer(ID3D12Device* pd3dDevice, ID3D12GraphicsCommand
 {
 	m_pCamera = ChangeCamera(SPACESHIP_CAMERA, 0.0f);
 
-	CLoadedModelInfo* pModel = CGameObject::LoadGeometryAndAnimationFromFile(pd3dDevice, pd3dCommandList, pd3dGraphicsRootSignature, "Model/F-4E_Phantom_II.bin", NULL);
+	CLoadedModelInfo* pModel = CGameObject::LoadGeometryAndAnimationFromFile(pd3dDevice, pd3dCommandList, pd3dGraphicsRootSignature, "Model/F-4E_Phantom_II.bin", NULL, MODEL_ACE);
 	SetChild(pModel->m_pModelRootObject);
 
 	OnPrepareAnimate();
@@ -372,7 +372,7 @@ CTerrainPlayer::CTerrainPlayer(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandLi
 {
 	m_pCamera = ChangeCamera(THIRD_PERSON_CAMERA, 0.0f);
 
-	CLoadedModelInfo* pAngrybotModel = CGameObject::LoadGeometryAndAnimationFromFile(pd3dDevice, pd3dCommandList, pd3dGraphicsRootSignature, "Model/Angrybot.bin", NULL);
+	CLoadedModelInfo* pAngrybotModel = CGameObject::LoadGeometryAndAnimationFromFile(pd3dDevice, pd3dCommandList, pd3dGraphicsRootSignature, "Model/Angrybot.bin", NULL, MODEL_ANI);
 	SetChild(pAngrybotModel->m_pModelRootObject, true);
 
 	CreateShaderVariables(pd3dDevice, pd3dCommandList);
