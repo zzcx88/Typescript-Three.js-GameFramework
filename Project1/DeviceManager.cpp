@@ -273,12 +273,10 @@ void CDeviceManager::BuildScene()
 	m_pSceneManager->ChangeSceneState(SCENE_TEST, m_pd3dDevice, m_pd3dCommandList);
 
 	CAirplanePlayer* pPlayer = new CAirplanePlayer(m_pd3dDevice, m_pd3dCommandList, m_pSceneManager->GetGraphicsRootSignature(), NULL);
-	pPlayer->SetPosition(XMFLOAT3(340.0f, 480.0f, 640.0f));
-	//pPlayer->SetScale(XMFLOAT3(0.8, 0.8, 0.8));
-	//pPlayer->SetPosition(XMFLOAT3(0, 0, 0));
+	//pPlayer->SetPosition(XMFLOAT3(340.0f, 600.0f, 640.0f));
+	pPlayer->SetPosition(XMFLOAT3(-1000, 3000, -10000));
 	m_pPlayer = pPlayer;
 	m_pCamera = m_pPlayer->GetCamera();
-	//m_pPlayer->Rotate(0.f, 0.0f, 90.0f);
 
 	m_pd3dCommandList->Close();
 	ID3D12CommandList* ppd3dCommandLists[] = { m_pd3dCommandList };
@@ -407,11 +405,11 @@ void CDeviceManager::ProcessInput()
 				else
 					m_pPlayer->Rotate(cyDelta, cxDelta, 0.0f);
 			}
-			if (dwDirection) m_pPlayer->Move(dwDirection, 12.25f, true);
+			//if (dwDirection) m_pPlayer->Move(dwDirection, 12.25f, true);
 		}
 	}
-	m_pPlayer->Move(0x01, 3.0f, true);
-	m_pPlayer->Update(m_GameTimer.GetTimeElapsed());
+	//m_pPlayer->Move(0x01, 3.0f, true);
+	//m_pPlayer->Update(m_GameTimer.GetTimeElapsed());
 }
 
 void CDeviceManager::AnimateObjects()
