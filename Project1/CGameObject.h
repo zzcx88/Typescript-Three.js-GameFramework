@@ -140,7 +140,9 @@ public:
 	char							m_pstrFrameName[64];
 
 	CMesh* m_pMesh = NULL;
+	//CMesh** m_ppMeshes = NULL;
 
+	int								m_nObjects = 0;
 	int								m_nMaterials = 0;
 	CMaterial** m_ppMaterials = NULL;
 
@@ -156,6 +158,7 @@ public:
 	bool			m_isDead = false;
 
 	void SetMesh(CMesh* pMesh);
+	//void SetMesh(int nIndex, CMesh* pMesh);
 	void SetShader(CShader* pShader);
 	void SetShader(int nMaterial, CShader* pShader);
 	void SetMaterial(int nMaterial, CMaterial* pMaterial);

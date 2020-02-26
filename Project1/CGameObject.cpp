@@ -321,6 +321,13 @@ void CGameObject::SetChild(CGameObject* pChild, bool bReferenceUpdate)
 
 void CGameObject::SetMesh(CMesh* pMesh)
 {
+	/*if (m_ppMeshes)
+	{
+		if (m_ppMeshes[nIndex]) m_ppMeshes[nIndex]->Release();
+		m_ppMeshes[nIndex] = pMesh;
+		if (pMesh) pMesh->AddRef();
+	}*/
+	
 	if (m_pMesh) m_pMesh->Release();
 	m_pMesh = pMesh;
 	if (m_pMesh) m_pMesh->AddRef();

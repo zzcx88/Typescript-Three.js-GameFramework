@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "CPlaneMesh.h"
 
-CPlaneMesh::CPlaneMesh(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList, float fWidth, float fHeight, float fDepth) : CMesh(pd3dDevice, pd3dCommandList)
+CPlaneMesh::CPlaneMesh(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList, float fWidth, float fHeight, float fDepth, XMFLOAT2 xmf2LeftTop, XMFLOAT2 xmf2LeftBot, XMFLOAT2 xmf2RightBot, XMFLOAT2 xmf2RightTop) : CMesh(pd3dDevice, pd3dCommandList)
 {
 	m_nVertices = 6;
 	m_nStride = sizeof(CTexturedVertex);
@@ -17,13 +17,18 @@ CPlaneMesh::CPlaneMesh(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3d
 	pVertices[3] = CTexturedVertex(XMFLOAT3(-40.0f, -40.0f, 1.0f), XMFLOAT2(0.0f, 0.0f));
 	pVertices[4] = CTexturedVertex(XMFLOAT3(+40.0f, +40.0f, 1.0f), XMFLOAT2(1.0f, 1.0f));
 	pVertices[5] = CTexturedVertex(XMFLOAT3(+40.0f, -40.0f, 1.0f), XMFLOAT2(0.0f, 1.0f));*/
-	pVertices[0] = CTexturedVertex(XMFLOAT3(-fx, +fy, -fz), XMFLOAT2(0.0f, 0.0f));
-	pVertices[1] = CTexturedVertex(XMFLOAT3(+fx, +fy, -fz), XMFLOAT2(1.0f, 0.0f));
-	pVertices[2] = CTexturedVertex(XMFLOAT3(+fx, -fy, -fz), XMFLOAT2(1.0f, 1.0f));
+
+	pVertices[0] = CTexturedVertex(XMFLOAT3(-fx + xmf2LeftTop.x, +fy + xmf2LeftTop.y, -fz), XMFLOAT2(0.0f, 0.0f));
+	pVertices[1] = CTexturedVertex(XMFLOAT3(+fx + xmf2RightTop.x, +fy + xmf2RightTop.y, -fz), XMFLOAT2(1.0f, 0.0f));
+	pVertices[2] = CTexturedVertex(XMFLOAT3(+fx + xmf2RightBot.x, -fy + xmf2RightBot.y, -fz), XMFLOAT2(1.0f, 1.0f));
 				 
-	pVertices[3] = CTexturedVertex(XMFLOAT3(-fx, +fy, -fz), XMFLOAT2(0.0f, 0.0f));
-	pVertices[4] = CTexturedVertex(XMFLOAT3(+fx, -fy, -fz), XMFLOAT2(1.0f, 1.0f));
-	pVertices[5] = CTexturedVertex(XMFLOAT3(-fx, -fy, -fz), XMFLOAT2(0.0f, 1.0f));
+	pVertices[3] = CTexturedVertex(XMFLOAT3(-fx + xmf2LeftTop.x, +fy + xmf2LeftTop.y, -fz), XMFLOAT2(0.0f, 0.0f));
+	pVertices[4] = CTexturedVertex(XMFLOAT3(+fx + xmf2RightBot.x, -fy + xmf2RightBot.y, -fz), XMFLOAT2(1.0f, 1.0f));
+	pVertices[5] = CTexturedVertex(XMFLOAT3(-fx + xmf2LeftBot.x, -fy + xmf2LeftBot.y, -fz), XMFLOAT2(0.0f, 1.0f));
+
+	
+
+
 
 	m_pd3dPositionBuffer = CreateBufferResource(pd3dDevice, pd3dCommandList, pVertices, m_nStride * m_nVertices, D3D12_HEAP_TYPE_DEFAULT, D3D12_RESOURCE_STATE_VERTEX_AND_CONSTANT_BUFFER, &m_pd3dPositionUploadBuffer);
 

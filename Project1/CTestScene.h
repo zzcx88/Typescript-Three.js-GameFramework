@@ -68,7 +68,8 @@ public:
 	CShader** m_ppShaders = NULL;
 
 	CSkyBox* m_pSkyBox = NULL;
-	CPlane* m_pPlane = NULL;
+
+	
 	CHeightMapTerrain* m_pTerrain = NULL;
 
 	LIGHT* m_pLights = NULL;
