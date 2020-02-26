@@ -163,7 +163,7 @@ int CPlayer::Update_Input(const float& TimeDelta)
 		Rotate(-1.0f, 0.0f, 0.0f);
 	}
 	Move(DIR_FORWARD, 600.0f * TimeDelta, true);
-	MoveForward(7.0f);
+	MoveForward(8.0f);
 	return 0;
 }
 
@@ -272,6 +272,7 @@ CAirplanePlayer::CAirplanePlayer(ID3D12Device* pd3dDevice, ID3D12GraphicsCommand
 	m_pCamera = ChangeCamera(SPACESHIP_CAMERA, 0.0f);
 
 	CLoadedModelInfo* pModel = CGameObject::LoadGeometryAndAnimationFromFile(pd3dDevice, pd3dCommandList, pd3dGraphicsRootSignature, "Model/F-4E_Phantom_II.bin", NULL, MODEL_ACE);
+	//CLoadedModelInfo* pModel = CGameObject::LoadGeometryAndAnimationFromFile(pd3dDevice, pd3dCommandList, pd3dGraphicsRootSignature, "Model/F-5E.bin", NULL, MODEL_STD);
 	SetChild(pModel->m_pModelRootObject);
 
 	OnPrepareAnimate();

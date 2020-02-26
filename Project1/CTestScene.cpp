@@ -2,6 +2,7 @@
 #include "CTestScene.h"
 #include "CHeightMapTerrain.h"
 #include "CSkyBox.h"
+#include "CPlane.h"
 #include "CAngrybotObject.h"
 #include "CGunshipObject.h"
 #include "CShaderManager.h"
@@ -93,16 +94,19 @@ void CTestScene::BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandLis
 	BuildDefaultLightsAndMaterials();
 
 	m_pSkyBox = new CSkyBox(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature);
+	m_pPlane = new CPlane(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature);
+	m_pPlane->SetScale(5000, 5000, 0);
 
 	XMFLOAT3 xmf3Scale(8.0f, 2.0f, 8.0f);
 	XMFLOAT4 xmf4Color(0.0f, 0.3f, 0.0f, 0.0f);
 	m_pTerrain = new CHeightMapTerrain(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, _T("Terrain/HeightMap.raw"), 257, 257, xmf3Scale, xmf4Color);
 
-	m_nHierarchicalGameObjects = 3;
+	m_nHierarchicalGameObjects = 4;
 	m_ppHierarchicalGameObjects = new CGameObject * [m_nHierarchicalGameObjects];
 
 	CLoadedModelInfo* pAngrybotModel = CGameObject::LoadGeometryAndAnimationFromFile(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, "Model/Angrybot.bin", NULL, MODEL_ANI);
 	CLoadedModelInfo* pWaterModel = CGameObject::LoadGeometryAndAnimationFromFile(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, "Model/water.bin", NULL, MODEL_STD);
+	CLoadedModelInfo* p052C = CGameObject::LoadGeometryAndAnimationFromFile(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, "Model/052C.bin", NULL, MODEL_STD);
 	m_ppHierarchicalGameObjects[0] = new CAngrybotObject(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, pAngrybotModel, 1);
 	m_ppHierarchicalGameObjects[0]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, 0);
 	m_ppHierarchicalGameObjects[0]->SetPosition(410.0f, m_pTerrain->GetHeight(410.0f, 735.0f), 735.0f);
@@ -113,8 +117,11 @@ void CTestScene::BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandLis
 	m_ppHierarchicalGameObjects[2] = new CGunshipObject(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature);
 	m_ppHierarchicalGameObjects[2]->SetChild(pWaterModel->m_pModelRootObject);
 	m_ppHierarchicalGameObjects[2]->SetPosition(0, 200, 0);
-	if (pAngrybotModel) delete pAngrybotModel;
-
+	//m_ppHierarchicalGameObjects[2]->SetScale(0, 0, 0);
+	m_ppHierarchicalGameObjects[3] = new CGunshipObject(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature);
+	m_ppHierarchicalGameObjects[3]->SetChild(p052C->m_pModelRootObject);
+	m_ppHierarchicalGameObjects[3]->SetScale(50,50,50);
+	m_ppHierarchicalGameObjects[3]->SetPosition(410, 200, -5000);
 	CreateShaderVariables(pd3dDevice, pd3dCommandList);
 }
 
@@ -160,6 +167,7 @@ void CTestScene::CreateShaderVariables(ID3D12Device* pd3dDevice, ID3D12GraphicsC
 	m_pd3dcbLights = ::CreateBufferResource(pd3dDevice, pd3dCommandList, NULL, ncbElementBytes, D3D12_HEAP_TYPE_UPLOAD, D3D12_RESOURCE_STATE_VERTEX_AND_CONSTANT_BUFFER, NULL);
 
 	m_pd3dcbLights->Map(0, NULL, (void**)&m_pcbMappedLights);
+
 }
 
 void CTestScene::UpdateShaderVariables(ID3D12GraphicsCommandList* pd3dCommandList)
@@ -245,6 +253,9 @@ void CTestScene::Render(ID3D12GraphicsCommandList* pd3dCommandList, CCamera* pCa
 
 	if (m_pSkyBox) m_pSkyBox->Render(pd3dCommandList, pCamera);
 	if (m_pTerrain) m_pTerrain->Render(pd3dCommandList, pCamera);
+
+	m_pPlane->SetPosition(m_ppHierarchicalGameObjects[3]->GetPosition().x, m_ppHierarchicalGameObjects[3]->GetPosition().y +500, m_ppHierarchicalGameObjects[3]->GetPosition().z);
+	if (m_pPlane) m_pPlane->Render(pd3dCommandList, pCamera);
 
 	for (int i = 0; i < m_nShaders; i++) if (m_ppShaders[i]) m_ppShaders[i]->Render(pd3dCommandList, pCamera);
 	for (int i = 0; i < m_nGameObjects; i++) if (m_ppGameObjects[i]) m_ppGameObjects[i]->Render(pd3dCommandList, pCamera);

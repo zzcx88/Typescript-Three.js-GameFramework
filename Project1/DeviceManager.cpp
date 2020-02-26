@@ -275,7 +275,10 @@ void CDeviceManager::BuildScene()
 	CAirplanePlayer* pPlayer = new CAirplanePlayer(m_pd3dDevice, m_pd3dCommandList, m_pSceneManager->GetGraphicsRootSignature(), NULL);
 	//pPlayer->SetPosition(XMFLOAT3(340.0f, 600.0f, 640.0f));
 	pPlayer->SetPosition(XMFLOAT3(-1000, 3000, -10000));
+	//pPlayer->SetScale(XMFLOAT3(0.02, 0.02, 0.02));
 	m_pPlayer = pPlayer;
+	
+	//m_pPlayer->SetScale(XMFLOAT3(10,10,10));
 	m_pCamera = m_pPlayer->GetCamera();
 
 	m_pd3dCommandList->Close();

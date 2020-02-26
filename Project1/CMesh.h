@@ -28,6 +28,7 @@ protected:
 
 protected:
 	int								m_nVertices = 0;
+	UINT							m_nStride = 0;
 
 	XMFLOAT3* m_pxmf3Positions = NULL;
 

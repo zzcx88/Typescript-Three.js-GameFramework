@@ -2,6 +2,7 @@
 #include "CScene.h"
 #include "CPlayer.h"
 #include "CSkyBox.h"
+#include "CPlane.h"
 #include "CHeightMapTerrain.h"
 
 #define MAX_LIGHTS							16 
@@ -67,6 +68,7 @@ public:
 	CShader** m_ppShaders = NULL;
 
 	CSkyBox* m_pSkyBox = NULL;
+	CPlane* m_pPlane = NULL;
 	CHeightMapTerrain* m_pTerrain = NULL;
 
 	LIGHT* m_pLights = NULL;

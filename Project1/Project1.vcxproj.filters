@@ -94,6 +94,12 @@
     <Filter Include="Manager\KeyManager">
       <UniqueIdentifier>{8e8a86cf-9cc4-457b-80a7-4c535708a32e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="GameObject\Plane">
+      <UniqueIdentifier>{03fc9cf8-9aed-453a-a621-23fcc863083d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GameObject\Mesh\PlaneMesh">
+      <UniqueIdentifier>{a99660be-b8f8-437f-a6ae-860371e796e8}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="targetver.h">
@@ -198,6 +204,12 @@
     <ClInclude Include="Constant.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
+    <ClInclude Include="CPlaneMesh.h">
+      <Filter>GameObject\Mesh\PlaneMesh</Filter>
+    </ClInclude>
+    <ClInclude Include="CPlane.h">
+      <Filter>GameObject\Plane</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="DDSTextureLoader12.cpp">
@@ -281,6 +293,12 @@
     <ClCompile Include="KeyManager.cpp">
       <Filter>Manager\KeyManager</Filter>
     </ClCompile>
+    <ClCompile Include="CPlaneMesh.cpp">
+      <Filter>GameObject\Mesh\PlaneMesh</Filter>
+    </ClCompile>
+    <ClCompile Include="CPlane.cpp">
+      <Filter>GameObject\Plane</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Project1.rc">
@@ -300,6 +318,12 @@
       <Filter>HLSL</Filter>
     </FxCompile>
     <FxCompile Include="Shaders.hlsl">
+      <Filter>HLSL</Filter>
+    </FxCompile>
+    <FxCompile Include="BillBoard.hlsl">
+      <Filter>HLSL</Filter>
+    </FxCompile>
+    <FxCompile Include="Plane.hlsl">
       <Filter>HLSL</Filter>
     </FxCompile>
   </ItemGroup>

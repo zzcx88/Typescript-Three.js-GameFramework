@@ -67,6 +67,7 @@ public:
 	void Release() { if (--m_nReferences <= 0) delete this; }
 
 public:
+	CTexture* m_pTexture = NULL;
 	CShader* m_pShader = NULL;
 
 	XMFLOAT4						m_xmf4AlbedoColor = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
@@ -110,6 +111,13 @@ public:
 	void SetSkinnedAnimationShader() { CMaterial::SetShader(m_pSkinnedAnimationShader); }
 };
 
+
+struct CB_GAMEOBJECT_INFO
+{
+	XMFLOAT4X4						m_xmf4x4World;
+	UINT							m_nMaterial;
+};
+
 class CGameObject
 {
 private:
@@ -123,6 +131,10 @@ public:
 	CGameObject();
 	CGameObject(int nMaterials);
 	virtual ~CGameObject();
+
+protected:
+	ID3D12Resource* m_pd3dcbGameObject = NULL;
+	CB_GAMEOBJECT_INFO* m_pcbMappedGameObject = NULL;
 
 public:
 	char							m_pstrFrameName[64];
