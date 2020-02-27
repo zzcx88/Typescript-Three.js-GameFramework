@@ -419,7 +419,7 @@ void CDeviceManager::AnimateObjects()
 {
 	float fTimeElapsed = m_GameTimer.GetTimeElapsed();
 	m_pSceneManager->Update(fTimeElapsed);
-	m_pPlayer->Animate(fTimeElapsed);
+	//m_pPlayer->Animate(fTimeElapsed);
 	m_pPlayer->Update(m_GameTimer.GetTimeElapsed());
 }
 

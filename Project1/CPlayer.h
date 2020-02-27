@@ -16,6 +16,8 @@ protected:
 	float           			m_fYaw = 0.0f;
 	float           			m_fRoll = 0.0f;
 
+	float WingsRotateDegree = 0;
+
 	XMFLOAT3					m_xmf3Velocity = XMFLOAT3(0.0f, 0.0f, 0.0f);
 	XMFLOAT3     				m_xmf3Gravity = XMFLOAT3(0.0f, 0.0f, 0.0f);
 	float           			m_fMaxVelocityXZ = 0.0f;
@@ -84,12 +86,26 @@ public:
 	CAirplanePlayer(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList, ID3D12RootSignature* pd3dGraphicsRootSignature, void* pContext = NULL);
 	virtual ~CAirplanePlayer();
 
-	CGameObject* m_pMainRotorFrame = NULL;
-	CGameObject* m_pTailRotorFrame = NULL;
+	//Wings
+	CGameObject* m_pLeft_Deact_Wing = NULL;
+	CGameObject* m_pRight_Deact_Wing = NULL;
+	CGameObject* m_pLeft_Pitch_Wing = NULL;
+	CGameObject* m_pRight_Pitch_Wing = NULL;
+	CGameObject* m_pLeft_Roll_Wing = NULL;
+	CGameObject* m_pRight_Roll_Wing = NULL;
+	CGameObject* m_pYaw_Wing = NULL;
+
+	//Weapons
+	CGameObject* m_pMSL_1 = NULL;
+	CGameObject* m_pMSL_2 = NULL;
+	CGameObject* m_pMSL_3 = NULL;
+	CGameObject* m_pMSL_4 = NULL;
+	CGameObject* m_pSP_1 = NULL;
+	CGameObject* m_pSP_2 = NULL;
 
 private:
 	virtual void OnPrepareAnimate();
-	virtual void Animate(float fTimeElapsed);
+	virtual void Animate(float fTimeElapsed, DWORD Direction);
 
 public:
 	virtual CCamera* ChangeCamera(DWORD nNewCameraMode, float fTimeElapsed);
