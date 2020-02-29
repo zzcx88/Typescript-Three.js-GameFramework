@@ -16,8 +16,9 @@ protected:
 	float           			m_fYaw = 0.0f;
 	float           			m_fRoll = 0.0f;
 
-	float WingsRotateDegree = 0;
-
+	float Roll_WingsRotateDegree = 0;
+	float Pitch_WingsRotateDegree = 0;
+	float Yaw_WingsRotateDegree = 0;
 	XMFLOAT3					m_xmf3Velocity = XMFLOAT3(0.0f, 0.0f, 0.0f);
 	XMFLOAT3     				m_xmf3Gravity = XMFLOAT3(0.0f, 0.0f, 0.0f);
 	float           			m_fMaxVelocityXZ = 0.0f;
@@ -59,6 +60,10 @@ public:
 	void Move(const XMFLOAT3& xmf3Shift, bool bVelocity = false);
 	void Move(float fxOffset = 0.0f, float fyOffset = 0.0f, float fzOffset = 0.0f);
 	void Rotate(float x, float y, float z);
+
+	virtual void LeftRollAnimation(float fTimeElapsed) {}
+	virtual void RightRollAnimation(float fTimeElapsed) {}
+	virtual void WingReturn(float fTimeElapsed) {}
 
 	int Update_Input(const float& TimeDelta);
 	virtual int Update(float fTimeElapsed);
@@ -106,6 +111,9 @@ public:
 private:
 	virtual void OnPrepareAnimate();
 	virtual void Animate(float fTimeElapsed, DWORD Direction);
+	virtual void LeftRollAnimation(float fTimeElapsed);
+	virtual void RightRollAnimation(float fTimeElapsed);
+	virtual void WingReturn(float fTimeElapsed);
 
 public:
 	virtual CCamera* ChangeCamera(DWORD nNewCameraMode, float fTimeElapsed);
