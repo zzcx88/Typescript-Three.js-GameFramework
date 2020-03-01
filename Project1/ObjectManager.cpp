@@ -69,15 +69,36 @@ void ObjectManager::Update(const float& TimeDelta)
 	}
 
 	// Collision
-	//GET_MANAGER<CollisionManager>()->CollisionRect(&m_mapObj[OBJ_PLAYER], &m_mapObj[OBJ_MONSTER]);
-	//GET_MANAGER<CollisionManager>()->CollisionRectEx(&m_mapObj[OBJ_PLAYER], &m_mapObj[OBJ_MONSTER]);
-	//GET_MANAGER<CollisionManager>()->CollisionPixelToRect(&m_mapObj[OBJ_BACK], &m_mapObj[OBJ_PLAYER]);
-	//GET_MANAGER<CollisionManager>()->CollisionRect(&m_mapObj[OBJ_PLAYER], &m_mapObj[OBJ_PORTAL]);
+	/*GET_MANAGER<CollisionManager>()->CollisionRect(&m_mapObj[OBJ_PLAYER], &m_mapObj[OBJ_MONSTER]);
+	GET_MANAGER<CollisionManager>()->CollisionRectEx(&m_mapObj[OBJ_PLAYER], &m_mapObj[OBJ_MONSTER]);
+	GET_MANAGER<CollisionManager>()->CollisionPixelToRect(&m_mapObj[OBJ_BACK], &m_mapObj[OBJ_PLAYER]);
+	GET_MANAGER<CollisionManager>()->CollisionRect(&m_mapObj[OBJ_PLAYER], &m_mapObj[OBJ_PORTAL]);*/
 }
 
-void ObjectManager::Render(HDC hDC)
+void ObjectManager::Render(ID3D12GraphicsCommandList* pd3dCommandList, CCamera* pCamera)
 {
+	for (auto i = 0; i < OBJ_END; ++i)
+	{
+		for (auto& obj : m_mapObj[i])
+		{
+			obj.second->Render(pd3dCommandList, pCamera);
+			obj.second->UpdateTransform(NULL);
+		}
+	}
+}
 
+void ObjectManager::ReleaseUploadBuffers()
+{
+	for (auto i = 0; i < OBJ_END; ++i)
+	{
+		const auto& iter_begin = m_mapObj[i].begin();
+		const auto& iter_end = m_mapObj[i].end();
+		for (auto iter = iter_begin; iter != iter_end;)
+		{
+			(*iter).second->ReleaseUploadBuffers();
+			++iter;
+		}
+	}
 }
 
 void ObjectManager::ReleaseAll()

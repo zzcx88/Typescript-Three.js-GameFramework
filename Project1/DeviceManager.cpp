@@ -288,7 +288,7 @@ void CDeviceManager::BuildScene()
 	WaitForGpuComplete();
 
 	if (m_pPlayer) m_pPlayer->ReleaseUploadBuffers();
-
+	if (m_pSceneManager) m_pSceneManager->ReleaseUploadBuffers();
 	m_GameTimer.Reset();
 }
 

@@ -20,6 +20,7 @@ public:
 public:
 	int Update(const float& TimeDelta);
 	void Render(ID3D12GraphicsCommandList* pd3dCommandList, CCamera* pCamera);
+	void ReleaseUploadBuffers();
 	void Release();
 
 private:

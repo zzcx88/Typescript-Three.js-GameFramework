@@ -48,6 +48,11 @@ void SceneManager::Render(ID3D12GraphicsCommandList* pd3dCommandList, CCamera* p
 	m_Scene->Render(pd3dCommandList, pCamera);
 }
 
+void SceneManager::ReleaseUploadBuffers()
+{
+	m_Scene->ReleaseUploadBuffers();
+}
+
 void SceneManager::Release()
 {
 	if (m_Scene)
