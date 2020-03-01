@@ -134,7 +134,7 @@ void CDeviceManager::CreateSwapChain()
 	::GetClientRect(m_hWnd, &rcClient);
 	m_nWndClientWidth = rcClient.right - rcClient.left;
 	m_nWndClientHeight = rcClient.bottom - rcClient.top;
-
+//#define _WITH_CREATE_SWAPCHAIN_FOR_HWND
 #ifdef _WITH_CREATE_SWAPCHAIN_FOR_HWND
 	DXGI_SWAP_CHAIN_DESC1 dxgiSwapChainDesc;
 	::ZeroMemory(&dxgiSwapChainDesc, sizeof(DXGI_SWAP_CHAIN_DESC1));
@@ -287,6 +287,8 @@ void CDeviceManager::BuildScene()
 
 	WaitForGpuComplete();
 
+	m_pSceneManager->SetPlayer(m_pPlayer);
+
 	if (m_pPlayer) m_pPlayer->ReleaseUploadBuffers();
 	if (m_pSceneManager) m_pSceneManager->ReleaseUploadBuffers();
 	m_GameTimer.Reset();
@@ -419,7 +421,6 @@ void CDeviceManager::AnimateObjects()
 {
 	float fTimeElapsed = m_GameTimer.GetTimeElapsed();
 	m_pSceneManager->Update(fTimeElapsed);
-	//m_pPlayer->Animate(fTimeElapsed);
 	m_pPlayer->Update(m_GameTimer.GetTimeElapsed());
 }
 

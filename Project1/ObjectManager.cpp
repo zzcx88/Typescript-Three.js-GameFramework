@@ -109,8 +109,17 @@ void ObjectManager::ReleaseAll()
 		{
 			if (nullptr != obj.second)
 			{
-				delete obj.second;
-				obj.second = nullptr;
+				if (obj.second->m_ObjType == OBJ_MAP || obj.second->m_ObjType == OBJ_UI)
+				{
+					delete obj.second;
+					obj.second = nullptr;
+				}
+				else 
+				{
+					obj.second->Release();
+					delete obj.second;
+					obj.second = nullptr;
+				}
 			}
 		}
 		m_mapObj[i].clear();

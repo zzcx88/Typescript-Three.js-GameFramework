@@ -134,7 +134,6 @@ void CTestScene::BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandLis
 	m_ppHierarchicalGameObjects[2] = new CGunshipObject(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature);
 	m_ppHierarchicalGameObjects[2]->SetChild(pWaterModel->m_pModelRootObject);
 	m_ppHierarchicalGameObjects[2]->SetPosition(0, 200, 0);
-	//m_ppHierarchicalGameObjects[2]->SetScale(0, 0, 0);
 	m_ppHierarchicalGameObjects[3] = new CGunshipObject(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature);
 	m_ppHierarchicalGameObjects[3]->SetChild(p052C->m_pModelRootObject);
 	m_ppHierarchicalGameObjects[3]->SetScale(50,50,50);
@@ -144,6 +143,7 @@ void CTestScene::BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandLis
 	m_ObjManager->AddObject(L"water", m_ppHierarchicalGameObjects[2], OBJ_MAP);
 	m_ObjManager->AddObject(L"destroyer", m_ppHierarchicalGameObjects[3], OBJ_ENEMY);
 
+
 	CreateShaderVariables(pd3dDevice, pd3dCommandList);
 }
 
@@ -152,32 +152,6 @@ void CTestScene::ReleaseObjects()
 	if (m_pd3dGraphicsRootSignature) m_pd3dGraphicsRootSignature->Release();
 	if (m_pd3dCbvSrvDescriptorHeap) m_pd3dCbvSrvDescriptorHeap->Release();
 
-	//if (m_ppShaders)
-	//{
-	//	for (int i = 0; i < m_nShaders; i++)
-	//	{
-	//		m_ppShaders[i]->ReleaseShaderVariables();
-	//		m_ppShaders[i]->ReleaseObjects();
-	//		m_ppShaders[i]->Release();
-	//	}
-	//	delete[] m_ppShaders;
-	//}
-
-	//if (m_pTerrain) delete m_pTerrain;
-	//if (m_pSkyBox) delete m_pSkyBox;
-	////if (m_pPlane) delete m_pPlane;
-
-	//if (m_ppGameObjects)
-	//{
-	//	for (int i = 0; i < m_nGameObjects; i++) if (m_ppGameObjects[i]) m_ppGameObjects[i]->Release();
-	//	delete[] m_ppGameObjects;
-	//}
-
-	//if (m_ppHierarchicalGameObjects)
-	//{
-	//	for (int i = 0; i < m_nHierarchicalGameObjects; i++) if (m_ppHierarchicalGameObjects[i]) m_ppHierarchicalGameObjects[i]->Release();
-	//	delete[] m_ppHierarchicalGameObjects;
-	//}
 	m_ObjManager->ReleaseAll();
 	ReleaseShaderVariables();
 
@@ -211,13 +185,6 @@ void CTestScene::ReleaseShaderVariables()
 
 void CTestScene::ReleaseUploadBuffers()
 {
-	//if (m_pPlane) m_pPlane->ReleaseUploadBuffers();
-	/*if (m_pSkyBox) m_pSkyBox->ReleaseUploadBuffers();
-	if (m_pTerrain) m_pTerrain->ReleaseUploadBuffers();
-
-	for (int i = 0; i < m_nShaders; i++) m_ppShaders[i]->ReleaseUploadBuffers();
-	for (int i = 0; i < m_nGameObjects; i++) if (m_ppGameObjects[i]) m_ppGameObjects[i]->ReleaseUploadBuffers();
-	for (int i = 0; i < m_nHierarchicalGameObjects; i++) m_ppHierarchicalGameObjects[i]->ReleaseUploadBuffers();*/
 	m_ObjManager->ReleaseUploadBuffers();
 }
 
@@ -252,15 +219,6 @@ bool CTestScene::ProcessInput(UCHAR* pKeysBuffer)
 void CTestScene::AnimateObjects(float fTimeElapsed)
 {
 	m_fElapsedTime = fTimeElapsed;
-
-	/*for (int i = 0; i < m_nShaders; i++) if (m_ppShaders[i]) m_ppShaders[i]->AnimateObjects(fTimeElapsed);
-	for (int i = 0; i < m_nGameObjects; i++) if (m_ppGameObjects[i]) m_ppGameObjects[i]->Animate(fTimeElapsed);*/
-
-	/*if (m_pLights)
-	{
-		m_pLights[1].m_xmf3Position = m_pPlayer->GetPosition();
-		m_pLights[1].m_xmf3Direction = m_pPlayer->GetLookVector();
-	}*/
 	m_ObjManager->Update(fTimeElapsed);
 }
 
@@ -278,21 +236,4 @@ void CTestScene::Render(ID3D12GraphicsCommandList* pd3dCommandList, CCamera* pCa
 	pd3dCommandList->SetGraphicsRootConstantBufferView(2, d3dcbLightsGpuVirtualAddress); //Lights
 
 	m_ObjManager->Render(pd3dCommandList, pCamera);
-
-	/*if (m_pSkyBox) m_pSkyBox->Render(pd3dCommandList, pCamera);
-	if (m_pTerrain) m_pTerrain->Render(pd3dCommandList, pCamera);
-	
-	for (int i = 0; i < m_nShaders; i++) if (m_ppShaders[i]) m_ppShaders[i]->Render(pd3dCommandList, pCamera);
-	for (int i = 0; i < m_nGameObjects; i++) if (m_ppGameObjects[i]) m_ppGameObjects[i]->Render(pd3dCommandList, pCamera);
-
-	for (int i = 0; i < m_nHierarchicalGameObjects; i++)
-	{
-		if (m_ppHierarchicalGameObjects[i])
-		{
-			m_ppHierarchicalGameObjects[i]->Animate(m_fElapsedTime);
-			m_ppHierarchicalGameObjects[i]->UpdateTransform(NULL);
-			if (!m_ppHierarchicalGameObjects[i]->m_pSkinnedAnimationController) m_ppHierarchicalGameObjects[i]->UpdateTransform(NULL);
-			m_ppHierarchicalGameObjects[i]->Render(pd3dCommandList, pCamera);
-		}
-	}*/
 }

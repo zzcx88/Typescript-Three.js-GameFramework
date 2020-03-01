@@ -16,9 +16,10 @@ protected:
 	float           			m_fYaw = 0.0f;
 	float           			m_fRoll = 0.0f;
 
-	float Roll_WingsRotateDegree = 0;
-	float Pitch_WingsRotateDegree = 0;
-	float Yaw_WingsRotateDegree = 0;
+	float Roll_WingsRotateDegree = 0.0f;
+	float Pitch_WingsRotateDegree = 0.0f;
+	float Yaw_WingsRotateDegree = 0.0f;
+
 	XMFLOAT3					m_xmf3Velocity = XMFLOAT3(0.0f, 0.0f, 0.0f);
 	XMFLOAT3     				m_xmf3Gravity = XMFLOAT3(0.0f, 0.0f, 0.0f);
 	float           			m_fMaxVelocityXZ = 0.0f;

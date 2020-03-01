@@ -309,7 +309,6 @@ CAirplanePlayer::CAirplanePlayer(ID3D12Device* pd3dDevice, ID3D12GraphicsCommand
 	OnPrepareAnimate();
 
 	CreateShaderVariables(pd3dDevice, pd3dCommandList);
-
 	if (pModel) delete pModel;
 }
 
@@ -442,7 +441,11 @@ void CAirplanePlayer::RollWingReturn(float fTimeElapsed)
 
 		Roll_WingsRotateDegree += fTimeElapsed;
 		if (Roll_WingsRotateDegree >= 0)
+		{
 			Roll_WingsRotateDegree = 0;
+			m_pLeft_Roll_Wing->m_xmf4x4ToParent._22 = 0;
+			m_pRight_Roll_Wing->m_xmf4x4ToParent._22 = 0;
+		}
 	}
 	if (Roll_WingsRotateDegree > 0)
 	{
@@ -454,7 +457,11 @@ void CAirplanePlayer::RollWingReturn(float fTimeElapsed)
 
 		Roll_WingsRotateDegree -= fTimeElapsed;
 		if (Roll_WingsRotateDegree <= 0)
+		{
 			Roll_WingsRotateDegree = 0;
+			m_pLeft_Roll_Wing->m_xmf4x4ToParent._22 = 0;
+			m_pRight_Roll_Wing->m_xmf4x4ToParent._22 = 0;
+		}
 	}
 }
 void CAirplanePlayer::PitchWingReturn(float fTimeElapsed)
@@ -469,8 +476,12 @@ void CAirplanePlayer::PitchWingReturn(float fTimeElapsed)
 		if (m_pRight_Pitch_Wing)m_pRight_Pitch_Wing->m_xmf4x4ToParent = Matrix4x4::Multiply(xmmtxRotate1, m_pRight_Pitch_Wing->m_xmf4x4ToParent);
 
 		Pitch_WingsRotateDegree += fTimeElapsed;
-		if (Pitch_WingsRotateDegree >= 0)
+		if (Pitch_WingsRotateDegree > 0)
+		{
 			Pitch_WingsRotateDegree = 0;
+			m_pRight_Pitch_Wing->m_xmf4x4ToParent._22 = 0;
+			m_pLeft_Pitch_Wing->m_xmf4x4ToParent._22 = 0;
+		}
 	}
 	if (Pitch_WingsRotateDegree > 0)
 	{
@@ -481,8 +492,12 @@ void CAirplanePlayer::PitchWingReturn(float fTimeElapsed)
 		if (m_pRight_Pitch_Wing)m_pRight_Pitch_Wing->m_xmf4x4ToParent = Matrix4x4::Multiply(xmmtxRotate1, m_pRight_Pitch_Wing->m_xmf4x4ToParent);
 
 		Pitch_WingsRotateDegree -= fTimeElapsed;
-		if (Pitch_WingsRotateDegree <= 0)
+		if (Pitch_WingsRotateDegree < 0)
+		{
 			Pitch_WingsRotateDegree = 0;
+			m_pRight_Pitch_Wing->m_xmf4x4ToParent._22 = 0;
+			m_pLeft_Pitch_Wing->m_xmf4x4ToParent._22 = 0;
+		}
 	}
 }
 void CAirplanePlayer::OnPrepareRender()

@@ -20,7 +20,7 @@ private:
 	void ComputeKeyState(const int& VirtualKey);
 
 private:
-	// 2차원 배열로 열이 키 상태 행렬이 키의 배열이 
+
 	bool m_KeyArr[STATE_END][KEY_MAX];
 	bool m_IsRunning = true;
 };
