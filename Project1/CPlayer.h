@@ -63,7 +63,10 @@ public:
 
 	virtual void LeftRollAnimation(float fTimeElapsed) {}
 	virtual void RightRollAnimation(float fTimeElapsed) {}
-	virtual void WingReturn(float fTimeElapsed) {}
+	virtual void UpPitchAnimation(float fTimeElapsed) {}
+	virtual void DownPitchAnimation(float fTimeElapsed) {}
+	virtual void RollWingReturn(float fTimeElapsed) {}
+	virtual void PitchWingReturn(float fTimeElapsed) {}
 
 	int Update_Input(const float& TimeDelta);
 	virtual int Update(float fTimeElapsed);
@@ -113,7 +116,10 @@ private:
 	virtual void Animate(float fTimeElapsed, DWORD Direction);
 	virtual void LeftRollAnimation(float fTimeElapsed);
 	virtual void RightRollAnimation(float fTimeElapsed);
-	virtual void WingReturn(float fTimeElapsed);
+	virtual void UpPitchAnimation(float fTimeElapsed);
+	virtual void DownPitchAnimation(float fTimeElapsed);
+	virtual void RollWingReturn(float fTimeElapsed);
+	virtual void PitchWingReturn(float fTimeElapsed);
 
 public:
 	virtual CCamera* ChangeCamera(DWORD nNewCameraMode, float fTimeElapsed);

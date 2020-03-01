@@ -156,31 +156,45 @@ int CPlayer::Update_Input(const float& TimeDelta)
 	if (true == keyManager->GetKeyState(STATE_PUSH, VK_UP))
 	{
 		dwDirection |= VK_UP;
-		Rotate(1.0f, 0.0f, 0.0f);
+		Rotate(Pitch_WingsRotateDegree / 2, 0.0f, 0.0f);
+		DownPitchAnimation(TimeDelta);
 	}
 
 	if (true == keyManager->GetKeyState(STATE_PUSH, VK_DOWN))
 	{
 		dwDirection |= VK_DOWN;
-		Rotate(-1.0f, 0.0f, 0.0f);
+		Rotate(Pitch_WingsRotateDegree / 2, 0.0f, 0.0f);
+		UpPitchAnimation(TimeDelta);
 	}
 
 	if (true == keyManager->GetKeyState(STATE_UP, VK_LEFT))
 	{
-		WingReturn(TimeDelta);
+		RollWingReturn(TimeDelta);
 	}
 
 	if (true == keyManager->GetKeyState(STATE_UP, VK_RIGHT))
 	{
-		WingReturn(TimeDelta);
+		RollWingReturn(TimeDelta);
+	}
+	if (true == keyManager->GetKeyState(STATE_UP, VK_UP))
+	{
+		PitchWingReturn(TimeDelta);
+	}
+
+	if (true == keyManager->GetKeyState(STATE_UP, VK_DOWN))
+	{
+		PitchWingReturn(TimeDelta);
 	}
 
 	if (Roll_WingsRotateDegree != 0)
 		Rotate(0.0f, 0.0f, -Roll_WingsRotateDegree);
-	//cout << dwDirection << endl;
+	if (Pitch_WingsRotateDegree != 0)
+		Rotate(Pitch_WingsRotateDegree, 0.0f, 0.0f);
+	//cout << Pitch_WingsRotateDegree << endl;
 	Move(DIR_FORWARD, 600.0f * TimeDelta, true);
 	MoveForward(8.0f);
-	Animate(TimeDelta, dwDirection);
+	Animate(TimeDelta);
+	//Animate(TimeDelta, dwDirection);
 	return 0;
 }
 
@@ -323,8 +337,11 @@ void CAirplanePlayer::OnPrepareAnimate()
 
 void CAirplanePlayer::Animate(float fTimeElapsed, DWORD Direction)
 {
-	if(Direction == 0)
-		WingReturn(fTimeElapsed);
+	if (Direction == 0)
+	{
+		RollWingReturn(fTimeElapsed);
+		PitchWingReturn(fTimeElapsed);
+	}
 	//cout << Roll_WingsRotateDegree << endl;
 	CPlayer::Animate(fTimeElapsed);
 }
@@ -333,7 +350,7 @@ void CAirplanePlayer::LeftRollAnimation(float fTimeElapsed)
 {
 	if (Roll_WingsRotateDegree > 0)
 	{
-		WingReturn(fTimeElapsed);
+		RollWingReturn(fTimeElapsed);
 		CPlayer::Animate(fTimeElapsed);
 		return;
 	}
@@ -354,7 +371,7 @@ void CAirplanePlayer::RightRollAnimation(float fTimeElapsed)
 {
 	if (Roll_WingsRotateDegree < 0)
 	{
-		WingReturn(fTimeElapsed);
+		RollWingReturn(fTimeElapsed);
 		CPlayer::Animate(fTimeElapsed);
 		return;
 	}
@@ -371,7 +388,49 @@ void CAirplanePlayer::RightRollAnimation(float fTimeElapsed)
 	}
 }
 
-void CAirplanePlayer::WingReturn(float fTimeElapsed)
+void CAirplanePlayer::UpPitchAnimation(float fTimeElapsed)
+{
+	if (Pitch_WingsRotateDegree > 0)
+	{
+		PitchWingReturn(fTimeElapsed);
+		CPlayer::Animate(fTimeElapsed);
+		return;
+	}
+	if (Pitch_WingsRotateDegree > -1.0f)
+	{
+		XMMATRIX xmmtxRotate = XMMatrixRotationX(XMConvertToRadians(Pitch_WingsRotateDegree * 50.0f) * fTimeElapsed);
+		m_pLeft_Pitch_Wing->m_xmf4x4ToParent = Matrix4x4::Multiply(xmmtxRotate, m_pLeft_Pitch_Wing->m_xmf4x4ToParent);
+
+		XMMATRIX xmmtxRotate1 = XMMatrixRotationX(XMConvertToRadians(Pitch_WingsRotateDegree * 50.0f) * fTimeElapsed);
+		m_pRight_Pitch_Wing->m_xmf4x4ToParent = Matrix4x4::Multiply(xmmtxRotate1, m_pRight_Pitch_Wing->m_xmf4x4ToParent);
+
+		Pitch_WingsRotateDegree -= fTimeElapsed;
+		CPlayer::Animate(fTimeElapsed);
+	}
+}
+
+void CAirplanePlayer::DownPitchAnimation(float fTimeElapsed)
+{
+	if (Pitch_WingsRotateDegree < 0)
+	{
+		PitchWingReturn(fTimeElapsed);
+		CPlayer::Animate(fTimeElapsed);
+		return;
+	}
+	if (Pitch_WingsRotateDegree < 1.0f)
+	{
+		XMMATRIX xmmtxRotate = XMMatrixRotationX(XMConvertToRadians(Pitch_WingsRotateDegree * 50.0f) * fTimeElapsed);
+		m_pLeft_Pitch_Wing->m_xmf4x4ToParent = Matrix4x4::Multiply(xmmtxRotate, m_pLeft_Pitch_Wing->m_xmf4x4ToParent);
+
+		XMMATRIX xmmtxRotate1 = XMMatrixRotationX(XMConvertToRadians(Pitch_WingsRotateDegree * 50.0f) * fTimeElapsed);
+		m_pRight_Pitch_Wing->m_xmf4x4ToParent = Matrix4x4::Multiply(xmmtxRotate1, m_pRight_Pitch_Wing->m_xmf4x4ToParent);
+
+		Pitch_WingsRotateDegree += fTimeElapsed;
+		CPlayer::Animate(fTimeElapsed);
+	}
+}
+
+void CAirplanePlayer::RollWingReturn(float fTimeElapsed)
 {
 	if (Roll_WingsRotateDegree < 0)
 	{
@@ -385,7 +444,7 @@ void CAirplanePlayer::WingReturn(float fTimeElapsed)
 		if (Roll_WingsRotateDegree >= 0)
 			Roll_WingsRotateDegree = 0;
 	}
-	else if (Roll_WingsRotateDegree > 0)
+	if (Roll_WingsRotateDegree > 0)
 	{
 		XMMATRIX xmmtxRotate = XMMatrixRotationX(XMConvertToRadians(-Roll_WingsRotateDegree * 50.0f) * fTimeElapsed);
 		if (m_pLeft_Roll_Wing)m_pLeft_Roll_Wing->m_xmf4x4ToParent = Matrix4x4::Multiply(xmmtxRotate, m_pLeft_Roll_Wing->m_xmf4x4ToParent);
@@ -396,6 +455,34 @@ void CAirplanePlayer::WingReturn(float fTimeElapsed)
 		Roll_WingsRotateDegree -= fTimeElapsed;
 		if (Roll_WingsRotateDegree <= 0)
 			Roll_WingsRotateDegree = 0;
+	}
+}
+void CAirplanePlayer::PitchWingReturn(float fTimeElapsed)
+{
+	//pitch
+	if (Pitch_WingsRotateDegree < 0)
+	{
+		XMMATRIX xmmtxRotate = XMMatrixRotationX(XMConvertToRadians(-Pitch_WingsRotateDegree * 50.0f) * fTimeElapsed);
+		if (m_pLeft_Pitch_Wing)m_pLeft_Pitch_Wing->m_xmf4x4ToParent = Matrix4x4::Multiply(xmmtxRotate, m_pLeft_Pitch_Wing->m_xmf4x4ToParent);
+
+		XMMATRIX xmmtxRotate1 = XMMatrixRotationX(XMConvertToRadians(-Pitch_WingsRotateDegree * 50.0f) * fTimeElapsed);
+		if (m_pRight_Pitch_Wing)m_pRight_Pitch_Wing->m_xmf4x4ToParent = Matrix4x4::Multiply(xmmtxRotate1, m_pRight_Pitch_Wing->m_xmf4x4ToParent);
+
+		Pitch_WingsRotateDegree += fTimeElapsed;
+		if (Pitch_WingsRotateDegree >= 0)
+			Pitch_WingsRotateDegree = 0;
+	}
+	if (Pitch_WingsRotateDegree > 0)
+	{
+		XMMATRIX xmmtxRotate = XMMatrixRotationX(XMConvertToRadians(-Pitch_WingsRotateDegree * 50.0f) * fTimeElapsed);
+		if (m_pLeft_Pitch_Wing)m_pLeft_Pitch_Wing->m_xmf4x4ToParent = Matrix4x4::Multiply(xmmtxRotate, m_pLeft_Pitch_Wing->m_xmf4x4ToParent);
+
+		XMMATRIX xmmtxRotate1 = XMMatrixRotationX(XMConvertToRadians(-Pitch_WingsRotateDegree * 50.0f) * fTimeElapsed);
+		if (m_pRight_Pitch_Wing)m_pRight_Pitch_Wing->m_xmf4x4ToParent = Matrix4x4::Multiply(xmmtxRotate1, m_pRight_Pitch_Wing->m_xmf4x4ToParent);
+
+		Pitch_WingsRotateDegree -= fTimeElapsed;
+		if (Pitch_WingsRotateDegree <= 0)
+			Pitch_WingsRotateDegree = 0;
 	}
 }
 void CAirplanePlayer::OnPrepareRender()
