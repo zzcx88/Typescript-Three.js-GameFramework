@@ -21,6 +21,8 @@ public:
 
 	virtual D3D12_SHADER_BYTECODE CreateVertexShader();
 	virtual D3D12_SHADER_BYTECODE CreatePixelShader();
+	virtual D3D12_SHADER_BYTECODE CreateComputeShaderH();
+	virtual D3D12_SHADER_BYTECODE CreateComputeShaderV();
 
 	D3D12_SHADER_BYTECODE CompileShaderFromFile(WCHAR* pszFileName, LPCSTR pszShaderName, LPCSTR pszShaderProfile, ID3DBlob** ppd3dShaderBlob);
 	D3D12_SHADER_BYTECODE ReadCompiledShaderFromFile(WCHAR* pszFileName, ID3DBlob** ppd3dShaderBlob = NULL);
@@ -45,10 +47,14 @@ public:
 protected:
 	ID3DBlob* m_pd3dVertexShaderBlob = NULL;
 	ID3DBlob* m_pd3dPixelShaderBlob = NULL;
+	ID3DBlob* m_pd3dComputeShaderHBlob = NULL;
+	ID3DBlob* m_pd3dComputeShaderVBlob = NULL;
 
 	ID3D12PipelineState* m_pd3dPipelineState = NULL;
 
 	D3D12_GRAPHICS_PIPELINE_STATE_DESC	m_d3dPipelineStateDesc;
+	D3D12_COMPUTE_PIPELINE_STATE_DESC	m_d3dComputeBlurHPipelineStateDesc;
+	D3D12_COMPUTE_PIPELINE_STATE_DESC m_d3dComputeBlurVPipelineStateDesc;
 };
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -148,6 +154,9 @@ public:
 	virtual D3D12_RASTERIZER_DESC CreateRasterizerState();
 };
 
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//
+
 class CPlaneShader : public CShader
 {
 public:
@@ -169,4 +178,33 @@ public:
 
 	virtual void CreateShaderVariables(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList);
 	void CreateConstantBufferViews(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList, int nConstantBufferViews, ID3D12Resource* pd3dConstantBuffers, UINT nStride);
+};
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//
+
+class CBlurHShader : public CShader {
+
+public:
+	CBlurHShader();
+	virtual ~CBlurHShader();
+
+	virtual D3D12_SHADER_BYTECODE CreateComputeShaderH();
+	virtual void CreateHShader(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList, ID3D12RootSignature* pd3dGraphicsRootSignature);
+
+	virtual void OnPrepareRender(ID3D12GraphicsCommandList* pd3dCommandList, int nPipelineState = 1);
+	virtual void Render(ID3D12GraphicsCommandList* pd3dCommandList);
+};
+
+class CBlurVShader : public CShader {
+
+public:
+	CBlurVShader();
+	virtual ~CBlurVShader();
+
+	virtual D3D12_SHADER_BYTECODE CreateComputeShaderV();
+	virtual void CreateVShader(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList, ID3D12RootSignature* pd3dGraphicsRootSignature);
+
+	virtual void OnPrepareRender(ID3D12GraphicsCommandList* pd3dCommandList, int nPipelineState = 2);
+	virtual void Render(ID3D12GraphicsCommandList* pd3dCommandList);
 };

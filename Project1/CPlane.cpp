@@ -13,16 +13,6 @@ CPlane::CPlane(int nIndex, ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* 
 
 	SetMesh(pPlaneMesh);
 
-	/*CPlaneMesh* ppPlaneMesh[OBJS];
-
-	ppPlaneMesh[0] =	new CPlaneMesh(pd3dDevice, pd3dCommandList, 1.0f, 1.0f, 0.0f);
-	ppPlaneMesh[1] = new CPlaneMesh(pd3dDevice, pd3dCommandList, 1.0f, 1.0f, 0.0f);
-	ppPlaneMesh[2] = new CPlaneMesh(pd3dDevice, pd3dCommandList, 1.0f, 1.0f, 0.0f);*/
-
-	//CGameObject* pPlaneObject=NULL;
-
-	//for (int i = 0; i < OBJS; i++) pPlaneObject -> SetMesh(i, ppPlaneMesh[i]);
-
 	CreateShaderVariables(pd3dDevice, pd3dCommandList);
 
 	CTexture* ppPlaneTexture[TEXTURES];
@@ -58,30 +48,6 @@ CPlane::CPlane(int nIndex, ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* 
 	pPlaneMaterial->SetTexture(ppPlaneTexture[nIndex]);
 	pPlaneMaterial->SetShader(pPlaneShader);
 	SetMaterial(0, pPlaneMaterial);
-
-	
-	
-	/*for (int i = 0; i < TEXTURES; i++)
-	{
-		ppPlaneShader[i] = new CPlaneShader();
-
-		ppPlaneShader[i]->CreateShader(pd3dDevice, pd3dCommandList, pd3dGraphicsRootSignature);
-		ppPlaneShader[i]->CreateShaderVariables(pd3dDevice, pd3dCommandList);
-
-		ppPlaneShader[i]->CreateConstantBufferViews(pd3dDevice, pd3dCommandList, m_nObjects, ppPlaneShader[i]->m_pd3dcbGameObjects, ncbElementBytes);
-	
-		CTestScene::CreateShaderResourceViews(pd3dDevice, ppPlaneTexture[i], 15, false);
-	}*/
-
-	/*CMaterial* ppPlaneMaterial[TEXTURES];
-	for (int i = 0; i < TEXTURES; i++)
-	{
-		ppPlaneMaterial[0] = new CMaterial(1);
-		ppPlaneMaterial[0]->SetTexture(ppPlaneTexture[i]);
-		ppPlaneMaterial[0]->SetShader(ppPlaneShader[i]);
-		SetMaterial(0, ppPlaneMaterial[0]);
-
-	}*/
 	
 }
 

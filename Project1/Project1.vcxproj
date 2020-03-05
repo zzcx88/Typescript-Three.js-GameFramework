@@ -147,6 +147,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="CBlur.h" />
+    <ClInclude Include="CBlurFilter.h" />
     <ClInclude Include="CAngrybotObject.h" />
     <ClInclude Include="CAnimationController.h" />
     <ClInclude Include="CCamera.h" />
@@ -185,6 +187,8 @@
     <ClInclude Include="WICTextureLoader12.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="CBlur.cpp" />
+    <ClCompile Include="CBlurFilter.cpp" />
     <ClCompile Include="CAngrybotObject.cpp" />
     <ClCompile Include="CAnimationController.cpp" />
     <ClCompile Include="CCamera.cpp" />
@@ -228,6 +232,9 @@
     <Image Include="small.ico" />
   </ItemGroup>
   <ItemGroup>
+    <FxCompile Include="Blur.hlsl">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </FxCompile>
     <FxCompile Include="Light.hlsl">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>

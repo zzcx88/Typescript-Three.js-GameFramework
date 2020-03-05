@@ -187,6 +187,7 @@ void CDeviceManager::CreateSwapChain()
 #endif
 }
 
+
 void CDeviceManager::CreateRenderTargetViews()
 {
 	D3D12_CPU_DESCRIPTOR_HANDLE d3dRtvCPUDescriptorHandle = m_pd3dRtvDescriptorHeap->GetCPUDescriptorHandleForHeapStart();
@@ -455,9 +456,13 @@ void CDeviceManager::FrameAdvance()
 
 	m_pd3dCommandList->OMSetRenderTargets(1, &d3dRtvCPUDescriptorHandle, TRUE, &d3dDsvCPUDescriptorHandle);
 
+	m_pd3dCommandList->SetGraphicsRootSignature(m_pRootSignature);
+
 	m_pSceneManager->Render(m_pd3dCommandList, m_pCamera);
 
 	if (m_pPlayer) m_pPlayer->Render(m_pd3dCommandList, m_pCamera);
+
+	//m_pBlurFilter->Render(m_pd3dCommandList, m_pRootSignature, m_ppd3dSwapChainBackBuffers[m_nSwapChainBufferIndex]);
 
 	d3dResourceBarrier.Transition.StateBefore = D3D12_RESOURCE_STATE_RENDER_TARGET;
 	d3dResourceBarrier.Transition.StateAfter = D3D12_RESOURCE_STATE_PRESENT;
@@ -507,4 +512,16 @@ void CDeviceManager::MoveToNextFrame()
 		hResult = m_pd3dFence->SetEventOnCompletion(nFenceValue, m_hFenceEvent);
 		::WaitForSingleObject(m_hFenceEvent, INFINITE);
 	}
+}
+
+ID3D12Resource* CDeviceManager::CurrentBackBuffer()const
+{
+	return m_ppd3dSwapChainBackBuffers[m_nSwapChainBufferIndex];
+}
+D3D12_CPU_DESCRIPTOR_HANDLE CDeviceManager::CurrentBackBufferView()const
+{
+	return CD3DX12_CPU_DESCRIPTOR_HANDLE(
+		m_pd3dRtvDescriptorHeap->GetCPUDescriptorHandleForHeapStart(),
+		m_nSwapChainBufferIndex,
+		m_nRtvDescriptorIncrementSize);
 }

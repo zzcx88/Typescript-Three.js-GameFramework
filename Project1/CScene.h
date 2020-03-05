@@ -23,6 +23,7 @@ public:
 
 	ID3D12RootSignature* CreateGraphicsRootSignature(ID3D12Device* pd3dDevice);
 	ID3D12RootSignature* GetGraphicsRootSignature() { return(m_pd3dGraphicsRootSignature); }
+	ID3D12RootSignature* GetComputeRootSignature() { return(m_pd3dComputeRootSignature); }
 
 	virtual bool ProcessInput(UCHAR* pKeysBuffer) PURE;
 	virtual void AnimateObjects(float fTimeElapsed) PURE;
@@ -33,8 +34,12 @@ public:
 	CPlayer* m_pPlayer = NULL;
 	ObjectManager* m_ObjManager = nullptr;
 
+	int mClientWidth = 800;
+	int mClientHeight = 600;
+
 protected:
 	ID3D12RootSignature* m_pd3dGraphicsRootSignature = NULL;
+	ID3D12RootSignature* m_pd3dComputeRootSignature = NULL;
 
 	static ID3D12DescriptorHeap* m_pd3dCbvSrvDescriptorHeap;
 

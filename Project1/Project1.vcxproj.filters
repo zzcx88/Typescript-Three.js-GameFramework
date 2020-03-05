@@ -100,6 +100,9 @@
     <Filter Include="GameObject\Mesh\PlaneMesh">
       <UniqueIdentifier>{a99660be-b8f8-437f-a6ae-860371e796e8}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Blur">
+      <UniqueIdentifier>{a7d09683-3ed7-4681-97ca-be144565349f}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="targetver.h">
@@ -210,6 +213,12 @@
     <ClInclude Include="CPlane.h">
       <Filter>GameObject\Plane</Filter>
     </ClInclude>
+    <ClInclude Include="CBlurFilter.h">
+      <Filter>Blur</Filter>
+    </ClInclude>
+    <ClInclude Include="CBlur.h">
+      <Filter>Blur</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="DDSTextureLoader12.cpp">
@@ -299,6 +308,12 @@
     <ClCompile Include="CPlane.cpp">
       <Filter>GameObject\Plane</Filter>
     </ClCompile>
+    <ClCompile Include="CBlurFilter.cpp">
+      <Filter>Blur</Filter>
+    </ClCompile>
+    <ClCompile Include="CBlur.cpp">
+      <Filter>Blur</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Project1.rc">
@@ -324,6 +339,9 @@
       <Filter>HLSL</Filter>
     </FxCompile>
     <FxCompile Include="Plane.hlsl">
+      <Filter>HLSL</Filter>
+    </FxCompile>
+    <FxCompile Include="Blur.hlsl">
       <Filter>HLSL</Filter>
     </FxCompile>
   </ItemGroup>

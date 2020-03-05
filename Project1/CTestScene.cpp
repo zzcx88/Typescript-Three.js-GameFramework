@@ -7,6 +7,7 @@
 #include "CGunshipObject.h"
 #include "CShaderManager.h"
 
+
 ID3D12DescriptorHeap* CTestScene::m_pd3dCbvSrvDescriptorHeap = NULL;
 
 D3D12_CPU_DESCRIPTOR_HANDLE	CTestScene::m_d3dCbvCPUDescriptorStartHandle;
@@ -94,6 +95,8 @@ void CTestScene::BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandLis
 	BuildDefaultLightsAndMaterials();
 
 	m_pSkyBox = new CSkyBox(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature);
+	//m_pBlur = new CBlurFilter(pd3dDevice, mClientWidth, mClientHeight, DXGI_FORMAT_R8G8B8A8_UNORM);
+	m_pBlur = new CBlur(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature);
 
 	m_nGameObjects = 7;
 	m_ppGameObjects = new CGameObject* [m_nGameObjects];
@@ -132,6 +135,8 @@ void CTestScene::BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandLis
 	m_ppHierarchicalGameObjects[3]->SetChild(p052C->m_pModelRootObject);
 	m_ppHierarchicalGameObjects[3]->SetScale(50,50,50);
 	m_ppHierarchicalGameObjects[3]->SetPosition(410, 200, -5000);
+
+
 	CreateShaderVariables(pd3dDevice, pd3dCommandList);
 }
 
@@ -153,7 +158,6 @@ void CTestScene::ReleaseObjects()
 
 	if (m_pTerrain) delete m_pTerrain;
 	if (m_pSkyBox) delete m_pSkyBox;
-	//if (m_pPlane) delete m_pPlane;
 
 	if (m_ppGameObjects)
 	{
@@ -199,7 +203,6 @@ void CTestScene::ReleaseShaderVariables()
 
 void CTestScene::ReleaseUploadBuffers()
 {
-	//if (m_pPlane) m_pPlane->ReleaseUploadBuffers();
 	if (m_pSkyBox) m_pSkyBox->ReleaseUploadBuffers();
 	if (m_pTerrain) m_pTerrain->ReleaseUploadBuffers();
 
@@ -252,7 +255,11 @@ void CTestScene::AnimateObjects(float fTimeElapsed)
 
 void CTestScene::Render(ID3D12GraphicsCommandList* pd3dCommandList, CCamera* pCamera)
 {
+	
+	
 	if (m_pd3dGraphicsRootSignature) pd3dCommandList->SetGraphicsRootSignature(m_pd3dGraphicsRootSignature);
+	if (m_pd3dComputeRootSignature) pd3dCommandList->SetComputeRootSignature(m_pd3dComputeRootSignature);
+
 	if (m_pd3dCbvSrvDescriptorHeap) pd3dCommandList->SetDescriptorHeaps(1, &m_pd3dCbvSrvDescriptorHeap);
 
 	pCamera->SetViewportsAndScissorRects(pd3dCommandList);
@@ -263,10 +270,12 @@ void CTestScene::Render(ID3D12GraphicsCommandList* pd3dCommandList, CCamera* pCa
 	D3D12_GPU_VIRTUAL_ADDRESS d3dcbLightsGpuVirtualAddress = m_pd3dcbLights->GetGPUVirtualAddress();
 	pd3dCommandList->SetGraphicsRootConstantBufferView(2, d3dcbLightsGpuVirtualAddress); //Lights
 
+	CDeviceManager cdm;
+	CDeviceManager* pCDM = &cdm;
+
 	if (m_pSkyBox) m_pSkyBox->Render(pd3dCommandList, pCamera);
 	if (m_pTerrain) m_pTerrain->Render(pd3dCommandList, pCamera);
-
-	//if (m_ppPlanes) m_ppPlanes->Render(pd3dCommandList, pCamera);
+	m_pBlur->Render(pd3dCommandList, m_pd3dGraphicsRootSignature, pCDM->CurrentBackBuffer());
 	
 	for (int i = 0; i < m_nShaders; i++) if (m_ppShaders[i]) m_ppShaders[i]->Render(pd3dCommandList, pCamera);
 	for (int i = 0; i < m_nGameObjects; i++) if (m_ppGameObjects[i]) m_ppGameObjects[i]->Render(pd3dCommandList, pCamera);
@@ -281,4 +290,6 @@ void CTestScene::Render(ID3D12GraphicsCommandList* pd3dCommandList, CCamera* pCa
 			m_ppHierarchicalGameObjects[i]->Render(pd3dCommandList, pCamera);
 		}
 	}
+
+	
 }

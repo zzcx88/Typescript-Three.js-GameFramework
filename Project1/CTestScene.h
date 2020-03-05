@@ -4,6 +4,7 @@
 #include "CSkyBox.h"
 #include "CPlane.h"
 #include "CHeightMapTerrain.h"
+#include "CBlurFilter.h"
 
 #define MAX_LIGHTS							16 
 
@@ -68,7 +69,7 @@ public:
 	CShader** m_ppShaders = NULL;
 
 	CSkyBox* m_pSkyBox = NULL;
-
+	CBlur* m_pBlur = NULL;
 	
 	CHeightMapTerrain* m_pTerrain = NULL;
 
