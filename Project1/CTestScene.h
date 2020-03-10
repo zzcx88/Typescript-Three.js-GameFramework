@@ -55,7 +55,7 @@ public:
 
 	bool ProcessInput(UCHAR* pKeysBuffer);
 	void AnimateObjects(float fTimeElapsed);
-	void Render(ID3D12GraphicsCommandList* pd3dCommandList, CCamera* pCamera = NULL);
+	void Render(ID3D12GraphicsCommandList* pd3dCommandList, CCamera* pCamera = NULL, ID3D12Resource* pCurrentBackBuffer = NULL);
 
 	void ReleaseUploadBuffers();
 
@@ -70,7 +70,7 @@ public:
 
 	CSkyBox* m_pSkyBox = NULL;
 	CBlur* m_pBlur = NULL;
-	
+
 	CHeightMapTerrain* m_pTerrain = NULL;
 
 	LIGHT* m_pLights = NULL;

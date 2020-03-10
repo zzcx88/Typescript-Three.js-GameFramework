@@ -3,6 +3,7 @@
 #include "CBlur.h"
 #include "CBlurFilter.h"
 
+
 CBlurFilter::CBlurFilter(ID3D12Device* device, UINT width, UINT height, DXGI_FORMAT format)
 {
 	md3dDevice = device;
@@ -14,6 +15,9 @@ CBlurFilter::CBlurFilter(ID3D12Device* device, UINT width, UINT height, DXGI_FOR
 	BuildResources();
 }
 CBlurFilter::CBlurFilter()
+{
+}
+CBlurFilter::~CBlurFilter()
 {
 
 }
@@ -55,7 +59,7 @@ void CBlurFilter::OnResize(UINT newWidth, UINT newHeight)
 }
 
 void CBlurFilter::Execute(ID3D12GraphicsCommandList* pd3dCommandList,
-	ID3D12RootSignature* pd3dRootSignature,
+	ID3D12RootSignature* pd3dRootSignature, CCamera* pCamera,
 	ID3D12Resource* input,
 	int blurCount)
 {
@@ -121,8 +125,7 @@ void CBlurFilter::Execute(ID3D12GraphicsCommandList* pd3dCommandList,
 		//
 		// 수평 블러
 		//
-		CBlurHShader* pBlurHShader = new CBlurHShader();
-		pBlurHShader->Render(pd3dCommandList);
+		//pBlurHShader->SetHorzPipelineState(pd3dCommandList);
 		//pd3dCommandList->SetPipelineState(horzBlurPSO);
 
 		pd3dCommandList->SetComputeRootDescriptorTable(1, mBlur0GpuSrv);
@@ -143,8 +146,7 @@ void CBlurFilter::Execute(ID3D12GraphicsCommandList* pd3dCommandList,
 		//
 		// 수직 블러
 		//
-		CBlurVShader* pBlurVShader = new CBlurVShader();
-		pBlurVShader->Render(pd3dCommandList);
+		//pBlurHShader->SetHorzPipelineState(pd3dCommandList);
 		//pd3dCommandList->SetPipelineState(vertBlurPSO);
 
 		pd3dCommandList->SetComputeRootDescriptorTable(1, mBlur1GpuSrv);
@@ -197,6 +199,7 @@ std::vector<float> CBlurFilter::CalcGaussWeights(float sigma)
 
 void CBlurFilter::BuildDescriptors()
 {
+	//씬에 있음
 	D3D12_SHADER_RESOURCE_VIEW_DESC srvDesc = {};
 	srvDesc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
 	srvDesc.Format = mFormat;
@@ -209,12 +212,13 @@ void CBlurFilter::BuildDescriptors()
 	uavDesc.Format = mFormat;
 	uavDesc.ViewDimension = D3D12_UAV_DIMENSION_TEXTURE2D;
 	uavDesc.Texture2D.MipSlice = 0;
+	// 씬에 있음
 
-	md3dDevice->CreateShaderResourceView(mBlurMap0.Get(), &srvDesc, mBlur0CpuSrv);
+	/*md3dDevice->CreateShaderResourceView(mBlurMap0.Get(), &srvDesc, mBlur0CpuSrv);
 	md3dDevice->CreateUnorderedAccessView(mBlurMap0.Get(), nullptr, &uavDesc, mBlur0CpuUav);
 
 	md3dDevice->CreateShaderResourceView(mBlurMap1.Get(), &srvDesc, mBlur1CpuSrv);
-	md3dDevice->CreateUnorderedAccessView(mBlurMap1.Get(), nullptr, &uavDesc, mBlur1CpuUav);
+	md3dDevice->CreateUnorderedAccessView(mBlurMap1.Get(), nullptr, &uavDesc, mBlur1CpuUav);*/
 }
 
 void CBlurFilter::BuildResources()
@@ -248,4 +252,15 @@ void CBlurFilter::BuildResources()
 		D3D12_RESOURCE_STATE_COMMON,
 		nullptr,
 		IID_PPV_ARGS(&mBlurMap1)));*/
+}
+
+void CBlurFilter::CreateShaderVariables(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList)
+{
+}
+void CBlurFilter::UpdateShaderVariables( ID3D12GraphicsCommandList* pd3dCommandList)
+{
+}
+void CBlurFilter::ReleaseShaderVariables()
+{
+
 }

@@ -458,11 +458,9 @@ void CDeviceManager::FrameAdvance()
 
 	m_pd3dCommandList->SetGraphicsRootSignature(m_pRootSignature);
 
-	m_pSceneManager->Render(m_pd3dCommandList, m_pCamera);
+	m_pSceneManager->Render(m_pd3dCommandList, m_pCamera, CurrentBackBuffer());
 
 	if (m_pPlayer) m_pPlayer->Render(m_pd3dCommandList, m_pCamera);
-
-	//m_pBlurFilter->Render(m_pd3dCommandList, m_pRootSignature, m_ppd3dSwapChainBackBuffers[m_nSwapChainBufferIndex]);
 
 	d3dResourceBarrier.Transition.StateBefore = D3D12_RESOURCE_STATE_RENDER_TARGET;
 	d3dResourceBarrier.Transition.StateAfter = D3D12_RESOURCE_STATE_PRESENT;

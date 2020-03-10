@@ -13,6 +13,9 @@ CShader::~CShader()
 	ReleaseShaderVariables();
 
 	if (m_pd3dPipelineState) m_pd3dPipelineState->Release();
+	if (m_pd3dHorzBlurPipelineState) m_pd3dHorzBlurPipelineState->Release();
+	if (m_pd3dVertBlurPipelineState) m_pd3dVertBlurPipelineState->Release();
+
 }
 
 D3D12_SHADER_BYTECODE CShader::CreateVertexShader()
@@ -222,9 +225,45 @@ void CShader::CreateShader(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* 
 
 }
 
+void CShader::CreateHShader(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList, ID3D12RootSignature* pd3dGraphicsRootSignature)
+{
+	::ZeroMemory(&m_d3dComputeBlurHPipelineStateDesc, sizeof(D3D12_COMPUTE_PIPELINE_STATE_DESC));
+
+	m_d3dComputeBlurHPipelineStateDesc.pRootSignature = pd3dGraphicsRootSignature;
+
+	m_d3dComputeBlurHPipelineStateDesc.CS = CreateComputeShaderH();
+	
+	m_d3dComputeBlurHPipelineStateDesc.Flags = D3D12_PIPELINE_STATE_FLAG_NONE;
+
+	HRESULT hResult = pd3dDevice->CreateComputePipelineState(&m_d3dComputeBlurHPipelineStateDesc, __uuidof(ID3D12PipelineState), (void**) &m_pd3dHorzBlurPipelineState);
+
+	if (m_pd3dComputeShaderHBlob) m_pd3dComputeShaderHBlob->Release();
+	
+}
+
+void CShader::CreateVShader(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList, ID3D12RootSignature* pd3dGraphicsRootSignature)
+{
+	::ZeroMemory(&m_d3dComputeBlurVPipelineStateDesc, sizeof(D3D12_COMPUTE_PIPELINE_STATE_DESC));
+
+	m_d3dComputeBlurVPipelineStateDesc.pRootSignature = pd3dGraphicsRootSignature;
+
+	m_d3dComputeBlurVPipelineStateDesc.CS = CreateComputeShaderV();
+
+
+	m_d3dComputeBlurVPipelineStateDesc.Flags = D3D12_PIPELINE_STATE_FLAG_NONE;
+
+	HRESULT hResult = pd3dDevice->CreateComputePipelineState(&m_d3dComputeBlurVPipelineStateDesc, __uuidof(ID3D12PipelineState), (void**)&m_pd3dVertBlurPipelineState);
+
+	if (m_pd3dComputeShaderVBlob) m_pd3dComputeShaderVBlob->Release();
+
+}
+
+
 void CShader::OnPrepareRender(ID3D12GraphicsCommandList* pd3dCommandList, int nPipelineState)
 {
 	if (m_pd3dPipelineState) pd3dCommandList->SetPipelineState(m_pd3dPipelineState);
+	if (m_pd3dVertBlurPipelineState) pd3dCommandList->SetPipelineState(m_pd3dVertBlurPipelineState);
+	if (m_pd3dHorzBlurPipelineState) pd3dCommandList->SetPipelineState(m_pd3dHorzBlurPipelineState);
 
 }
 
@@ -232,7 +271,14 @@ void CShader::Render(ID3D12GraphicsCommandList* pd3dCommandList, CCamera* pCamer
 {
 	OnPrepareRender(pd3dCommandList);
 }
-
+//void CShader::SetHorzPipelineState(ID3D12GraphicsCommandList* pd3dCommandList)
+//{
+//	if (m_pd3dHorzBlurPipelineState) pd3dCommandList->SetPipelineState(m_pd3dHorzBlurPipelineState);
+//}
+//void CShader::SetVertPipelineState(ID3D12GraphicsCommandList* pd3dCommandList)
+//{
+//	if (m_pd3dVertBlurPipelineState) pd3dCommandList->SetPipelineState(m_pd3dVertBlurPipelineState);
+//}
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //
 CTerrainShader::CTerrainShader()
@@ -659,34 +705,33 @@ CBlurHShader::CBlurHShader()
 CBlurHShader::~CBlurHShader()
 {
 }
-
-void CBlurHShader::CreateHShader(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList, ID3D12RootSignature* pd3dGraphicsRootSignature)
-{
-	::ZeroMemory(&m_d3dComputeBlurHPipelineStateDesc, sizeof(D3D12_COMPUTE_PIPELINE_STATE_DESC));
-
-	m_d3dComputeBlurHPipelineStateDesc.pRootSignature = pd3dGraphicsRootSignature;
-
-	m_d3dComputeBlurHPipelineStateDesc.CS = CreateComputeShaderH();
-
-
-	m_d3dComputeBlurHPipelineStateDesc.Flags = D3D12_PIPELINE_STATE_FLAG_NONE;
-
-	HRESULT hResult = pd3dDevice->CreateComputePipelineState(&m_d3dComputeBlurHPipelineStateDesc, __uuidof(ID3D12PipelineState), (void**)&m_pd3dPipelineState);
-
-	if (m_pd3dComputeShaderHBlob) m_pd3dComputeShaderHBlob->Release();
-
-}
-
-void CBlurHShader::OnPrepareRender(ID3D12GraphicsCommandList* pd3dCommandList, int nPipelineState)
-{
-	if (m_pd3dPipelineState) pd3dCommandList->SetPipelineState(m_pd3dPipelineState);
-
-}
-
-void CBlurHShader::Render(ID3D12GraphicsCommandList* pd3dCommandList)
-{
-	OnPrepareRender(pd3dCommandList);
-}
+//
+//void CShader::CreateHShader(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList, ID3D12RootSignature* pd3dGraphicsRootSignature)
+//{
+//	::ZeroMemory(&m_d3dComputeBlurHPipelineStateDesc, sizeof(D3D12_COMPUTE_PIPELINE_STATE_DESC));
+//
+//	m_d3dComputeBlurHPipelineStateDesc.pRootSignature = pd3dGraphicsRootSignature;
+//
+//	m_d3dComputeBlurHPipelineStateDesc.CS = CreateComputeShaderH();
+//
+//	m_d3dComputeBlurHPipelineStateDesc.Flags = D3D12_PIPELINE_STATE_FLAG_NONE;
+//
+//	HRESULT hResult = pd3dDevice->CreateComputePipelineState(&m_d3dComputeBlurHPipelineStateDesc, __uuidof(ID3D12PipelineState), (void**) &m_pd3dHorzBlurPipelineState);
+//
+//	if (m_pd3dComputeShaderHBlob) m_pd3dComputeShaderHBlob->Release();
+//	
+//}
+//
+//void CBlurHShader::OnPrepareRender(ID3D12GraphicsCommandList* pd3dCommandList, int nPipelineState)
+//{
+//	if (m_pd3dHorzBlurPipelineState) pd3dCommandList->SetPipelineState(m_pd3dHorzBlurPipelineState);
+//
+//}
+//
+//void CBlurHShader::Render(ID3D12GraphicsCommandList* pd3dCommandList)
+//{
+//	OnPrepareRender(pd3dCommandList);
+//}
 
 D3D12_SHADER_BYTECODE CBlurHShader::CreateComputeShaderH()
 {
@@ -704,33 +749,33 @@ CBlurVShader::CBlurVShader()
 CBlurVShader::~CBlurVShader()
 {
 }
-
-void CBlurVShader::CreateVShader(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList, ID3D12RootSignature* pd3dGraphicsRootSignature)
-{
-	::ZeroMemory(&m_d3dComputeBlurVPipelineStateDesc, sizeof(D3D12_COMPUTE_PIPELINE_STATE_DESC));
-
-	m_d3dComputeBlurVPipelineStateDesc.pRootSignature = pd3dGraphicsRootSignature;
-
-	m_d3dComputeBlurVPipelineStateDesc.CS = CreateComputeShaderV();
-
-
-	m_d3dComputeBlurVPipelineStateDesc.Flags = D3D12_PIPELINE_STATE_FLAG_NONE;
-
-	HRESULT hResult = pd3dDevice->CreateComputePipelineState(&m_d3dComputeBlurVPipelineStateDesc, __uuidof(ID3D12PipelineState), (void**)&m_pd3dPipelineState);
-
-	if (m_pd3dComputeShaderVBlob) m_pd3dComputeShaderVBlob->Release();
-
-}
-void CBlurVShader::OnPrepareRender(ID3D12GraphicsCommandList* pd3dCommandList, int nPipelineState)
-{
-	if (m_pd3dPipelineState) pd3dCommandList->SetPipelineState(m_pd3dPipelineState);
-
-}
-
-void CBlurVShader::Render(ID3D12GraphicsCommandList* pd3dCommandList)
-{
-	OnPrepareRender(pd3dCommandList);
-}
+//
+//void CShader::CreateVShader(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList, ID3D12RootSignature* pd3dGraphicsRootSignature)
+//{
+//	::ZeroMemory(&m_d3dComputeBlurVPipelineStateDesc, sizeof(D3D12_COMPUTE_PIPELINE_STATE_DESC));
+//
+//	m_d3dComputeBlurVPipelineStateDesc.pRootSignature = pd3dGraphicsRootSignature;
+//
+//	m_d3dComputeBlurVPipelineStateDesc.CS = CreateComputeShaderV();
+//
+//
+//	m_d3dComputeBlurVPipelineStateDesc.Flags = D3D12_PIPELINE_STATE_FLAG_NONE;
+//
+//	HRESULT hResult = pd3dDevice->CreateComputePipelineState(&m_d3dComputeBlurVPipelineStateDesc, __uuidof(ID3D12PipelineState), (void**)&m_pd3dVertBlurPipelineState);
+//
+//	if (m_pd3dComputeShaderVBlob) m_pd3dComputeShaderVBlob->Release();
+//
+//}
+//void CBlurVShader::OnPrepareRender(ID3D12GraphicsCommandList* pd3dCommandList, int nPipelineState)
+//{
+//	if (m_pd3dVertBlurPipelineState) pd3dCommandList->SetPipelineState(m_pd3dVertBlurPipelineState);
+//
+//}
+//
+//void CBlurVShader::Render(ID3D12GraphicsCommandList* pd3dCommandList)
+//{
+//	OnPrepareRender(pd3dCommandList);
+//}
 
 D3D12_SHADER_BYTECODE CBlurVShader::CreateComputeShaderV()
 {

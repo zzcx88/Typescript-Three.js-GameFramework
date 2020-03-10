@@ -19,7 +19,7 @@ public:
 	void SetPlayer(CPlayer* pPlayer) { m_Scene->m_pPlayer = pPlayer; }
 public:
 	int Update(const float& TimeDelta);
-	void Render(ID3D12GraphicsCommandList* pd3dCommandList, CCamera* pCamera);
+	void Render(ID3D12GraphicsCommandList* pd3dCommandList, CCamera* pCamera, ID3D12Resource* pCurrentBackBuffer);
 	void Release();
 
 private:

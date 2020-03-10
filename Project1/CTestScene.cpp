@@ -8,6 +8,7 @@
 #include "CShaderManager.h"
 
 
+
 ID3D12DescriptorHeap* CTestScene::m_pd3dCbvSrvDescriptorHeap = NULL;
 
 D3D12_CPU_DESCRIPTOR_HANDLE	CTestScene::m_d3dCbvCPUDescriptorStartHandle;
@@ -87,16 +88,24 @@ void CTestScene::BuildDefaultLightsAndMaterials()
 void CTestScene::BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList)
 {
 	m_pd3dGraphicsRootSignature = CreateGraphicsRootSignature(pd3dDevice);
+	m_pd3dComputeRootSignature = CreateGraphicsRootSignature(pd3dDevice);
 
 	CreateCbvSrvDescriptorHeaps(pd3dDevice, pd3dCommandList, 0, 76); //SuperCobra(17), Gunship(2), Player:Mi24(1), Angrybot()
+	m_pBlur = new CBlur(pd3dDevice, pd3dCommandList, m_pd3dComputeRootSignature);
 
+	
 	CMaterial::PrepareShaders(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature);
 
 	BuildDefaultLightsAndMaterials();
 
 	m_pSkyBox = new CSkyBox(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature);
 	//m_pBlur = new CBlurFilter(pd3dDevice, mClientWidth, mClientHeight, DXGI_FORMAT_R8G8B8A8_UNORM);
-	m_pBlur = new CBlur(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature);
+
+	m_pBlur->BuildDescriptors(
+		CD3DX12_CPU_DESCRIPTOR_HANDLE(m_pd3dCbvSrvDescriptorHeap->GetCPUDescriptorHandleForHeapStart(), 0, 76),
+		CD3DX12_GPU_DESCRIPTOR_HANDLE(m_pd3dCbvSrvDescriptorHeap->GetGPUDescriptorHandleForHeapStart(), 0, 76),
+		76);
+
 
 	m_nGameObjects = 7;
 	m_ppGameObjects = new CGameObject* [m_nGameObjects];
@@ -143,6 +152,7 @@ void CTestScene::BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandLis
 void CTestScene::ReleaseObjects()
 {
 	if (m_pd3dGraphicsRootSignature) m_pd3dGraphicsRootSignature->Release();
+	if (m_pd3dComputeRootSignature) m_pd3dComputeRootSignature->Release();
 	if (m_pd3dCbvSrvDescriptorHeap) m_pd3dCbvSrvDescriptorHeap->Release();
 
 	if (m_ppShaders)
@@ -155,6 +165,8 @@ void CTestScene::ReleaseObjects()
 		}
 		delete[] m_ppShaders;
 	}
+
+	if (m_pBlur) delete m_pBlur;
 
 	if (m_pTerrain) delete m_pTerrain;
 	if (m_pSkyBox) delete m_pSkyBox;
@@ -172,7 +184,7 @@ void CTestScene::ReleaseObjects()
 	}
 
 	ReleaseShaderVariables();
-
+	
 	if (m_pLights) delete[] m_pLights;
 }
 
@@ -182,7 +194,6 @@ void CTestScene::CreateShaderVariables(ID3D12Device* pd3dDevice, ID3D12GraphicsC
 	m_pd3dcbLights = ::CreateBufferResource(pd3dDevice, pd3dCommandList, NULL, ncbElementBytes, D3D12_HEAP_TYPE_UPLOAD, D3D12_RESOURCE_STATE_VERTEX_AND_CONSTANT_BUFFER, NULL);
 
 	m_pd3dcbLights->Map(0, NULL, (void**)&m_pcbMappedLights);
-
 }
 
 void CTestScene::UpdateShaderVariables(ID3D12GraphicsCommandList* pd3dCommandList)
@@ -253,14 +264,14 @@ void CTestScene::AnimateObjects(float fTimeElapsed)
 	}*/
 }
 
-void CTestScene::Render(ID3D12GraphicsCommandList* pd3dCommandList, CCamera* pCamera)
+void CTestScene::Render(ID3D12GraphicsCommandList* pd3dCommandList, CCamera* pCamera, ID3D12Resource* pCurrentBackBuffer)
 {
-	
-	
+
 	if (m_pd3dGraphicsRootSignature) pd3dCommandList->SetGraphicsRootSignature(m_pd3dGraphicsRootSignature);
 	if (m_pd3dComputeRootSignature) pd3dCommandList->SetComputeRootSignature(m_pd3dComputeRootSignature);
 
 	if (m_pd3dCbvSrvDescriptorHeap) pd3dCommandList->SetDescriptorHeaps(1, &m_pd3dCbvSrvDescriptorHeap);
+
 
 	pCamera->SetViewportsAndScissorRects(pd3dCommandList);
 	pCamera->UpdateShaderVariables(pd3dCommandList);
@@ -270,12 +281,9 @@ void CTestScene::Render(ID3D12GraphicsCommandList* pd3dCommandList, CCamera* pCa
 	D3D12_GPU_VIRTUAL_ADDRESS d3dcbLightsGpuVirtualAddress = m_pd3dcbLights->GetGPUVirtualAddress();
 	pd3dCommandList->SetGraphicsRootConstantBufferView(2, d3dcbLightsGpuVirtualAddress); //Lights
 
-	CDeviceManager cdm;
-	CDeviceManager* pCDM = &cdm;
-
 	if (m_pSkyBox) m_pSkyBox->Render(pd3dCommandList, pCamera);
 	if (m_pTerrain) m_pTerrain->Render(pd3dCommandList, pCamera);
-	m_pBlur->Render(pd3dCommandList, m_pd3dGraphicsRootSignature, pCDM->CurrentBackBuffer());
+	if (m_pBlur) m_pBlur->Render(pd3dCommandList, m_pd3dComputeRootSignature, pCamera , pCurrentBackBuffer);
 	
 	for (int i = 0; i < m_nShaders; i++) if (m_ppShaders[i]) m_ppShaders[i]->Render(pd3dCommandList, pCamera);
 	for (int i = 0; i < m_nGameObjects; i++) if (m_ppGameObjects[i]) m_ppGameObjects[i]->Render(pd3dCommandList, pCamera);

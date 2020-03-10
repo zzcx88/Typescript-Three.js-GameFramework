@@ -27,7 +27,7 @@ public:
 
 	virtual bool ProcessInput(UCHAR* pKeysBuffer) PURE;
 	virtual void AnimateObjects(float fTimeElapsed) PURE;
-	virtual void Render(ID3D12GraphicsCommandList* pd3dCommandList, CCamera* pCamera = NULL) PURE;
+	virtual void Render(ID3D12GraphicsCommandList* pd3dCommandList, CCamera* pCamera = NULL, ID3D12Resource* pCurrentBackBuffer = NULL) PURE;
 
 	virtual void ReleaseUploadBuffers() PURE;
 
