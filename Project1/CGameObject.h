@@ -103,12 +103,14 @@ public:
 	static CShader* m_pStandardShader;
 	static CShader* m_pAceSahder;
 	static CShader* m_pSkinnedAnimationShader;
+	static CShader* m_pColliderShader;
 
 	static void CMaterial::PrepareShaders(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList, ID3D12RootSignature* pd3dGraphicsRootSignature);
 
 	void SetStandardShader() { CMaterial::SetShader(m_pStandardShader); }
 	void SetAceModelShader() { CMaterial::SetShader(m_pAceSahder); }
 	void SetSkinnedAnimationShader() { CMaterial::SetShader(m_pSkinnedAnimationShader); }
+	void SetColliderShader() { CMaterial::SetShader(m_pColliderShader); }
 };
 
 
@@ -118,6 +120,7 @@ struct CB_GAMEOBJECT_INFO
 	UINT							m_nMaterial;
 };
 
+class CSphereCollider;
 class CGameObject
 {
 private:
@@ -152,6 +155,8 @@ public:
 	CGameObject* m_pParent = NULL;
 	CGameObject* m_pChild = NULL;
 	CGameObject* m_pSibling = NULL;
+
+	CSphereCollider* SphereCollider = NULL;
 
 	OBJTYPE				m_ObjType = OBJ_END;
 

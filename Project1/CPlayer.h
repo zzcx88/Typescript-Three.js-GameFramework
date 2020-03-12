@@ -1,6 +1,7 @@
 #pragma once
 #include "CGameObject.h"
 #include "CCamera.h"
+#include "CSphereCollider.h"
 
 class CPlayer : public CGameObject
 {
@@ -54,6 +55,8 @@ public:
 	float GetPitch() const { return(m_fPitch); }
 	float GetRoll() const { return(m_fRoll); }
 
+	//CSphereCollider* SphereCollider;
+
 	CCamera* GetCamera() { return(m_pCamera); }
 	void SetCamera(CCamera* pCamera) { m_pCamera = pCamera; }
 
@@ -68,6 +71,7 @@ public:
 	virtual void DownPitchAnimation(float fTimeElapsed) {}
 	virtual void RollWingReturn(float fTimeElapsed) {}
 	virtual void PitchWingReturn(float fTimeElapsed) {}
+	virtual void MissleLaunch(float fTimeElapsed) {}
 
 	int Update_Input(const float& TimeDelta);
 	virtual int Update(float fTimeElapsed);
@@ -121,6 +125,7 @@ private:
 	virtual void DownPitchAnimation(float fTimeElapsed);
 	virtual void RollWingReturn(float fTimeElapsed);
 	virtual void PitchWingReturn(float fTimeElapsed);
+	virtual void MissleLaunch(float fTimeElapsed);
 
 public:
 	virtual CCamera* ChangeCamera(DWORD nNewCameraMode, float fTimeElapsed);

@@ -100,6 +100,9 @@
     <Filter Include="GameObject\Mesh\PlaneMesh">
       <UniqueIdentifier>{a99660be-b8f8-437f-a6ae-860371e796e8}</UniqueIdentifier>
     </Filter>
+    <Filter Include="GameObject\ColisionObject">
+      <UniqueIdentifier>{7f1fc46c-e5cb-4736-b5b7-cbf0e37434b2}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="targetver.h">
@@ -210,6 +213,9 @@
     <ClInclude Include="CPlane.h">
       <Filter>GameObject\Plane</Filter>
     </ClInclude>
+    <ClInclude Include="CSphereCollider.h">
+      <Filter>GameObject\ColisionObject</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="DDSTextureLoader12.cpp">
@@ -298,6 +304,9 @@
     </ClCompile>
     <ClCompile Include="CPlane.cpp">
       <Filter>GameObject\Plane</Filter>
+    </ClCompile>
+    <ClCompile Include="CSphereCollider.cpp">
+      <Filter>GameObject\ColisionObject</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

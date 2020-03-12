@@ -164,6 +164,7 @@
     <ClInclude Include="CSkinnedMesh.h" />
     <ClInclude Include="CSkyBox.h" />
     <ClInclude Include="CSkyBoxMesh.h" />
+    <ClInclude Include="CSphereCollider.h" />
     <ClInclude Include="CSuperCobraObject.h" />
     <ClInclude Include="CTestScene.h" />
     <ClInclude Include="d3dx12.h" />
@@ -201,6 +202,7 @@
     <ClCompile Include="CSkinnedMesh.cpp" />
     <ClCompile Include="CSkyBox.cpp" />
     <ClCompile Include="CSkyBoxMesh.cpp" />
+    <ClCompile Include="CSphereCollider.cpp" />
     <ClCompile Include="CSuperCobraObject.cpp" />
     <ClCompile Include="CTestScene.cpp" />
     <ClCompile Include="DDSTextureLoader12.cpp" />

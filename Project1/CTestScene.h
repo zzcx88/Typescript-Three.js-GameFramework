@@ -4,6 +4,7 @@
 #include "CSkyBox.h"
 #include "CPlane.h"
 #include "CHeightMapTerrain.h"
+#include "CSuperCobraObject.h"
 
 #define MAX_LIGHTS							16 
 

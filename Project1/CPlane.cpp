@@ -48,8 +48,6 @@ CPlane::CPlane(int nIndex, ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* 
 	pPlaneShader = new CPlaneShader();
 
 	pPlaneShader->CreateShader(pd3dDevice, pd3dCommandList, pd3dGraphicsRootSignature);
-	pPlaneShader->CreateShaderVariables(pd3dDevice, pd3dCommandList);
-
 	pPlaneShader->CreateConstantBufferViews(pd3dDevice, pd3dCommandList, m_nObjects, pPlaneShader->m_pd3dcbGameObjects, ncbElementBytes);
 
 	for (int i = 0; i < TEXTURES; i++) CTestScene::CreateShaderResourceViews(pd3dDevice, ppPlaneTexture[i], 15, false);

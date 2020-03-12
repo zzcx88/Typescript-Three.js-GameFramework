@@ -148,11 +148,19 @@ public:
 	virtual D3D12_RASTERIZER_DESC CreateRasterizerState();
 };
 
+class CColliderShader : public CStandardShader
+{
+public:
+	CColliderShader() {}
+	virtual ~CColliderShader() {}
+
+	virtual D3D12_RASTERIZER_DESC CreateRasterizerState();
+};
+
 class CPlaneShader : public CShader
 {
 public:
 	ID3D12Resource* m_pd3dcbGameObjects = NULL;
-	CB_GAMEOBJECT_INFO* m_pcbMappedGameObjects = NULL;
 
 public:
 	CPlaneShader();
@@ -167,6 +175,5 @@ public:
 
 	virtual D3D12_BLEND_DESC CreateBlendState();
 
-	virtual void CreateShaderVariables(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList);
 	void CreateConstantBufferViews(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList, int nConstantBufferViews, ID3D12Resource* pd3dConstantBuffers, UINT nStride);
 };

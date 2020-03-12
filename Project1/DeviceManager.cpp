@@ -273,8 +273,8 @@ void CDeviceManager::BuildScene()
 	m_pSceneManager->ChangeSceneState(SCENE_TEST, m_pd3dDevice, m_pd3dCommandList);
 
 	CAirplanePlayer* pPlayer = new CAirplanePlayer(m_pd3dDevice, m_pd3dCommandList, m_pSceneManager->GetGraphicsRootSignature(), NULL);
-	//pPlayer->SetPosition(XMFLOAT3(340.0f, 600.0f, 640.0f));
-	pPlayer->SetPosition(XMFLOAT3(-1000, 3000, -10000));
+	pPlayer->SetPosition(XMFLOAT3(410, 1000, -5000));
+	//pPlayer->SetPosition(XMFLOAT3(-1000, 3000, -10000));
 	//pPlayer->SetScale(XMFLOAT3(0.02, 0.02, 0.02));
 	m_pPlayer = pPlayer;
 	
@@ -459,6 +459,7 @@ void CDeviceManager::FrameAdvance()
 	m_pSceneManager->Render(m_pd3dCommandList, m_pCamera);
 
 	if (m_pPlayer) m_pPlayer->Render(m_pd3dCommandList, m_pCamera);
+	if(m_pPlayer->SphereCollider)m_pPlayer->SphereCollider->Render(m_pd3dCommandList, m_pCamera);
 
 	d3dResourceBarrier.Transition.StateBefore = D3D12_RESOURCE_STATE_RENDER_TARGET;
 	d3dResourceBarrier.Transition.StateAfter = D3D12_RESOURCE_STATE_PRESENT;

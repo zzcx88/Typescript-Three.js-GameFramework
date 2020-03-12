@@ -5,7 +5,9 @@
 #include "CPlane.h"
 #include "CAngrybotObject.h"
 #include "CGunshipObject.h"
+#include "CSuperCobraObject.h"
 #include "CShaderManager.h"
+#include "CSphereCollider.h"
 
 ID3D12DescriptorHeap* CTestScene::m_pd3dCbvSrvDescriptorHeap = NULL;
 
@@ -124,6 +126,7 @@ void CTestScene::BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandLis
 	CLoadedModelInfo* pAngrybotModel = CGameObject::LoadGeometryAndAnimationFromFile(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, "Model/Angrybot.bin", NULL, MODEL_ANI);
 	CLoadedModelInfo* pWaterModel = CGameObject::LoadGeometryAndAnimationFromFile(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, "Model/water.bin", NULL, MODEL_STD);
 	CLoadedModelInfo* p052C = CGameObject::LoadGeometryAndAnimationFromFile(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, "Model/052C.bin", NULL, MODEL_STD);
+	CLoadedModelInfo* pSphere = CGameObject::LoadGeometryAndAnimationFromFile(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, "Model/Sphere.bin", NULL, MODEL_STD);
 	m_ppHierarchicalGameObjects[0] = new CAngrybotObject(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, pAngrybotModel, 1);
 	m_ppHierarchicalGameObjects[0]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, 0);
 	m_ppHierarchicalGameObjects[0]->SetPosition(410.0f, m_pTerrain->GetHeight(410.0f, 735.0f), 735.0f);
@@ -138,11 +141,23 @@ void CTestScene::BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandLis
 	m_ppHierarchicalGameObjects[3]->SetChild(p052C->m_pModelRootObject);
 	m_ppHierarchicalGameObjects[3]->SetScale(50,50,50);
 	m_ppHierarchicalGameObjects[3]->SetPosition(410, 200, -5000);
+	m_ppHierarchicalGameObjects[4] = new CGunshipObject(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature);
+	m_ppHierarchicalGameObjects[4]->SetChild(pSphere->m_pModelRootObject);
+	m_ppHierarchicalGameObjects[4]->SetPosition(410, 800, -5000);
+	m_ppHierarchicalGameObjects[4]->SetScale(50, 50, 50);
 	m_ObjManager->AddObject(L"enemy", m_ppHierarchicalGameObjects[0], OBJ_ENEMY);
 	m_ObjManager->AddObject(L"enemy1", m_ppHierarchicalGameObjects[1], OBJ_ENEMY);
 	m_ObjManager->AddObject(L"water", m_ppHierarchicalGameObjects[2], OBJ_MAP);
 	m_ObjManager->AddObject(L"destroyer", m_ppHierarchicalGameObjects[3], OBJ_ENEMY);
+	m_ObjManager->AddObject(L"Sphere", m_ppHierarchicalGameObjects[4], OBJ_ENEMY);
 
+	CSuperCobraObject* m_pSphereCollider;
+	m_pSphereCollider = new CSuperCobraObject(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature);
+	//CLoadedModelInfo* pModel = CGameObject::LoadGeometryAndAnimationFromFile(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, "Model/Sphere.bin", NULL, MODEL_COL);
+	m_pSphereCollider->SetChild(p052C->m_pModelRootObject);
+	m_pSphereCollider->SetPosition(410, 1000, -2000);
+	m_pSphereCollider->SetScale(1,1,1);
+	m_ObjManager->AddObject(L"SphereCollider", m_pSphereCollider, OBJ_ENEMY);
 
 	CreateShaderVariables(pd3dDevice, pd3dCommandList);
 }
@@ -218,6 +233,14 @@ bool CTestScene::ProcessInput(UCHAR* pKeysBuffer)
 
 void CTestScene::AnimateObjects(float fTimeElapsed)
 {
+	if(m_ObjManager->GetObjFromTag(L"SphereCollider", OBJ_ENEMY)->SphereCollider->m_BoundingSphere.Center.z != 0)
+	if (m_ObjManager->GetObjFromTag(L"SphereCollider", OBJ_ENEMY)->SphereCollider->m_BoundingSphere.Intersects(m_pPlayer->SphereCollider->m_BoundingSphere))
+	{
+		//m_pPlayer->SetPosition(XMFLOAT3(0, 0 ,0));
+		cout <<"Player : "<< m_pPlayer->SphereCollider->m_BoundingSphere.Center.z << ", Sphere : " << m_ObjManager->GetObjFromTag(L"SphereCollider", OBJ_ENEMY)->SphereCollider->m_BoundingSphere.Center.z << endl;
+		//m_ObjManager->ReleaseObjFromTag(L"SphereCollider", OBJ_ENEMY);
+	}
+
 	m_fElapsedTime = fTimeElapsed;
 	m_ObjManager->Update(fTimeElapsed);
 }
@@ -234,6 +257,7 @@ void CTestScene::Render(ID3D12GraphicsCommandList* pd3dCommandList, CCamera* pCa
 
 	D3D12_GPU_VIRTUAL_ADDRESS d3dcbLightsGpuVirtualAddress = m_pd3dcbLights->GetGPUVirtualAddress();
 	pd3dCommandList->SetGraphicsRootConstantBufferView(2, d3dcbLightsGpuVirtualAddress); //Lights
-
+	
 	m_ObjManager->Render(pd3dCommandList, pCamera);
+	//m_pSphereCollider->SphereCollider->Render(pd3dCommandList, pCamera);
 }

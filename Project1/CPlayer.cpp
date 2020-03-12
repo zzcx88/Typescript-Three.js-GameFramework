@@ -139,6 +139,12 @@ int CPlayer::Update_Input(const float& TimeDelta)
 	KeyManager* keyManager = GET_MANAGER<KeyManager>();
 	DWORD dwDirection = 0;
 
+	if (true == keyManager->GetKeyState(STATE_DOWN, VK_SPACE))
+	{
+		dwDirection |= VK_SPACE;
+		MissleLaunch(TimeDelta);
+	}
+
 	if (true == keyManager->GetKeyState(STATE_PUSH, VK_LEFT))
 	{
 		dwDirection |= VK_LEFT;
@@ -193,8 +199,7 @@ int CPlayer::Update_Input(const float& TimeDelta)
 	//cout << Pitch_WingsRotateDegree << endl;
 	Move(DIR_FORWARD, 600.0f * TimeDelta, true);
 	MoveForward(8.0f);
-	Animate(TimeDelta);
-	//Animate(TimeDelta, dwDirection);
+	Animate(TimeDelta, dwDirection);
 	return 0;
 }
 
@@ -301,6 +306,9 @@ void CPlayer::Render(ID3D12GraphicsCommandList* pd3dCommandList, CCamera* pCamer
 CAirplanePlayer::CAirplanePlayer(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList, ID3D12RootSignature* pd3dGraphicsRootSignature, void* pContext)
 {
 	m_pCamera = ChangeCamera(SPACESHIP_CAMERA, 0.0f);
+	SphereCollider = new CSphereCollider(pd3dDevice, pd3dCommandList, pd3dGraphicsRootSignature);
+	SphereCollider->SetScale(10, 10, 10);
+	SphereCollider->SetSphereCollider(GetPosition() , 10.0f);
 
 	CLoadedModelInfo* pModel = CGameObject::LoadGeometryAndAnimationFromFile(pd3dDevice, pd3dCommandList, pd3dGraphicsRootSignature, "Model/F-4E_Phantom_II.bin", NULL, MODEL_ACE);
 	//CLoadedModelInfo* pModel = CGameObject::LoadGeometryAndAnimationFromFile(pd3dDevice, pd3dCommandList, pd3dGraphicsRootSignature, "Model/F-5E.bin", NULL, MODEL_STD);
@@ -336,13 +344,16 @@ void CAirplanePlayer::OnPrepareAnimate()
 
 void CAirplanePlayer::Animate(float fTimeElapsed, DWORD Direction)
 {
-	if (Direction == 0)
+	/*if (Direction == 0)
 	{
 		RollWingReturn(fTimeElapsed);
 		PitchWingReturn(fTimeElapsed);
-	}
+	}*/
 	//cout << Roll_WingsRotateDegree << endl;
 	CPlayer::Animate(fTimeElapsed);
+	if (SphereCollider)SphereCollider->SetPosition(m_xmf3Position);
+	if (SphereCollider)SphereCollider->m_xmf4x4ToParent = Matrix4x4::Multiply(XMMatrixScaling(5, 5, 5), m_xmf4x4ToParent);
+	if (SphereCollider)SphereCollider->Animate(fTimeElapsed, GetPosition());
 }
 
 void CAirplanePlayer::LeftRollAnimation(float fTimeElapsed)
@@ -500,6 +511,10 @@ void CAirplanePlayer::PitchWingReturn(float fTimeElapsed)
 		}
 	}
 }
+void CAirplanePlayer::MissleLaunch(float fTimeElapsed)
+{
+}
+
 void CAirplanePlayer::OnPrepareRender()
 {
 	CPlayer::OnPrepareRender();
