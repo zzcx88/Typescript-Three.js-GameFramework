@@ -111,6 +111,8 @@ public:
 	void SetAceModelShader() { CMaterial::SetShader(m_pAceSahder); }
 	void SetSkinnedAnimationShader() { CMaterial::SetShader(m_pSkinnedAnimationShader); }
 	void SetColliderShader() { CMaterial::SetShader(m_pColliderShader); }
+
+	CShader* GetShader() { return m_pAceSahder; }
 };
 
 
@@ -215,6 +217,8 @@ public:
 	CTexture* FindReplicatedTexture(_TCHAR* pstrTextureName);
 
 	UINT GetMeshType() { return((m_pMesh) ? m_pMesh->GetType() : 0x00); }
+
+	CShader* GetShader();
 
 public:
 	CAnimationController* m_pSkinnedAnimationController = NULL;

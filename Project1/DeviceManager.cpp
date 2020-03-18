@@ -166,7 +166,7 @@ void CDeviceManager::CreateSwapChain()
 	dxgiSwapChainDesc.BufferDesc.Width = m_nWndClientWidth;
 	dxgiSwapChainDesc.BufferDesc.Height = m_nWndClientHeight;
 	dxgiSwapChainDesc.BufferDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
-	dxgiSwapChainDesc.BufferDesc.RefreshRate.Numerator = 60;
+	dxgiSwapChainDesc.BufferDesc.RefreshRate.Numerator = 75;
 	dxgiSwapChainDesc.BufferDesc.RefreshRate.Denominator = 1;
 	dxgiSwapChainDesc.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
 	dxgiSwapChainDesc.SwapEffect = DXGI_SWAP_EFFECT_FLIP_DISCARD;
@@ -288,6 +288,7 @@ void CDeviceManager::BuildScene()
 	WaitForGpuComplete();
 
 	m_pSceneManager->SetPlayer(m_pPlayer);
+	m_pSceneManager->SetObjManagerInPlayer();
 
 	if (m_pPlayer) m_pPlayer->ReleaseUploadBuffers();
 	if (m_pSceneManager) m_pSceneManager->ReleaseUploadBuffers();

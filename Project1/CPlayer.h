@@ -1,5 +1,6 @@
 #pragma once
 #include "CGameObject.h"
+#include "CMissle.h"
 #include "CCamera.h"
 #include "CSphereCollider.h"
 
@@ -55,12 +56,12 @@ public:
 	float GetPitch() const { return(m_fPitch); }
 	float GetRoll() const { return(m_fRoll); }
 
-	//CSphereCollider* SphereCollider;
+	ObjectManager* m_ObjManager;
 
 	CCamera* GetCamera() { return(m_pCamera); }
 	void SetCamera(CCamera* pCamera) { m_pCamera = pCamera; }
 
-	void Move(ULONG nDirection, float fDistance, bool bVelocity = false);
+	void Move(DWORD nDirection, float fDistance, bool bVelocity = false);
 	void Move(const XMFLOAT3& xmf3Shift, bool bVelocity = false);
 	void Move(float fxOffset = 0.0f, float fyOffset = 0.0f, float fzOffset = 0.0f);
 	void Rotate(float x, float y, float z);
@@ -71,7 +72,7 @@ public:
 	virtual void DownPitchAnimation(float fTimeElapsed) {}
 	virtual void RollWingReturn(float fTimeElapsed) {}
 	virtual void PitchWingReturn(float fTimeElapsed) {}
-	virtual void MissleLaunch(float fTimeElapsed) {}
+	virtual void MissleLaunch() {}
 
 	int Update_Input(const float& TimeDelta);
 	virtual int Update(float fTimeElapsed);
@@ -116,6 +117,16 @@ public:
 	CGameObject* m_pSP_1 = NULL;
 	CGameObject* m_pSP_2 = NULL;
 
+	CMissle* m_pMissle = NULL;
+	CLoadedModelInfo* m_pMissleModel;
+
+	//WeaponsXMF
+	XMFLOAT4X4 m_xmMSL_1;
+
+	ID3D12Device*										m_pd3dDevice = NULL;
+	ID3D12GraphicsCommandList*				m_pd3dCommandList = NULL;
+	ID3D12RootSignature*							m_pd3dGraphicsRootSignature = NULL;
+
 private:
 	virtual void OnPrepareAnimate();
 	virtual void Animate(float fTimeElapsed, DWORD Direction);
@@ -125,7 +136,7 @@ private:
 	virtual void DownPitchAnimation(float fTimeElapsed);
 	virtual void RollWingReturn(float fTimeElapsed);
 	virtual void PitchWingReturn(float fTimeElapsed);
-	virtual void MissleLaunch(float fTimeElapsed);
+	virtual void MissleLaunch();
 
 public:
 	virtual CCamera* ChangeCamera(DWORD nNewCameraMode, float fTimeElapsed);

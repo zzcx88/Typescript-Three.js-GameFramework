@@ -7,8 +7,6 @@ public:
 	CSuperCobraObject(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList, ID3D12RootSignature* pd3dGraphicsRootSignature);
 	virtual ~CSuperCobraObject();
 
-	//CSphereCollider* SphereCollider;
-
 private:
 	CGameObject* m_pMainRotorFrame = NULL;
 	CGameObject* m_pTailRotorFrame = NULL;

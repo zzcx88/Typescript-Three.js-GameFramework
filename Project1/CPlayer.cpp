@@ -142,7 +142,7 @@ int CPlayer::Update_Input(const float& TimeDelta)
 	if (true == keyManager->GetKeyState(STATE_DOWN, VK_SPACE))
 	{
 		dwDirection |= VK_SPACE;
-		MissleLaunch(TimeDelta);
+		MissleLaunch();
 	}
 
 	if (true == keyManager->GetKeyState(STATE_PUSH, VK_LEFT))
@@ -310,9 +310,15 @@ CAirplanePlayer::CAirplanePlayer(ID3D12Device* pd3dDevice, ID3D12GraphicsCommand
 	SphereCollider->SetScale(10, 10, 10);
 	SphereCollider->SetSphereCollider(GetPosition() , 10.0f);
 
+	m_pMissleModel = CGameObject::LoadGeometryAndAnimationFromFile(pd3dDevice, pd3dCommandList, pd3dGraphicsRootSignature, "Model/Missle.bin", NULL, MODEL_ACE);
 	CLoadedModelInfo* pModel = CGameObject::LoadGeometryAndAnimationFromFile(pd3dDevice, pd3dCommandList, pd3dGraphicsRootSignature, "Model/F-4E_Phantom_II.bin", NULL, MODEL_ACE);
-	//CLoadedModelInfo* pModel = CGameObject::LoadGeometryAndAnimationFromFile(pd3dDevice, pd3dCommandList, pd3dGraphicsRootSignature, "Model/F-5E.bin", NULL, MODEL_STD);
 	SetChild(pModel->m_pModelRootObject);
+
+	m_pd3dDevice = pd3dDevice;
+	m_pd3dCommandList = pd3dCommandList;
+	m_pd3dGraphicsRootSignature = pd3dGraphicsRootSignature;
+
+	//MissleLaunch(pd3dDevice, pd3dCommandList, pd3dGraphicsRootSignature,m_xmf3Position);
 
 	OnPrepareAnimate();
 
@@ -340,16 +346,12 @@ void CAirplanePlayer::OnPrepareAnimate()
 	m_pMSL_4 = FindFrame("MSL_4");
 	m_pSP_1 = FindFrame("SP_1");
 	m_pSP_2 = FindFrame("SP_2");
+
+	m_xmMSL_1 = m_pMSL_1->m_xmf4x4World;
 }
 
 void CAirplanePlayer::Animate(float fTimeElapsed, DWORD Direction)
 {
-	/*if (Direction == 0)
-	{
-		RollWingReturn(fTimeElapsed);
-		PitchWingReturn(fTimeElapsed);
-	}*/
-	//cout << Roll_WingsRotateDegree << endl;
 	CPlayer::Animate(fTimeElapsed);
 	if (SphereCollider)SphereCollider->SetPosition(m_xmf3Position);
 	if (SphereCollider)SphereCollider->m_xmf4x4ToParent = Matrix4x4::Multiply(XMMatrixScaling(5, 5, 5), m_xmf4x4ToParent);
@@ -511,8 +513,16 @@ void CAirplanePlayer::PitchWingReturn(float fTimeElapsed)
 		}
 	}
 }
-void CAirplanePlayer::MissleLaunch(float fTimeElapsed)
+void CAirplanePlayer::MissleLaunch()
 {
+	m_pMissle = new CMissle(m_pd3dDevice, m_pd3dCommandList, m_pd3dGraphicsRootSignature, m_xmf3Position);
+	m_pMissle->SetChild(m_pMissleModel->m_pModelRootObject);
+	m_pMissle->SetScale(50,50,50);
+	m_pMissle->SetPosition(m_xmf3Position);
+	m_ObjManager->AddObject(L"player_missle", m_pMissle, OBJ_MISSLE);
+
+	//m_ObjManager->GetObjFromTag(L"player_missle", OBJ_MISSLE)->m_xmf4x4World = m_xmMSL_1;
+	//m_ObjManager->GetObjFromTag(L"player_missle", OBJ_MISSLE)->SetScale(10,10,10);
 }
 
 void CAirplanePlayer::OnPrepareRender()
@@ -580,7 +590,6 @@ CTerrainPlayer::CTerrainPlayer(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandLi
 
 	CLoadedModelInfo* pAngrybotModel = CGameObject::LoadGeometryAndAnimationFromFile(pd3dDevice, pd3dCommandList, pd3dGraphicsRootSignature, "Model/Angrybot.bin", NULL, MODEL_ANI);
 	SetChild(pAngrybotModel->m_pModelRootObject, true);
-
 	CreateShaderVariables(pd3dDevice, pd3dCommandList);
 
 	SetPlayerUpdatedContext(pContext);

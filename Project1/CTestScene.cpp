@@ -8,6 +8,7 @@
 #include "CSuperCobraObject.h"
 #include "CShaderManager.h"
 #include "CSphereCollider.h"
+#include "CMissle.h"
 
 ID3D12DescriptorHeap* CTestScene::m_pd3dCbvSrvDescriptorHeap = NULL;
 
@@ -127,6 +128,7 @@ void CTestScene::BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandLis
 	CLoadedModelInfo* pWaterModel = CGameObject::LoadGeometryAndAnimationFromFile(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, "Model/water.bin", NULL, MODEL_STD);
 	CLoadedModelInfo* p052C = CGameObject::LoadGeometryAndAnimationFromFile(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, "Model/052C.bin", NULL, MODEL_STD);
 	CLoadedModelInfo* pSphere = CGameObject::LoadGeometryAndAnimationFromFile(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, "Model/Sphere.bin", NULL, MODEL_STD);
+	CLoadedModelInfo* pMissle = CGameObject::LoadGeometryAndAnimationFromFile(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, "Model/Missle.bin", NULL, MODEL_ACE);
 	m_ppHierarchicalGameObjects[0] = new CAngrybotObject(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, pAngrybotModel, 1);
 	m_ppHierarchicalGameObjects[0]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, 0);
 	m_ppHierarchicalGameObjects[0]->SetPosition(410.0f, m_pTerrain->GetHeight(410.0f, 735.0f), 735.0f);
@@ -142,22 +144,28 @@ void CTestScene::BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandLis
 	m_ppHierarchicalGameObjects[3]->SetScale(50,50,50);
 	m_ppHierarchicalGameObjects[3]->SetPosition(410, 200, -5000);
 	m_ppHierarchicalGameObjects[4] = new CGunshipObject(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature);
-	m_ppHierarchicalGameObjects[4]->SetChild(pSphere->m_pModelRootObject);
+	m_ppHierarchicalGameObjects[4]->SetChild(pMissle->m_pModelRootObject);
 	m_ppHierarchicalGameObjects[4]->SetPosition(410, 800, -5000);
 	m_ppHierarchicalGameObjects[4]->SetScale(50, 50, 50);
 	m_ObjManager->AddObject(L"enemy", m_ppHierarchicalGameObjects[0], OBJ_ENEMY);
-	m_ObjManager->AddObject(L"enemy1", m_ppHierarchicalGameObjects[1], OBJ_ENEMY);
+	m_ObjManager->AddObject(L"enemy", m_ppHierarchicalGameObjects[1], OBJ_ENEMY);
 	m_ObjManager->AddObject(L"water", m_ppHierarchicalGameObjects[2], OBJ_MAP);
 	m_ObjManager->AddObject(L"destroyer", m_ppHierarchicalGameObjects[3], OBJ_ENEMY);
 	m_ObjManager->AddObject(L"Sphere", m_ppHierarchicalGameObjects[4], OBJ_ENEMY);
 
 	CSuperCobraObject* m_pSphereCollider;
 	m_pSphereCollider = new CSuperCobraObject(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature);
-	//CLoadedModelInfo* pModel = CGameObject::LoadGeometryAndAnimationFromFile(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, "Model/Sphere.bin", NULL, MODEL_COL);
 	m_pSphereCollider->SetChild(p052C->m_pModelRootObject);
 	m_pSphereCollider->SetPosition(410, 1000, -2000);
 	m_pSphereCollider->SetScale(1,1,1);
 	m_ObjManager->AddObject(L"SphereCollider", m_pSphereCollider, OBJ_ENEMY);
+
+	/*XMFLOAT3 temp(0,0,0);
+	CMissle* m_pMissle;
+	m_pMissle = new CMissle(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, temp);
+	m_pMissle->SetPosition(410, 600, -2000);
+	m_pMissle->SetScale(50, 50, 50);
+	m_ObjManager->AddObject(L"MissleCollider", m_pMissle, OBJ_ENEMY);*/
 
 	CreateShaderVariables(pd3dDevice, pd3dCommandList);
 }
@@ -240,6 +248,8 @@ void CTestScene::AnimateObjects(float fTimeElapsed)
 		cout <<"Player : "<< m_pPlayer->SphereCollider->m_BoundingSphere.Center.z << ", Sphere : " << m_ObjManager->GetObjFromTag(L"SphereCollider", OBJ_ENEMY)->SphereCollider->m_BoundingSphere.Center.z << endl;
 		//m_ObjManager->ReleaseObjFromTag(L"SphereCollider", OBJ_ENEMY);
 	}
+	if(m_ObjManager->GetObjFromTag(L"player_missle", OBJ_ENEMY))
+		cout << m_ObjManager->GetObjFromTag(L"player_missle", OBJ_ENEMY)->m_xmf4x4World._41 << endl;
 
 	m_fElapsedTime = fTimeElapsed;
 	m_ObjManager->Update(fTimeElapsed);

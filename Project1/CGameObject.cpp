@@ -603,6 +603,12 @@ CTexture* CGameObject::FindReplicatedTexture(_TCHAR* pstrTextureName)
 	return(NULL);
 }
 
+CShader* CGameObject::GetShader()
+{
+	if(!m_ppMaterials[0])
+		return m_ppMaterials[0]->GetShader();
+}
+
 void CGameObject::LoadMaterialsFromFile(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList, CGameObject* pParent, FILE* pInFile, CShader* pShader, MODELTYPE modelType)
 {
 	char pstrToken[64] = { '\0' };
