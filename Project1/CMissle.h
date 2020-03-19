@@ -4,7 +4,7 @@
 class CMissle : public CGameObject
 {
 public:
-	CMissle(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList, ID3D12RootSignature* pd3dGraphicsRootSignature, XMFLOAT3& xmfTarget);
+	CMissle(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList, ID3D12RootSignature* pd3dGraphicsRootSignature, CLoadedModelInfo* pSphereModel, XMFLOAT3& xmfTarget);
 	virtual ~CMissle();
 
 protected:

@@ -1,19 +1,14 @@
 #include "stdafx.h"
 #include "CMissle.h"
 
-CMissle::CMissle(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList, ID3D12RootSignature* pd3dGraphicsRootSignature, XMFLOAT3& xmfTarget)
+CMissle::CMissle(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList, ID3D12RootSignature* pd3dGraphicsRootSignature, CLoadedModelInfo* pSphereModel, XMFLOAT3& xmfTarget)
 {
-	//CLoadedModelInfo* pModel = CGameObject::LoadGeometryAndAnimationFromFile(pd3dDevice, pd3dCommandList, pd3dGraphicsRootSignature, "Model/Missle.bin", NULL, MODEL_ACE);
-	//SetChild(pModel->m_pModelRootObject);
-
 	m_xmfTarget = xmfTarget;
-
-	SphereCollider = new CSphereCollider(pd3dDevice, pd3dCommandList, pd3dGraphicsRootSignature);
+	SphereCollider = new CSphereCollider(pSphereModel);
 	SphereCollider->SetScale(2, 2, 2);
 	SphereCollider->SetSphereCollider(GetPosition(), 2.0f);
 
 	CreateShaderVariables(pd3dDevice, pd3dCommandList);
-	//if (pModel) delete pModel;
 }
 
 CMissle::~CMissle()

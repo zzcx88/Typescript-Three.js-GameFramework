@@ -163,9 +163,10 @@ void CTestScene::BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandLis
 	/*XMFLOAT3 temp(0,0,0);
 	CMissle* m_pMissle;
 	m_pMissle = new CMissle(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, temp);
+	m_pMissle->SetChild(pMissle->m_pModelRootObject);
 	m_pMissle->SetPosition(410, 600, -2000);
 	m_pMissle->SetScale(50, 50, 50);
-	m_ObjManager->AddObject(L"MissleCollider", m_pMissle, OBJ_ENEMY);*/
+	m_ObjManager->AddObject(L"MissleCollider", m_pMissle, OBJ_MISSLE);*/
 
 	CreateShaderVariables(pd3dDevice, pd3dCommandList);
 }

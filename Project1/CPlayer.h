@@ -119,6 +119,7 @@ public:
 
 	CMissle* m_pMissle = NULL;
 	CLoadedModelInfo* m_pMissleModel;
+	CLoadedModelInfo* m_pMissleModelCol;
 
 	//WeaponsXMF
 	XMFLOAT4X4 m_xmMSL_1;

@@ -311,6 +311,8 @@ CAirplanePlayer::CAirplanePlayer(ID3D12Device* pd3dDevice, ID3D12GraphicsCommand
 	SphereCollider->SetSphereCollider(GetPosition() , 10.0f);
 
 	m_pMissleModel = CGameObject::LoadGeometryAndAnimationFromFile(pd3dDevice, pd3dCommandList, pd3dGraphicsRootSignature, "Model/Missle.bin", NULL, MODEL_ACE);
+	m_pMissleModelCol = CGameObject::LoadGeometryAndAnimationFromFile(pd3dDevice, pd3dCommandList, pd3dGraphicsRootSignature, "Model/Sphere.bin", NULL, MODEL_COL);
+
 	CLoadedModelInfo* pModel = CGameObject::LoadGeometryAndAnimationFromFile(pd3dDevice, pd3dCommandList, pd3dGraphicsRootSignature, "Model/F-4E_Phantom_II.bin", NULL, MODEL_ACE);
 	SetChild(pModel->m_pModelRootObject);
 
@@ -402,6 +404,7 @@ void CAirplanePlayer::RightRollAnimation(float fTimeElapsed)
 
 void CAirplanePlayer::UpPitchAnimation(float fTimeElapsed)
 {
+	//MissleLaunch();
 	if (Pitch_WingsRotateDegree > 0)
 	{
 		PitchWingReturn(fTimeElapsed);
@@ -515,12 +518,18 @@ void CAirplanePlayer::PitchWingReturn(float fTimeElapsed)
 }
 void CAirplanePlayer::MissleLaunch()
 {
-	m_pMissle = new CMissle(m_pd3dDevice, m_pd3dCommandList, m_pd3dGraphicsRootSignature, m_xmf3Position);
-	m_pMissle->SetChild(m_pMissleModel->m_pModelRootObject);
-	m_pMissle->SetScale(50,50,50);
-	m_pMissle->SetPosition(m_xmf3Position);
-	m_ObjManager->AddObject(L"player_missle", m_pMissle, OBJ_MISSLE);
+	CMissle* pMissle;
+	pMissle = new CMissle(m_pd3dDevice, m_pd3dCommandList, m_pd3dGraphicsRootSignature, m_pMissleModelCol, m_xmf3Position);
+	pMissle->SetChild(m_pMissleModel->m_pModelRootObject);
+	pMissle->SetScale(50,50,50);
+	pMissle->m_xmf4x4ToParent = Matrix4x4::Multiply(XMMatrixScaling(50, 50, 50), m_xmf4x4ToParent);
+	/*pMissle->m_xmf4x4World._11 = m_xmf4x4World._11;
+	pMissle->m_xmf4x4World._12 = m_xmf4x4World._12;
+	pMissle->m_xmf4x4World._13 = m_xmf4x4World._13;*/
+	pMissle->SetPosition(m_xmf3Position);
+	m_ObjManager->AddObject(L"player_missle", pMissle, OBJ_MISSLE);
 
+	//cout << m_ObjManager->GetObjFromTag(L"player_missle", OBJ_MISSLE)->SphereCollider->GetPosition().z << endl;
 	//m_ObjManager->GetObjFromTag(L"player_missle", OBJ_MISSLE)->m_xmf4x4World = m_xmMSL_1;
 	//m_ObjManager->GetObjFromTag(L"player_missle", OBJ_MISSLE)->SetScale(10,10,10);
 }
