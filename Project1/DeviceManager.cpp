@@ -343,6 +343,10 @@ void CDeviceManager::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPA
 		case VK_F3:
 			m_pCamera = m_pPlayer->ChangeCamera((DWORD)(wParam - VK_F1 + 1), m_GameTimer.GetTimeElapsed());
 			break;
+		case VK_F4:
+			if (m_BlurSwitch == BLUR_OFF) m_BlurSwitch = BLUR_ON;
+			else m_BlurSwitch = BLUR_OFF;
+			break;
 		case VK_F9:
 			ChangeSwapChainState();
 			break;
@@ -473,30 +477,34 @@ void CDeviceManager::FrameAdvance()
 
 	if (m_pPlayer) m_pPlayer->Render(m_pd3dCommandList, m_pCamera);
 
-	//if (m_pBlur) m_pBlur->Execute(m_pd3dCommandList, m_pSceneManager->GetComputeRootSignature(), CurrentBackBuffer());
-	m_pBlurFilter->Execute(m_pd3dCommandList, m_pSceneManager->GetComputeRootSignature(),
-		m_pBlur->m_pHBlurPipelineState, m_pBlur->m_pVBlurPipelineState, CurrentBackBuffer(), 4);
+	if (m_BlurSwitch == BLUR_ON)
+	{
+		m_pBlurFilter->Execute(m_pd3dCommandList, m_pSceneManager->GetComputeRootSignature(),
+			m_pBlur->m_pHBlurPipelineState, m_pBlur->m_pVBlurPipelineState, CurrentBackBuffer(), 4);
 
-	// Prepare to copy blurred output to the back buffer. 후면 버퍼에 블러처리한 텍스쳐를 복사할 수 있도록 상태 전이
-	d3dResourceBarrier.Transition.pResource = CurrentBackBuffer();
-	d3dResourceBarrier.Transition.StateBefore = D3D12_RESOURCE_STATE_COPY_SOURCE;
-	d3dResourceBarrier.Transition.StateAfter = D3D12_RESOURCE_STATE_COPY_DEST;
-	d3dResourceBarrier.Transition.Subresource = D3D12_RESOURCE_BARRIER_ALL_SUBRESOURCES;
-	m_pd3dCommandList->ResourceBarrier(1, &d3dResourceBarrier);
+		// Prepare to copy blurred output to the back buffer. 후면 버퍼에 블러처리한 텍스쳐를 복사할 수 있도록 상태 전이
+		d3dResourceBarrier.Transition.pResource = CurrentBackBuffer();
+		d3dResourceBarrier.Transition.StateBefore = D3D12_RESOURCE_STATE_COPY_SOURCE;
+		d3dResourceBarrier.Transition.StateAfter = D3D12_RESOURCE_STATE_COPY_DEST;
+		d3dResourceBarrier.Transition.Subresource = D3D12_RESOURCE_BARRIER_ALL_SUBRESOURCES;
+		m_pd3dCommandList->ResourceBarrier(1, &d3dResourceBarrier);
 
-	m_pd3dCommandList->CopyResource(CurrentBackBuffer(), m_pBlurFilter->Output());
+		m_pd3dCommandList->CopyResource(CurrentBackBuffer(), m_pBlurFilter->Output());
 
-	// Transition to PRESENT state. 그리기 상태로 전이
-	d3dResourceBarrier.Transition.pResource = CurrentBackBuffer();
-	d3dResourceBarrier.Transition.StateBefore = D3D12_RESOURCE_STATE_COPY_DEST;
-	d3dResourceBarrier.Transition.StateAfter = D3D12_RESOURCE_STATE_PRESENT;
-	d3dResourceBarrier.Transition.Subresource = D3D12_RESOURCE_BARRIER_ALL_SUBRESOURCES;
-	m_pd3dCommandList->ResourceBarrier(1, &d3dResourceBarrier);
-
-	/*d3dResourceBarrier.Transition.StateBefore = D3D12_RESOURCE_STATE_RENDER_TARGET;
-	d3dResourceBarrier.Transition.StateAfter = D3D12_RESOURCE_STATE_PRESENT;
-	d3dResourceBarrier.Transition.Subresource = D3D12_RESOURCE_BARRIER_ALL_SUBRESOURCES;
-	m_pd3dCommandList->ResourceBarrier(1, &d3dResourceBarrier);*/
+		// Transition to PRESENT state. 그리기 상태로 전이
+		d3dResourceBarrier.Transition.pResource = CurrentBackBuffer();
+		d3dResourceBarrier.Transition.StateBefore = D3D12_RESOURCE_STATE_COPY_DEST;
+		d3dResourceBarrier.Transition.StateAfter = D3D12_RESOURCE_STATE_PRESENT;
+		d3dResourceBarrier.Transition.Subresource = D3D12_RESOURCE_BARRIER_ALL_SUBRESOURCES;
+		m_pd3dCommandList->ResourceBarrier(1, &d3dResourceBarrier);
+	}
+	else
+	{
+		d3dResourceBarrier.Transition.StateBefore = D3D12_RESOURCE_STATE_RENDER_TARGET;
+		d3dResourceBarrier.Transition.StateAfter = D3D12_RESOURCE_STATE_PRESENT;
+		d3dResourceBarrier.Transition.Subresource = D3D12_RESOURCE_BARRIER_ALL_SUBRESOURCES;
+		m_pd3dCommandList->ResourceBarrier(1, &d3dResourceBarrier);
+	}
 
 	hResult = m_pd3dCommandList->Close();
 
