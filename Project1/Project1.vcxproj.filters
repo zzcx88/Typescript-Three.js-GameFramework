@@ -103,6 +103,9 @@
     <Filter Include="Blur">
       <UniqueIdentifier>{a7d09683-3ed7-4681-97ca-be144565349f}</UniqueIdentifier>
     </Filter>
+    <Filter Include="GameObject\Plane\UI">
+      <UniqueIdentifier>{35bc1100-0664-4df5-972c-d5919c6318e1}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="targetver.h">
@@ -219,6 +222,9 @@
     <ClInclude Include="CBlur.h">
       <Filter>Blur</Filter>
     </ClInclude>
+    <ClInclude Include="CUI.h">
+      <Filter>GameObject\Plane\UI</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="DDSTextureLoader12.cpp">
@@ -313,6 +319,9 @@
     </ClCompile>
     <ClCompile Include="CBlur.cpp">
       <Filter>Blur</Filter>
+    </ClCompile>
+    <ClCompile Include="CUI.cpp">
+      <Filter>GameObject\Plane\UI</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

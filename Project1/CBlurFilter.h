@@ -20,13 +20,13 @@ public:
 	void Execute(																// 각 방향으로 배분할 스레드 그룹 개수를 파악하고, 흐리기 연산을 위한 계산 셰이더 호출 명령을 등록하는 함수
 		ID3D12GraphicsCommandList* pd3dCommandList,
 		ID3D12RootSignature* pd3dRootSignature,
-		CCamera* pCamera,
+		ID3D12PipelineState* horzBlurPSO,
+		ID3D12PipelineState* vertBlurPSO,
 		ID3D12Resource* input,
 		int blurCount);
 
-	virtual void CreateShaderVariables(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList);
-	virtual void UpdateShaderVariables(ID3D12GraphicsCommandList* pd3dCommandList);
-	virtual void ReleaseShaderVariables();
+
+	CShader* m_pShader = NULL;
 private:
 	std::vector<float> CalcGaussWeights(float sigma);					//  가우스 함수로 가중치 구하는 함수 2차원 흐리기보다 1차원 흐리기의 표본 갯수가 훨씬 적다.
 

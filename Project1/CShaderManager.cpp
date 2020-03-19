@@ -197,6 +197,7 @@ D3D12_BLEND_DESC CShader::CreateBlendState()
 
 void CShader::CreateShader(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList, ID3D12RootSignature* pd3dGraphicsRootSignature)
 {
+
 	::ZeroMemory(&m_d3dPipelineStateDesc, sizeof(D3D12_GRAPHICS_PIPELINE_STATE_DESC));
 
 	m_d3dPipelineStateDesc.pRootSignature = pd3dGraphicsRootSignature;
@@ -227,6 +228,7 @@ void CShader::CreateShader(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* 
 
 void CShader::CreateHShader(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList, ID3D12RootSignature* pd3dGraphicsRootSignature)
 {
+
 	::ZeroMemory(&m_d3dComputeBlurHPipelineStateDesc, sizeof(D3D12_COMPUTE_PIPELINE_STATE_DESC));
 
 	m_d3dComputeBlurHPipelineStateDesc.pRootSignature = pd3dGraphicsRootSignature;
@@ -261,24 +263,21 @@ void CShader::CreateVShader(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList*
 
 void CShader::OnPrepareRender(ID3D12GraphicsCommandList* pd3dCommandList, int nPipelineState)
 {
-	if (m_pd3dPipelineState) pd3dCommandList->SetPipelineState(m_pd3dPipelineState);
-	if (m_pd3dVertBlurPipelineState) pd3dCommandList->SetPipelineState(m_pd3dVertBlurPipelineState);
-	if (m_pd3dHorzBlurPipelineState) pd3dCommandList->SetPipelineState(m_pd3dHorzBlurPipelineState);
-
+	if (m_pd3dPipelineState) pd3dCommandList->SetPipelineState(m_pd3dPipelineState);	
 }
 
 void CShader::Render(ID3D12GraphicsCommandList* pd3dCommandList, CCamera* pCamera)
 {
 	OnPrepareRender(pd3dCommandList);
 }
-//void CShader::SetHorzPipelineState(ID3D12GraphicsCommandList* pd3dCommandList)
-//{
-//	if (m_pd3dHorzBlurPipelineState) pd3dCommandList->SetPipelineState(m_pd3dHorzBlurPipelineState);
-//}
-//void CShader::SetVertPipelineState(ID3D12GraphicsCommandList* pd3dCommandList)
-//{
-//	if (m_pd3dVertBlurPipelineState) pd3dCommandList->SetPipelineState(m_pd3dVertBlurPipelineState);
-//}
+ID3D12PipelineState* CShader::GetHorzPipelineState() const
+{
+	return m_pd3dHorzBlurPipelineState;
+}
+ID3D12PipelineState* CShader::GetVertPipelineState() const
+{
+	return m_pd3dVertBlurPipelineState;
+}
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //
 CTerrainShader::CTerrainShader()

@@ -21,9 +21,13 @@ public:
 	virtual void BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList) PURE;
 	virtual void ReleaseObjects() PURE;
 
+	ID3D12RootSignature* CreatePostProcessRootSignature(ID3D12Device* pd3dDevice);
 	ID3D12RootSignature* CreateGraphicsRootSignature(ID3D12Device* pd3dDevice);
 	ID3D12RootSignature* GetGraphicsRootSignature() { return(m_pd3dGraphicsRootSignature); }
+
 	ID3D12RootSignature* GetComputeRootSignature() { return(m_pd3dComputeRootSignature); }
+	ID3D12DescriptorHeap* GetCbvSrvDescriptorHeap() { return(m_pd3dCbvSrvDescriptorHeap); }
+	
 
 	virtual bool ProcessInput(UCHAR* pKeysBuffer) PURE;
 	virtual void AnimateObjects(float fTimeElapsed) PURE;

@@ -24,6 +24,7 @@ public:
 
 	ID3D12Resource *CurrentBackBuffer()const;
 	D3D12_CPU_DESCRIPTOR_HANDLE CurrentBackBufferView()const;
+	
 
 	void BuildScene();
 	void OnProcessingMouseMessage(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam);
@@ -89,7 +90,9 @@ private:
 	CGameTimer					m_GameTimer;
 	//CScene* m_pScene = NULL;
 	CPlayer* m_pPlayer = NULL;
-	//CBlur* m_pBlurFilter = NULL;
+	CBlur* m_pBlur = NULL;
+	CBlurFilter* m_pBlurFilter = NULL;
 	CCamera* m_pCamera = NULL;
+
 };
 

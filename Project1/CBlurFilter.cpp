@@ -59,7 +59,9 @@ void CBlurFilter::OnResize(UINT newWidth, UINT newHeight)
 }
 
 void CBlurFilter::Execute(ID3D12GraphicsCommandList* pd3dCommandList,
-	ID3D12RootSignature* pd3dRootSignature, CCamera* pCamera,
+	ID3D12RootSignature* pd3dRootSignature,
+	ID3D12PipelineState* horzBlurPSO,
+	ID3D12PipelineState* vertBlurPSO,
 	ID3D12Resource* input,
 	int blurCount)
 {
@@ -125,8 +127,8 @@ void CBlurFilter::Execute(ID3D12GraphicsCommandList* pd3dCommandList,
 		//
 		// 수평 블러
 		//
-		//pBlurHShader->SetHorzPipelineState(pd3dCommandList);
-		//pd3dCommandList->SetPipelineState(horzBlurPSO);
+	
+		pd3dCommandList->SetPipelineState(horzBlurPSO);
 
 		pd3dCommandList->SetComputeRootDescriptorTable(1, mBlur0GpuSrv);
 		pd3dCommandList->SetComputeRootDescriptorTable(2, mBlur1GpuUav);
@@ -146,8 +148,8 @@ void CBlurFilter::Execute(ID3D12GraphicsCommandList* pd3dCommandList,
 		//
 		// 수직 블러
 		//
-		//pBlurHShader->SetHorzPipelineState(pd3dCommandList);
-		//pd3dCommandList->SetPipelineState(vertBlurPSO);
+		
+		pd3dCommandList->SetPipelineState(vertBlurPSO);
 
 		pd3dCommandList->SetComputeRootDescriptorTable(1, mBlur1GpuSrv);
 		pd3dCommandList->SetComputeRootDescriptorTable(2, mBlur0GpuUav);
@@ -214,11 +216,11 @@ void CBlurFilter::BuildDescriptors()
 	uavDesc.Texture2D.MipSlice = 0;
 	// 씬에 있음
 
-	/*md3dDevice->CreateShaderResourceView(mBlurMap0.Get(), &srvDesc, mBlur0CpuSrv);
-	md3dDevice->CreateUnorderedAccessView(mBlurMap0.Get(), nullptr, &uavDesc, mBlur0CpuUav);
+	md3dDevice->CreateShaderResourceView(mBlurMap0.Get(), &srvDesc, mBlur0CpuSrv);
+	md3dDevice->CreateUnorderedAccessView(mBlurMap0.Get(), NULL, &uavDesc, mBlur0CpuUav);
 
 	md3dDevice->CreateShaderResourceView(mBlurMap1.Get(), &srvDesc, mBlur1CpuSrv);
-	md3dDevice->CreateUnorderedAccessView(mBlurMap1.Get(), nullptr, &uavDesc, mBlur1CpuUav);*/
+	md3dDevice->CreateUnorderedAccessView(mBlurMap1.Get(), NULL, &uavDesc, mBlur1CpuUav);
 }
 
 void CBlurFilter::BuildResources()
@@ -237,30 +239,20 @@ void CBlurFilter::BuildResources()
 	texDesc.Layout = D3D12_TEXTURE_LAYOUT_UNKNOWN;
 	texDesc.Flags = D3D12_RESOURCE_FLAG_ALLOW_UNORDERED_ACCESS;
 
-	/*ThrowIfFailed(md3dDevice->CreateCommittedResource(
+	HRESULT hresult = md3dDevice->CreateCommittedResource(
 		&CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_DEFAULT),
 		D3D12_HEAP_FLAG_NONE,
 		&texDesc,
 		D3D12_RESOURCE_STATE_COMMON,
 		nullptr,
-		IID_PPV_ARGS(&mBlurMap0)));
+		IID_PPV_ARGS(&mBlurMap0));
 
-	ThrowIfFailed(md3dDevice->CreateCommittedResource(
+	hresult = md3dDevice->CreateCommittedResource(
 		&CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_DEFAULT),
 		D3D12_HEAP_FLAG_NONE,
 		&texDesc,
 		D3D12_RESOURCE_STATE_COMMON,
 		nullptr,
-		IID_PPV_ARGS(&mBlurMap1)));*/
+		IID_PPV_ARGS(&mBlurMap1));
 }
 
-void CBlurFilter::CreateShaderVariables(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList)
-{
-}
-void CBlurFilter::UpdateShaderVariables( ID3D12GraphicsCommandList* pd3dCommandList)
-{
-}
-void CBlurFilter::ReleaseShaderVariables()
-{
-
-}

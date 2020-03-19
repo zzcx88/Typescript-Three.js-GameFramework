@@ -46,8 +46,8 @@ public:
 	virtual void AnimateObjects(float fTimeElapsed) { }
 	virtual void ReleaseObjects() { }
 
-	void SetHorzPipelineState(ID3D12GraphicsCommandList* pd3dCommandList);
-	void SetVertPipelineState(ID3D12GraphicsCommandList* pd3dCommandList);
+	ID3D12PipelineState* GetHorzPipelineState() const;
+	ID3D12PipelineState* GetVertPipelineState() const;
 protected:
 	
 	ID3DBlob* m_pd3dVertexShaderBlob = NULL;
@@ -56,11 +56,11 @@ protected:
 	ID3DBlob* m_pd3dComputeShaderVBlob = NULL;
 
 	ID3D12PipelineState* m_pd3dPipelineState = NULL;
-	ID3D12PipelineState* m_pd3dHorzBlurPipelineState =  NULL ;
+	ID3D12PipelineState* m_pd3dHorzBlurPipelineState = NULL;
 	ID3D12PipelineState* m_pd3dVertBlurPipelineState = NULL;
 	
-	D3D12_GRAPHICS_PIPELINE_STATE_DESC	m_d3dPipelineStateDesc;
-	D3D12_COMPUTE_PIPELINE_STATE_DESC	m_d3dComputeBlurHPipelineStateDesc;
+	D3D12_GRAPHICS_PIPELINE_STATE_DESC m_d3dPipelineStateDesc;
+	D3D12_COMPUTE_PIPELINE_STATE_DESC m_d3dComputeBlurHPipelineStateDesc;
 	D3D12_COMPUTE_PIPELINE_STATE_DESC m_d3dComputeBlurVPipelineStateDesc;
 };
 

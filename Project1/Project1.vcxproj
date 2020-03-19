@@ -168,6 +168,7 @@
     <ClInclude Include="CSkyBoxMesh.h" />
     <ClInclude Include="CSuperCobraObject.h" />
     <ClInclude Include="CTestScene.h" />
+    <ClInclude Include="CUI.h" />
     <ClInclude Include="d3dx12.h" />
     <ClInclude Include="DDSTextureLoader12.h" />
     <ClInclude Include="Define.h" />
@@ -222,6 +223,7 @@
     <ClCompile Include="SceneManager.cpp" />
     <ClCompile Include="SingletonBase.cpp" />
     <ClCompile Include="Timer.cpp" />
+    <ClCompile Include="CUI.cpp" />
     <ClCompile Include="WICTextureLoader12.cpp" />
   </ItemGroup>
   <ItemGroup>

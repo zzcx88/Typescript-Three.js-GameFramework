@@ -119,14 +119,14 @@ void VertBlurCS(int3 groupThreadID : SV_GroupThreadID,
 	// 
 	// 이제 픽셀을 블러 처리한다.
 	//
-
+	
 	float4 blurColor = float4(0, 0, 0, 0);
 	
-	for(int i = -gBlurRadius; i <= gBlurRadius; ++i)
+	for(int i = -5; i <= 5; ++i)
 	{
-		int k = groupThreadID.y + gBlurRadius + i;
+		int k = groupThreadID.y + 5 + i;
 		
-		blurColor += weights[i+gBlurRadius]*gCache[k];
+		blurColor += weights[i+ 5]*gCache[k];
 	}
 	
 	gOutput[dispatchThreadID.xy] = blurColor;

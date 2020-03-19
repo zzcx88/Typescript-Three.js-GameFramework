@@ -2,7 +2,7 @@
 #include "CTestScene.h"
 #include "CHeightMapTerrain.h"
 #include "CSkyBox.h"
-#include "CPlane.h"
+#include "CUI.h"
 #include "CAngrybotObject.h"
 #include "CGunshipObject.h"
 #include "CShaderManager.h"
@@ -88,12 +88,11 @@ void CTestScene::BuildDefaultLightsAndMaterials()
 void CTestScene::BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList)
 {
 	m_pd3dGraphicsRootSignature = CreateGraphicsRootSignature(pd3dDevice);
-	m_pd3dComputeRootSignature = CreateGraphicsRootSignature(pd3dDevice);
+	m_pd3dComputeRootSignature = CreatePostProcessRootSignature(pd3dDevice);
 
 	CreateCbvSrvDescriptorHeaps(pd3dDevice, pd3dCommandList, 0, 76); //SuperCobra(17), Gunship(2), Player:Mi24(1), Angrybot()
-	m_pBlur = new CBlur(pd3dDevice, pd3dCommandList, m_pd3dComputeRootSignature);
-
 	
+
 	CMaterial::PrepareShaders(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature);
 
 	BuildDefaultLightsAndMaterials();
@@ -101,22 +100,16 @@ void CTestScene::BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandLis
 	m_pSkyBox = new CSkyBox(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature);
 	//m_pBlur = new CBlurFilter(pd3dDevice, mClientWidth, mClientHeight, DXGI_FORMAT_R8G8B8A8_UNORM);
 
-	m_pBlur->BuildDescriptors(
-		CD3DX12_CPU_DESCRIPTOR_HANDLE(m_pd3dCbvSrvDescriptorHeap->GetCPUDescriptorHandleForHeapStart(), 0, 76),
-		CD3DX12_GPU_DESCRIPTOR_HANDLE(m_pd3dCbvSrvDescriptorHeap->GetGPUDescriptorHandleForHeapStart(), 0, 76),
-		76);
-
-
 	m_nGameObjects = 7;
 	m_ppGameObjects = new CGameObject* [m_nGameObjects];
 
-	m_ppGameObjects[0] = new CPlane(0, pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, 0.2f, 0.3f, 0.f , XMFLOAT2(0.5f,0.5f), XMFLOAT2(0.5f,0.5f) , XMFLOAT2(0.5f,0.5f), XMFLOAT2(0.5f, 0.5f));
-	m_ppGameObjects[1] = new CPlane(1, pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, 0.2f, 0.35f, 0.f, XMFLOAT2(0.725f, -0.45f), XMFLOAT2(0.725f, -0.45f), XMFLOAT2(0.725f, -0.45f), XMFLOAT2(0.725f, -0.45f));
-	m_ppGameObjects[2] = new CPlane(2, pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, 0.15f, 0.25f, 0.f, XMFLOAT2(-0.875f, 0.8f), XMFLOAT2(-0.875f, 0.8f), XMFLOAT2(-0.875f, 0.8f), XMFLOAT2(-0.875f, 0.8f));
-	m_ppGameObjects[3] = new CPlane(3, pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, 0.125f, 0.2f, 0.f, XMFLOAT2(-0.25f, 0.f), XMFLOAT2(-0.25f, 0.f), XMFLOAT2(-0.25f, 0.f), XMFLOAT2(-0.25f, 0.0f));
-	m_ppGameObjects[4] = new CPlane(4, pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, 0.125f, 0.2f, 0.f, XMFLOAT2(0.25f, 0.f), XMFLOAT2(0.25f, 0.f), XMFLOAT2(0.25f, 0.f), XMFLOAT2(0.25f, 0.0f));
-	m_ppGameObjects[5] = new CPlane(5, pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, 0.1f, 0.3f, 0.f, XMFLOAT2(0.81f, -0.305f), XMFLOAT2(0.81f, -0.305f), XMFLOAT2(0.81f, -0.305f), XMFLOAT2(0.81f, -0.305f));
-	m_ppGameObjects[6] = new CPlane(6, pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, 0.3f, 0.3f, 0.f, XMFLOAT2(-0.8f, -0.5f), XMFLOAT2(-0.8f, -0.7f), XMFLOAT2(-0.8f, -0.7f), XMFLOAT2(-0.8f, -0.5f));
+	m_ppGameObjects[0] = new CUI(0, pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, 0.2f, 0.3f, 0.f , XMFLOAT2(0.5f,0.5f), XMFLOAT2(0.5f,0.5f) , XMFLOAT2(0.5f,0.5f), XMFLOAT2(0.5f, 0.5f));
+	m_ppGameObjects[1] = new CUI(1, pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, 0.2f, 0.35f, 0.f, XMFLOAT2(0.725f, -0.45f), XMFLOAT2(0.725f, -0.45f), XMFLOAT2(0.725f, -0.45f), XMFLOAT2(0.725f, -0.45f));
+	m_ppGameObjects[2] = new CUI(2, pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, 0.15f, 0.25f, 0.f, XMFLOAT2(-0.875f, 0.8f), XMFLOAT2(-0.875f, 0.8f), XMFLOAT2(-0.875f, 0.8f), XMFLOAT2(-0.875f, 0.8f));
+	m_ppGameObjects[3] = new CUI(3, pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, 0.125f, 0.2f, 0.f, XMFLOAT2(-0.25f, 0.f), XMFLOAT2(-0.25f, 0.f), XMFLOAT2(-0.25f, 0.f), XMFLOAT2(-0.25f, 0.0f));
+	m_ppGameObjects[4] = new CUI(4, pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, 0.125f, 0.2f, 0.f, XMFLOAT2(0.25f, 0.f), XMFLOAT2(0.25f, 0.f), XMFLOAT2(0.25f, 0.f), XMFLOAT2(0.25f, 0.0f));
+	m_ppGameObjects[5] = new CUI(5, pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, 0.1f, 0.3f, 0.f, XMFLOAT2(0.81f, -0.305f), XMFLOAT2(0.81f, -0.305f), XMFLOAT2(0.81f, -0.305f), XMFLOAT2(0.81f, -0.305f));
+	m_ppGameObjects[6] = new CUI(6, pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, 0.3f, 0.3f, 0.f, XMFLOAT2(-0.8f, -0.5f), XMFLOAT2(-0.8f, -0.7f), XMFLOAT2(-0.8f, -0.7f), XMFLOAT2(-0.8f, -0.5f));
 
 
 	XMFLOAT3 xmf3Scale(8.0f, 2.0f, 8.0f);
@@ -146,6 +139,13 @@ void CTestScene::BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandLis
 	m_ppHierarchicalGameObjects[3]->SetPosition(410, 200, -5000);
 
 
+	/*m_pBlur = new CBlur(pd3dDevice, pd3dCommandList, m_pd3dComputeRootSignature);
+
+	m_pBlur->BuildDescriptors(
+		CD3DX12_CPU_DESCRIPTOR_HANDLE(m_pd3dCbvSrvDescriptorHeap->GetCPUDescriptorHandleForHeapStart(), 11, 76),
+		CD3DX12_GPU_DESCRIPTOR_HANDLE(m_pd3dCbvSrvDescriptorHeap->GetGPUDescriptorHandleForHeapStart(), 11, 76),
+		76);*/
+
 	CreateShaderVariables(pd3dDevice, pd3dCommandList);
 }
 
@@ -166,7 +166,7 @@ void CTestScene::ReleaseObjects()
 		delete[] m_ppShaders;
 	}
 
-	if (m_pBlur) delete m_pBlur;
+	
 
 	if (m_pTerrain) delete m_pTerrain;
 	if (m_pSkyBox) delete m_pSkyBox;
@@ -283,9 +283,10 @@ void CTestScene::Render(ID3D12GraphicsCommandList* pd3dCommandList, CCamera* pCa
 
 	if (m_pSkyBox) m_pSkyBox->Render(pd3dCommandList, pCamera);
 	if (m_pTerrain) m_pTerrain->Render(pd3dCommandList, pCamera);
-	if (m_pBlur) m_pBlur->Render(pd3dCommandList, m_pd3dComputeRootSignature, pCamera , pCurrentBackBuffer);
-	
+
+
 	for (int i = 0; i < m_nShaders; i++) if (m_ppShaders[i]) m_ppShaders[i]->Render(pd3dCommandList, pCamera);
+	
 	for (int i = 0; i < m_nGameObjects; i++) if (m_ppGameObjects[i]) m_ppGameObjects[i]->Render(pd3dCommandList, pCamera);
 
 	for (int i = 0; i < m_nHierarchicalGameObjects; i++)
@@ -299,5 +300,7 @@ void CTestScene::Render(ID3D12GraphicsCommandList* pd3dCommandList, CCamera* pCa
 		}
 	}
 
-	
+	//if (m_pBlur) m_pBlur->Render(pd3dCommandList, m_pd3dComputeRootSignature, pCamera, pCurrentBackBuffer);
+
+
 }
