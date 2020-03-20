@@ -519,16 +519,17 @@ void CAirplanePlayer::PitchWingReturn(float fTimeElapsed)
 void CAirplanePlayer::MissleLaunch()
 {
 	CMissle* pMissle;
-	pMissle = new CMissle(m_pd3dDevice, m_pd3dCommandList, m_pd3dGraphicsRootSignature, m_pMissleModelCol, m_xmf3Position);
+	XMFLOAT3 temp = m_ObjManager->GetObjFromTag(L"SphereCollider", OBJ_ENEMY)->GetPosition();
+	pMissle = new CMissle(m_pd3dDevice, m_pd3dCommandList, m_pd3dGraphicsRootSignature,m_pMissleModelCol, temp/*m_xmf3Position*/);
+	pMissle->m_xmf3Look = m_xmf3Look;
+	pMissle->m_xmf4x4ToParent = Matrix4x4::Multiply(XMMatrixScaling(2,2,2), m_xmf4x4ToParent);
 	pMissle->SetChild(m_pMissleModel->m_pModelRootObject);
 	pMissle->SetScale(50,50,50);
-	pMissle->m_xmf4x4ToParent = Matrix4x4::Multiply(XMMatrixScaling(50, 50, 50), m_xmf4x4ToParent);
-	/*pMissle->m_xmf4x4World._11 = m_xmf4x4World._11;
-	pMissle->m_xmf4x4World._12 = m_xmf4x4World._12;
-	pMissle->m_xmf4x4World._13 = m_xmf4x4World._13;*/
 	pMissle->SetPosition(m_xmf3Position);
+	pMissle->SphereCollider->SetSphereCollider(m_xmf3Position, 2.0f);
+	pMissle->SphereCollider->SetPosition(m_xmf3Position);
 	m_ObjManager->AddObject(L"player_missle", pMissle, OBJ_MISSLE);
-
+	//cout << pMissle->SphereCollider->GetPosition().z << endl;
 	//cout << m_ObjManager->GetObjFromTag(L"player_missle", OBJ_MISSLE)->SphereCollider->GetPosition().z << endl;
 	//m_ObjManager->GetObjFromTag(L"player_missle", OBJ_MISSLE)->m_xmf4x4World = m_xmMSL_1;
 	//m_ObjManager->GetObjFromTag(L"player_missle", OBJ_MISSLE)->SetScale(10,10,10);

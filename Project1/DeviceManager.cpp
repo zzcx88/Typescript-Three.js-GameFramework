@@ -460,7 +460,7 @@ void CDeviceManager::FrameAdvance()
 	m_pSceneManager->Render(m_pd3dCommandList, m_pCamera);
 
 	if (m_pPlayer) m_pPlayer->Render(m_pd3dCommandList, m_pCamera);
-	if(m_pPlayer->SphereCollider)m_pPlayer->SphereCollider->Render(m_pd3dCommandList, m_pCamera);
+	//if(m_pPlayer->SphereCollider)m_pPlayer->SphereCollider->Render(m_pd3dCommandList, m_pCamera);
 
 	d3dResourceBarrier.Transition.StateBefore = D3D12_RESOURCE_STATE_RENDER_TARGET;
 	d3dResourceBarrier.Transition.StateAfter = D3D12_RESOURCE_STATE_PRESENT;
