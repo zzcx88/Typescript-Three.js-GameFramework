@@ -475,7 +475,7 @@ void CDeviceManager::FrameAdvance()
 
 	m_pd3dCommandList->SetGraphicsRootSignature(m_pRootSignature);
 
-	m_pSceneManager->Render(m_pd3dCommandList, m_pCamera, CurrentBackBuffer());
+	m_pSceneManager->Render(m_pd3dCommandList, m_pCamera);
 
 	if (m_pPlayer) m_pPlayer->Render(m_pd3dCommandList, m_pCamera);
 	//if(m_pPlayer->SphereCollider)m_pPlayer->SphereCollider->Render(m_pd3dCommandList, m_pCamera);
