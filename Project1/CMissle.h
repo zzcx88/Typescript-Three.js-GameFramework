@@ -15,6 +15,8 @@ public:
 	XMFLOAT3					m_xmf3Velocity = XMFLOAT3(0.0f, 0.0f, 0.0f);
 	XMFLOAT3					m_xmfTarget = XMFLOAT3(0.0f, 0.0f, 0.0f);
 
+	bool FirstFire = true;
+
 public:
 	virtual void Animate(float fTimeElapsed);
 	void Move(DWORD nDirection, float fDistance, bool bVelocity = false);

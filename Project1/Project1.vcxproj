@@ -156,6 +156,7 @@
     <ClInclude Include="CMesh.h" />
     <ClInclude Include="CAircraftMesh.h" />
     <ClInclude Include="CMissle.h" />
+    <ClInclude Include="CollisionManager.h" />
     <ClInclude Include="Constant.h" />
     <ClInclude Include="CPlane.h" />
     <ClInclude Include="CPlaneMesh.h" />
@@ -196,6 +197,7 @@
     <ClCompile Include="CMesh.cpp" />
     <ClCompile Include="CAircraftMesh.cpp" />
     <ClCompile Include="CMissle.cpp" />
+    <ClCompile Include="CollisionManager.cpp" />
     <ClCompile Include="CPlane.cpp" />
     <ClCompile Include="CPlaneMesh.cpp" />
     <ClCompile Include="CPlayer.cpp" />

@@ -355,6 +355,7 @@ namespace Plane
 #include "KeyManager.h"
 #include "ObjectManager.h"
 #include "CShaderManager.h"
+#include "CollisionManager.h"
 
 // 디버깅용 콘솔 창
 #ifdef UNICODE 

@@ -242,15 +242,28 @@ bool CTestScene::ProcessInput(UCHAR* pKeysBuffer)
 
 void CTestScene::AnimateObjects(float fTimeElapsed)
 {
-	if(m_ObjManager->GetObjFromTag(L"SphereCollider", OBJ_ENEMY)->SphereCollider->m_BoundingSphere.Center.z != 0)
-	if (m_ObjManager->GetObjFromTag(L"SphereCollider", OBJ_ENEMY)->SphereCollider->m_BoundingSphere.Intersects(m_pPlayer->SphereCollider->m_BoundingSphere))
+	if (m_ObjManager->GetObjFromTag(L"SphereCollider", OBJ_ENEMY)->SphereCollider->m_BoundingSphere.Center.z != 0)
 	{
-		//m_pPlayer->SetPosition(XMFLOAT3(0, 0 ,0));
-		cout <<"Player : "<< m_pPlayer->SphereCollider->m_BoundingSphere.Center.z << ", Sphere : " << m_ObjManager->GetObjFromTag(L"SphereCollider", OBJ_ENEMY)->SphereCollider->m_BoundingSphere.Center.z << endl;
-		//m_ObjManager->ReleaseObjFromTag(L"SphereCollider", OBJ_ENEMY);
+		if (m_ObjManager->GetObjFromTag(L"SphereCollider", OBJ_ENEMY)->SphereCollider->m_BoundingSphere.Intersects(m_pPlayer->SphereCollider->m_BoundingSphere))
+		{
+			//m_pPlayer->SetPosition(XMFLOAT3(0, 0 ,0));
+			cout << "Player : " << m_pPlayer->SphereCollider->m_BoundingSphere.Center.z << ", Sphere : " << m_ObjManager->GetObjFromTag(L"SphereCollider", OBJ_ENEMY)->SphereCollider->m_BoundingSphere.Center.z << endl;
+			//m_ObjManager->ReleaseObjFromTag(L"SphereCollider", OBJ_ENEMY);
+		}
+		if (m_ObjManager->GetObjFromTag(L"player_missle", OBJ_ENEMY))
+			cout << m_ObjManager->GetObjFromTag(L"player_missle", OBJ_ENEMY)->m_xmf4x4World._41 << endl;
 	}
-	if(m_ObjManager->GetObjFromTag(L"player_missle", OBJ_ENEMY))
-		cout << m_ObjManager->GetObjFromTag(L"player_missle", OBJ_ENEMY)->m_xmf4x4World._41 << endl;
+
+	if (m_ObjManager->GetObjFromTag(L"player_missle", OBJ_MISSLE))
+	{
+		if (m_ObjManager->GetObjFromTag(L"SphereCollider", OBJ_ENEMY)->SphereCollider->m_BoundingSphere.Intersects(m_ObjManager->GetObjFromTag(L"player_missle", OBJ_MISSLE)->SphereCollider->m_BoundingSphere))
+		{
+			cout << "Player : " << m_pPlayer->SphereCollider->m_BoundingSphere.Center.z << ", player_missle : " << 
+				m_ObjManager->GetObjFromTag(L"player_missle", OBJ_MISSLE)->SphereCollider->m_BoundingSphere.Center.z << endl;
+		}
+		if (m_ObjManager->GetObjFromTag(L"player_missle", OBJ_ENEMY))
+			cout << m_ObjManager->GetObjFromTag(L"player_missle", OBJ_ENEMY)->m_xmf4x4World._41 << endl;
+	}
 
 	m_fElapsedTime = fTimeElapsed;
 	m_ObjManager->Update(fTimeElapsed);

@@ -106,6 +106,9 @@
     <Filter Include="GameObject\Missle">
       <UniqueIdentifier>{8000476f-6e80-4272-a7b8-42da249f76d3}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Manager\CollisionManager">
+      <UniqueIdentifier>{c2a809ff-6292-423c-92bf-5d38a9efc6d6}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="targetver.h">
@@ -222,6 +225,9 @@
     <ClInclude Include="CMissle.h">
       <Filter>GameObject\Missle</Filter>
     </ClInclude>
+    <ClInclude Include="CollisionManager.h">
+      <Filter>Manager\CollisionManager</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="DDSTextureLoader12.cpp">
@@ -316,6 +322,9 @@
     </ClCompile>
     <ClCompile Include="CMissle.cpp">
       <Filter>GameObject\Missle</Filter>
+    </ClCompile>
+    <ClCompile Include="CollisionManager.cpp">
+      <Filter>Manager\CollisionManager</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
