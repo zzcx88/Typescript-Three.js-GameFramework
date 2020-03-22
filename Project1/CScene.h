@@ -21,20 +21,29 @@ public:
 	virtual void BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList) PURE;
 	virtual void ReleaseObjects() PURE;
 
+	ID3D12RootSignature* CreatePostProcessRootSignature(ID3D12Device* pd3dDevice);
 	ID3D12RootSignature* CreateGraphicsRootSignature(ID3D12Device* pd3dDevice);
 	ID3D12RootSignature* GetGraphicsRootSignature() { return(m_pd3dGraphicsRootSignature); }
 
+	ID3D12RootSignature* GetComputeRootSignature() { return(m_pd3dComputeRootSignature); }
+	ID3D12DescriptorHeap* GetCbvSrvDescriptorHeap() { return(m_pd3dCbvSrvDescriptorHeap); }
+	
+
 	virtual bool ProcessInput(UCHAR* pKeysBuffer) PURE;
 	virtual void AnimateObjects(float fTimeElapsed) PURE;
-	virtual void Render(ID3D12GraphicsCommandList* pd3dCommandList, CCamera* pCamera = NULL) PURE;
+	virtual void Render(ID3D12GraphicsCommandList* pd3dCommandList, CCamera* pCamera = NULL, ID3D12Resource* pCurrentBackBuffer = NULL) PURE;
 
 	virtual void ReleaseUploadBuffers() PURE;
 
 	CPlayer* m_pPlayer = NULL;
 	ObjectManager* m_ObjManager = nullptr;
 
+	int mClientWidth = 800;
+	int mClientHeight = 600;
+
 protected:
 	ID3D12RootSignature* m_pd3dGraphicsRootSignature = NULL;
+	ID3D12RootSignature* m_pd3dComputeRootSignature = NULL;
 
 	static ID3D12DescriptorHeap* m_pd3dCbvSrvDescriptorHeap;
 

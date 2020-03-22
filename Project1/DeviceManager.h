@@ -3,6 +3,7 @@
 #include "CScene.h"
 #include "CPlayer.h"
 #include "CCamera.h"
+#include "CBlur.h"
 #include "SceneManager.h"
 
 class CDeviceManager : public SingletonBase<CDeviceManager>
@@ -20,6 +21,10 @@ public:
 	void CreateRenderTargetViews();
 	void CreateDepthStencilView();
 	void ChangeSwapChainState();
+
+	ID3D12Resource *CurrentBackBuffer()const;
+	D3D12_CPU_DESCRIPTOR_HANDLE CurrentBackBufferView()const;
+	
 
 	void BuildScene();
 	void OnProcessingMouseMessage(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam);
@@ -52,6 +57,10 @@ private:
 	static const UINT			m_nSwapChainBuffers = 2;
 	UINT						m_nSwapChainBufferIndex;
 
+	int m_nCurrBackBuffer = 0;
+
+	ID3D12RootSignature* m_pRootSignature = NULL;
+
 	ID3D12Resource* m_ppd3dSwapChainBackBuffers[m_nSwapChainBuffers];
 	ID3D12DescriptorHeap* m_pd3dRtvDescriptorHeap = NULL;
 	UINT						m_nRtvDescriptorIncrementSize;
@@ -81,6 +90,9 @@ private:
 	CGameTimer					m_GameTimer;
 	//CScene* m_pScene = NULL;
 	CPlayer* m_pPlayer = NULL;
+	CBlur* m_pBlur = NULL;
+	CBlurFilter* m_pBlurFilter = NULL;
 	CCamera* m_pCamera = NULL;
+	int m_BlurSwitch = 0;
 };
 

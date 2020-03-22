@@ -43,6 +43,7 @@ void CDeviceManager::DeviceInitalize(HINSTANCE hInstance, HWND hMainWnd)
 	m_hWnd = hMainWnd;
 
 	CreateD3DDevice();
+
 	CreateCommandQueueAndList();
 	CreateRtvAndDsvDescriptorHeaps();
 	CreateSwapChain();
@@ -51,6 +52,7 @@ void CDeviceManager::DeviceInitalize(HINSTANCE hInstance, HWND hMainWnd)
 	CoInitialize(NULL);
 
 	BuildScene();
+
 }
 
 void CDeviceManager::CreateD3DDevice()
@@ -187,6 +189,7 @@ void CDeviceManager::CreateSwapChain()
 #endif
 }
 
+
 void CDeviceManager::CreateRenderTargetViews()
 {
 	D3D12_CPU_DESCRIPTOR_HANDLE d3dRtvCPUDescriptorHandle = m_pd3dRtvDescriptorHeap->GetCPUDescriptorHandleForHeapStart();
@@ -281,6 +284,15 @@ void CDeviceManager::BuildScene()
 	//m_pPlayer->SetScale(XMFLOAT3(10,10,10));
 	m_pCamera = m_pPlayer->GetCamera();
 
+	m_pBlur = new CBlur(m_pd3dDevice, m_pd3dCommandList, m_pSceneManager->GetComputeRootSignature());
+	
+	m_pBlurFilter = new CBlurFilter(m_pd3dDevice, FRAME_BUFFER_WIDTH, FRAME_BUFFER_HEIGHT, DXGI_FORMAT_R8G8B8A8_UNORM);
+
+	m_pBlurFilter->BuildDescriptors(
+		CD3DX12_CPU_DESCRIPTOR_HANDLE(m_pSceneManager->GetCbvSrvDescriptorHeap()->GetCPUDescriptorHandleForHeapStart(), 11, 32),
+		CD3DX12_GPU_DESCRIPTOR_HANDLE(m_pSceneManager->GetCbvSrvDescriptorHeap()->GetGPUDescriptorHandleForHeapStart(), 11, 32),
+		32);
+
 	m_pd3dCommandList->Close();
 	ID3D12CommandList* ppd3dCommandLists[] = { m_pd3dCommandList };
 	m_pd3dCommandQueue->ExecuteCommandLists(1, ppd3dCommandLists);
@@ -333,6 +345,10 @@ void CDeviceManager::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPA
 		case VK_F2:
 		case VK_F3:
 			m_pCamera = m_pPlayer->ChangeCamera((DWORD)(wParam - VK_F1 + 1), m_GameTimer.GetTimeElapsed());
+			break;
+		case VK_F4:
+			if (m_BlurSwitch == BLUR_OFF) m_BlurSwitch = BLUR_ON;
+			else m_BlurSwitch = BLUR_OFF;
 			break;
 		case VK_F9:
 			ChangeSwapChainState();
@@ -457,15 +473,41 @@ void CDeviceManager::FrameAdvance()
 
 	m_pd3dCommandList->OMSetRenderTargets(1, &d3dRtvCPUDescriptorHandle, TRUE, &d3dDsvCPUDescriptorHandle);
 
-	m_pSceneManager->Render(m_pd3dCommandList, m_pCamera);
+	m_pd3dCommandList->SetGraphicsRootSignature(m_pRootSignature);
+
+	m_pSceneManager->Render(m_pd3dCommandList, m_pCamera, CurrentBackBuffer());
 
 	if (m_pPlayer) m_pPlayer->Render(m_pd3dCommandList, m_pCamera);
 	//if(m_pPlayer->SphereCollider)m_pPlayer->SphereCollider->Render(m_pd3dCommandList, m_pCamera);
 
-	d3dResourceBarrier.Transition.StateBefore = D3D12_RESOURCE_STATE_RENDER_TARGET;
-	d3dResourceBarrier.Transition.StateAfter = D3D12_RESOURCE_STATE_PRESENT;
-	d3dResourceBarrier.Transition.Subresource = D3D12_RESOURCE_BARRIER_ALL_SUBRESOURCES;
-	m_pd3dCommandList->ResourceBarrier(1, &d3dResourceBarrier);
+	if (m_BlurSwitch == BLUR_ON)
+	{
+		m_pBlurFilter->Execute(m_pd3dCommandList, m_pSceneManager->GetComputeRootSignature(),
+			m_pBlur->m_pHBlurPipelineState, m_pBlur->m_pVBlurPipelineState, CurrentBackBuffer(), 4);
+
+		// Prepare to copy blurred output to the back buffer. 후면 버퍼에 블러처리한 텍스쳐를 복사할 수 있도록 상태 전이
+		d3dResourceBarrier.Transition.pResource = CurrentBackBuffer();
+		d3dResourceBarrier.Transition.StateBefore = D3D12_RESOURCE_STATE_COPY_SOURCE;
+		d3dResourceBarrier.Transition.StateAfter = D3D12_RESOURCE_STATE_COPY_DEST;
+		d3dResourceBarrier.Transition.Subresource = D3D12_RESOURCE_BARRIER_ALL_SUBRESOURCES;
+		m_pd3dCommandList->ResourceBarrier(1, &d3dResourceBarrier);
+
+		m_pd3dCommandList->CopyResource(CurrentBackBuffer(), m_pBlurFilter->Output());
+
+		// Transition to PRESENT state. 그리기 상태로 전이
+		d3dResourceBarrier.Transition.pResource = CurrentBackBuffer();
+		d3dResourceBarrier.Transition.StateBefore = D3D12_RESOURCE_STATE_COPY_DEST;
+		d3dResourceBarrier.Transition.StateAfter = D3D12_RESOURCE_STATE_PRESENT;
+		d3dResourceBarrier.Transition.Subresource = D3D12_RESOURCE_BARRIER_ALL_SUBRESOURCES;
+		m_pd3dCommandList->ResourceBarrier(1, &d3dResourceBarrier);
+	}
+	else
+	{
+		d3dResourceBarrier.Transition.StateBefore = D3D12_RESOURCE_STATE_RENDER_TARGET;
+		d3dResourceBarrier.Transition.StateAfter = D3D12_RESOURCE_STATE_PRESENT;
+		d3dResourceBarrier.Transition.Subresource = D3D12_RESOURCE_BARRIER_ALL_SUBRESOURCES;
+		m_pd3dCommandList->ResourceBarrier(1, &d3dResourceBarrier);
+	}
 
 	hResult = m_pd3dCommandList->Close();
 
@@ -511,3 +553,16 @@ void CDeviceManager::MoveToNextFrame()
 		::WaitForSingleObject(m_hFenceEvent, INFINITE);
 	}
 }
+
+ID3D12Resource* CDeviceManager::CurrentBackBuffer()const
+{
+	return m_ppd3dSwapChainBackBuffers[m_nSwapChainBufferIndex];
+}
+D3D12_CPU_DESCRIPTOR_HANDLE CDeviceManager::CurrentBackBufferView()const
+{
+	return CD3DX12_CPU_DESCRIPTOR_HANDLE(
+		m_pd3dRtvDescriptorHeap->GetCPUDescriptorHandleForHeapStart(),
+		m_nSwapChainBufferIndex,
+		m_nRtvDescriptorIncrementSize);
+}
+

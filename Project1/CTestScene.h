@@ -6,6 +6,9 @@
 #include "CHeightMapTerrain.h"
 #include "CSuperCobraObject.h"
 
+
+
+
 #define MAX_LIGHTS							16 
 
 #define POINT_LIGHT							1
@@ -55,7 +58,7 @@ public:
 
 	bool ProcessInput(UCHAR* pKeysBuffer);
 	void AnimateObjects(float fTimeElapsed);
-	void Render(ID3D12GraphicsCommandList* pd3dCommandList, CCamera* pCamera = NULL);
+	void Render(ID3D12GraphicsCommandList* pd3dCommandList, CCamera* pCamera = NULL, ID3D12Resource* pCurrentBackBuffer = NULL);
 
 	void ReleaseUploadBuffers();
 
@@ -69,8 +72,8 @@ public:
 	CShader** m_ppShaders = NULL;
 
 	CSkyBox* m_pSkyBox = NULL;
+	CBlur* m_pBlur = NULL;
 
-	
 	CHeightMapTerrain* m_pTerrain = NULL;
 
 	LIGHT* m_pLights = NULL;

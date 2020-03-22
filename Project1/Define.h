@@ -63,3 +63,8 @@
 #define SPACESHIP_CAMERA					0x02
 #define THIRD_PERSON_CAMERA			0x03
 
+#define D3DCOMPILE_DEBUG 1
+
+//Blur Switch
+#define BLUR_OFF 0 
+#define BLUR_ON 1 
