@@ -192,6 +192,9 @@ public:
 	virtual void ReleaseUploadBuffers();
 
 	XMFLOAT3 GetPosition();
+	XMFLOAT3* GetPositionForMissle();
+	XMFLOAT3* m_xmpPosition = NULL;
+	XMFLOAT3 m_positionForMissle;
 	XMFLOAT3 GetLook();
 	XMFLOAT3 GetUp();
 	XMFLOAT3 GetRight();

@@ -519,8 +519,8 @@ void CAirplanePlayer::PitchWingReturn(float fTimeElapsed)
 void CAirplanePlayer::MissleLaunch()
 {
 	CMissle* pMissle;
-	XMFLOAT3 temp = m_ObjManager->GetObjFromTag(L"SphereCollider", OBJ_ENEMY)->GetPosition();
-	pMissle = new CMissle(m_pd3dDevice, m_pd3dCommandList, m_pd3dGraphicsRootSignature,m_pMissleModelCol, temp/*m_xmf3Position*/);
+	XMFLOAT3* temp = m_ObjManager->GetObjFromTag(L"SphereCollider", OBJ_ENEMY)->GetPositionForMissle();
+	pMissle = new CMissle(m_pd3dDevice, m_pd3dCommandList, m_pd3dGraphicsRootSignature,m_pMissleModelCol, temp, m_xmf3Position);
 	pMissle->m_xmf3Look = m_xmf3Look;
 	pMissle->m_xmf4x4ToParent = Matrix4x4::Multiply(XMMatrixScaling(1,1,1), m_xmf4x4ToParent);
 	pMissle->SetChild(m_pMissleModel->m_pModelRootObject);

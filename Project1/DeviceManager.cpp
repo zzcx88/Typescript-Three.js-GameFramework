@@ -276,6 +276,7 @@ void CDeviceManager::BuildScene()
 	m_pSceneManager->ChangeSceneState(SCENE_TEST, m_pd3dDevice, m_pd3dCommandList);
 
 	CAirplanePlayer* pPlayer = new CAirplanePlayer(m_pd3dDevice, m_pd3dCommandList, m_pSceneManager->GetGraphicsRootSignature(), NULL);
+	//pPlayer->SetPosition(XMFLOAT3(0, 0, 0));
 	pPlayer->SetPosition(XMFLOAT3(410, 1000, -5000));
 	//pPlayer->SetPosition(XMFLOAT3(-1000, 3000, -10000));
 	//pPlayer->SetScale(XMFLOAT3(0.02, 0.02, 0.02));

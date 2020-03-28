@@ -423,6 +423,9 @@ void CGameObject::Animate(float fTimeElapsed)
 
 	if (m_pSibling) m_pSibling->Animate(fTimeElapsed);
 	if (m_pChild) m_pChild->Animate(fTimeElapsed);
+
+	m_positionForMissle.x = m_xmf4x4World._41, m_positionForMissle.y = m_xmf4x4World._42, m_positionForMissle.z = m_xmf4x4World._43;
+	m_xmpPosition = (XMFLOAT3*)&m_positionForMissle;
 }
 
 void CGameObject::Render(ID3D12GraphicsCommandList* pd3dCommandList, CCamera* pCamera)
@@ -513,6 +516,12 @@ void CGameObject::SetScale(float x, float y, float z)
 XMFLOAT3 CGameObject::GetPosition()
 {
 	return(XMFLOAT3(m_xmf4x4World._41, m_xmf4x4World._42, m_xmf4x4World._43));
+}
+
+XMFLOAT3* CGameObject::GetPositionForMissle()
+{
+	//cout << m_xmpPosition->y << endl;
+	return(m_xmpPosition);
 }
 
 XMFLOAT3 CGameObject::GetLook()

@@ -371,13 +371,16 @@
     <FxCompile Include="Shaders.hlsl">
       <Filter>HLSL</Filter>
     </FxCompile>
-    <FxCompile Include="BillBoard.hlsl">
-      <Filter>HLSL</Filter>
-    </FxCompile>
     <FxCompile Include="Plane.hlsl">
       <Filter>HLSL</Filter>
     </FxCompile>
     <FxCompile Include="Blur.hlsl">
+      <Filter>HLSL</Filter>
+    </FxCompile>
+    <FxCompile Include="Cloud.hlsl">
+      <Filter>HLSL</Filter>
+    </FxCompile>
+    <FxCompile Include="BillBoardAnimation.hlsl">
       <Filter>HLSL</Filter>
     </FxCompile>
   </ItemGroup>

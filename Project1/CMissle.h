@@ -4,7 +4,7 @@
 class CMissle : public CGameObject
 {
 public:
-	CMissle(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList, ID3D12RootSignature* pd3dGraphicsRootSignature, CLoadedModelInfo* pSphereModel, XMFLOAT3& xmfTarget);
+	CMissle(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList, ID3D12RootSignature* pd3dGraphicsRootSignature, CLoadedModelInfo* pSphereModel, XMFLOAT3* xmfTarget, XMFLOAT3 xmfLunchPosition);
 	virtual ~CMissle();
 
 public:
@@ -13,15 +13,22 @@ public:
 	XMFLOAT3					m_xmf3Up = XMFLOAT3(0.0f, 1.0f, 0.0f);
 	XMFLOAT3					m_xmf3Look = XMFLOAT3(0.0f, 0.0f, 1.0f);
 	XMFLOAT3					m_xmf3Velocity = XMFLOAT3(0.0f, 0.0f, 0.0f);
-	XMFLOAT3					m_xmfTarget = XMFLOAT3(0.0f, 0.0f, 0.0f);
+	XMFLOAT3* m_xmfTarget;
+	XMFLOAT3					m_xmfLunchPosition = XMFLOAT3(0.0f, 0.0f, 0.0f);
+	XMFLOAT3 m_xmfAngle = XMFLOAT3(0.0f, 0.0f, 0.0f);
+
+	XMFLOAT3 m_xmfAxis;
+	XMFLOAT3 m_xmf3TargetVector;
 
 	bool FirstFire = true;
+	bool SamePosY = false;
 
 public:
 	virtual void Animate(float fTimeElapsed);
 	void Move(DWORD nDirection, float fDistance, bool bVelocity = false);
 	void Move(const XMFLOAT3& xmf3Shift, bool bVelocity = false);
-	void SetLookAt();
+	void Rotate(XMFLOAT3* pxmf3Axis, float fAngle);
+	void SetLookAt(float fTimeElapsed);
 	virtual void Render(ID3D12GraphicsCommandList* pd3dCommandList, CCamera* pCamera);
 };
 

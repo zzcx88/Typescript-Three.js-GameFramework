@@ -162,8 +162,9 @@ void CTestScene::BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandLis
 	CSuperCobraObject* m_pSphereCollider;
 	m_pSphereCollider = new CSuperCobraObject(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature);
 	m_pSphereCollider->SetChild(p052C->m_pModelRootObject);
-	m_pSphereCollider->SetPosition(410, 1000, -2000);
-	m_pSphereCollider->SetScale(1,1,1);
+	//m_pSphereCollider->SetPosition(410, 1000, 6000);
+	m_pSphereCollider->SetPosition(410, 1000, -3000);
+	m_pSphereCollider->SetScale(10,10,10);
 	m_ObjManager->AddObject(L"SphereCollider", m_pSphereCollider, OBJ_ENEMY);
 
 	/*XMFLOAT3 temp(0,0,0);
@@ -264,7 +265,7 @@ void CTestScene::AnimateObjects(float fTimeElapsed)
 			cout << m_ObjManager->GetObjFromTag(L"player_missle", OBJ_ENEMY)->m_xmf4x4World._41 << endl;
 	}
 
-	if (m_ObjManager->GetObjFromTag(L"player_missle", OBJ_MISSLE))
+	/*if (m_ObjManager->GetObjFromTag(L"player_missle", OBJ_MISSLE))
 	{
 		if (m_ObjManager->GetObjFromTag(L"SphereCollider", OBJ_ENEMY)->SphereCollider->m_BoundingSphere.Intersects(m_ObjManager->GetObjFromTag(L"player_missle", OBJ_MISSLE)->SphereCollider->m_BoundingSphere))
 		{
@@ -273,8 +274,10 @@ void CTestScene::AnimateObjects(float fTimeElapsed)
 		}
 		if (m_ObjManager->GetObjFromTag(L"player_missle", OBJ_ENEMY))
 			cout << m_ObjManager->GetObjFromTag(L"player_missle", OBJ_ENEMY)->m_xmf4x4World._41 << endl;
-	}
-
+	}*/
+	m_ObjManager->GetObjFromTag(L"SphereCollider", OBJ_ENEMY)->Rotate(0,0.1,0);
+	m_ObjManager->GetObjFromTag(L"SphereCollider", OBJ_ENEMY)->MoveForward(200 * fTimeElapsed);
+	//m_ObjManager->GetObjFromTag(L"SphereCollider", OBJ_ENEMY)->MoveUp(2);
 	m_fElapsedTime = fTimeElapsed;
 	m_ObjManager->Update(fTimeElapsed);
 }
