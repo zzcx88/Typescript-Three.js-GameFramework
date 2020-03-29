@@ -57,7 +57,7 @@ void CMissle::Move(DWORD dwDirection, float fDistance, bool bUpdateVelocity)
 		Move(xmf3Shift, bUpdateVelocity);
 	}
 }
-
+ 
 void CMissle::Move(const XMFLOAT3& xmf3Shift, bool bUpdateVelocity)
 {
 	if (bUpdateVelocity)
