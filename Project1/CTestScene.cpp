@@ -9,6 +9,7 @@
 #include "CShaderManager.h"
 #include "CSphereCollider.h"
 #include "CMissle.h"
+#include "CMissleFog.h"
 
 
 
@@ -159,13 +160,23 @@ void CTestScene::BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandLis
 	m_ObjManager->AddObject(L"destroyer", m_ppHierarchicalGameObjects[3], OBJ_ENEMY);
 	m_ObjManager->AddObject(L"Sphere", m_ppHierarchicalGameObjects[4], OBJ_ENEMY);
 
-	CSuperCobraObject* m_pSphereCollider;
-	m_pSphereCollider = new CSuperCobraObject(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature);
-	m_pSphereCollider->SetChild(p052C->m_pModelRootObject);
+	CSuperCobraObject* pSphereCollider;
+	pSphereCollider = new CSuperCobraObject(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature);
+	pSphereCollider->SetChild(p052C->m_pModelRootObject);
 	//m_pSphereCollider->SetPosition(410, 1000, 6000);
-	m_pSphereCollider->SetPosition(410, 1000, -3000);
-	m_pSphereCollider->SetScale(10,10,10);
-	m_ObjManager->AddObject(L"SphereCollider", m_pSphereCollider, OBJ_ENEMY);
+	pSphereCollider->SetPosition(410, 1000, -3000);
+	pSphereCollider->SetScale(10,10,10);
+	m_ObjManager->AddObject(L"SphereCollider", pSphereCollider, OBJ_ENEMY);
+
+	//Prepare EffectObject
+	//////////////////////////////////////////////////////
+	m_pMissleFog = new CMissleFog(0, pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, 2.f, 2.f, 0.f);
+	m_pMissleFog->m_bRefference = true;
+	//pMissleFog->SetPosition(0.f, -1000.f, 0.f);
+	//pMissleFog->SetScale(5,5,0);
+	//pMissleFog->SetPosition(410, 1000, -3000);
+	m_ObjManager->AddObject(L"MissleFog", m_pMissleFog, OBJ_EFFECT);
+
 
 	/*XMFLOAT3 temp(0,0,0);
 	CMissle* m_pMissle;

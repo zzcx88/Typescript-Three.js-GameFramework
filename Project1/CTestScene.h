@@ -39,6 +39,8 @@ struct LIGHTS
 	int									m_nLights;
 };
 
+
+class CMissleFog;
 class CTestScene : public CScene
 {
 public:
@@ -86,5 +88,8 @@ public:
 
 	int									m_nHierarchicalGameObjects = 0;
 	CGameObject** m_ppHierarchicalGameObjects = NULL;
+
+
+	CMissleFog* m_pMissleFog;
 };
 

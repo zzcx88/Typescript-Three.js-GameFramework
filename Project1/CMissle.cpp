@@ -1,13 +1,20 @@
 #include "stdafx.h"
 #include "CMissle.h"
+#include "CMissleFog.h"
+#include "ObjectManager.h"
 
-CMissle::CMissle(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList, ID3D12RootSignature* pd3dGraphicsRootSignature, CLoadedModelInfo* pSphereModel, XMFLOAT3* xmfTarget, XMFLOAT3 xmfLunchPosition)
+CMissle::CMissle(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList, ID3D12RootSignature* pd3dGraphicsRootSignature, CLoadedModelInfo* pSphereModel, XMFLOAT3* xmfTarget, XMFLOAT3 xmfLunchPosition, ObjectManager* pObjectManager)
 {
 	m_xmfTarget = xmfTarget;
 	m_xmfLunchPosition = xmfLunchPosition;
 	SphereCollider = new CSphereCollider(pSphereModel);
 	SphereCollider->SetScale(1, 1, 1);
 	SphereCollider->SetSphereCollider(GetPosition(), 10.0f);
+	m_pd3dDevice = pd3dDevice;
+	m_pd3dCommandList = pd3dCommandList;
+	m_pd3dGraphicsRootSignature = pd3dGraphicsRootSignature;
+
+	m_ObjManager = pObjectManager;
 
 	CreateShaderVariables(pd3dDevice, pd3dCommandList);
 	//cout << m_xmfTarget->y << endl;
@@ -19,6 +26,8 @@ CMissle::~CMissle()
 
 void CMissle::Animate(float fTimeElapsed)
 {
+	m_fTimeElapsed += fTimeElapsed;
+
 	m_xmf3Position.x = m_xmf4x4ToParent._41;
 	m_xmf3Position.y = m_xmf4x4ToParent._42;
 	m_xmf3Position.z = m_xmf4x4ToParent._43;
@@ -32,14 +41,33 @@ void CMissle::Animate(float fTimeElapsed)
 		FirstFire = false;
 	}
 	
-	SetLookAt(fTimeElapsed);
-	Move(DIR_FORWARD, 1500.0f * fTimeElapsed, false);
+  	SetLookAt(fTimeElapsed);
+ 	Move(DIR_FORWARD, 1500.0f * fTimeElapsed, false);
 	CGameObject::Animate(fTimeElapsed);
 	if (SphereCollider)SphereCollider->SetPosition(GetPosition());
 	if (SphereCollider)SphereCollider->m_xmf4x4ToParent = Matrix4x4::Multiply(XMMatrixScaling(1, 1, 1), m_xmf4x4ToParent);
 	SphereCollider->SetScale(0.5, 0.5, 0.5);
 	if (SphereCollider)SphereCollider->Animate(fTimeElapsed, GetPosition());
 	//cout << SphereCollider->m_BoundingSphere.Center.z << endl;
+
+	if (m_fTimeElapsed > m_fAddFogFrequence)
+	{
+		//CMissleFog* pMissleFog;
+		//pMissleFog = new CMissleFog(0, m_pd3dDevice, m_pd3dCommandList, m_pd3dGraphicsRootSignature, 1.f, 1.f, 0.f);
+		//pMissleFog->SetMesh(m_ObjManager->GetObjFromTag(L"MissleFog", OBJ_EFFECT)->m_pPlaneMesh);
+		//pMissleFog->SetMaterial(0, m_ObjManager->GetObjFromTag(L"MissleFog", OBJ_EFFECT)->m_pEffectMaterial);
+		//pMissleFog->SetPosition(m_xmf3Position);
+
+		CMissleFog* pMissleFog;
+		pMissleFog = new CMissleFog();
+		pMissleFog->m_pCamera = m_pCamera;
+		pMissleFog->SetMesh(m_ObjManager->GetObjFromTag(L"MissleFog", OBJ_EFFECT)->m_pPlaneMesh);
+		pMissleFog->SetMaterial(0, m_ObjManager->GetObjFromTag(L"MissleFog", OBJ_EFFECT)->m_pEffectMaterial);
+		pMissleFog->SetPosition(m_xmf3Position);
+		m_ObjManager->AddObject(L"MissleFogInstance", pMissleFog, OBJ_EFFECT);
+
+		m_fTimeElapsed = 0;
+	}
 }
 
 void CMissle::Move(DWORD dwDirection, float fDistance, bool bUpdateVelocity)

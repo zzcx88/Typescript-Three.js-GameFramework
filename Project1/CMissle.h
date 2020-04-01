@@ -1,10 +1,11 @@
 #pragma once
 #include "CGameObject.h"
 
+class CCamera;
 class CMissle : public CGameObject
 {
 public:
-	CMissle(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList, ID3D12RootSignature* pd3dGraphicsRootSignature, CLoadedModelInfo* pSphereModel, XMFLOAT3* xmfTarget, XMFLOAT3 xmfLunchPosition);
+	CMissle(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList, ID3D12RootSignature* pd3dGraphicsRootSignature, CLoadedModelInfo* pSphereModel, XMFLOAT3* xmfTarget, XMFLOAT3 xmfLunchPosition, ObjectManager* pObjectManage);
 	virtual ~CMissle();
 
 public:
@@ -19,9 +20,17 @@ public:
 
 	XMFLOAT3 m_xmfAxis;
 	XMFLOAT3 m_xmf3TargetVector;
+	CCamera* m_pCamera;
 
 	bool FirstFire = true;
-	bool SamePosY = false;
+	float m_fAddFogFrequence = 0.01f;
+	float m_fTimeElapsed = 0.f;
+
+	ID3D12Device* m_pd3dDevice;
+	ID3D12GraphicsCommandList* m_pd3dCommandList;
+	ID3D12RootSignature* m_pd3dGraphicsRootSignature;
+
+	ObjectManager* m_ObjManager;
 
 public:
 	virtual void Animate(float fTimeElapsed);

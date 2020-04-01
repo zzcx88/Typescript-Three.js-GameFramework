@@ -1,7 +1,7 @@
 #pragma once
 #include "CMesh.h"
+#include "CPlaneMesh.h"
 #include "CAnimationController.h"
-
 
 class CShader;
 class CStandardShader;
@@ -123,6 +123,7 @@ struct CB_GAMEOBJECT_INFO
 };
 
 class CSphereCollider;
+class CMissleFogShader;
 class CGameObject
 {
 private:
@@ -150,6 +151,15 @@ public:
 	int								m_nObjects = 0;
 	int								m_nMaterials = 0;
 	CMaterial** m_ppMaterials = NULL;
+	
+	////////////////////////////////////////
+	//Effect Attribute
+public:
+	CMaterial* m_pEffectMaterial;
+	CPlaneMesh* m_pPlaneMesh;
+	CTexture* m_pEffectTexture[1];
+	CMissleFogShader* m_EffectShader;
+///////////////////////////////////////////
 
 	XMFLOAT4X4						m_xmf4x4ToParent;
 	XMFLOAT4X4						m_xmf4x4World;

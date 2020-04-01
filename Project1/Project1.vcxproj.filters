@@ -115,6 +115,9 @@
     <Filter Include="GameObject\Plane\UI">
       <UniqueIdentifier>{35bc1100-0664-4df5-972c-d5919c6318e1}</UniqueIdentifier>
     </Filter>
+    <Filter Include="GameObject\MissleFog">
+      <UniqueIdentifier>{76b64a8c-49da-4cbd-aa94-17e9114e024e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="targetver.h">
@@ -243,6 +246,9 @@
     <ClInclude Include="CUI.h">
       <Filter>GameObject\Plane\UI</Filter>
     </ClInclude>
+    <ClInclude Include="CMissleFog.h">
+      <Filter>GameObject\MissleFog</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="DDSTextureLoader12.cpp">
@@ -350,6 +356,9 @@
     <ClCompile Include="CUI.cpp">
       <Filter>GameObject\Plane\UI</Filter>
     </ClCompile>
+    <ClCompile Include="CMissleFog.cpp">
+      <Filter>GameObject\MissleFog</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Project1.rc">
@@ -380,7 +389,7 @@
     <FxCompile Include="Cloud.hlsl">
       <Filter>HLSL</Filter>
     </FxCompile>
-    <FxCompile Include="BillBoardAnimation.hlsl">
+    <FxCompile Include="MissleFog.hlsl">
       <Filter>HLSL</Filter>
     </FxCompile>
   </ItemGroup>
