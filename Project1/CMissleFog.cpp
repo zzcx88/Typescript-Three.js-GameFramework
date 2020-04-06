@@ -55,11 +55,19 @@ void CMissleFog::Animate(float fTimeElapsed)
 
 	m_fTimeElapsed += fTimeElapsed;
 
-	if (m_RenderOff == false)
-	{
-		m_pEffectMaterial->m_ppTextures[0] = m_pEffectTexture[0];
-		//m_RenderOff = true;
-	}
+	//if (m_RenderOff == false)
+	/*{
+		if (m_RenderOff == true)
+		{
+			m_pEffectMaterial->m_ppTextures[0] = m_pEffectTexture[1];
+			m_RenderOff = false;
+		}
+		else
+		{
+			m_pEffectMaterial->m_ppTextures[0] = m_pEffectTexture[0];
+			m_RenderOff = true;
+		}
+	}*/
 
 	if (m_bRefference != true)
 	{
@@ -82,7 +90,7 @@ void CMissleFog::Animate(float fTimeElapsed)
 
 void CMissleFog::SetLookAt(XMFLOAT3& xmfTarget)
 {
-	XMFLOAT3 xmfUp(1.0f, 0.0f, 0.0f);
+	XMFLOAT3 xmfUp(0.0f, 1.0f, 0.0f);
 	XMFLOAT4X4 mtxLookAt = Matrix4x4::LookAtLH(xmfTarget, m_xmf3Position, xmfUp);
 	m_xmf3Right = XMFLOAT3(mtxLookAt._11, mtxLookAt._21, mtxLookAt._31);
 	m_xmf3Up = XMFLOAT3(mtxLookAt._12, mtxLookAt._22, mtxLookAt._32);
