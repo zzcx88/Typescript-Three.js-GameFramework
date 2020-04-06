@@ -2,7 +2,7 @@
 #include "CPlane.h"
 #include "CPlaneMesh.h"
 
-#define TEXTURES    1
+#define TEXTURES    2
 
 class CMissleFog : public CPlane
 {
@@ -16,8 +16,10 @@ public:
 	CCamera*					m_pCamera;
 	float m_fScaleX = 1, m_fScaleY = 1;
 
-	float m_fAddFogFrequence = 1.5f;
+	float m_fDeleteFogFrequence = 2.5f;
+	float m_SmalFogFrequence = 1.25f;
 	float m_fTimeElapsed = 0.f;
+	float m_fDownTimeElapsed = 0.f;
 	bool m_RenderOff = false;
 	bool m_bRefference = false;
 

@@ -67,7 +67,7 @@ public:
 	void Release() { if (--m_nReferences <= 0) delete this; }
 
 public:
-	CTexture* m_pTexture = NULL;
+	//CTexture* m_pTexture = NULL;
 	CShader* m_pShader = NULL;
 
 	XMFLOAT4						m_xmf4AlbedoColor = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
@@ -157,7 +157,7 @@ public:
 public:
 	CMaterial* m_pEffectMaterial;
 	CPlaneMesh* m_pPlaneMesh;
-	CTexture* m_pEffectTexture[1];
+	CTexture* m_pEffectTexture[2];
 	CMissleFogShader* m_EffectShader;
 ///////////////////////////////////////////
 

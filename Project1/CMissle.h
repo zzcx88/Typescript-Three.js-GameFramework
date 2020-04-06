@@ -23,8 +23,10 @@ public:
 	CCamera* m_pCamera;
 
 	bool FirstFire = true;
+	float m_fDeleteFrequence = 5.0f;
 	float m_fAddFogFrequence = 0.01f;
-	float m_fTimeElapsed = 0.f;
+	float m_fAddFogTimeElapsed = 0.f;
+	float m_fDeleteTimeElapsed = 0.f;
 
 	ID3D12Device* m_pd3dDevice;
 	ID3D12GraphicsCommandList* m_pd3dCommandList;

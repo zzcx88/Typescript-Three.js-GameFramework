@@ -19,7 +19,9 @@ CMissleFog::CMissleFog(int nIndex, ID3D12Device* pd3dDevice, ID3D12GraphicsComma
 
 	//m_pEffectTexture[TEXTURES];
 	m_pEffectTexture[0] = new CTexture(1, RESOURCE_TEXTURE2D, 0);
-	m_pEffectTexture[0]->LoadTextureFromFile(pd3dDevice, pd3dCommandList, L"Effect/MissleFog.dds", 0);
+	m_pEffectTexture[0]->LoadTextureFromFile(pd3dDevice, pd3dCommandList, L"Effect/smoke.dds", 0);
+	m_pEffectTexture[1] = new CTexture(1, RESOURCE_TEXTURE2D, 0);
+	m_pEffectTexture[1]->LoadTextureFromFile(pd3dDevice, pd3dCommandList, L"Effect/MissleFog.dds", 0);
 
  	UINT ncbElementBytes = ((sizeof(CB_GAMEOBJECT_INFO) + 255) & ~255);
 	m_EffectShader = new CMissleFogShader();
@@ -32,7 +34,7 @@ CMissleFog::CMissleFog(int nIndex, ID3D12Device* pd3dDevice, ID3D12GraphicsComma
 	for (int i = 0; i < TEXTURES; i++) CTestScene::CreateShaderResourceViews(pd3dDevice, m_pEffectTexture[i], 15, false);
 
 	m_pEffectMaterial = new CMaterial(1);
-	m_pEffectMaterial->SetTexture(m_pEffectTexture[nIndex]);
+	m_pEffectMaterial->SetTexture(m_pEffectTexture[0]);
 	m_pEffectMaterial->SetShader(m_EffectShader);
 	SetMaterial(0, m_pEffectMaterial);
 }
@@ -53,15 +55,26 @@ void CMissleFog::Animate(float fTimeElapsed)
 
 	m_fTimeElapsed += fTimeElapsed;
 
+	if (m_RenderOff == false)
+	{
+		m_pEffectMaterial->m_ppTextures[0] = m_pEffectTexture[0];
+		//m_RenderOff = true;
+	}
+
 	if (m_bRefference != true)
 	{
-		if (m_fScaleX < 6)
-			SetScale(m_fScaleX += m_fTimeElapsed, m_fScaleY += m_fTimeElapsed, 1);
+		if (m_fScaleX < 7)
+		{
+			SetScale(m_fScaleX += m_fTimeElapsed / 2, m_fScaleY += m_fTimeElapsed / 2, 1);
+		}
 		else
-			SetScale(6, 6, 0);
+		{
+			SetScale(7, 7, 0);
+		}
 		SetLookAt(m_pCamera->GetPosition());
 	}
-	if (m_fTimeElapsed > m_fAddFogFrequence && m_bRefference == false)
+
+	if (m_fTimeElapsed > m_fDeleteFogFrequence && m_bRefference == false)
 	{
 		m_isDead = true;
 	}
