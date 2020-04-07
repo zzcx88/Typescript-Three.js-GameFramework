@@ -744,7 +744,7 @@ D3D12_BLEND_DESC CMissleFogShader::CreateBlendState()
 {
 	D3D12_BLEND_DESC d3dBlendDesc;
 	::ZeroMemory(&d3dBlendDesc, sizeof(D3D12_BLEND_DESC));
-	d3dBlendDesc.AlphaToCoverageEnable = TRUE;
+	d3dBlendDesc.AlphaToCoverageEnable = FALSE;
 	d3dBlendDesc.IndependentBlendEnable = FALSE;
 	d3dBlendDesc.RenderTarget[0].BlendEnable = TRUE;
 	d3dBlendDesc.RenderTarget[0].LogicOpEnable = FALSE;

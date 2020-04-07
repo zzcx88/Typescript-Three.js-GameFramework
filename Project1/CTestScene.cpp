@@ -173,7 +173,7 @@ void CTestScene::BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandLis
 	m_pMissleFog = new CMissleFog(0, pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, 4.f, 4.f, 0.f);
 	m_pMissleFog->m_bRefference = true;
 	//pMissleFog->SetPosition(0.f, -1000.f, 0.f);
-	//pMissleFog->SetScale(5,5,0);
+	//m_pMissleFog->SetScale(500,500,0);
 	//pMissleFog->SetPosition(410, 1000, -3000);
 	m_ObjManager->AddObject(L"MissleFog", m_pMissleFog, OBJ_EFFECT);
 

@@ -19,9 +19,25 @@ CMissleFog::CMissleFog(int nIndex, ID3D12Device* pd3dDevice, ID3D12GraphicsComma
 
 	//m_pEffectTexture[TEXTURES];
 	m_pEffectTexture[0] = new CTexture(1, RESOURCE_TEXTURE2D, 0);
-	m_pEffectTexture[0]->LoadTextureFromFile(pd3dDevice, pd3dCommandList, L"Effect/smoke.dds", 0);
+	m_pEffectTexture[0]->LoadTextureFromFile(pd3dDevice, pd3dCommandList, L"Effect/MissleFog.dds", 0);
 	m_pEffectTexture[1] = new CTexture(1, RESOURCE_TEXTURE2D, 0);
-	m_pEffectTexture[1]->LoadTextureFromFile(pd3dDevice, pd3dCommandList, L"Effect/MissleFog.dds", 0);
+	m_pEffectTexture[1]->LoadTextureFromFile(pd3dDevice, pd3dCommandList, L"Effect/MissleFog1.dds", 0);
+	m_pEffectTexture[2] = new CTexture(1, RESOURCE_TEXTURE2D, 0);
+	m_pEffectTexture[2]->LoadTextureFromFile(pd3dDevice, pd3dCommandList, L"Effect/MissleFog2.dds", 0);
+	m_pEffectTexture[3] = new CTexture(1, RESOURCE_TEXTURE2D, 0);
+	m_pEffectTexture[3]->LoadTextureFromFile(pd3dDevice, pd3dCommandList, L"Effect/MissleFog3.dds", 0);
+	m_pEffectTexture[4] = new CTexture(1, RESOURCE_TEXTURE2D, 0);
+	m_pEffectTexture[4]->LoadTextureFromFile(pd3dDevice, pd3dCommandList, L"Effect/MissleFog4.dds", 0);
+	m_pEffectTexture[5] = new CTexture(1, RESOURCE_TEXTURE2D, 0);
+	m_pEffectTexture[5]->LoadTextureFromFile(pd3dDevice, pd3dCommandList, L"Effect/MissleFog5.dds", 0);
+	m_pEffectTexture[6] = new CTexture(1, RESOURCE_TEXTURE2D, 0);
+	m_pEffectTexture[6]->LoadTextureFromFile(pd3dDevice, pd3dCommandList, L"Effect/MissleFog6.dds", 0);
+	m_pEffectTexture[7] = new CTexture(1, RESOURCE_TEXTURE2D, 0);
+	m_pEffectTexture[7]->LoadTextureFromFile(pd3dDevice, pd3dCommandList, L"Effect/MissleFog7.dds", 0);
+	m_pEffectTexture[8] = new CTexture(1, RESOURCE_TEXTURE2D, 0);
+	m_pEffectTexture[8]->LoadTextureFromFile(pd3dDevice, pd3dCommandList, L"Effect/MissleFog8.dds", 0);
+	m_pEffectTexture[9] = new CTexture(1, RESOURCE_TEXTURE2D, 0);
+	m_pEffectTexture[9]->LoadTextureFromFile(pd3dDevice, pd3dCommandList, L"Effect/MissleFog9.dds", 0);
 
  	UINT ncbElementBytes = ((sizeof(CB_GAMEOBJECT_INFO) + 255) & ~255);
 	m_EffectShader = new CMissleFogShader();
@@ -53,38 +69,51 @@ void CMissleFog::Animate(float fTimeElapsed)
 	m_xmf3Position.y = m_xmf4x4ToParent._42;
 	m_xmf3Position.z = m_xmf4x4ToParent._43;
 
+	//시간 이벤트를 위한 누적 시간
 	m_fTimeElapsed += fTimeElapsed;
+	m_fFadeTimeElapsed += fTimeElapsed;
 
-	//if (m_RenderOff == false)
-	/*{
-		if (m_RenderOff == true)
-		{
-			m_pEffectMaterial->m_ppTextures[0] = m_pEffectTexture[1];
-			m_RenderOff = false;
-		}
-		else
-		{
-			m_pEffectMaterial->m_ppTextures[0] = m_pEffectTexture[0];
-			m_RenderOff = true;
-		}
-	}*/
 
-	if (m_bRefference != true)
+	if (!m_bRefference)
 	{
 		if (m_fScaleX < 7)
 		{
-			SetScale(m_fScaleX += m_fTimeElapsed / 2, m_fScaleY += m_fTimeElapsed / 2, 1);
+			SetScale(m_fScaleX += m_fTimeElapsed / 10, m_fScaleY += m_fTimeElapsed / 10, 1);
 		}
 		else
 		{
+			//스케일이 7로 고정 된 후 텍스쳐 애니메이션을 실행한다.
 			SetScale(7, 7, 0);
+			if (m_fTimeElapsed > m_fDeleteFogFrequence)
+				TextureAnimate();
 		}
 		SetLookAt(m_pCamera->GetPosition());
 	}
+}
 
-	if (m_fTimeElapsed > m_fDeleteFogFrequence && m_bRefference == false)
+void CMissleFog::TextureAnimate()
+{
+	//해당 오브젝트가 래퍼런스 오브젝트가 아닐경우에만 애니메이트를 실행
+	if (!m_bRefference)
 	{
-		m_isDead = true;
+		//m_fFadeFrequence : 텍스쳐 교체주기, 얼마만큼의 주기에 변경 시킬지 원하는 값을 셋팅하면 됨
+		if (m_fFadeTimeElapsed > m_fFadeFrequence)
+		{
+			//텍스쳐 교체가 일어난다
+			m_pEffectMaterial->m_ppTextures[0] = m_pEffectTexture[m_nTextureIndex];
+			//텍스쳐 교체 주기를 체크하기 위한 누적 시간을 다시 0으로 초기화 한다
+			m_fFadeTimeElapsed = 0.f;
+			//텍스쳐 교체는 준비된 텍스쳐 갯수 만큼만 교체 되도록 한다.
+			if (m_nTextureIndex < TEXTURES)
+			{
+				m_nTextureIndex++;
+			}
+			//else 부분은 사용하고 싶으면 사용하면 됨, 아래 코드는 모든 텍스쳐 애니메이션이 끝나면 오브젝트를 delete하는 코드임
+			else
+			{
+				m_isDead = true;
+			}
+		}
 	}
 }
 
@@ -102,6 +131,5 @@ void CMissleFog::SetLookAt(XMFLOAT3& xmfTarget)
 
 void CMissleFog::Render(ID3D12GraphicsCommandList* pd3dCommandList, CCamera* pCamera)
 {
-	//if(m_RenderOff != true)
-		CGameObject::Render(pd3dCommandList, pCamera);
+	CGameObject::Render(pd3dCommandList, pCamera);
 }

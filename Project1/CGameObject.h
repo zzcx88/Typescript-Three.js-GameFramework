@@ -157,7 +157,7 @@ public:
 public:
 	CMaterial* m_pEffectMaterial;
 	CPlaneMesh* m_pPlaneMesh;
-	CTexture* m_pEffectTexture[2];
+	CTexture* m_pEffectTexture[20];
 	CMissleFogShader* m_EffectShader;
 ///////////////////////////////////////////
 
