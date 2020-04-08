@@ -154,11 +154,11 @@ void CTestScene::BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandLis
 	m_ppHierarchicalGameObjects[4]->SetChild(pMissle->m_pModelRootObject);
 	m_ppHierarchicalGameObjects[4]->SetPosition(410, 800, -5000);
 	m_ppHierarchicalGameObjects[4]->SetScale(50, 50, 50);
-	m_ObjManager->AddObject(L"enemy", m_ppHierarchicalGameObjects[0], OBJ_ENEMY);
-	m_ObjManager->AddObject(L"enemy", m_ppHierarchicalGameObjects[1], OBJ_ENEMY);
+	m_ObjManager->AddObject(L"enemy", m_ppHierarchicalGameObjects[0], OBJ_TEST);
+	m_ObjManager->AddObject(L"enemy", m_ppHierarchicalGameObjects[1], OBJ_TEST);
 	m_ObjManager->AddObject(L"water", m_ppHierarchicalGameObjects[2], OBJ_MAP);
-	m_ObjManager->AddObject(L"destroyer", m_ppHierarchicalGameObjects[3], OBJ_ENEMY);
-	m_ObjManager->AddObject(L"Sphere", m_ppHierarchicalGameObjects[4], OBJ_ENEMY);
+	m_ObjManager->AddObject(L"destroyer", m_ppHierarchicalGameObjects[3], OBJ_TEST);
+	m_ObjManager->AddObject(L"Sphere", m_ppHierarchicalGameObjects[4], OBJ_TEST);
 
 	CSuperCobraObject* pSphereCollider;
 	pSphereCollider = new CSuperCobraObject(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature);

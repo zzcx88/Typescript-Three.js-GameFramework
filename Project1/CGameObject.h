@@ -189,6 +189,8 @@ public:
 	virtual void Animate(float fTimeElapsed);
 	virtual void Animate(float fTimeElapsed, DWORD Direction) {}
 
+	virtual void CollisionActivate(CGameObject* collideTarget);
+
 	virtual void OnPrepareRender() { }
 	virtual void Render(ID3D12GraphicsCommandList* pd3dCommandList, CCamera* pCamera = NULL);
 

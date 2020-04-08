@@ -8,8 +8,8 @@ CMissle::CMissle(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dComman
 	m_xmfTarget = xmfTarget;
 	m_xmfLunchPosition = xmfLunchPosition;
 	SphereCollider = new CSphereCollider(pSphereModel);
-	SphereCollider->SetScale(1, 1, 1);
-	SphereCollider->SetSphereCollider(GetPosition(), 10.0f);
+	//SphereCollider->SetScale(100, 100, 100);
+	SphereCollider->SetSphereCollider(GetPosition(), 5.f);
 	m_pd3dDevice = pd3dDevice;
 	m_pd3dCommandList = pd3dCommandList;
 	m_pd3dGraphicsRootSignature = pd3dGraphicsRootSignature;
@@ -35,10 +35,6 @@ void CMissle::Animate(float fTimeElapsed)
 	
 	if (FirstFire)
 	{
-		/*m_xmf3TargetVector = Vector3::Subtract(*m_xmfTarget, m_xmfLunchPosition);
-		m_xmf3TargetVector = Vector3::Normalize(m_xmf3TargetVector);
-		m_xmfAxis = Vector3::CrossProduct(m_xmf3Look, m_xmf3TargetVector);
-		m_xmfAxis = Vector3::Normalize(m_xmfAxis);*/
 		FirstFire = false;
 	}
 	
@@ -51,10 +47,8 @@ void CMissle::Animate(float fTimeElapsed)
  	Move(DIR_FORWARD, 1500.0f * fTimeElapsed, false);
 	CGameObject::Animate(fTimeElapsed);
 	if (SphereCollider)SphereCollider->SetPosition(GetPosition());
-	if (SphereCollider)SphereCollider->m_xmf4x4ToParent = Matrix4x4::Multiply(XMMatrixScaling(1, 1, 1), m_xmf4x4ToParent);
-	SphereCollider->SetScale(0.5, 0.5, 0.5);
+	if (SphereCollider)SphereCollider->m_xmf4x4ToParent = Matrix4x4::Multiply(XMMatrixScaling(10, 10, 10), m_xmf4x4ToParent);
 	if (SphereCollider)SphereCollider->Animate(fTimeElapsed, GetPosition());
-	//cout << SphereCollider->m_BoundingSphere.Center.z << endl;
 
 	if (m_fAddFogTimeElapsed > m_fAddFogFrequence)
 	{
@@ -75,6 +69,11 @@ void CMissle::Animate(float fTimeElapsed)
 
 		m_fAddFogTimeElapsed = 0;
 	}
+}
+
+void CMissle::CollisionActivate(CGameObject* collideTarget)
+{
+	m_isDead = true;
 }
 
 void CMissle::Move(DWORD dwDirection, float fDistance, bool bUpdateVelocity)
@@ -108,6 +107,11 @@ void CMissle::Move(const XMFLOAT3& xmf3Shift, bool bUpdateVelocity)
 
 void CMissle::Rotate(XMFLOAT3* pxmf3Axis, float fAngle)
 {
+	if (pxmf3Axis->x == 0 && pxmf3Axis->y == 0 && pxmf3Axis->z == 0)
+	{
+		cout << "zero" << endl;
+		return;
+	}
 	XMMATRIX xmmtxRotate = XMMatrixRotationAxis(XMLoadFloat3(pxmf3Axis), XMConvertToRadians(fAngle));
 	m_xmf3Look = Vector3::TransformNormal(m_xmf3Look, xmmtxRotate);
 	m_xmf3Up = Vector3::TransformNormal(m_xmf3Up, xmmtxRotate);
@@ -120,21 +124,17 @@ void CMissle::Rotate(XMFLOAT3* pxmf3Axis, float fAngle)
 
 void CMissle::SetLookAt(float fTimeElapsed)
 {
-	float theta = 200 * fTimeElapsed;
+	float theta = 50.f * fTimeElapsed;
 	{
-		XMFLOAT3 xmf3TargetVector = Vector3::Subtract(*m_xmfTarget, m_xmfLunchPosition);
+		XMFLOAT3 xmf3TargetVector = Vector3::Subtract(*m_xmfTarget, m_xmf3Position);
 		xmf3TargetVector = Vector3::Normalize(xmf3TargetVector);
 		XMFLOAT3 xmfAxis = Vector3::CrossProduct(m_xmf3Look, xmf3TargetVector);
 		xmfAxis = Vector3::Normalize(xmfAxis);
-		XMFLOAT3 xmfHoming;
-		xmfHoming.x = xmfAxis.x * theta;
-		xmfHoming.y = xmfAxis.y * theta;
-		xmfHoming.z = xmfAxis.z * theta;
 		float Lenth = sqrt(xmf3TargetVector.x * xmf3TargetVector.x + xmf3TargetVector.y * xmf3TargetVector.x + xmf3TargetVector.z * xmf3TargetVector.z);
 		XMFLOAT3 LenthXYZ = Vector3::Subtract(*m_xmfTarget, m_xmfLunchPosition);
 		float LenthZ = sqrt(LenthXYZ.z * LenthXYZ.z);
 		Rotate(&xmfAxis, theta);
-		CGameObject::Rotate(xmfHoming.x * 100 * fTimeElapsed, xmfHoming.y * 100 * fTimeElapsed, 0);
+		//CGameObject::Rotate(xmfHoming.x * 100 * fTimeElapsed, xmfHoming.y * 100 * fTimeElapsed, 0);
 	}
 	//else if (m_xmfLunchPosition.z < m_xmfTarget->z)
 	//{
@@ -278,6 +278,6 @@ void CMissle::SetLookAt(float fTimeElapsed)
 
 void CMissle::Render(ID3D12GraphicsCommandList* pd3dCommandList, CCamera* pCamera)
 {
-	//if (SphereCollider)SphereCollider->Render(pd3dCommandList, pCamera);
+	if (SphereCollider)SphereCollider->Render(pd3dCommandList, pCamera);
 	CGameObject::Render(pd3dCommandList, pCamera);
 }

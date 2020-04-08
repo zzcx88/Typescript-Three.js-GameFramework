@@ -428,6 +428,11 @@ void CGameObject::Animate(float fTimeElapsed)
 	m_xmpPosition = (XMFLOAT3*)&m_positionForMissle;
 }
 
+void CGameObject::CollisionActivate(CGameObject* collideTarget)
+{
+	cout << "Ãæµ¹" << endl;
+}
+
 void CGameObject::Render(ID3D12GraphicsCommandList* pd3dCommandList, CCamera* pCamera)
 {
 	if (m_pSkinnedAnimationController) m_pSkinnedAnimationController->UpdateShaderVariables(pd3dCommandList);

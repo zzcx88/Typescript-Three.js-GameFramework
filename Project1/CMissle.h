@@ -36,6 +36,7 @@ public:
 
 public:
 	virtual void Animate(float fTimeElapsed);
+	virtual void CollisionActivate(CGameObject* collideTarget);
 	void Move(DWORD nDirection, float fDistance, bool bVelocity = false);
 	void Move(const XMFLOAT3& xmf3Shift, bool bVelocity = false);
 	void Rotate(XMFLOAT3* pxmf3Axis, float fAngle);

@@ -68,3 +68,6 @@
 //Blur Switch
 #define BLUR_OFF 0 
 #define BLUR_ON 1 
+
+//BehaviorTool
+#define BHAVIOR_TOOL_MODE
