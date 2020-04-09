@@ -17,6 +17,9 @@ CMissleFog::CMissleFog(int nIndex, ID3D12Device* pd3dDevice, ID3D12GraphicsComma
 
 	CreateShaderVariables(pd3dDevice, pd3dCommandList);
 
+	pWaterTexture = new CTexture(1, RESOURCE_TEXTURE2D, 0);
+	pWaterTexture->LoadTextureFromFile(pd3dDevice, pd3dCommandList, L"Effect/water_base.dds", 0);
+
 	//m_pEffectTexture[TEXTURES];
 	m_pEffectTexture[0] = new CTexture(1, RESOURCE_TEXTURE2D, 0);
 	m_pEffectTexture[0]->LoadTextureFromFile(pd3dDevice, pd3dCommandList, L"Effect/MissleFog.dds", 0);
@@ -131,5 +134,9 @@ void CMissleFog::SetLookAt(XMFLOAT3& xmfTarget)
 
 void CMissleFog::Render(ID3D12GraphicsCommandList* pd3dCommandList, CCamera* pCamera)
 {
+	if (m_pEffectMaterial->m_ppTextures[0] == pWaterTexture)
+	{
+		return;
+	}
 	CGameObject::Render(pd3dCommandList, pCamera);
 }

@@ -10,6 +10,7 @@
 #include "CSphereCollider.h"
 #include "CMissle.h"
 #include "CMissleFog.h"
+#include "CWater.h"
 
 
 
@@ -125,7 +126,7 @@ void CTestScene::BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandLis
 	XMFLOAT3 xmf3Scale(8.0f, 2.0f, 8.0f);
 	XMFLOAT4 xmf4Color(0.0f, 0.3f, 0.0f, 0.0f);
 	m_pTerrain = new CHeightMapTerrain(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, _T("Terrain/HeightMap.raw"), 257, 257, xmf3Scale, xmf4Color);
-	m_ObjManager->AddObject(L"terrain", m_pTerrain, OBJ_MAP);
+	//m_ObjManager->AddObject(L"terrain", m_pTerrain, OBJ_MAP);
 
 	m_nHierarchicalGameObjects = 4;
 	m_ppHierarchicalGameObjects = new CGameObject * [m_nHierarchicalGameObjects];
@@ -144,7 +145,7 @@ void CTestScene::BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandLis
 	m_ppHierarchicalGameObjects[1]->SetScale(1, 1, 1);
 	m_ppHierarchicalGameObjects[2] = new CGunshipObject(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature);
 	m_ppHierarchicalGameObjects[2]->SetChild(pWaterModel->m_pModelRootObject);
-	m_ppHierarchicalGameObjects[2]->SetPosition(0, 200, 0);
+	m_ppHierarchicalGameObjects[2]->SetPosition(0, 140, 0);
 	m_ppHierarchicalGameObjects[3] = new CGunshipObject(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature);
 	m_ppHierarchicalGameObjects[3]->SetChild(p052C->m_pModelRootObject);
 	m_ppHierarchicalGameObjects[3]->SetScale(50,50,50);
@@ -156,7 +157,7 @@ void CTestScene::BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandLis
 	m_ppHierarchicalGameObjects[4]->SetScale(50, 50, 50);
 	m_ObjManager->AddObject(L"enemy", m_ppHierarchicalGameObjects[0], OBJ_TEST);
 	m_ObjManager->AddObject(L"enemy", m_ppHierarchicalGameObjects[1], OBJ_TEST);
-	m_ObjManager->AddObject(L"water", m_ppHierarchicalGameObjects[2], OBJ_MAP);
+	//m_ObjManager->AddObject(L"water", m_ppHierarchicalGameObjects[2], OBJ_MAP);
 	m_ObjManager->AddObject(L"destroyer", m_ppHierarchicalGameObjects[3], OBJ_TEST);
 	m_ObjManager->AddObject(L"Sphere", m_ppHierarchicalGameObjects[4], OBJ_TEST);
 
@@ -177,15 +178,15 @@ void CTestScene::BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandLis
 	//pMissleFog->SetPosition(410, 1000, -3000);
 	m_ObjManager->AddObject(L"MissleFog", m_pMissleFog, OBJ_EFFECT);
 
+	m_pWater[0] = new CWater(0, pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, 64000.f, 64000.f, 0.f);
+	m_pWater[0]->SetPosition(0, 140, 0);
+	m_pWater[0]->Rotate(90, 0, 0);
+	m_ObjManager->AddObject(L"WaterBase", m_pWater[0], OBJ_MAP);
 
-	/*XMFLOAT3 temp(0,0,0);
-	CMissle* m_pMissle;
-	m_pMissle = new CMissle(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, temp);
-	m_pMissle->SetChild(pMissle->m_pModelRootObject);
-	m_pMissle->SetPosition(410, 600, -2000);
-	m_pMissle->SetScale(50, 50, 50);
-	m_ObjManager->AddObject(L"MissleCollider", m_pMissle, OBJ_MISSLE);*/
-
+	m_pWater[1] = new CWater(1, pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, 64000.f, 64000.f, 0.f);
+	m_pWater[1]->SetPosition(0, 155, 0);
+	m_pWater[1]->Rotate(90, 0, 0);
+	m_ObjManager->AddObject(L"WaterNormal", m_pWater[1], OBJ_MAP);
 
 	CreateShaderVariables(pd3dDevice, pd3dCommandList);
 }

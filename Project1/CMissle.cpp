@@ -278,6 +278,6 @@ void CMissle::SetLookAt(float fTimeElapsed)
 
 void CMissle::Render(ID3D12GraphicsCommandList* pd3dCommandList, CCamera* pCamera)
 {
-	if (SphereCollider)SphereCollider->Render(pd3dCommandList, pCamera);
+	//if (SphereCollider)SphereCollider->Render(pd3dCommandList, pCamera);
 	CGameObject::Render(pd3dCommandList, pCamera);
 }

@@ -124,6 +124,7 @@ struct CB_GAMEOBJECT_INFO
 
 class CSphereCollider;
 class CMissleFogShader;
+class CWaterShader;
 class CGameObject
 {
 private:

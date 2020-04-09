@@ -14,6 +14,7 @@ public:
 	XMFLOAT3					m_xmf3Velocity = XMFLOAT3(0.0f, 0.0f, 0.0f);
 
 	CCamera*					m_pCamera;
+	CTexture* pWaterTexture;
 
 	float m_fScaleX = 1, m_fScaleY = 1;
 	float m_fTimeElapsed = 0.f;
