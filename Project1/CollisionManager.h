@@ -14,6 +14,7 @@ public:
 
 private:
 	//bool CheckCollisionSphere(int* moveX, int* moveY, CGameObject* Dst, CGameObject* Src);
+
 	bool m_RenderCheck = false;
 };
 

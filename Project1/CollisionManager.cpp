@@ -32,3 +32,4 @@ void CollisionManager::CollisionSphere(ObjectManager::MAPOBJ* DstList, ObjectMan
 		}
 	}
 }
+

@@ -155,6 +155,7 @@
     <ClInclude Include="CGameObject.h" />
     <ClInclude Include="CGunshipObject.h" />
     <ClInclude Include="CHeightMapTerrain.h" />
+    <ClInclude Include="CLockOnUI.h" />
     <ClInclude Include="CMesh.h" />
     <ClInclude Include="CAircraftMesh.h" />
     <ClInclude Include="CMissle.h" />
@@ -201,6 +202,7 @@
     <ClCompile Include="CGameObject.cpp" />
     <ClCompile Include="CGunshipObject.cpp" />
     <ClCompile Include="CHeightMapTerrain.cpp" />
+    <ClCompile Include="CLockOnUI.cpp" />
     <ClCompile Include="CMesh.cpp" />
     <ClCompile Include="CAircraftMesh.cpp" />
     <ClCompile Include="CMissle.cpp" />
@@ -305,6 +307,13 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </FxCompile>
+    <FxCompile Include="UI.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
     </FxCompile>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

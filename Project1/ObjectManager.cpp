@@ -115,6 +115,7 @@ void ObjectManager::ReleaseAll()
 				{
 					delete obj.second;
 					obj.second = nullptr;
+
 				}  
 				else 
 				{

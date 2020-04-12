@@ -162,6 +162,11 @@ public:
 	CMissleFogShader* m_EffectShader;
 ///////////////////////////////////////////
 
+	CPlaneMesh* m_pPlaneMesh;
+	CPlaneMesh* m_pLockOnMesh;
+	CMaterial* m_pUIMaterial;
+	CTexture* m_ppUITexture[10];
+
 	XMFLOAT4X4						m_xmf4x4ToParent;
 	XMFLOAT4X4						m_xmf4x4World;
 

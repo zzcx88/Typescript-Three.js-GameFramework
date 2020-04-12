@@ -3,6 +3,8 @@
 #include "CPlayer.h"
 #include "CSkyBox.h"
 #include "CPlane.h"
+#include "CUI.h"
+#include "CLockOnUI.h"
 #include "CHeightMapTerrain.h"
 #include "CSuperCobraObject.h"
 
@@ -66,6 +68,8 @@ public:
 	void ReleaseUploadBuffers();
 
 public:
+	float fx, fy = 0.f;
+	
 	float								m_fElapsedTime = 0.0f;
 
 	int									m_nGameObjects = 0;
@@ -91,7 +95,12 @@ public:
 	CGameObject** m_ppHierarchicalGameObjects = NULL;
 
 
+
 	CMissleFog* m_pMissleFog;
 	CWater* m_pWater[2];
+
+	CLockOnUI* m_pLockOn = NULL;
+	CUI* m_pUI = NULL;
+
 };
 
