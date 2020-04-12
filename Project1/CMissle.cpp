@@ -74,6 +74,7 @@ void CMissle::Animate(float fTimeElapsed)
 void CMissle::CollisionActivate(CGameObject* collideTarget)
 {
 	m_isDead = true;
+
 }
 
 void CMissle::Move(DWORD dwDirection, float fDistance, bool bUpdateVelocity)
@@ -91,7 +92,7 @@ void CMissle::Move(DWORD dwDirection, float fDistance, bool bUpdateVelocity)
 		Move(xmf3Shift, bUpdateVelocity);
 	}
 }
- 
+
 void CMissle::Move(const XMFLOAT3& xmf3Shift, bool bUpdateVelocity)
 {
 	if (bUpdateVelocity)
@@ -112,6 +113,7 @@ void CMissle::Rotate(XMFLOAT3* pxmf3Axis, float fAngle)
 		cout << "zero" << endl;
 		return;
 	}
+
 	XMMATRIX xmmtxRotate = XMMatrixRotationAxis(XMLoadFloat3(pxmf3Axis), XMConvertToRadians(fAngle));
 	m_xmf3Look = Vector3::TransformNormal(m_xmf3Look, xmmtxRotate);
 	m_xmf3Up = Vector3::TransformNormal(m_xmf3Up, xmmtxRotate);
@@ -130,11 +132,13 @@ void CMissle::SetLookAt(float fTimeElapsed)
 		xmf3TargetVector = Vector3::Normalize(xmf3TargetVector);
 		XMFLOAT3 xmfAxis = Vector3::CrossProduct(m_xmf3Look, xmf3TargetVector);
 		xmfAxis = Vector3::Normalize(xmfAxis);
+
 		float Lenth = sqrt(xmf3TargetVector.x * xmf3TargetVector.x + xmf3TargetVector.y * xmf3TargetVector.x + xmf3TargetVector.z * xmf3TargetVector.z);
 		XMFLOAT3 LenthXYZ = Vector3::Subtract(*m_xmfTarget, m_xmfLunchPosition);
 		float LenthZ = sqrt(LenthXYZ.z * LenthXYZ.z);
 		Rotate(&xmfAxis, theta);
 		//CGameObject::Rotate(xmfHoming.x * 100 * fTimeElapsed, xmfHoming.y * 100 * fTimeElapsed, 0);
+
 	}
 	//else if (m_xmfLunchPosition.z < m_xmfTarget->z)
 	//{

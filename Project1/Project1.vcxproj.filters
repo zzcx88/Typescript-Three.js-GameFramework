@@ -261,6 +261,9 @@
     <ClInclude Include="CWater.h">
       <Filter>GameObject\Plane\Map\Water</Filter>
     </ClInclude>
+    <ClInclude Include="CLockOnUI.h">
+      <Filter>GameObject\Plane\UI</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="DDSTextureLoader12.cpp">
@@ -374,6 +377,9 @@
     <ClCompile Include="CWater.cpp">
       <Filter>GameObject\Plane\Map\Water</Filter>
     </ClCompile>
+    <ClCompile Include="CLockOnUI.cpp">
+      <Filter>GameObject\Plane\UI</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Project1.rc">
@@ -408,6 +414,12 @@
       <Filter>HLSL</Filter>
     </FxCompile>
     <FxCompile Include="WaterBase.hlsl">
+      <Filter>HLSL</Filter>
+    </FxCompile>
+    <FxCompile Include="BillBoardAnimation.hlsl">
+      <Filter>HLSL</Filter>
+    </FxCompile>
+    <FxCompile Include="UI.hlsl">
       <Filter>HLSL</Filter>
     </FxCompile>
   </ItemGroup>

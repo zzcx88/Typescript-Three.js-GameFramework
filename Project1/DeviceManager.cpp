@@ -193,8 +193,10 @@ void CDeviceManager::CreateSwapChain()
 	dxgiSwapChainDesc.BufferDesc.Width = m_nWndClientWidth;
 	dxgiSwapChainDesc.BufferDesc.Height = m_nWndClientHeight;
 	dxgiSwapChainDesc.BufferDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
+
 	dxgiSwapChainDesc.BufferDesc.RefreshRate.Numerator = numerator;
 	dxgiSwapChainDesc.BufferDesc.RefreshRate.Denominator = denominator;
+
 	dxgiSwapChainDesc.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
 	dxgiSwapChainDesc.SwapEffect = DXGI_SWAP_EFFECT_FLIP_DISCARD;
 	dxgiSwapChainDesc.OutputWindow = m_hWnd;
@@ -302,7 +304,9 @@ void CDeviceManager::BuildScene()
 
 	CAirplanePlayer* pPlayer = new CAirplanePlayer(m_pd3dDevice, m_pd3dCommandList, m_pSceneManager->GetGraphicsRootSignature(), NULL);
 	//pPlayer->SetPosition(XMFLOAT3(0, 0, 0));
+
 	pPlayer->SetPosition(XMFLOAT3(410, 1000, -9000));
+
 	//pPlayer->SetPosition(XMFLOAT3(-1000, 3000, -10000));
 	//pPlayer->SetScale(XMFLOAT3(0.02, 0.02, 0.02));
 	m_pPlayer = pPlayer;
