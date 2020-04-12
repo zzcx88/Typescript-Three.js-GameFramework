@@ -134,9 +134,9 @@ void CTestScene::BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandLis
 	m_ObjManager->AddObject(L"player_ui5", m_ppGameObjects[4], OBJ_UI);
 	m_ObjManager->AddObject(L"player_ui6", m_ppGameObjects[5], OBJ_UI);
 	m_ObjManager->AddObject(L"player_ui7", m_ppGameObjects[6], OBJ_UI);
-	m_ObjManager->AddObject(L"player_ui8", m_ppGameObjects[7], OBJ_TEST);
-	m_ObjManager->AddObject(L"player_ui9", m_ppGameObjects[8], OBJ_TEST);
-	m_ObjManager->AddObject(L"player_ui10_minimap", m_ppGameObjects[9], OBJ_TEST);
+	m_ObjManager->AddObject(L"player_ui8", m_ppGameObjects[7], OBJ_MINIMAP);
+	m_ObjManager->AddObject(L"player_ui9", m_ppGameObjects[8], OBJ_MINIMAP);
+	m_ObjManager->AddObject(L"player_ui10_minimap", m_ppGameObjects[9], OBJ_MINIMAP);
 
 	/*XMFLOAT3 xmf3Scale(8.0f, 2.0f, 8.0f);
 	XMFLOAT4 xmf4Color(0.0f, 0.3f, 0.0f, 0.0f);
