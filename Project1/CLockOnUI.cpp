@@ -58,7 +58,7 @@ void CLockOnUI::Render(XMFLOAT2 screen, XMFLOAT3& xmfTarget, XMFLOAT3& xmfPlayer
 	XMFLOAT3 xmf3TargetVector2 = Vector3::Subtract(xmfTarget, xmfPlayer);
 	float Lenth = sqrt(xmf3TargetVector2.x * xmf3TargetVector2.x + xmf3TargetVector2.y * xmf3TargetVector2.x + xmf3TargetVector2.z * xmf3TargetVector2.z);
 
-	cout << Lenth << endl;
+	//cout << Lenth << endl;
 
 	if (screen.x < 0 || screen.y < 0 || screen.x >FRAME_BUFFER_WIDTH || screen.y >FRAME_BUFFER_HEIGHT || xmfAxis < 0.f)
 		pGameOBJ->SetPosition(-2.f, -2.f, -1.f);
