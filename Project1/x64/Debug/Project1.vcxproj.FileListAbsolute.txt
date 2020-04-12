@@ -1,0 +1,2 @@
+D:\DKS_Project_Test\DKS_Project\Project1\x64\Debug\Project1.exe
+D:\DKS_Project_Test\DKS_Project\Project1\x64\Debug\Project1.pdb

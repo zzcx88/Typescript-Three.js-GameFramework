@@ -416,9 +416,6 @@
     <FxCompile Include="WaterBase.hlsl">
       <Filter>HLSL</Filter>
     </FxCompile>
-    <FxCompile Include="BillBoardAnimation.hlsl">
-      <Filter>HLSL</Filter>
-    </FxCompile>
     <FxCompile Include="UI.hlsl">
       <Filter>HLSL</Filter>
     </FxCompile>
