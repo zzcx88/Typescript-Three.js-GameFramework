@@ -3,15 +3,15 @@
 #include "CPlaneMesh.h"
 #include "CTestScene.h"
 
-#define TEXTURES 9
+#define TEXTURES 10
 
 CUI::CUI(int nIndex, ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList, ID3D12RootSignature* pd3dGraphicsRootSignature, float fWidth, float fHeight, float fDepth,
 	XMFLOAT2 xmf2LeftTop, XMFLOAT2 xmf2LeftBot, XMFLOAT2 xmf2RightBot, XMFLOAT2 xmf2RightTop) : CPlane()
 {
+	CPlaneMesh* pPlaneMesh;
+	pPlaneMesh = new CPlaneMesh(pd3dDevice, pd3dCommandList, fWidth, fHeight, fDepth, xmf2LeftTop, xmf2LeftBot, xmf2RightBot, xmf2RightTop, 1.0f, 1.0f);
 
-	m_pPlaneMesh = new CPlaneMesh(pd3dDevice, pd3dCommandList, fWidth, fHeight, fDepth, xmf2LeftTop, xmf2LeftBot, xmf2RightBot, xmf2RightTop);
-
-	SetMesh(m_pPlaneMesh);
+	SetMesh(pPlaneMesh);
 	
 	CreateShaderVariables(pd3dDevice, pd3dCommandList);
 
@@ -35,7 +35,8 @@ CUI::CUI(int nIndex, ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCo
 	ppUITexture[7]->LoadTextureFromFile(pd3dDevice, pd3dCommandList, L"UI/MinimapPoint.dds", 0);
 	ppUITexture[8] = new CTexture(1, RESOURCE_TEXTURE2D, 0);
 	ppUITexture[8]->LoadTextureFromFile(pd3dDevice, pd3dCommandList, L"UI/MinimapRedPoint.dds", 0);
-
+	ppUITexture[9] = new CTexture(1, RESOURCE_TEXTURE2D, 0);
+	ppUITexture[9]->LoadTextureFromFile(pd3dDevice, pd3dCommandList, L"UI/WeaponUI.dds", 0);
 	UINT ncbElementBytes = ((sizeof(CB_GAMEOBJECT_INFO) + 255) & ~255);
 	
 	CUIShader* pUIShader;
@@ -48,10 +49,11 @@ CUI::CUI(int nIndex, ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCo
 
 	for (int i = 0; i < TEXTURES; i++) CTestScene::CreateShaderResourceViews(pd3dDevice, ppUITexture[i], 15, false);
 
-	m_pUIMaterial = new CMaterial(1);
-	m_pUIMaterial->SetTexture(ppUITexture[nIndex]);
-	m_pUIMaterial->SetShader(pUIShader);
-	SetMaterial(0, m_pUIMaterial);
+	CMaterial* pUIMaterial;
+	pUIMaterial = new CMaterial(1);
+	pUIMaterial->SetTexture(ppUITexture[nIndex]);
+	pUIMaterial->SetShader(pUIShader);
+	SetMaterial(0, pUIMaterial);
 }
 
 CUI::~CUI()

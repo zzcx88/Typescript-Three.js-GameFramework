@@ -1,6 +1,5 @@
 #pragma once
 #include "CMesh.h"
-#include "CPlaneMesh.h"
 #include "CAnimationController.h"
 
 class CShader;
@@ -125,6 +124,7 @@ struct CB_GAMEOBJECT_INFO
 class CSphereCollider;
 class CMissleFogShader;
 class CWaterShader;
+class CPlaneMesh;
 class CGameObject
 {
 private:
@@ -162,8 +162,6 @@ public:
 	CMissleFogShader* m_EffectShader;
 ///////////////////////////////////////////
 
-	CPlaneMesh* m_pPlaneMesh;
-	CPlaneMesh* m_pLockOnMesh;
 	CMaterial* m_pUIMaterial;
 	CTexture* m_ppUITexture[10];
 

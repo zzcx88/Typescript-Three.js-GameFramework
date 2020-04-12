@@ -785,7 +785,7 @@ D3D12_RASTERIZER_DESC CColliderShader::CreateRasterizerState()
 	d3dRasterizerDesc.ConservativeRaster = D3D12_CONSERVATIVE_RASTERIZATION_MODE_OFF;
 
 	return(d3dRasterizerDesc);
-
+}
 CUIShader::CUIShader()
 {
 }

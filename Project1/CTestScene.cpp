@@ -114,7 +114,7 @@ void CTestScene::BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandLis
 
 	m_ppGameObjects = new CGameObject* [m_nGameObjects];
 	m_ppGameObjects[0] = new CUI(0, pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, 0.2f, 0.3f, 0.f , XMFLOAT2(0.5f,0.5f), XMFLOAT2(0.5f,0.5f) , XMFLOAT2(0.5f,0.5f), XMFLOAT2(0.5f, 0.5f));
-	m_ppGameObjects[1] = new CUI(1, pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, 0.2f, 0.35f, 0.f, XMFLOAT2(0.725f, -0.45f), XMFLOAT2(0.725f, -0.45f), XMFLOAT2(0.725f, -0.45f), XMFLOAT2(0.725f, -0.45f));
+	m_ppGameObjects[1] = new CUI(9, pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, 0.2f, 0.35f, 0.f, XMFLOAT2(0.725f, -0.45f), XMFLOAT2(0.725f, -0.45f), XMFLOAT2(0.725f, -0.45f), XMFLOAT2(0.725f, -0.45f));
 	m_ppGameObjects[2] = new CUI(2, pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, 0.15f, 0.25f, 0.f, XMFLOAT2(-0.875f, 0.8f), XMFLOAT2(-0.875f, 0.8f), XMFLOAT2(-0.875f, 0.8f), XMFLOAT2(-0.875f, 0.8f));
 	m_ppGameObjects[3] = new CUI(3, pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, 0.125f, 0.2f, 0.f, XMFLOAT2(-0.25f, 0.f), XMFLOAT2(-0.25f, 0.f), XMFLOAT2(-0.25f, 0.f), XMFLOAT2(-0.25f, 0.0f));
 	m_ppGameObjects[4] = new CUI(4, pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, 0.125f, 0.2f, 0.f, XMFLOAT2(0.25f, 0.f), XMFLOAT2(0.25f, 0.f), XMFLOAT2(0.25f, 0.f), XMFLOAT2(0.25f, 0.0f));
@@ -134,7 +134,6 @@ void CTestScene::BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandLis
 	m_ObjManager->AddObject(L"player_ui5", m_ppGameObjects[4], OBJ_UI);
 	m_ObjManager->AddObject(L"player_ui6", m_ppGameObjects[5], OBJ_UI);
 	m_ObjManager->AddObject(L"player_ui7", m_ppGameObjects[6], OBJ_UI);
-
 	m_ObjManager->AddObject(L"player_ui8", m_ppGameObjects[7], OBJ_UI);
 	m_ObjManager->AddObject(L"player_ui9", m_ppGameObjects[8], OBJ_UI);
 	m_ObjManager->AddObject(L"player_ui10_minimap", m_ppGameObjects[9], OBJ_UI);
@@ -339,7 +338,7 @@ void CTestScene::Render(ID3D12GraphicsCommandList* pd3dCommandList, CCamera* pCa
 
 	m_pUI->MoveMinimapPoint(m_pPlayer->GetPosition(), m_ppGameObjects[6]);
 	m_pUI->MoveMinimapPoint(m_ObjManager->GetObjFromTag(L"SphereCollider", OBJ_ENEMY)->GetPosition(), m_ppGameObjects[9]);
-	m_ObjManager->MoveMinimapPoint();
+	//m_ObjManager->MoveMinimapPoint();
 
 
 	m_ObjManager->Render(pd3dCommandList, pCamera);
