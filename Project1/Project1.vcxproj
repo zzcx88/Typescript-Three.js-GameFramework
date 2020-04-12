@@ -155,8 +155,11 @@
     <ClInclude Include="CGameObject.h" />
     <ClInclude Include="CGunshipObject.h" />
     <ClInclude Include="CHeightMapTerrain.h" />
+    <ClInclude Include="CLockOnUI.h" />
     <ClInclude Include="CMesh.h" />
     <ClInclude Include="CAircraftMesh.h" />
+    <ClInclude Include="CMissle.h" />
+    <ClInclude Include="CollisionManager.h" />
     <ClInclude Include="Constant.h" />
     <ClInclude Include="CPlane.h" />
     <ClInclude Include="CPlaneMesh.h" />
@@ -166,6 +169,7 @@
     <ClInclude Include="CSkinnedMesh.h" />
     <ClInclude Include="CSkyBox.h" />
     <ClInclude Include="CSkyBoxMesh.h" />
+    <ClInclude Include="CSphereCollider.h" />
     <ClInclude Include="CSuperCobraObject.h" />
     <ClInclude Include="CTestScene.h" />
     <ClInclude Include="CUI.h" />
@@ -196,8 +200,11 @@
     <ClCompile Include="CGameObject.cpp" />
     <ClCompile Include="CGunshipObject.cpp" />
     <ClCompile Include="CHeightMapTerrain.cpp" />
+    <ClCompile Include="CLockOnUI.cpp" />
     <ClCompile Include="CMesh.cpp" />
     <ClCompile Include="CAircraftMesh.cpp" />
+    <ClCompile Include="CMissle.cpp" />
+    <ClCompile Include="CollisionManager.cpp" />
     <ClCompile Include="CPlane.cpp" />
     <ClCompile Include="CPlaneMesh.cpp" />
     <ClCompile Include="CPlayer.cpp" />
@@ -206,6 +213,7 @@
     <ClCompile Include="CSkinnedMesh.cpp" />
     <ClCompile Include="CSkyBox.cpp" />
     <ClCompile Include="CSkyBoxMesh.cpp" />
+    <ClCompile Include="CSphereCollider.cpp" />
     <ClCompile Include="CSuperCobraObject.cpp" />
     <ClCompile Include="CTestScene.cpp" />
     <ClCompile Include="DDSTextureLoader12.cpp" />
@@ -234,8 +242,25 @@
     <Image Include="small.ico" />
   </ItemGroup>
   <ItemGroup>
+    <FxCompile Include="BillBoardAnimation.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Geometry</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">4.0</ShaderModel>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Geometry</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">4.0</ShaderModel>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Geometry</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">4.0</ShaderModel>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Geometry</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">4.0</ShaderModel>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </FxCompile>
     <FxCompile Include="Blur.hlsl">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
     </FxCompile>
     <FxCompile Include="Light.hlsl">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
@@ -259,7 +284,7 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
     </FxCompile>
-    <FxCompile Include="BillBoard.hlsl">
+    <FxCompile Include="Cloud.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Vertex</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Vertex</ShaderType>
@@ -268,6 +293,13 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </FxCompile>
+    <FxCompile Include="UI.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
     </FxCompile>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

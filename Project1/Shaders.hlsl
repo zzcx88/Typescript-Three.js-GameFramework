@@ -9,8 +9,10 @@ struct MATERIAL
 cbuffer cbCameraInfo : register(b1)
 {
 	matrix					gmtxView : packoffset(c0);
-	matrix					gmtxProjection : packoffset(c4);
-	float3					gvCameraPosition : packoffset(c8);
+	matrix					gmtxId : packoffset(c4);
+	matrix					gmtxProjection : packoffset(c8);
+	matrix					gmtxOrthProjection : packoffset(c12);
+	float3					gvCameraPosition : packoffset(c16);
 };
 
 cbuffer cbGameObjectInfo : register(b2)

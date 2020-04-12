@@ -20,7 +20,8 @@ public:
 public:
 	void AddObject(const TCHAR* tag, CGameObject* Obj, OBJTYPE ObjType);
 	void Update(const float& TimeDelta);
-	void Render(HDC hDC);
+	void Render(ID3D12GraphicsCommandList* pd3dCommandList, CCamera* pCamera);
+	void ReleaseUploadBuffers();
 	void ReleaseAll();
 	void ReleaseFromType(OBJTYPE ObjType);
 	void ReleaseObjFromTag(const TCHAR* tag, OBJTYPE ObjType);

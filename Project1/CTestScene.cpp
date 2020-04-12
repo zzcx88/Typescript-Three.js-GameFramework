@@ -3,9 +3,13 @@
 #include "CHeightMapTerrain.h"
 #include "CSkyBox.h"
 #include "CUI.h"
+#include "CLockOnUI.h"
 #include "CAngrybotObject.h"
 #include "CGunshipObject.h"
+#include "CSuperCobraObject.h"
 #include "CShaderManager.h"
+#include "CSphereCollider.h"
+#include "CMissle.h"
 
 
 
@@ -98,53 +102,97 @@ void CTestScene::BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandLis
 	BuildDefaultLightsAndMaterials();
 
 	m_pSkyBox = new CSkyBox(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature);
-	//m_pBlur = new CBlurFilter(pd3dDevice, mClientWidth, mClientHeight, DXGI_FORMAT_R8G8B8A8_UNORM);
 
-	m_nGameObjects = 7;
+	m_ObjManager->AddObject(L"skybox", m_pSkyBox, OBJ_MAP);
+
+	float fx = 0.5f /0.96f;
+	float fy = 0.5f / 0.54f;
+
+	m_nGameObjects = 10;
 	m_ppGameObjects = new CGameObject* [m_nGameObjects];
-
 	m_ppGameObjects[0] = new CUI(0, pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, 0.2f, 0.3f, 0.f , XMFLOAT2(0.5f,0.5f), XMFLOAT2(0.5f,0.5f) , XMFLOAT2(0.5f,0.5f), XMFLOAT2(0.5f, 0.5f));
 	m_ppGameObjects[1] = new CUI(1, pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, 0.2f, 0.35f, 0.f, XMFLOAT2(0.725f, -0.45f), XMFLOAT2(0.725f, -0.45f), XMFLOAT2(0.725f, -0.45f), XMFLOAT2(0.725f, -0.45f));
 	m_ppGameObjects[2] = new CUI(2, pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, 0.15f, 0.25f, 0.f, XMFLOAT2(-0.875f, 0.8f), XMFLOAT2(-0.875f, 0.8f), XMFLOAT2(-0.875f, 0.8f), XMFLOAT2(-0.875f, 0.8f));
 	m_ppGameObjects[3] = new CUI(3, pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, 0.125f, 0.2f, 0.f, XMFLOAT2(-0.25f, 0.f), XMFLOAT2(-0.25f, 0.f), XMFLOAT2(-0.25f, 0.f), XMFLOAT2(-0.25f, 0.0f));
 	m_ppGameObjects[4] = new CUI(4, pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, 0.125f, 0.2f, 0.f, XMFLOAT2(0.25f, 0.f), XMFLOAT2(0.25f, 0.f), XMFLOAT2(0.25f, 0.f), XMFLOAT2(0.25f, 0.0f));
 	m_ppGameObjects[5] = new CUI(5, pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, 0.1f, 0.3f, 0.f, XMFLOAT2(0.81f, -0.305f), XMFLOAT2(0.81f, -0.305f), XMFLOAT2(0.81f, -0.305f), XMFLOAT2(0.81f, -0.305f));
-	m_ppGameObjects[6] = new CUI(6, pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, 0.3f, 0.3f, 0.f, XMFLOAT2(-0.8f, -0.5f), XMFLOAT2(-0.8f, -0.7f), XMFLOAT2(-0.8f, -0.7f), XMFLOAT2(-0.8f, -0.5f));
+	m_ppGameObjects[6] = new CUI(7, pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, 0.3f / 9.6f, 0.3f / 5.4f, 0.f, XMFLOAT2(-0.f, -0.f), XMFLOAT2(0.f, 0.f), XMFLOAT2(0.f, 0.f), XMFLOAT2(0.f, 0.f));
+	m_ppGameObjects[7] = new CLockOnUI(0, pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, 100.f/960.f, 100.f/540.f, 0.f, XMFLOAT2(-0.f, -0.f), XMFLOAT2(0.f, 0.f), XMFLOAT2(0.f, 0.f), XMFLOAT2(0.f, 0.f));
 
+	m_ppGameObjects[8] = new CUI(6, pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, fx, fy, 0.f, XMFLOAT2(-0.f, -0.f), XMFLOAT2(-0.f, -0.f), XMFLOAT2(-0.f, -0.f), XMFLOAT2(-0.f, -0.f));
+	m_ppGameObjects[8]->SetPosition(-0.75f, -0.5f, 0.f);
+	m_ppGameObjects[9] = new CUI(8, pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, 0.3f / 9.6f, 0.3f / 5.4f, 0.f, XMFLOAT2(-0.f, -0.f), XMFLOAT2(0.f, 0.f), XMFLOAT2(0.f, 0.f), XMFLOAT2(0.f, 0.f));
+
+	m_ObjManager->AddObject(L"player_ui1", m_ppGameObjects[0], OBJ_UI);
+	m_ObjManager->AddObject(L"player_ui2", m_ppGameObjects[1], OBJ_UI);
+	m_ObjManager->AddObject(L"player_ui3", m_ppGameObjects[2], OBJ_UI);
+	m_ObjManager->AddObject(L"player_ui4", m_ppGameObjects[3], OBJ_UI);
+	m_ObjManager->AddObject(L"player_ui5", m_ppGameObjects[4], OBJ_UI);
+	m_ObjManager->AddObject(L"player_ui6", m_ppGameObjects[5], OBJ_UI);
+	m_ObjManager->AddObject(L"player_ui7", m_ppGameObjects[6], OBJ_UI);
+	m_ObjManager->AddObject(L"player_ui8", m_ppGameObjects[7], OBJ_UI);
+	m_ObjManager->AddObject(L"player_ui9", m_ppGameObjects[8], OBJ_UI);
+	m_ObjManager->AddObject(L"player_ui10_minimap", m_ppGameObjects[9], OBJ_UI);
 
 	XMFLOAT3 xmf3Scale(8.0f, 2.0f, 8.0f);
 	XMFLOAT4 xmf4Color(0.0f, 0.3f, 0.0f, 0.0f);
 	m_pTerrain = new CHeightMapTerrain(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, _T("Terrain/HeightMap.raw"), 257, 257, xmf3Scale, xmf4Color);
+	m_ObjManager->AddObject(L"terrain", m_pTerrain, OBJ_MAP);
 
-	m_nHierarchicalGameObjects = 4;
+	m_nHierarchicalGameObjects = 5;
 	m_ppHierarchicalGameObjects = new CGameObject * [m_nHierarchicalGameObjects];
 
 	CLoadedModelInfo* pAngrybotModel = CGameObject::LoadGeometryAndAnimationFromFile(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, "Model/Angrybot.bin", NULL, MODEL_ANI);
 	CLoadedModelInfo* pWaterModel = CGameObject::LoadGeometryAndAnimationFromFile(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, "Model/water.bin", NULL, MODEL_STD);
 	CLoadedModelInfo* p052C = CGameObject::LoadGeometryAndAnimationFromFile(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, "Model/052C.bin", NULL, MODEL_STD);
+	CLoadedModelInfo* pSphere = CGameObject::LoadGeometryAndAnimationFromFile(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, "Model/Sphere.bin", NULL, MODEL_STD);
+	CLoadedModelInfo* pMissle = CGameObject::LoadGeometryAndAnimationFromFile(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, "Model/Missle.bin", NULL, MODEL_ACE);
+	CLoadedModelInfo* pPlayer = CGameObject::LoadGeometryAndAnimationFromFile(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, "Model/F-4E_Phantom_II.bin", NULL, MODEL_ACE);
+
 	m_ppHierarchicalGameObjects[0] = new CAngrybotObject(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, pAngrybotModel, 1);
 	m_ppHierarchicalGameObjects[0]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, 0);
 	m_ppHierarchicalGameObjects[0]->SetPosition(410.0f, m_pTerrain->GetHeight(410.0f, 735.0f), 735.0f);
 	m_ppHierarchicalGameObjects[1] = new CAngrybotObject(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, pAngrybotModel, 1);
 	m_ppHierarchicalGameObjects[1]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, 0);
-	m_ppHierarchicalGameObjects[1]->SetPosition(410.0f, m_pTerrain->GetHeight(410.0f, 775.0f) + 20, 735.0f);
+	m_ppHierarchicalGameObjects[1]->SetPosition(410.0f, m_pTerrain->GetHeight(410.0f, 775.0f) + 40, 735.0f);
 	m_ppHierarchicalGameObjects[1]->SetScale(1, 1, 1);
 	m_ppHierarchicalGameObjects[2] = new CGunshipObject(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature);
 	m_ppHierarchicalGameObjects[2]->SetChild(pWaterModel->m_pModelRootObject);
 	m_ppHierarchicalGameObjects[2]->SetPosition(0, 200, 0);
-	//m_ppHierarchicalGameObjects[2]->SetScale(0, 0, 0);
 	m_ppHierarchicalGameObjects[3] = new CGunshipObject(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature);
 	m_ppHierarchicalGameObjects[3]->SetChild(p052C->m_pModelRootObject);
 	m_ppHierarchicalGameObjects[3]->SetScale(50,50,50);
 	m_ppHierarchicalGameObjects[3]->SetPosition(410, 200, -5000);
 
+	m_ppHierarchicalGameObjects[4] = new CGunshipObject(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature);
+	m_ppHierarchicalGameObjects[4]->SetChild(pMissle->m_pModelRootObject);
+	m_ppHierarchicalGameObjects[4]->SetPosition(410, 800, -5000);
+	m_ppHierarchicalGameObjects[4]->SetScale(50, 50, 50);
 
-	/*m_pBlur = new CBlur(pd3dDevice, pd3dCommandList, m_pd3dComputeRootSignature);
 
-	m_pBlur->BuildDescriptors(
-		CD3DX12_CPU_DESCRIPTOR_HANDLE(m_pd3dCbvSrvDescriptorHeap->GetCPUDescriptorHandleForHeapStart(), 11, 76),
-		CD3DX12_GPU_DESCRIPTOR_HANDLE(m_pd3dCbvSrvDescriptorHeap->GetGPUDescriptorHandleForHeapStart(), 11, 76),
-		76);*/
+	m_ObjManager->AddObject(L"enemy", m_ppHierarchicalGameObjects[0], OBJ_ENEMY);
+	m_ObjManager->AddObject(L"enemy", m_ppHierarchicalGameObjects[1], OBJ_ENEMY);
+	m_ObjManager->AddObject(L"water", m_ppHierarchicalGameObjects[2], OBJ_MAP);
+	m_ObjManager->AddObject(L"destroyer", m_ppHierarchicalGameObjects[3], OBJ_ENEMY);
+	m_ObjManager->AddObject(L"Sphere", m_ppHierarchicalGameObjects[4], OBJ_ENEMY);
+
+	CSuperCobraObject* m_pSphereCollider;
+	m_pSphereCollider = new CSuperCobraObject(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature);
+	m_pSphereCollider->SetChild(p052C->m_pModelRootObject);
+	//m_pSphereCollider->SetPosition(410, 1000, 6000);
+	m_pSphereCollider->SetPosition(410, 1000, -3000);
+	m_pSphereCollider->SetScale(10,10,10);
+	m_ObjManager->AddObject(L"SphereCollider", m_pSphereCollider, OBJ_ENEMY);
+
+
+	/*XMFLOAT3 temp(0,0,0);
+	CMissle* m_pMissle;
+	m_pMissle = new CMissle(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, temp);
+	m_pMissle->SetChild(pMissle->m_pModelRootObject);
+	m_pMissle->SetPosition(410, 600, -2000);
+	m_pMissle->SetScale(50, 50, 50);
+	m_ObjManager->AddObject(L"MissleCollider", m_pMissle, OBJ_MISSLE);*/
+
 
 	CreateShaderVariables(pd3dDevice, pd3dCommandList);
 }
@@ -155,33 +203,7 @@ void CTestScene::ReleaseObjects()
 	if (m_pd3dComputeRootSignature) m_pd3dComputeRootSignature->Release();
 	if (m_pd3dCbvSrvDescriptorHeap) m_pd3dCbvSrvDescriptorHeap->Release();
 
-	if (m_ppShaders)
-	{
-		for (int i = 0; i < m_nShaders; i++)
-		{
-			m_ppShaders[i]->ReleaseShaderVariables();
-			m_ppShaders[i]->ReleaseObjects();
-			m_ppShaders[i]->Release();
-		}
-		delete[] m_ppShaders;
-	}
-
-	
-
-	if (m_pTerrain) delete m_pTerrain;
-	if (m_pSkyBox) delete m_pSkyBox;
-
-	if (m_ppGameObjects)
-	{
-		for (int i = 0; i < m_nGameObjects; i++) if (m_ppGameObjects[i]) m_ppGameObjects[i]->Release();
-		delete[] m_ppGameObjects;
-	}
-
-	if (m_ppHierarchicalGameObjects)
-	{
-		for (int i = 0; i < m_nHierarchicalGameObjects; i++) if (m_ppHierarchicalGameObjects[i]) m_ppHierarchicalGameObjects[i]->Release();
-		delete[] m_ppHierarchicalGameObjects;
-	}
+	m_ObjManager->ReleaseAll();
 
 	ReleaseShaderVariables();
 	
@@ -214,12 +236,9 @@ void CTestScene::ReleaseShaderVariables()
 
 void CTestScene::ReleaseUploadBuffers()
 {
-	if (m_pSkyBox) m_pSkyBox->ReleaseUploadBuffers();
-	if (m_pTerrain) m_pTerrain->ReleaseUploadBuffers();
 
-	for (int i = 0; i < m_nShaders; i++) m_ppShaders[i]->ReleaseUploadBuffers();
-	for (int i = 0; i < m_nGameObjects; i++) if (m_ppGameObjects[i]) m_ppGameObjects[i]->ReleaseUploadBuffers();
-	for (int i = 0; i < m_nHierarchicalGameObjects; i++) m_ppHierarchicalGameObjects[i]->ReleaseUploadBuffers();
+	m_ObjManager->ReleaseUploadBuffers();
+
 }
 
 bool CTestScene::OnProcessingMouseMessage(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam)
@@ -252,16 +271,40 @@ bool CTestScene::ProcessInput(UCHAR* pKeysBuffer)
 
 void CTestScene::AnimateObjects(float fTimeElapsed)
 {
-	m_fElapsedTime = fTimeElapsed;
+	//m_pLockOn->m_pCamera = m_pPlayer->GetCamera();
 
-	for (int i = 0; i < m_nShaders; i++) if (m_ppShaders[i]) m_ppShaders[i]->AnimateObjects(fTimeElapsed);
-	for (int i = 0; i < m_nGameObjects; i++) if (m_ppGameObjects[i]) m_ppGameObjects[i]->Animate(fTimeElapsed);
-
-	/*if (m_pLights)
+	if (m_ObjManager->GetObjFromTag(L"SphereCollider", OBJ_ENEMY)->SphereCollider->m_BoundingSphere.Center.z != 0)
 	{
-		m_pLights[1].m_xmf3Position = m_pPlayer->GetPosition();
-		m_pLights[1].m_xmf3Direction = m_pPlayer->GetLookVector();
+		if (m_ObjManager->GetObjFromTag(L"SphereCollider", OBJ_ENEMY)->SphereCollider->m_BoundingSphere.Intersects(m_pPlayer->SphereCollider->m_BoundingSphere))
+		{
+			//m_pPlayer->SetPosition(XMFLOAT3(0, 0 ,0));
+			cout << "Player : " << m_pPlayer->SphereCollider->m_BoundingSphere.Center.z << ", Sphere : " << m_ObjManager->GetObjFromTag(L"SphereCollider", OBJ_ENEMY)->SphereCollider->m_BoundingSphere.Center.z << endl;
+			//m_ObjManager->ReleaseObjFromTag(L"SphereCollider", OBJ_ENEMY);
+		}
+		if (m_ObjManager->GetObjFromTag(L"player_missle", OBJ_ENEMY))
+			cout << m_ObjManager->GetObjFromTag(L"player_missle", OBJ_ENEMY)->m_xmf4x4World._41 << endl;
+	}
+	
+	/*if (m_ObjManager->GetObjFromTag(L"player_missle", OBJ_MISSLE))
+	{
+		if (m_ObjManager->GetObjFromTag(L"SphereCollider", OBJ_ENEMY)->SphereCollider->m_BoundingSphere.Intersects(m_ObjManager->GetObjFromTag(L"player_missle", OBJ_MISSLE)->SphereCollider->m_BoundingSphere))
+		{
+			cout << "Player : " << m_pPlayer->SphereCollider->m_BoundingSphere.Center.z << ", player_missle : " << 
+				m_ObjManager->GetObjFromTag(L"player_missle", OBJ_MISSLE)->SphereCollider->m_BoundingSphere.Center.z << endl;
+		}
+		if (m_ObjManager->GetObjFromTag(L"player_missle", OBJ_ENEMY))
+			cout << m_ObjManager->GetObjFromTag(L"player_missle", OBJ_ENEMY)->m_xmf4x4World._41 << endl;
 	}*/
+
+	m_ObjManager->GetObjFromTag(L"SphereCollider", OBJ_ENEMY)->Rotate(0,0.1,0);
+	m_ObjManager->GetObjFromTag(L"SphereCollider", OBJ_ENEMY)->MoveForward(200 * fTimeElapsed);
+	//m_ObjManager->GetObjFromTag(L"SphereCollider", OBJ_ENEMY)->MoveUp(2);
+
+
+	
+	m_fElapsedTime += fTimeElapsed;
+
+	m_ObjManager->Update(fTimeElapsed);
 }
 
 void CTestScene::Render(ID3D12GraphicsCommandList* pd3dCommandList, CCamera* pCamera, ID3D12Resource* pCurrentBackBuffer)
@@ -272,7 +315,6 @@ void CTestScene::Render(ID3D12GraphicsCommandList* pd3dCommandList, CCamera* pCa
 
 	if (m_pd3dCbvSrvDescriptorHeap) pd3dCommandList->SetDescriptorHeaps(1, &m_pd3dCbvSrvDescriptorHeap);
 
-
 	pCamera->SetViewportsAndScissorRects(pd3dCommandList);
 	pCamera->UpdateShaderVariables(pd3dCommandList);
 
@@ -281,26 +323,16 @@ void CTestScene::Render(ID3D12GraphicsCommandList* pd3dCommandList, CCamera* pCa
 	D3D12_GPU_VIRTUAL_ADDRESS d3dcbLightsGpuVirtualAddress = m_pd3dcbLights->GetGPUVirtualAddress();
 	pd3dCommandList->SetGraphicsRootConstantBufferView(2, d3dcbLightsGpuVirtualAddress); //Lights
 
-	if (m_pSkyBox) m_pSkyBox->Render(pd3dCommandList, pCamera);
-	if (m_pTerrain) m_pTerrain->Render(pd3dCommandList, pCamera);
+	m_pLockOn->Render(GetScreenPos(XMFLOAT3(m_ObjManager->GetObjFromTag(L"SphereCollider", OBJ_ENEMY)->GetPosition().x, m_ObjManager->GetObjFromTag(L"SphereCollider", OBJ_ENEMY)->GetPosition().y, m_ObjManager->GetObjFromTag(L"SphereCollider", OBJ_ENEMY)->GetPosition().z), pCamera),
+		m_ObjManager->GetObjFromTag(L"SphereCollider", OBJ_ENEMY)->GetPosition(),
+		m_pPlayer->GetPosition(), m_pPlayer->GetLookVector(),
+		m_ppGameObjects[7]);
 
+	m_pUI->MoveMinimapPoint(m_pPlayer->GetPosition(), m_ppGameObjects[6]);
+	m_pUI->MoveMinimapPoint(m_ObjManager->GetObjFromTag(L"SphereCollider", OBJ_ENEMY)->GetPosition(), m_ppGameObjects[9]);
+	m_ObjManager->MoveMinimapPoint();
 
-	for (int i = 0; i < m_nShaders; i++) if (m_ppShaders[i]) m_ppShaders[i]->Render(pd3dCommandList, pCamera);
-	
-	for (int i = 0; i < m_nGameObjects; i++) if (m_ppGameObjects[i]) m_ppGameObjects[i]->Render(pd3dCommandList, pCamera);
-
-	for (int i = 0; i < m_nHierarchicalGameObjects; i++)
-	{
-		if (m_ppHierarchicalGameObjects[i])
-		{
-			m_ppHierarchicalGameObjects[i]->Animate(m_fElapsedTime);
-			m_ppHierarchicalGameObjects[i]->UpdateTransform(NULL);
-			if (!m_ppHierarchicalGameObjects[i]->m_pSkinnedAnimationController) m_ppHierarchicalGameObjects[i]->UpdateTransform(NULL);
-			m_ppHierarchicalGameObjects[i]->Render(pd3dCommandList, pCamera);
-		}
-	}
-
-	//if (m_pBlur) m_pBlur->Render(pd3dCommandList, m_pd3dComputeRootSignature, pCamera, pCurrentBackBuffer);
-
+	m_ObjManager->Render(pd3dCommandList, pCamera);
+	//m_pSphereCollider->SphereCollider->Render(pd3dCommandList, pCamera);
 
 }

@@ -1,5 +1,6 @@
 #pragma once
 #include "CMesh.h"
+#include "CPlaneMesh.h"
 #include "CAnimationController.h"
 
 
@@ -103,12 +104,16 @@ public:
 	static CShader* m_pStandardShader;
 	static CShader* m_pAceSahder;
 	static CShader* m_pSkinnedAnimationShader;
+	static CShader* m_pColliderShader;
 
 	static void CMaterial::PrepareShaders(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList, ID3D12RootSignature* pd3dGraphicsRootSignature);
 
 	void SetStandardShader() { CMaterial::SetShader(m_pStandardShader); }
 	void SetAceModelShader() { CMaterial::SetShader(m_pAceSahder); }
 	void SetSkinnedAnimationShader() { CMaterial::SetShader(m_pSkinnedAnimationShader); }
+	void SetColliderShader() { CMaterial::SetShader(m_pColliderShader); }
+
+	CShader* GetShader() { return m_pAceSahder; }
 };
 
 
@@ -118,6 +123,7 @@ struct CB_GAMEOBJECT_INFO
 	UINT							m_nMaterial;
 };
 
+class CSphereCollider;
 class CGameObject
 {
 private:
@@ -146,12 +152,19 @@ public:
 	int								m_nMaterials = 0;
 	CMaterial** m_ppMaterials = NULL;
 
+	CPlaneMesh* m_pPlaneMesh;
+	CPlaneMesh* m_pLockOnMesh;
+	CMaterial* m_pUIMaterial;
+	CTexture* m_ppUITexture[10];
+
 	XMFLOAT4X4						m_xmf4x4ToParent;
 	XMFLOAT4X4						m_xmf4x4World;
 
 	CGameObject* m_pParent = NULL;
 	CGameObject* m_pChild = NULL;
 	CGameObject* m_pSibling = NULL;
+
+	CSphereCollider* SphereCollider = NULL;
 
 	OBJTYPE				m_ObjType = OBJ_END;
 
@@ -185,6 +198,9 @@ public:
 	virtual void ReleaseUploadBuffers();
 
 	XMFLOAT3 GetPosition();
+	XMFLOAT3* GetPositionForMissle();
+	XMFLOAT3* m_xmpPosition = NULL;
+	XMFLOAT3 m_positionForMissle;
 	XMFLOAT3 GetLook();
 	XMFLOAT3 GetUp();
 	XMFLOAT3 GetRight();
@@ -210,6 +226,8 @@ public:
 	CTexture* FindReplicatedTexture(_TCHAR* pstrTextureName);
 
 	UINT GetMeshType() { return((m_pMesh) ? m_pMesh->GetType() : 0x00); }
+
+	CShader* GetShader();
 
 public:
 	CAnimationController* m_pSkinnedAnimationController = NULL;

@@ -19,9 +19,14 @@ public:
 public:
 	bool ChangeSceneState(SCENESTATE SceneState, ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList);
 	void SetPlayer(CPlayer* pPlayer) { m_Scene->m_pPlayer = pPlayer; }
+	void SetObjManagerInPlayer() { m_Scene->m_pPlayer->m_ObjManager = m_Scene->m_ObjManager; }
+
 public:
 	int Update(const float& TimeDelta);
-	void Render(ID3D12GraphicsCommandList* pd3dCommandList, CCamera* pCamera, ID3D12Resource* pCurrentBackBuffer);
+
+	void Render(ID3D12GraphicsCommandList* pd3dCommandList, CCamera* pCamera);
+	void ReleaseUploadBuffers();
+
 	void Release();
 
 private:

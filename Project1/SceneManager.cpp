@@ -43,9 +43,14 @@ int SceneManager::Update(const float& TimeDelta)
 	return 0;
 }
 
-void SceneManager::Render(ID3D12GraphicsCommandList* pd3dCommandList, CCamera* pCamera, ID3D12Resource * pCurrentBackBuffer)
+void SceneManager::Render(ID3D12GraphicsCommandList* pd3dCommandList, CCamera* pCamera)
 {
-	m_Scene->Render(pd3dCommandList, pCamera, pCurrentBackBuffer);
+	m_Scene->Render(pd3dCommandList, pCamera);
+}
+
+void SceneManager::ReleaseUploadBuffers()
+{
+	m_Scene->ReleaseUploadBuffers();
 }
 
 void SceneManager::Release()

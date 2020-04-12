@@ -34,23 +34,8 @@
     <Filter Include="GameObject">
       <UniqueIdentifier>{a4f4dc3d-e899-4463-af89-6723da9db73a}</UniqueIdentifier>
     </Filter>
-    <Filter Include="GameObject\Mesh">
-      <UniqueIdentifier>{3b451373-8ccd-4975-8c36-2a4b813eeda8}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="GameObject\Mesh\HeightMapMesh">
-      <UniqueIdentifier>{252247be-94a0-4928-a076-48f285cb2d89}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="GameObject\Mesh\SkyBoxMesh">
-      <UniqueIdentifier>{544de1ad-bb29-47c5-9028-ed1b0b1d81aa}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="GameObject\Mesh\AircraftMesh">
-      <UniqueIdentifier>{3d9187fd-9ecb-4537-ad77-f6411e9652d2}</UniqueIdentifier>
-    </Filter>
     <Filter Include="GameObject\Camera">
       <UniqueIdentifier>{36f5c420-97b2-44f7-89b0-039d8bea7984}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="GameObject\Mesh\AnimationController">
-      <UniqueIdentifier>{4cb4773f-7512-423c-91c3-385adffb54ea}</UniqueIdentifier>
     </Filter>
     <Filter Include="GameObject\Player">
       <UniqueIdentifier>{753d3c74-0b87-487c-b5a9-26bad3f41066}</UniqueIdentifier>
@@ -88,17 +73,41 @@
     <Filter Include="Scene\TestScene">
       <UniqueIdentifier>{dbb89c9c-32f5-443d-ba77-556c90665c7f}</UniqueIdentifier>
     </Filter>
-    <Filter Include="GameObject\Mesh\SkinnedMesh">
-      <UniqueIdentifier>{d64cc2d1-10af-4537-a671-89daabe89815}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Manager\KeyManager">
       <UniqueIdentifier>{8e8a86cf-9cc4-457b-80a7-4c535708a32e}</UniqueIdentifier>
     </Filter>
     <Filter Include="GameObject\Plane">
       <UniqueIdentifier>{03fc9cf8-9aed-453a-a621-23fcc863083d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="GameObject\Mesh">
+      <UniqueIdentifier>{3b451373-8ccd-4975-8c36-2a4b813eeda8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GameObject\Mesh\HeightMapMesh">
+      <UniqueIdentifier>{252247be-94a0-4928-a076-48f285cb2d89}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GameObject\Mesh\SkyBoxMesh">
+      <UniqueIdentifier>{544de1ad-bb29-47c5-9028-ed1b0b1d81aa}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GameObject\Mesh\AircraftMesh">
+      <UniqueIdentifier>{3d9187fd-9ecb-4537-ad77-f6411e9652d2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GameObject\Mesh\AnimationController">
+      <UniqueIdentifier>{4cb4773f-7512-423c-91c3-385adffb54ea}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GameObject\Mesh\SkinnedMesh">
+      <UniqueIdentifier>{d64cc2d1-10af-4537-a671-89daabe89815}</UniqueIdentifier>
+    </Filter>
     <Filter Include="GameObject\Mesh\PlaneMesh">
       <UniqueIdentifier>{a99660be-b8f8-437f-a6ae-860371e796e8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GameObject\ColisionObject">
+      <UniqueIdentifier>{7f1fc46c-e5cb-4736-b5b7-cbf0e37434b2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GameObject\Missle">
+      <UniqueIdentifier>{8000476f-6e80-4272-a7b8-42da249f76d3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Manager\CollisionManager">
+      <UniqueIdentifier>{c2a809ff-6292-423c-92bf-5d38a9efc6d6}</UniqueIdentifier>
     </Filter>
     <Filter Include="Blur">
       <UniqueIdentifier>{a7d09683-3ed7-4681-97ca-be144565349f}</UniqueIdentifier>
@@ -216,6 +225,15 @@
     <ClInclude Include="CPlane.h">
       <Filter>GameObject\Plane</Filter>
     </ClInclude>
+    <ClInclude Include="CSphereCollider.h">
+      <Filter>GameObject\ColisionObject</Filter>
+    </ClInclude>
+    <ClInclude Include="CMissle.h">
+      <Filter>GameObject\Missle</Filter>
+    </ClInclude>
+    <ClInclude Include="CollisionManager.h">
+      <Filter>Manager\CollisionManager</Filter>
+    </ClInclude>
     <ClInclude Include="CBlurFilter.h">
       <Filter>Blur</Filter>
     </ClInclude>
@@ -223,6 +241,9 @@
       <Filter>Blur</Filter>
     </ClInclude>
     <ClInclude Include="CUI.h">
+      <Filter>GameObject\Plane\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="CLockOnUI.h">
       <Filter>GameObject\Plane\UI</Filter>
     </ClInclude>
   </ItemGroup>
@@ -314,6 +335,15 @@
     <ClCompile Include="CPlane.cpp">
       <Filter>GameObject\Plane</Filter>
     </ClCompile>
+    <ClCompile Include="CSphereCollider.cpp">
+      <Filter>GameObject\ColisionObject</Filter>
+    </ClCompile>
+    <ClCompile Include="CMissle.cpp">
+      <Filter>GameObject\Missle</Filter>
+    </ClCompile>
+    <ClCompile Include="CollisionManager.cpp">
+      <Filter>Manager\CollisionManager</Filter>
+    </ClCompile>
     <ClCompile Include="CBlurFilter.cpp">
       <Filter>Blur</Filter>
     </ClCompile>
@@ -321,6 +351,9 @@
       <Filter>Blur</Filter>
     </ClCompile>
     <ClCompile Include="CUI.cpp">
+      <Filter>GameObject\Plane\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="CLockOnUI.cpp">
       <Filter>GameObject\Plane\UI</Filter>
     </ClCompile>
   </ItemGroup>
@@ -344,13 +377,19 @@
     <FxCompile Include="Shaders.hlsl">
       <Filter>HLSL</Filter>
     </FxCompile>
-    <FxCompile Include="BillBoard.hlsl">
-      <Filter>HLSL</Filter>
-    </FxCompile>
     <FxCompile Include="Plane.hlsl">
       <Filter>HLSL</Filter>
     </FxCompile>
     <FxCompile Include="Blur.hlsl">
+      <Filter>HLSL</Filter>
+    </FxCompile>
+    <FxCompile Include="Cloud.hlsl">
+      <Filter>HLSL</Filter>
+    </FxCompile>
+    <FxCompile Include="BillBoardAnimation.hlsl">
+      <Filter>HLSL</Filter>
+    </FxCompile>
+    <FxCompile Include="UI.hlsl">
       <Filter>HLSL</Filter>
     </FxCompile>
   </ItemGroup>

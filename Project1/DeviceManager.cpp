@@ -136,7 +136,7 @@ void CDeviceManager::CreateSwapChain()
 	::GetClientRect(m_hWnd, &rcClient);
 	m_nWndClientWidth = rcClient.right - rcClient.left;
 	m_nWndClientHeight = rcClient.bottom - rcClient.top;
-
+//#define _WITH_CREATE_SWAPCHAIN_FOR_HWND
 #ifdef _WITH_CREATE_SWAPCHAIN_FOR_HWND
 	DXGI_SWAP_CHAIN_DESC1 dxgiSwapChainDesc;
 	::ZeroMemory(&dxgiSwapChainDesc, sizeof(DXGI_SWAP_CHAIN_DESC1));
@@ -168,7 +168,7 @@ void CDeviceManager::CreateSwapChain()
 	dxgiSwapChainDesc.BufferDesc.Width = m_nWndClientWidth;
 	dxgiSwapChainDesc.BufferDesc.Height = m_nWndClientHeight;
 	dxgiSwapChainDesc.BufferDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
-	dxgiSwapChainDesc.BufferDesc.RefreshRate.Numerator = 60;
+	dxgiSwapChainDesc.BufferDesc.RefreshRate.Numerator = 75;
 	dxgiSwapChainDesc.BufferDesc.RefreshRate.Denominator = 1;
 	dxgiSwapChainDesc.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
 	dxgiSwapChainDesc.SwapEffect = DXGI_SWAP_EFFECT_FLIP_DISCARD;
@@ -276,8 +276,9 @@ void CDeviceManager::BuildScene()
 	m_pSceneManager->ChangeSceneState(SCENE_TEST, m_pd3dDevice, m_pd3dCommandList);
 
 	CAirplanePlayer* pPlayer = new CAirplanePlayer(m_pd3dDevice, m_pd3dCommandList, m_pSceneManager->GetGraphicsRootSignature(), NULL);
-	//pPlayer->SetPosition(XMFLOAT3(340.0f, 600.0f, 640.0f));
-	pPlayer->SetPosition(XMFLOAT3(-1000, 3000, -10000));
+	//pPlayer->SetPosition(XMFLOAT3(0, 0, 0));
+	pPlayer->SetPosition(XMFLOAT3(410, 1000, -5000));
+	//pPlayer->SetPosition(XMFLOAT3(-1000, 3000, -10000));
 	//pPlayer->SetScale(XMFLOAT3(0.02, 0.02, 0.02));
 	m_pPlayer = pPlayer;
 	
@@ -299,8 +300,11 @@ void CDeviceManager::BuildScene()
 
 	WaitForGpuComplete();
 
-	if (m_pPlayer) m_pPlayer->ReleaseUploadBuffers();
+	m_pSceneManager->SetPlayer(m_pPlayer);
+	m_pSceneManager->SetObjManagerInPlayer();
 
+	if (m_pPlayer) m_pPlayer->ReleaseUploadBuffers();
+	if (m_pSceneManager) m_pSceneManager->ReleaseUploadBuffers();
 	m_GameTimer.Reset();
 }
 
@@ -435,7 +439,6 @@ void CDeviceManager::AnimateObjects()
 {
 	float fTimeElapsed = m_GameTimer.GetTimeElapsed();
 	m_pSceneManager->Update(fTimeElapsed);
-	//m_pPlayer->Animate(fTimeElapsed);
 	m_pPlayer->Update(m_GameTimer.GetTimeElapsed());
 }
 
@@ -473,9 +476,10 @@ void CDeviceManager::FrameAdvance()
 
 	m_pd3dCommandList->SetGraphicsRootSignature(m_pRootSignature);
 
-	m_pSceneManager->Render(m_pd3dCommandList, m_pCamera, CurrentBackBuffer());
+	m_pSceneManager->Render(m_pd3dCommandList, m_pCamera);
 
 	if (m_pPlayer) m_pPlayer->Render(m_pd3dCommandList, m_pCamera);
+	//if(m_pPlayer->SphereCollider)m_pPlayer->SphereCollider->Render(m_pd3dCommandList, m_pCamera);
 
 	if (m_BlurSwitch == BLUR_ON)
 	{

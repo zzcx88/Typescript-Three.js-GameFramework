@@ -3,8 +3,13 @@
 #include "CPlayer.h"
 #include "CSkyBox.h"
 #include "CPlane.h"
+#include "CUI.h"
+#include "CLockOnUI.h"
 #include "CHeightMapTerrain.h"
-#include "CBlurFilter.h"
+#include "CSuperCobraObject.h"
+
+
+
 
 #define MAX_LIGHTS							16 
 
@@ -60,6 +65,8 @@ public:
 	void ReleaseUploadBuffers();
 
 public:
+	float fx, fy = 0.f;
+	
 	float								m_fElapsedTime = 0.0f;
 
 	int									m_nGameObjects = 0;
@@ -83,5 +90,8 @@ public:
 
 	int									m_nHierarchicalGameObjects = 0;
 	CGameObject** m_ppHierarchicalGameObjects = NULL;
+
+	CLockOnUI* m_pLockOn = NULL;
+	CUI* m_pUI = NULL;
 };
 

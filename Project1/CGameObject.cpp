@@ -166,6 +166,7 @@ void CMaterial::ReleaseUploadBuffers()
 CShader* CMaterial::m_pSkinnedAnimationShader = NULL;
 CShader* CMaterial::m_pStandardShader = NULL;
 CShader* CMaterial::m_pAceSahder = NULL;
+CShader* CMaterial::m_pColliderShader = NULL;
 
 void CMaterial::PrepareShaders(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList, ID3D12RootSignature* pd3dGraphicsRootSignature)
 {
@@ -180,6 +181,10 @@ void CMaterial::PrepareShaders(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandLi
 	m_pSkinnedAnimationShader = new CSkinnedAnimationShader();
 	m_pSkinnedAnimationShader->CreateShader(pd3dDevice, pd3dCommandList, pd3dGraphicsRootSignature);
 	m_pSkinnedAnimationShader->CreateShaderVariables(pd3dDevice, pd3dCommandList);
+
+	m_pColliderShader = new CColliderShader();
+	m_pColliderShader->CreateShader(pd3dDevice, pd3dCommandList, pd3dGraphicsRootSignature);
+	m_pColliderShader->CreateShaderVariables(pd3dDevice, pd3dCommandList);
 }
 
 void CMaterial::UpdateShaderVariable(ID3D12GraphicsCommandList* pd3dCommandList)
@@ -418,6 +423,9 @@ void CGameObject::Animate(float fTimeElapsed)
 
 	if (m_pSibling) m_pSibling->Animate(fTimeElapsed);
 	if (m_pChild) m_pChild->Animate(fTimeElapsed);
+
+	m_positionForMissle.x = m_xmf4x4World._41, m_positionForMissle.y = m_xmf4x4World._42, m_positionForMissle.z = m_xmf4x4World._43;
+	m_xmpPosition = (XMFLOAT3*)&m_positionForMissle;
 }
 
 void CGameObject::Render(ID3D12GraphicsCommandList* pd3dCommandList, CCamera* pCamera)
@@ -510,6 +518,12 @@ XMFLOAT3 CGameObject::GetPosition()
 	return(XMFLOAT3(m_xmf4x4World._41, m_xmf4x4World._42, m_xmf4x4World._43));
 }
 
+XMFLOAT3* CGameObject::GetPositionForMissle()
+{
+	//cout << m_xmpPosition->y << endl;
+	return(m_xmpPosition);
+}
+
 XMFLOAT3 CGameObject::GetLook()
 {
 	return(Vector3::Normalize(XMFLOAT3(m_xmf4x4World._31, m_xmf4x4World._32, m_xmf4x4World._33)));
@@ -597,6 +611,12 @@ CTexture* CGameObject::FindReplicatedTexture(_TCHAR* pstrTextureName)
 	return(NULL);
 }
 
+CShader* CGameObject::GetShader()
+{
+	if(!m_ppMaterials[0])
+		return m_ppMaterials[0]->GetShader();
+}
+
 void CGameObject::LoadMaterialsFromFile(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList, CGameObject* pParent, FILE* pInFile, CShader* pShader, MODELTYPE modelType)
 {
 	char pstrToken[64] = { '\0' };
@@ -635,6 +655,8 @@ void CGameObject::LoadMaterialsFromFile(ID3D12Device* pd3dDevice, ID3D12Graphics
 						{
 							pMaterial->SetAceModelShader();
 						}
+						else if(modelType == MODEL_COL)
+							pMaterial->SetColliderShader();
 						else
 							pMaterial->SetStandardShader();
 					}

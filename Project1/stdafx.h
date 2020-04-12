@@ -21,6 +21,7 @@
 #include <memory.h>
 #include <tchar.h>
 #include <math.h>
+#include <cmath>
 
 #include <string>
 #include <wrl.h>
@@ -327,6 +328,13 @@ namespace Matrix4x4
 		XMStoreFloat4x4(&xmf4x4Result, XMMatrixLookAtLH(XMLoadFloat3(&xmf3EyePosition), XMLoadFloat3(&xmf3LookAtPosition), XMLoadFloat3(&xmf3UpDirection)));
 		return(xmf4x4Result);
 	}
+
+	inline XMFLOAT4X4 OrthoLH(float ViewWidth, float ViewHeight, float NearZ, float FarZ)
+	{
+		XMFLOAT4X4 xmf4x4Result;
+		XMStoreFloat4x4(&xmf4x4Result, XMMatrixOrthographicLH(ViewWidth, ViewHeight, NearZ, FarZ));
+		return(xmf4x4Result);
+	}
 }
 
 namespace Triangle
@@ -355,6 +363,7 @@ namespace Plane
 #include "KeyManager.h"
 #include "ObjectManager.h"
 #include "CShaderManager.h"
+#include "CollisionManager.h"
 
 // 디버깅용 콘솔 창
 #ifdef UNICODE 

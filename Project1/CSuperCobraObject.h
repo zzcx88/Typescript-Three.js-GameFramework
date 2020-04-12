@@ -14,4 +14,5 @@ private:
 public:
 	virtual void OnPrepareAnimate();
 	virtual void Animate(float fTimeElapsed);
+	virtual void Render(ID3D12GraphicsCommandList* pd3dCommandList, CCamera* pCamera);
 };
