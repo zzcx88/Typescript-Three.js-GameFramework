@@ -89,7 +89,7 @@ void CDeviceManager::CreateD3DDevice()
 			} 
 		} 
 	}
-	///////////
+	/////////////////
 
 
 	for (UINT i = 0; DXGI_ERROR_NOT_FOUND != m_pdxgiFactory->EnumAdapters1(i, &pd3dAdapter); i++)

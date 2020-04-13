@@ -200,7 +200,7 @@ public:
 class CMissleFogShader : public CShader
 {
 	public:
-		ID3D12Resource* m_pd3dcbGameObjects = NULL;
+		ID3D12Resource* m_pd3dcbBlendAmount = NULL;
 
 	public:
 		CMissleFogShader();
@@ -215,6 +215,7 @@ class CMissleFogShader : public CShader
 
 		virtual D3D12_BLEND_DESC CreateBlendState();
 
+		virtual void CreateShaderVariables(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList);
 		void CreateConstantBufferViews(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList, int nConstantBufferViews, ID3D12Resource* pd3dConstantBuffers, UINT nStride);
 };
 

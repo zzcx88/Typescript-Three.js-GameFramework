@@ -118,7 +118,7 @@ public:
 struct CB_GAMEOBJECT_INFO
 {
 	XMFLOAT4X4						m_xmf4x4World;
-	UINT							m_nMaterial;
+	UINT								m_nMaterial;
 };
 
 class CSphereCollider;
@@ -141,7 +141,7 @@ public:
 
 protected:
 	ID3D12Resource* m_pd3dcbGameObject = NULL;
-	CB_GAMEOBJECT_INFO* m_pcbMappedGameObject = NULL;
+	//CB_GAMEOBJECT_INFO* m_pcbMappedGameObject = NULL;
 
 public:
 	char							m_pstrFrameName[64];
