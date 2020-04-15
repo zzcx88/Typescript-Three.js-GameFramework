@@ -468,7 +468,7 @@ void CDeviceManager::AnimateObjects()
 {
 	float fTimeElapsed = m_GameTimer.GetTimeElapsed();
 	m_pSceneManager->Update(fTimeElapsed);
-	m_pPlayer->Update(m_GameTimer.GetTimeElapsed());
+	//m_pPlayer->Update(m_GameTimer.GetTimeElapsed());
 }
 
 void CDeviceManager::FrameAdvance()
@@ -507,7 +507,7 @@ void CDeviceManager::FrameAdvance()
 
 	m_pSceneManager->Render(m_pd3dCommandList, m_pCamera);
 
-	if (m_pPlayer) m_pPlayer->Render(m_pd3dCommandList, m_pCamera);
+	//if (m_pPlayer) m_pPlayer->Render(m_pd3dCommandList, m_pCamera);
 	//if(m_pPlayer->SphereCollider)m_pPlayer->SphereCollider->Render(m_pd3dCommandList, m_pCamera);
 
 	if (m_BlurSwitch == BLUR_ON)

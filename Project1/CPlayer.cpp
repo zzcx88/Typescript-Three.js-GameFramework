@@ -134,7 +134,7 @@ void CPlayer::Rotate(float x, float y, float z)
 	m_xmf3Up = Vector3::CrossProduct(m_xmf3Look, m_xmf3Right, true);
 }
 
-int CPlayer::Update_Input(const float& TimeDelta)
+void CPlayer::Update_Input(const float& TimeDelta)
 {
 	KeyManager* keyManager = GET_MANAGER<KeyManager>();
 	DWORD dwDirection = 0;
@@ -200,11 +200,11 @@ int CPlayer::Update_Input(const float& TimeDelta)
 	Move(DIR_FORWARD, 600.0f * TimeDelta, true);
 	MoveForward(8.0f);
 
-	Animate(TimeDelta, dwDirection);
-	return 0;
+	WingAnimate(TimeDelta, dwDirection);
+	return;
 }
 
-int CPlayer::Update(float fTimeElapsed)
+void CPlayer::Animate(float fTimeElapsed)
 {
 	m_xmf3Velocity = Vector3::Add(m_xmf3Velocity, Vector3::ScalarProduct(m_xmf3Gravity, fTimeElapsed, false));
 	float fLength = sqrtf(m_xmf3Velocity.x * m_xmf3Velocity.x + m_xmf3Velocity.z * m_xmf3Velocity.z);
@@ -233,10 +233,12 @@ int CPlayer::Update(float fTimeElapsed)
 	if (fDeceleration > fLength) fDeceleration = fLength;
 	m_xmf3Velocity = Vector3::Add(m_xmf3Velocity, Vector3::ScalarProduct(m_xmf3Velocity, -fDeceleration, true));
 
-	if (-1 == Update_Input(fTimeElapsed))
+	Update_Input(fTimeElapsed);
+
+	/*if (-1 ==Update_Input(fTimeElapsed))
 	{
 		return -1;
-	}
+	}*/
 }
 
 CCamera* CPlayer::OnChangeCamera(DWORD nNewCameraMode, DWORD nCurrentCameraMode)
@@ -353,9 +355,9 @@ void CAirplanePlayer::OnPrepareAnimate()
 	m_xmMSL_1 = m_pMSL_1->m_xmf4x4World;
 }
 
-void CAirplanePlayer::Animate(float fTimeElapsed, DWORD Direction)
+void CPlayer::WingAnimate(float fTimeElapsed, DWORD Direction)
 {
-	CPlayer::Animate(fTimeElapsed);
+	CGameObject::Animate(fTimeElapsed);
 	if (SphereCollider)SphereCollider->SetPosition(m_xmf3Position);
 	if (SphereCollider)SphereCollider->m_xmf4x4ToParent = Matrix4x4::Multiply(XMMatrixScaling(5, 5, 5), m_xmf4x4ToParent);
 	if (SphereCollider)SphereCollider->Animate(fTimeElapsed, GetPosition());
@@ -366,7 +368,7 @@ void CAirplanePlayer::LeftRollAnimation(float fTimeElapsed)
 	if (Roll_WingsRotateDegree > 0)
 	{
 		RollWingReturn(fTimeElapsed);
-		CPlayer::Animate(fTimeElapsed);
+		CGameObject::Animate(fTimeElapsed);
 		return;
 	}
 	if (Roll_WingsRotateDegree > -1.0f)
@@ -378,7 +380,7 @@ void CAirplanePlayer::LeftRollAnimation(float fTimeElapsed)
 		m_pRight_Roll_Wing->m_xmf4x4ToParent = Matrix4x4::Multiply(xmmtxRotate1, m_pRight_Roll_Wing->m_xmf4x4ToParent);
 
 		Roll_WingsRotateDegree -= fTimeElapsed;
-		CPlayer::Animate(fTimeElapsed);
+		CGameObject::Animate(fTimeElapsed);
 	}
 }
 
@@ -387,7 +389,7 @@ void CAirplanePlayer::RightRollAnimation(float fTimeElapsed)
 	if (Roll_WingsRotateDegree < 0)
 	{
 		RollWingReturn(fTimeElapsed);
-		CPlayer::Animate(fTimeElapsed);
+		CGameObject::Animate(fTimeElapsed);
 		return;
 	}
 	if (Roll_WingsRotateDegree < 1.0f)
@@ -399,7 +401,7 @@ void CAirplanePlayer::RightRollAnimation(float fTimeElapsed)
 		m_pLeft_Roll_Wing->m_xmf4x4ToParent = Matrix4x4::Multiply(xmmtxRotate1, m_pLeft_Roll_Wing->m_xmf4x4ToParent);
 
 		Roll_WingsRotateDegree += fTimeElapsed;
-		CPlayer::Animate(fTimeElapsed);
+		CGameObject::Animate(fTimeElapsed);
 	}
 }
 
@@ -409,7 +411,7 @@ void CAirplanePlayer::UpPitchAnimation(float fTimeElapsed)
 	if (Pitch_WingsRotateDegree > 0)
 	{
 		PitchWingReturn(fTimeElapsed);
-		CPlayer::Animate(fTimeElapsed);
+		CGameObject::Animate(fTimeElapsed);
 		return;
 	}
 	if (Pitch_WingsRotateDegree > -1.0f)
@@ -421,7 +423,7 @@ void CAirplanePlayer::UpPitchAnimation(float fTimeElapsed)
 		m_pRight_Pitch_Wing->m_xmf4x4ToParent = Matrix4x4::Multiply(xmmtxRotate1, m_pRight_Pitch_Wing->m_xmf4x4ToParent);
 
 		Pitch_WingsRotateDegree -= fTimeElapsed;
-		CPlayer::Animate(fTimeElapsed);
+		CGameObject::Animate(fTimeElapsed);
 	}
 }
 
@@ -430,7 +432,7 @@ void CAirplanePlayer::DownPitchAnimation(float fTimeElapsed)
 	if (Pitch_WingsRotateDegree < 0)
 	{
 		PitchWingReturn(fTimeElapsed);
-		CPlayer::Animate(fTimeElapsed);
+		CGameObject::Animate(fTimeElapsed);
 		return;
 	}
 	if (Pitch_WingsRotateDegree < 1.0f)
@@ -442,7 +444,7 @@ void CAirplanePlayer::DownPitchAnimation(float fTimeElapsed)
 		m_pRight_Pitch_Wing->m_xmf4x4ToParent = Matrix4x4::Multiply(xmmtxRotate1, m_pRight_Pitch_Wing->m_xmf4x4ToParent);
 
 		Pitch_WingsRotateDegree += fTimeElapsed;
-		CPlayer::Animate(fTimeElapsed);
+		CGameObject::Animate(fTimeElapsed);
 	}
 }
 
@@ -592,7 +594,7 @@ CCamera* CAirplanePlayer::ChangeCamera(DWORD nNewCameraMode, float fTimeElapsed)
 	}
 
 	m_pCamera->SetPosition(Vector3::Add(m_xmf3Position, m_pCamera->GetOffset()));
-	Update(fTimeElapsed);
+	Animate(fTimeElapsed);
 
 	return(m_pCamera);
 }
@@ -707,7 +709,7 @@ void CTerrainPlayer::OnCameraUpdateCallback(float fTimeElapsed)
 
 int CTerrainPlayer::Update(float fTimeElapsed)
 {
-	CPlayer::Update(fTimeElapsed);
+	CPlayer::Animate(fTimeElapsed);
 
 	float fLength = sqrtf(m_xmf3Velocity.x * m_xmf3Velocity.x + m_xmf3Velocity.z * m_xmf3Velocity.z);
 	SetTrackAnimationSet(0, ::IsZero(fLength) ? 0 : 1);

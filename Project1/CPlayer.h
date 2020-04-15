@@ -74,8 +74,9 @@ public:
 	virtual void PitchWingReturn(float fTimeElapsed) {}
 	virtual void MissleLaunch() {}
 
-	int Update_Input(const float& TimeDelta);
-	virtual int Update(float fTimeElapsed);
+	void Update_Input(const float& TimeDelta);
+	virtual void WingAnimate(float fTimeElapsed, DWORD Direction);
+	virtual void Animate(float fTimeElapsed);
 
 	virtual void OnPlayerUpdateCallback(float fTimeElapsed) { }
 	void SetPlayerUpdatedContext(LPVOID pContext) { m_pPlayerUpdatedContext = pContext; }
@@ -130,7 +131,7 @@ public:
 
 private:
 	virtual void OnPrepareAnimate();
-	virtual void Animate(float fTimeElapsed, DWORD Direction);
+	
 	virtual void LeftRollAnimation(float fTimeElapsed);
 	virtual void RightRollAnimation(float fTimeElapsed);
 	virtual void UpPitchAnimation(float fTimeElapsed);

@@ -18,6 +18,8 @@ bool SceneManager::ChangeSceneState(SCENESTATE SceneState, ID3D12Device* pd3dDev
 	{
 		Release();
 	}
+	if (m_Scene) m_Scene->ReleaseUploadBuffers();
+	GET_MANAGER<ObjectManager>()->ReleaseAll();
 
 	switch (SceneState)
 	{
@@ -28,13 +30,23 @@ bool SceneManager::ChangeSceneState(SCENESTATE SceneState, ID3D12Device* pd3dDev
 
 	if (nullptr == m_Scene)
 		return false;
-
+	SetSceneObjManager();
 	m_Scene->BuildObjects(pd3dDevice, pd3dCommandList);
-	//if (m_Scene) m_Scene->ReleaseUploadBuffers();
 
 	m_CurrentScene = SceneState;
 
 	return true;
+}
+
+void SceneManager::SetSceneObjManager()
+{
+	m_Scene->m_ObjManager = GET_MANAGER<ObjectManager>();
+}
+
+void SceneManager::SetObjManagerInPlayer()
+{
+	m_Scene->m_pPlayer->m_ObjManager = GET_MANAGER<ObjectManager>();
+	GET_MANAGER<ObjectManager>()->AddObject(L"player", m_Scene->m_pPlayer, OBJ_PLAYER);
 }
 
 int SceneManager::Update(const float& TimeDelta)

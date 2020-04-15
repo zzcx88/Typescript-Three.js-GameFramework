@@ -104,7 +104,6 @@ void CTestScene::BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandLis
 	BuildDefaultLightsAndMaterials();
 
 	m_pSkyBox = new CSkyBox(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature);
-
 	m_ObjManager->AddObject(L"skybox", m_pSkyBox, OBJ_MAP);
 
 	float fx = 0.5f /0.96f;
@@ -136,7 +135,7 @@ void CTestScene::BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandLis
 	m_ObjManager->AddObject(L"player_ui6_ammo", m_ppGameObjects[5], OBJ_UI);
 	m_ObjManager->AddObject(L"player_ui7_minimap_green", m_ppGameObjects[6], OBJ_MINIMAP);
 	m_ObjManager->AddObject(L"player_ui8_lockon", m_ppGameObjects[7], OBJ_UI);
-	m_ObjManager->AddObject(L"player_ui9_minimap", m_ppGameObjects[8], OBJ_MINIMAP);
+	m_ObjManager->AddObject(L"player_ui9_minimap", m_ppGameObjects[8], OBJ_UI);
 	m_ObjManager->AddObject(L"player_ui10_minimap_red", m_ppGameObjects[9], OBJ_MINIMAP);
 
 	/*XMFLOAT3 xmf3Scale(8.0f, 2.0f, 8.0f);
@@ -245,9 +244,7 @@ void CTestScene::ReleaseShaderVariables()
 
 void CTestScene::ReleaseUploadBuffers()
 {
-
 	m_ObjManager->ReleaseUploadBuffers();
-
 }
 
 bool CTestScene::OnProcessingMouseMessage(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam)
