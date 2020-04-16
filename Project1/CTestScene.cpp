@@ -133,10 +133,10 @@ void CTestScene::BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandLis
 	m_ObjManager->AddObject(L"player_ui4_speed", m_ppGameObjects[3], OBJ_UI);
 	m_ObjManager->AddObject(L"player_ui5_alt", m_ppGameObjects[4], OBJ_UI);
 	m_ObjManager->AddObject(L"player_ui6_ammo", m_ppGameObjects[5], OBJ_UI);
-	m_ObjManager->AddObject(L"player_ui7_minimap_green", m_ppGameObjects[6], OBJ_MINIMAP);
+	m_ObjManager->AddObject(L"player_ui7_minimap_green", m_ppGameObjects[6], OBJ_MINIMAP_PLAYER);
 	m_ObjManager->AddObject(L"player_ui8_lockon", m_ppGameObjects[7], OBJ_UI);
 	m_ObjManager->AddObject(L"player_ui9_minimap", m_ppGameObjects[8], OBJ_UI);
-	m_ObjManager->AddObject(L"player_ui10_minimap_red", m_ppGameObjects[9], OBJ_MINIMAP);
+	m_ObjManager->AddObject(L"player_ui10_minimap_red", m_ppGameObjects[9], OBJ_MINIMAP_ENEMY);
 
 	/*XMFLOAT3 xmf3Scale(8.0f, 2.0f, 8.0f);
 	XMFLOAT4 xmf4Color(0.0f, 0.3f, 0.0f, 0.0f);
@@ -177,12 +177,45 @@ void CTestScene::BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandLis
 
 	CLoadedModelInfo* p052C = CGameObject::LoadGeometryAndAnimationFromFile(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, "Model/052C.bin", NULL, MODEL_STD);
 	CSuperCobraObject* pSphereCollider;
+
 	pSphereCollider = new CSuperCobraObject(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature);
 	pSphereCollider->SetChild(p052C->m_pModelRootObject);
 	//m_pSphereCollider->SetPosition(410, 1000, 6000);
 	pSphereCollider->SetPosition(410, 1000, -3000);
 	pSphereCollider->SetScale(10,10,10);
 	m_ObjManager->AddObject(L"SphereCollider", pSphereCollider, OBJ_ENEMY);
+
+	CSuperCobraObject* pSphereCollider2;
+	pSphereCollider2 = new CSuperCobraObject(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature);
+	pSphereCollider2->SetChild(p052C->m_pModelRootObject);
+	//m_pSphereCollider->SetPosition(410, 1000, 6000);
+	pSphereCollider2->SetPosition(410, 1000, -3000);
+	pSphereCollider2->SetScale(10, 10, 10);
+	m_ObjManager->AddObject(L"SphereCollider2", pSphereCollider2, OBJ_ENEMY);
+
+	CSuperCobraObject* pSphereCollider3;
+	pSphereCollider3 = new CSuperCobraObject(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature);
+	pSphereCollider3->SetChild(p052C->m_pModelRootObject);
+	//m_pSphereCollider->SetPosition(410, 1000, 6000);
+	pSphereCollider3->SetPosition(410, 1000, -3000);
+	pSphereCollider3->SetScale(10, 10, 10);
+	m_ObjManager->AddObject(L"SphereCollider3", pSphereCollider3, OBJ_ENEMY);
+
+	CSuperCobraObject* pSphereCollider4;
+	pSphereCollider4 = new CSuperCobraObject(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature);
+	pSphereCollider4->SetChild(p052C->m_pModelRootObject);
+	//m_pSphereCollider->SetPosition(410, 1000, 6000);
+	pSphereCollider4->SetPosition(410, 1000, -3000);
+	pSphereCollider4->SetScale(10, 10, 10);
+	m_ObjManager->AddObject(L"SphereCollider4", pSphereCollider4, OBJ_ENEMY);
+
+	CSuperCobraObject* pSphereCollider5;
+	pSphereCollider5 = new CSuperCobraObject(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature);
+	pSphereCollider5->SetChild(p052C->m_pModelRootObject);
+	//m_pSphereCollider->SetPosition(410, 1000, 6000);
+	pSphereCollider5->SetPosition(410, 1000, -3000);
+	pSphereCollider5->SetScale(10, 10, 10);
+	m_ObjManager->AddObject(L"SphereCollider5", pSphereCollider5, OBJ_ENEMY);
 
 	//Prepare EffectObject
 	//////////////////////////////////////////////////////
@@ -199,7 +232,6 @@ void CTestScene::BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandLis
 	m_pWater[1]->SetPosition(0, 155, 0);
 	m_pWater[1]->Rotate(90, 0, 0);
 	m_ObjManager->AddObject(L"WaterNormal", m_pWater[1], OBJ_MAP);
-
 
 
 	CreateShaderVariables(pd3dDevice, pd3dCommandList);
@@ -277,18 +309,36 @@ bool CTestScene::ProcessInput(UCHAR* pKeysBuffer)
 
 void CTestScene::AnimateObjects(float fTimeElapsed)
 {
-	if (m_ObjManager->GetObjFromTag(L"SphereCollider", OBJ_ENEMY)->SphereCollider->m_BoundingSphere.Center.z != 0)
+
+	/*if (m_ObjManager->GetObjFromTag(L"SphereCollider", OBJ_ENEMY)->SphereCollider->m_BoundingSphere.Center.z != 0)
+
 	{
 		if (m_ObjManager->GetObjFromTag(L"SphereCollider", OBJ_ENEMY)->SphereCollider->m_BoundingSphere.Intersects(m_pPlayer->SphereCollider->m_BoundingSphere))
 		{
 			cout << "Player : " << m_pPlayer->SphereCollider->m_BoundingSphere.Center.z << ", Sphere : " << m_ObjManager->GetObjFromTag(L"SphereCollider", OBJ_ENEMY)->SphereCollider->m_BoundingSphere.Center.z << endl;
 		}
+
+	}*/
+	if (m_ObjManager->GetObjFromTag(L"SphereCollider", OBJ_ENEMY))
+	{
+		m_ObjManager->GetObjFromTag(L"SphereCollider", OBJ_ENEMY)->Rotate(0, 0.1, 0);
+		m_ObjManager->GetObjFromTag(L"SphereCollider", OBJ_ENEMY)->MoveForward(200 * fTimeElapsed);
 	}
 
-	m_ObjManager->GetObjFromTag(L"SphereCollider", OBJ_ENEMY)->Rotate(0,0.1,0);
-	m_ObjManager->GetObjFromTag(L"SphereCollider", OBJ_ENEMY)->MoveForward(200 * fTimeElapsed);
+	m_ObjManager->GetObjFromTag(L"SphereCollider2", OBJ_ENEMY)->Rotate(0, 0, 0);
+	m_ObjManager->GetObjFromTag(L"SphereCollider2", OBJ_ENEMY)->MoveForward(300 * fTimeElapsed);
+
+	m_ObjManager->GetObjFromTag(L"SphereCollider3", OBJ_ENEMY)->Rotate(0, -0.1, 0);
+	m_ObjManager->GetObjFromTag(L"SphereCollider3", OBJ_ENEMY)->MoveForward(400 * fTimeElapsed);
+
+	m_ObjManager->GetObjFromTag(L"SphereCollider4", OBJ_ENEMY)->Rotate(0, 0.1, 0);
+	m_ObjManager->GetObjFromTag(L"SphereCollider4", OBJ_ENEMY)->MoveForward(500 * fTimeElapsed);
+
+	m_ObjManager->GetObjFromTag(L"SphereCollider5", OBJ_ENEMY)->Rotate(0, -0.1, 0);
+	m_ObjManager->GetObjFromTag(L"SphereCollider5", OBJ_ENEMY)->MoveForward(600 * fTimeElapsed);
+
 	//m_ObjManager->GetObjFromTag(L"SphereCollider", OBJ_ENEMY)->MoveUp(2);
-	m_fElapsedTime = fTimeElapsed;
+	//m_fElapsedTime = fTimeElapsed;
 
 	m_ObjManager->Update(fTimeElapsed);
 }
@@ -309,13 +359,15 @@ void CTestScene::Render(ID3D12GraphicsCommandList* pd3dCommandList, CCamera* pCa
 	D3D12_GPU_VIRTUAL_ADDRESS d3dcbLightsGpuVirtualAddress = m_pd3dcbLights->GetGPUVirtualAddress();
 	pd3dCommandList->SetGraphicsRootConstantBufferView(2, d3dcbLightsGpuVirtualAddress); //Lights
 
-	m_pLockOn->Render(GetScreenPos(XMFLOAT3(m_ObjManager->GetObjFromTag(L"SphereCollider", OBJ_ENEMY)->GetPosition().x, m_ObjManager->GetObjFromTag(L"SphereCollider", OBJ_ENEMY)->GetPosition().y, m_ObjManager->GetObjFromTag(L"SphereCollider", OBJ_ENEMY)->GetPosition().z), pCamera),
+	/*m_pLockOn->Render(GetScreenPos(XMFLOAT3(m_ObjManager->GetObjFromTag(L"SphereCollider", OBJ_ENEMY)->GetPosition().x, m_ObjManager->GetObjFromTag(L"SphereCollider", OBJ_ENEMY)->GetPosition().y, m_ObjManager->GetObjFromTag(L"SphereCollider", OBJ_ENEMY)->GetPosition().z), pCamera),
 		m_ObjManager->GetObjFromTag(L"SphereCollider", OBJ_ENEMY)->GetPosition(),
 		m_pPlayer->GetPosition(), m_pPlayer->GetLookVector(),
-		m_ppGameObjects[7]);
+		m_ppGameObjects[7]);*/
 
-	m_pUI->MoveMinimapPoint(m_pPlayer->GetPosition(), m_ppGameObjects[6]);
-	m_pUI->MoveMinimapPoint(m_ObjManager->GetObjFromTag(L"SphereCollider", OBJ_ENEMY)->GetPosition(), m_ppGameObjects[9]);
+
+	//m_pUI->MoveMinimapPoint(m_pPlayer->GetPosition(), m_ppGameObjects[6]);
+	//m_pUI->MoveMinimapPoint(m_ObjManager->GetObjFromTag(L"SphereCollider", OBJ_ENEMY)->GetPosition(), m_ppGameObjects[9]);
+
 	//m_ObjManager->MoveMinimapPoint();
 
 	m_ObjManager->Render(pd3dCommandList, pCamera);

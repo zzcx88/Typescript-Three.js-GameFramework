@@ -331,6 +331,7 @@ void CDeviceManager::BuildScene()
 
 	m_pSceneManager->SetPlayer(m_pPlayer);
 	m_pSceneManager->SetObjManagerInPlayer();
+	
 
 	if (m_pPlayer) m_pPlayer->ReleaseUploadBuffers();
 	if (m_pSceneManager) m_pSceneManager->ReleaseUploadBuffers();

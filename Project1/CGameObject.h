@@ -123,8 +123,10 @@ struct CB_GAMEOBJECT_INFO
 
 class CSphereCollider;
 class CMissleFogShader;
+class CUIShader;
 class CWaterShader;
 class CPlaneMesh;
+class CUI;
 class CGameObject
 {
 private:
@@ -162,6 +164,8 @@ public:
 	CMissleFogShader* m_EffectShader;
 ///////////////////////////////////////////
 
+	CPlaneMesh* m_pUIPlaneMesh;
+	CUIShader* m_pUIShader;
 	CMaterial* m_pUIMaterial;
 	CTexture* m_ppUITexture[10];
 
@@ -173,6 +177,8 @@ public:
 	CGameObject* m_pSibling = NULL;
 
 	CSphereCollider* SphereCollider = NULL;
+
+	CUI*						m_pUI = NULL;
 
 	OBJTYPE				m_ObjType = OBJ_END;
 
@@ -239,6 +245,8 @@ public:
 
 	CShader* GetShader();
 
+	void MoveMinimapPoint(CGameObject* pGameOBJ, CGameObject* pMiniOBJ);
+
 public:
 	CAnimationController* m_pSkinnedAnimationController = NULL;
 
@@ -256,4 +264,6 @@ public:
 	static CLoadedModelInfo* LoadGeometryAndAnimationFromFile(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList, ID3D12RootSignature* pd3dGraphicsRootSignature, char* pstrFileName, CShader* pShader, MODELTYPE modelType);
 
 	static void PrintFrameInfo(CGameObject* pGameObject, CGameObject* pParent);
+
+
 };

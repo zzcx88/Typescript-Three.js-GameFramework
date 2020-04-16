@@ -200,8 +200,9 @@ void CPlayer::Update_Input(const float& TimeDelta)
 	Move(DIR_FORWARD, 600.0f * TimeDelta, true);
 	MoveForward(8.0f);
 
-	WingAnimate(TimeDelta, dwDirection);
-	return;
+	Animate(TimeDelta, dwDirection);
+	return 0;
+
 }
 
 void CPlayer::Animate(float fTimeElapsed)

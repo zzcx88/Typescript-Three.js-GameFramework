@@ -364,6 +364,8 @@ namespace Plane
 #include "ObjectManager.h"
 #include "CShaderManager.h"
 #include "CollisionManager.h"
+#include "MinimapManager.h"
+
 
 // 디버깅용 콘솔 창
 #ifdef UNICODE 
