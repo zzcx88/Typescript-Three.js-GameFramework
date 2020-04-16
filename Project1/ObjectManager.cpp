@@ -77,7 +77,8 @@ void ObjectManager::Update(const float& TimeDelta)
 	GET_MANAGER<CollisionManager>()->CollisionRect(&m_mapObj[OBJ_PLAYER], &m_mapObj[OBJ_PORTAL]);*/
 	
 	//Minimap
-	GET_MANAGER<MinimapManager>()->MoveMinimapPoint(&m_mapObj[OBJ_PLAYER], &m_mapObj[OBJ_MINIMAP_PLAYER], &m_mapObj[OBJ_ENEMY], &m_mapObj[OBJ_MINIMAP_ENEMY]);
+	GET_MANAGER<UIManager>()->MoveMinimapPoint(&m_mapObj[OBJ_PLAYER], &m_mapObj[OBJ_ENEMY]);
+	GET_MANAGER<UIManager>()->MoveLockOnUI(&m_mapObj[OBJ_PLAYER], &m_mapObj[OBJ_ENEMY]);
 
 }
 
@@ -87,6 +88,9 @@ void ObjectManager::Render(ID3D12GraphicsCommandList* pd3dCommandList, CCamera* 
 	{
 		for (auto& obj : m_mapObj[i])
 		{
+			if (OBJ_ENEMY)
+				obj.second->SetScreenPos(obj.second->GetPosition(), pCamera);
+
 			obj.second->Render(pd3dCommandList, pCamera);
 			obj.second->UpdateTransform(NULL);
 		}

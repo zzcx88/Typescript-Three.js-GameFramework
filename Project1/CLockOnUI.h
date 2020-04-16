@@ -19,12 +19,17 @@ public:
 
 	float m_fTimeElapsed = 0.f;
 	bool m_bRefference = false;
+	bool LockOn = false;
 
+	float m_fLenth = 0.f;
+	
+
+	CLockOnUI();
 	CLockOnUI(int nIndex, ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList, ID3D12RootSignature* pd3dGraphicsRootSignature, float fWidth, float fHeight, float fDepth, XMFLOAT2 xmf2LeftTop, XMFLOAT2 xmf2LeftBot, XMFLOAT2 xmf2RightBot, XMFLOAT2 xmf2RightTop);
 	virtual ~CLockOnUI();
 
 	
-	void Render(XMFLOAT2 screen, XMFLOAT3& xmfTarget, XMFLOAT3& xmfPlayer, XMFLOAT3& xmfPlayerLook, CGameObject* pGameOBJ);
+	void MoveLockOnUI(XMFLOAT2 screen, XMFLOAT3& xmfTarget, XMFLOAT3& xmfPlayer, XMFLOAT3& xmfPlayerLook, CGameObject* pGameOBJ);
 
 };
 

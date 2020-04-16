@@ -6,6 +6,7 @@
 #include "CBlur.h"
 #include "SceneManager.h"
 
+
 class CDeviceManager : public SingletonBase<CDeviceManager>
 {
 public:

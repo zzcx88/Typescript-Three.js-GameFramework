@@ -127,6 +127,8 @@ class CUIShader;
 class CWaterShader;
 class CPlaneMesh;
 class CUI;
+class CLockOnUI;
+class CCamera;
 class CGameObject
 {
 private:
@@ -168,6 +170,13 @@ public:
 	CUIShader* m_pUIShader;
 	CMaterial* m_pUIMaterial;
 	CTexture* m_ppUITexture[10];
+	///////////////////////////////////////////
+	CPlaneMesh* m_pLockOnUIPlaneMesh;
+
+	CUIShader* m_pLockOnUIShader;
+	CMaterial* m_pLockOnUIMaterial;
+	CTexture* m_ppLockOnUITexture[2];
+	///////////////////////////////////////////
 
 	XMFLOAT4X4						m_xmf4x4ToParent;
 	XMFLOAT4X4						m_xmf4x4World;
@@ -179,6 +188,7 @@ public:
 	CSphereCollider* SphereCollider = NULL;
 
 	CUI*						m_pUI = NULL;
+	CLockOnUI*			m_pLockOnUI = NULL;
 
 	OBJTYPE				m_ObjType = OBJ_END;
 
@@ -213,7 +223,9 @@ public:
 
 	virtual void ReleaseUploadBuffers();
 
+	XMFLOAT2 m_xmpScreenPosition;
 	XMFLOAT3 GetPosition();
+	XMFLOAT2 GetScreenPosition();
 	XMFLOAT3* GetPositionForMissle();
 	XMFLOAT3* m_xmpPosition = NULL;
 	XMFLOAT3 m_positionForMissle;
@@ -245,7 +257,7 @@ public:
 
 	CShader* GetShader();
 
-	void MoveMinimapPoint(CGameObject* pGameOBJ, CGameObject* pMiniOBJ);
+	void SetScreenPos(XMFLOAT3& xmfTarget, CCamera* pCamera);
 
 public:
 	CAnimationController* m_pSkinnedAnimationController = NULL;

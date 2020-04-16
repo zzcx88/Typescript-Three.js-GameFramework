@@ -370,25 +370,5 @@ D3D12_GPU_DESCRIPTOR_HANDLE CScene::CreateShaderResourceViews(ID3D12Device* pd3d
 	return(d3dSrvGPUDescriptorHandle);
 }
 
-XMFLOAT2 CScene::GetScreenPos(XMFLOAT3& xmfTarget, CCamera* pCamera)
-{
-	XMFLOAT3 point = xmfTarget;
-	XMFLOAT2 screen;
-	XMFLOAT4X4 mat, pMatView, pMatProj;
-	pMatView = pCamera->GetViewMatrix();
-	pMatProj = pCamera->GetProjectionMatrix();
 
-	mat = Matrix4x4::Multiply(pMatView, pMatProj);
-
-	point.x = xmfTarget.x * mat._11 + xmfTarget.y * mat._21 + xmfTarget.z * mat._31 + mat._41;
-	point.y = xmfTarget.x * mat._12 + xmfTarget.y * mat._22 + xmfTarget.z * mat._32 + mat._42;
-	point.z = xmfTarget.x * mat._13 + xmfTarget.y * mat._23 + xmfTarget.z * mat._33 + mat._43;
-
-	//cout << point.x << "Åõ¿µ ÁÂÇ¥°è!" << endl;
-
-	screen.x = (point.x / point.z + 1) * FRAME_BUFFER_WIDTH / 2;
-	screen.y = (-point.y / point.z + 1) * FRAME_BUFFER_HEIGHT / 2;
-
-	return screen;
-}
 
