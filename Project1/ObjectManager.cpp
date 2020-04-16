@@ -56,6 +56,7 @@ void ObjectManager::Update(const float& TimeDelta)
 			// 죽은 상태라면 컨테이너에서 삭제한다.
 			if (true == (*iter).second->GetState())
 			{
+				//(*iter).second->Release();
 				delete (*iter).second;
 				(*iter).second = nullptr;
 				iter = m_mapObj[i].erase(iter);
@@ -69,10 +70,15 @@ void ObjectManager::Update(const float& TimeDelta)
 	}
 
 	// Collision
+	GET_MANAGER<CollisionManager>()->CollisionSphere(&m_mapObj[OBJ_ENEMY], &m_mapObj[OBJ_MISSLE]);
 	/*GET_MANAGER<CollisionManager>()->CollisionRect(&m_mapObj[OBJ_PLAYER], &m_mapObj[OBJ_MONSTER]);
 	GET_MANAGER<CollisionManager>()->CollisionRectEx(&m_mapObj[OBJ_PLAYER], &m_mapObj[OBJ_MONSTER]);
 	GET_MANAGER<CollisionManager>()->CollisionPixelToRect(&m_mapObj[OBJ_BACK], &m_mapObj[OBJ_PLAYER]);
 	GET_MANAGER<CollisionManager>()->CollisionRect(&m_mapObj[OBJ_PLAYER], &m_mapObj[OBJ_PORTAL]);*/
+	
+	//Minimap
+	GET_MANAGER<MinimapManager>()->MoveMinimapPoint(&m_mapObj[OBJ_PLAYER], &m_mapObj[OBJ_MINIMAP_PLAYER], &m_mapObj[OBJ_ENEMY], &m_mapObj[OBJ_MINIMAP_ENEMY]);
+
 }
 
 void ObjectManager::Render(ID3D12GraphicsCommandList* pd3dCommandList, CCamera* pCamera)
@@ -113,7 +119,8 @@ void ObjectManager::ReleaseAll()
 				{
 					delete obj.second;
 					obj.second = nullptr;
-				}
+
+				}  
 				else 
 				{
 					obj.second->Release();

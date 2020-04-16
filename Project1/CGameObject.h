@@ -1,8 +1,6 @@
 #pragma once
 #include "CMesh.h"
-#include "CPlaneMesh.h"
 #include "CAnimationController.h"
-
 
 class CShader;
 class CStandardShader;
@@ -68,7 +66,7 @@ public:
 	void Release() { if (--m_nReferences <= 0) delete this; }
 
 public:
-	CTexture* m_pTexture = NULL;
+	//CTexture* m_pTexture = NULL;
 	CShader* m_pShader = NULL;
 
 	XMFLOAT4						m_xmf4AlbedoColor = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
@@ -120,10 +118,15 @@ public:
 struct CB_GAMEOBJECT_INFO
 {
 	XMFLOAT4X4						m_xmf4x4World;
-	UINT							m_nMaterial;
+	UINT								m_nMaterial;
 };
 
 class CSphereCollider;
+class CMissleFogShader;
+class CUIShader;
+class CWaterShader;
+class CPlaneMesh;
+class CUI;
 class CGameObject
 {
 private:
@@ -140,7 +143,7 @@ public:
 
 protected:
 	ID3D12Resource* m_pd3dcbGameObject = NULL;
-	CB_GAMEOBJECT_INFO* m_pcbMappedGameObject = NULL;
+	//CB_GAMEOBJECT_INFO* m_pcbMappedGameObject = NULL;
 
 public:
 	char							m_pstrFrameName[64];
@@ -151,9 +154,17 @@ public:
 	int								m_nObjects = 0;
 	int								m_nMaterials = 0;
 	CMaterial** m_ppMaterials = NULL;
-
+	
+	////////////////////////////////////////
+	//Effect Attribute
+public:
+	CMaterial* m_pEffectMaterial;
 	CPlaneMesh* m_pPlaneMesh;
-	CPlaneMesh* m_pLockOnMesh;
+	CTexture* m_pEffectTexture[20];
+	CMissleFogShader* m_EffectShader;
+///////////////////////////////////////////
+	CPlaneMesh* m_pUIPlaneMesh;
+	CUIShader* m_pUIShader;
 	CMaterial* m_pUIMaterial;
 	CTexture* m_ppUITexture[10];
 
@@ -165,6 +176,8 @@ public:
 	CGameObject* m_pSibling = NULL;
 
 	CSphereCollider* SphereCollider = NULL;
+
+	CUI*						m_pUI = NULL;
 
 	OBJTYPE				m_ObjType = OBJ_END;
 
@@ -184,6 +197,8 @@ public:
 	virtual void OnPrepareAnimate() { }
 	virtual void Animate(float fTimeElapsed);
 	virtual void Animate(float fTimeElapsed, DWORD Direction) {}
+
+	virtual void CollisionActivate(CGameObject* collideTarget);
 
 	virtual void OnPrepareRender() { }
 	virtual void Render(ID3D12GraphicsCommandList* pd3dCommandList, CCamera* pCamera = NULL);
@@ -229,6 +244,8 @@ public:
 
 	CShader* GetShader();
 
+	void MoveMinimapPoint(CGameObject* pGameOBJ, CGameObject* pMiniOBJ);
+
 public:
 	CAnimationController* m_pSkinnedAnimationController = NULL;
 
@@ -246,4 +263,6 @@ public:
 	static CLoadedModelInfo* LoadGeometryAndAnimationFromFile(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList, ID3D12RootSignature* pd3dGraphicsRootSignature, char* pstrFileName, CShader* pShader, MODELTYPE modelType);
 
 	static void PrintFrameInfo(CGameObject* pGameObject, CGameObject* pParent);
+
+
 };

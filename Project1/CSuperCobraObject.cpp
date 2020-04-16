@@ -1,11 +1,15 @@
 #include "stdafx.h"
 #include "CSuperCobraObject.h"
+#include "CUI.h"
 
-CSuperCobraObject::CSuperCobraObject(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList, ID3D12RootSignature* pd3dGraphicsRootSignature)
+CSuperCobraObject::CSuperCobraObject(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList, ID3D12RootSignature* pd3dGraphicsRootSignature, OBJTYPE objtype)
 {
 	SphereCollider = new CSphereCollider(pd3dDevice, pd3dCommandList, pd3dGraphicsRootSignature);
 	SphereCollider->SetScale(10, 10, 10);
-	SphereCollider->SetSphereCollider(GetPosition(), 5.0f);
+	SphereCollider->SetSphereCollider(GetPosition(), 10.0f);
+
+	m_ObjType = objtype;
+
 	OnPrepareAnimate();
 
 	CreateShaderVariables(pd3dDevice, pd3dCommandList);

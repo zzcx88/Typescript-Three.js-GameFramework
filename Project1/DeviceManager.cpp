@@ -66,6 +66,32 @@ void CDeviceManager::CreateD3DDevice()
 
 	IDXGIAdapter1* pd3dAdapter = NULL;
 
+	//////////////////
+	HRESULT hResult2;
+	IDXGIAdapter* adapter;
+	hResult2 = m_pdxgiFactory->EnumAdapters(0, &adapter);
+	IDXGIOutput* adapterOutput;
+	hResult2 = adapter->EnumOutputs(0, &adapterOutput);
+	unsigned int numModes;
+	hResult2 = adapterOutput->GetDisplayModeList(DXGI_FORMAT_R8G8B8A8_UNORM, DXGI_ENUM_MODES_INTERLACED, &numModes, NULL);
+	DXGI_MODE_DESC* displayModeList;
+	displayModeList = new DXGI_MODE_DESC[numModes];
+	hResult2 = adapterOutput->GetDisplayModeList(DXGI_FORMAT_R8G8B8A8_UNORM, DXGI_ENUM_MODES_INTERLACED, &numModes, displayModeList);
+
+	for (int i = 0; i < numModes; i++) 
+	{ 
+		if (displayModeList[i].Width == (unsigned int)FRAME_BUFFER_WIDTH)
+		{
+			if (displayModeList[i].Height == (unsigned int)FRAME_BUFFER_HEIGHT)
+			{ 
+				numerator = displayModeList[i].RefreshRate.Numerator; 
+				denominator = displayModeList[i].RefreshRate.Denominator; 
+			} 
+		} 
+	}
+	/////////////////
+
+
 	for (UINT i = 0; DXGI_ERROR_NOT_FOUND != m_pdxgiFactory->EnumAdapters1(i, &pd3dAdapter); i++)
 	{
 		DXGI_ADAPTER_DESC1 dxgiAdapterDesc;
@@ -79,7 +105,6 @@ void CDeviceManager::CreateD3DDevice()
 		m_pdxgiFactory->EnumWarpAdapter(_uuidof(IDXGIFactory4), (void**)&pd3dAdapter);
 		hResult = D3D12CreateDevice(pd3dAdapter, D3D_FEATURE_LEVEL_12_0, _uuidof(ID3D12Device), (void**)&m_pd3dDevice);
 	}
-
 	D3D12_FEATURE_DATA_MULTISAMPLE_QUALITY_LEVELS d3dMsaaQualityLevels;
 	d3dMsaaQualityLevels.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
 	d3dMsaaQualityLevels.SampleCount = 4;
@@ -168,8 +193,10 @@ void CDeviceManager::CreateSwapChain()
 	dxgiSwapChainDesc.BufferDesc.Width = m_nWndClientWidth;
 	dxgiSwapChainDesc.BufferDesc.Height = m_nWndClientHeight;
 	dxgiSwapChainDesc.BufferDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
-	dxgiSwapChainDesc.BufferDesc.RefreshRate.Numerator = 75;
-	dxgiSwapChainDesc.BufferDesc.RefreshRate.Denominator = 1;
+
+	dxgiSwapChainDesc.BufferDesc.RefreshRate.Numerator = numerator;
+	dxgiSwapChainDesc.BufferDesc.RefreshRate.Denominator = denominator;
+
 	dxgiSwapChainDesc.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
 	dxgiSwapChainDesc.SwapEffect = DXGI_SWAP_EFFECT_FLIP_DISCARD;
 	dxgiSwapChainDesc.OutputWindow = m_hWnd;
@@ -253,8 +280,8 @@ void CDeviceManager::ChangeSwapChainState()
 	dxgiTargetParameters.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
 	dxgiTargetParameters.Width = m_nWndClientWidth;
 	dxgiTargetParameters.Height = m_nWndClientHeight;
-	dxgiTargetParameters.RefreshRate.Numerator = 60;
-	dxgiTargetParameters.RefreshRate.Denominator = 1;
+	dxgiTargetParameters.RefreshRate.Numerator = numerator;
+	dxgiTargetParameters.RefreshRate.Denominator = denominator;
 	dxgiTargetParameters.Scaling = DXGI_MODE_SCALING_UNSPECIFIED;
 	dxgiTargetParameters.ScanlineOrdering = DXGI_MODE_SCANLINE_ORDER_UNSPECIFIED;
 	m_pdxgiSwapChain->ResizeTarget(&dxgiTargetParameters);
@@ -277,7 +304,9 @@ void CDeviceManager::BuildScene()
 
 	CAirplanePlayer* pPlayer = new CAirplanePlayer(m_pd3dDevice, m_pd3dCommandList, m_pSceneManager->GetGraphicsRootSignature(), NULL);
 	//pPlayer->SetPosition(XMFLOAT3(0, 0, 0));
-	pPlayer->SetPosition(XMFLOAT3(410, 1000, -5000));
+
+	pPlayer->SetPosition(XMFLOAT3(410, 1000, -9000));
+
 	//pPlayer->SetPosition(XMFLOAT3(-1000, 3000, -10000));
 	//pPlayer->SetScale(XMFLOAT3(0.02, 0.02, 0.02));
 	m_pPlayer = pPlayer;
@@ -302,6 +331,7 @@ void CDeviceManager::BuildScene()
 
 	m_pSceneManager->SetPlayer(m_pPlayer);
 	m_pSceneManager->SetObjManagerInPlayer();
+	
 
 	if (m_pPlayer) m_pPlayer->ReleaseUploadBuffers();
 	if (m_pSceneManager) m_pSceneManager->ReleaseUploadBuffers();

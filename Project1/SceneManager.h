@@ -20,7 +20,7 @@ public:
 	bool ChangeSceneState(SCENESTATE SceneState, ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList);
 	void SetPlayer(CPlayer* pPlayer) { m_Scene->m_pPlayer = pPlayer; }
 	void SetObjManagerInPlayer() { m_Scene->m_pPlayer->m_ObjManager = m_Scene->m_ObjManager; }
-
+	ObjectManager* GetObjManager() { return m_Scene->m_ObjManager;  }
 public:
 	int Update(const float& TimeDelta);
 

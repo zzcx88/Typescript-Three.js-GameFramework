@@ -41,6 +41,9 @@ struct LIGHTS
 	int									m_nLights;
 };
 
+
+class CMissleFog;
+class CWater;
 class CTestScene : public CScene
 {
 public:
@@ -91,7 +94,13 @@ public:
 	int									m_nHierarchicalGameObjects = 0;
 	CGameObject** m_ppHierarchicalGameObjects = NULL;
 
+
+
+	CMissleFog* m_pMissleFog;
+	CWater* m_pWater[2];
+
 	CLockOnUI* m_pLockOn = NULL;
 	CUI* m_pUI = NULL;
+
 };
 

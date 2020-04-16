@@ -4,7 +4,7 @@
 class CSuperCobraObject : public CGameObject
 {
 public:
-	CSuperCobraObject(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList, ID3D12RootSignature* pd3dGraphicsRootSignature);
+	CSuperCobraObject(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList, ID3D12RootSignature* pd3dGraphicsRootSignature, OBJTYPE objtype);
 	virtual ~CSuperCobraObject();
 
 private:

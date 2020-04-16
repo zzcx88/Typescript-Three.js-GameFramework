@@ -159,6 +159,7 @@
     <ClInclude Include="CMesh.h" />
     <ClInclude Include="CAircraftMesh.h" />
     <ClInclude Include="CMissle.h" />
+    <ClInclude Include="CMissleFog.h" />
     <ClInclude Include="CollisionManager.h" />
     <ClInclude Include="Constant.h" />
     <ClInclude Include="CPlane.h" />
@@ -173,6 +174,7 @@
     <ClInclude Include="CSuperCobraObject.h" />
     <ClInclude Include="CTestScene.h" />
     <ClInclude Include="CUI.h" />
+    <ClInclude Include="CWater.h" />
     <ClInclude Include="d3dx12.h" />
     <ClInclude Include="DDSTextureLoader12.h" />
     <ClInclude Include="Define.h" />
@@ -181,6 +183,7 @@
     <ClInclude Include="CHeightMapMesh.h" />
     <ClInclude Include="framework.h" />
     <ClInclude Include="KeyManager.h" />
+    <ClInclude Include="MinimapManager.h" />
     <ClInclude Include="ObjectManager.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="Project1.h" />
@@ -204,6 +207,7 @@
     <ClCompile Include="CMesh.cpp" />
     <ClCompile Include="CAircraftMesh.cpp" />
     <ClCompile Include="CMissle.cpp" />
+    <ClCompile Include="CMissleFog.cpp" />
     <ClCompile Include="CollisionManager.cpp" />
     <ClCompile Include="CPlane.cpp" />
     <ClCompile Include="CPlaneMesh.cpp" />
@@ -216,10 +220,12 @@
     <ClCompile Include="CSphereCollider.cpp" />
     <ClCompile Include="CSuperCobraObject.cpp" />
     <ClCompile Include="CTestScene.cpp" />
+    <ClCompile Include="CWater.cpp" />
     <ClCompile Include="DDSTextureLoader12.cpp" />
     <ClCompile Include="DeviceManager.cpp" />
     <ClCompile Include="CHeightMapMesh.cpp" />
     <ClCompile Include="KeyManager.cpp" />
+    <ClCompile Include="MinimapManager.cpp" />
     <ClCompile Include="ObjectManager.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
@@ -242,7 +248,7 @@
     <Image Include="small.ico" />
   </ItemGroup>
   <ItemGroup>
-    <FxCompile Include="BillBoardAnimation.hlsl">
+    <FxCompile Include="MissleFog.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Geometry</ShaderType>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">4.0</ShaderModel>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Geometry</ShaderType>
@@ -294,12 +300,25 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
     </FxCompile>
+    <FxCompile Include="WaterBase.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </FxCompile>
     <FxCompile Include="UI.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Vertex</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Vertex</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
     </FxCompile>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
