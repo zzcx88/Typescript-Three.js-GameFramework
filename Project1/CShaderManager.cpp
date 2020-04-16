@@ -497,7 +497,7 @@ void CObjectsShader::BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsComman
 		{
 			if (nObjects % 2)
 			{
-				m_ppObjects[nObjects] = new CSuperCobraObject(pd3dDevice, pd3dCommandList, pd3dGraphicsRootSignature, OBJ_ENEMY);
+				m_ppObjects[nObjects] = new CSuperCobraObject(pd3dDevice, pd3dCommandList, pd3dGraphicsRootSignature);
 				m_ppObjects[nObjects]->SetChild(pSuperCobraModel->m_pModelRootObject);
 				pSuperCobraModel->m_pModelRootObject->AddRef();
 			}
@@ -522,7 +522,7 @@ void CObjectsShader::BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsComman
 		{
 			if (nObjects % 2)
 			{
-				m_ppObjects[nObjects] = new CSuperCobraObject(pd3dDevice, pd3dCommandList, pd3dGraphicsRootSignature, OBJ_ENEMY);
+				m_ppObjects[nObjects] = new CSuperCobraObject(pd3dDevice, pd3dCommandList, pd3dGraphicsRootSignature);
 				m_ppObjects[nObjects]->SetChild(pSuperCobraModel->m_pModelRootObject);
 				pSuperCobraModel->m_pModelRootObject->AddRef();
 			}
