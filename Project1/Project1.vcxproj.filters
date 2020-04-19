@@ -130,6 +130,9 @@
     <Filter Include="Manager\UIManager">
       <UniqueIdentifier>{1c01627d-7ebd-46a9-8a0f-7f9baab662f5}</UniqueIdentifier>
     </Filter>
+    <Filter Include="GameObject\Plane\Effect\AfterBurner">
+      <UniqueIdentifier>{93214177-68f5-4abb-a61e-9564627ed139}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="targetver.h">
@@ -268,7 +271,10 @@
       <Filter>GameObject\Plane\UI</Filter>
     </ClInclude>
     <ClInclude Include="UIManager.h">
-      <Filter>Manager\UIManager</Filter>
+      <Filter>Manager\UIManager</Filter>   
+    </ClInclude>
+    <ClInclude Include="CAfterBurner.h">
+      <Filter>GameObject\Plane\Effect\AfterBurner</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -388,6 +394,9 @@
     </ClCompile>
     <ClCompile Include="UIManager.cpp">
       <Filter>Manager\UIManager</Filter>
+    </ClCompile>
+    <ClCompile Include="CAfterBurner.cpp">
+      <Filter>GameObject\Plane\Effect\AfterBurner</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

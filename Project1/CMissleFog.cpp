@@ -62,10 +62,6 @@ CMissleFog::~CMissleFog()
 {
 }
 
-void CMissleFog::FogCreate()
-{
-}
-
 void CMissleFog::Animate(float fTimeElapsed)
 {
 	m_xmf3Position.x = m_xmf4x4ToParent._41;

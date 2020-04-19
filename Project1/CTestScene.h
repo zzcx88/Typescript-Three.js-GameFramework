@@ -44,6 +44,7 @@ struct LIGHTS
 
 class CMissleFog;
 class CWater;
+class CAfterBurner;
 class CTestScene : public CScene
 {
 public:
@@ -94,9 +95,8 @@ public:
 	int									m_nHierarchicalGameObjects = 0;
 	CGameObject** m_ppHierarchicalGameObjects = NULL;
 
-
-
 	CMissleFog* m_pMissleFog;
+	CAfterBurner* m_pAfterBurner;
 	CWater* m_pWater[2];
 
 	CLockOnUI* m_pLockOn = NULL;

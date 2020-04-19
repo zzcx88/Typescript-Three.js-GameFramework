@@ -128,7 +128,7 @@ class CWaterShader;
 class CPlaneMesh;
 class CUI;
 class CLockOnUI;
-class CCamera;
+class CAfterBurner;
 class CGameObject
 {
 private:
@@ -164,6 +164,7 @@ public:
 	CPlaneMesh* m_pPlaneMesh;
 	CTexture* m_pEffectTexture[20];
 	CMissleFogShader* m_EffectShader;
+	CAfterBurner* m_pAfterBurner = NULL;
 ///////////////////////////////////////////
 
 	CPlaneMesh* m_pUIPlaneMesh;

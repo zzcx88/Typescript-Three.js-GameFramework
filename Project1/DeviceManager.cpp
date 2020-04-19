@@ -308,7 +308,7 @@ void CDeviceManager::BuildScene()
 	pPlayer->SetPosition(XMFLOAT3(410, 1000, -9000));
 
 	//pPlayer->SetPosition(XMFLOAT3(-1000, 3000, -10000));
-	//pPlayer->SetScale(XMFLOAT3(0.02, 0.02, 0.02));
+	//pPlayer->SetScale(XMFLOAT3(0.1, 0.1, 0.1));
 	m_pPlayer = pPlayer;
 	
 	//m_pPlayer->SetScale(XMFLOAT3(10,10,10));

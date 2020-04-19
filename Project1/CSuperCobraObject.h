@@ -10,6 +10,7 @@ public:
 private:
 	CGameObject* m_pMainRotorFrame = NULL;
 	CGameObject* m_pTailRotorFrame = NULL;
+	CLoadedModelInfo* p052C = NULL;
 
 public:
 	virtual void OnPrepareAnimate();

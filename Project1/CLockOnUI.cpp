@@ -11,6 +11,7 @@ CLockOnUI::CLockOnUI(int nIndex, ID3D12Device* pd3dDevice, ID3D12GraphicsCommand
 
 	SetMesh(m_pLockOnUIPlaneMesh);
 
+
 	CreateShaderVariables(pd3dDevice, pd3dCommandList);
 
 	m_ppLockOnUITexture[0] = new CTexture(1, RESOURCE_TEXTURE2D, 0);
@@ -55,8 +56,10 @@ void CLockOnUI::MoveLockOnUI(XMFLOAT2 screen, XMFLOAT3& xmfTarget, XMFLOAT3& xmf
 	fy = (((1.f / ((float)FRAME_BUFFER_HEIGHT / 2.f)) * screen.y) - 1) * -1;
 
 	XMFLOAT3 xmf3TargetVector2 = Vector3::Subtract(xmfTarget, xmfPlayer);
+
 	m_fLenth = sqrt(xmf3TargetVector2.x * xmf3TargetVector2.x + xmf3TargetVector2.y * xmf3TargetVector2.x + xmf3TargetVector2.z * xmf3TargetVector2.z);
 	
+
 	if (screen.x < 0 || screen.y < 0 || screen.x >FRAME_BUFFER_WIDTH || screen.y >FRAME_BUFFER_HEIGHT || xmfAxis < 0.f)
 		pGameOBJ->SetPosition(-2.f, -2.f, -1.f);
 	else {

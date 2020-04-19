@@ -147,6 +147,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="CAfterBurner.h" />
     <ClInclude Include="CBlur.h" />
     <ClInclude Include="CBlurFilter.h" />
     <ClInclude Include="CAngrybotObject.h" />
@@ -195,6 +196,7 @@
     <ClInclude Include="WICTextureLoader12.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="CAfterBurner.cpp" />
     <ClCompile Include="CBlur.cpp" />
     <ClCompile Include="CBlurFilter.cpp" />
     <ClCompile Include="CAngrybotObject.cpp" />

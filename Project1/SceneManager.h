@@ -21,8 +21,7 @@ public:
 	void SetSceneObjManager();
 	void SetPlayer(CPlayer* pPlayer) { m_Scene->m_pPlayer = pPlayer; }
 	void SetObjManagerInPlayer();
-	
-	
+
 public:
 	int Update(const float& TimeDelta);
 

@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "CHeightMapTerrain.h"
+#include "CAfterBurner.h"
 #include "CPlayer.h"
 
 CPlayer::CPlayer()
@@ -182,6 +183,7 @@ void CPlayer::Update_Input(const float& TimeDelta)
 	{
 		RollWingReturn(TimeDelta);
 	}
+
 	if (true == keyManager->GetKeyState(STATE_UP, VK_UP))
 	{
 		PitchWingReturn(TimeDelta);
@@ -192,13 +194,106 @@ void CPlayer::Update_Input(const float& TimeDelta)
 		PitchWingReturn(TimeDelta);
 	}
 
+	if (true == keyManager->GetKeyState(STATE_PUSH, VK_Q))	//q
+	{
+		dwDirection |= VK_Q;
+		Rotate(0.0f, Yaw_WingsRotateDegree / 5, 0.0f);
+		LeftYawAnimation(TimeDelta);
+	}
+
+	if (true == keyManager->GetKeyState(STATE_PUSH, VK_E))	//q
+	{
+		dwDirection |= VK_E;
+		Rotate(0.0f, Yaw_WingsRotateDegree / 5, 0.0f);
+		RightYawAnimation(TimeDelta);
+	}
+
+	if (true == keyManager->GetKeyState(STATE_UP, VK_Q))
+	{
+		YawWingReturn(TimeDelta);
+	}
+
+	if (true == keyManager->GetKeyState(STATE_UP, VK_E))
+	{
+		YawWingReturn(TimeDelta);
+	}
+
+	if (true == keyManager->GetKeyState(STATE_PUSH, VK_W))
+	{
+		dwDirection |= VK_W;
+		if (m_fAircraftSpeed < 1000)
+		{
+			m_fAircraftSpeed += 1;
+		}
+		if (m_fFOV < 70)
+		{
+			m_pCamera->GenerateProjectionMatrix(1.01f, 20000.0f, ASPECT_RATIO, m_fFOV += 0.1f);
+		}
+		if (m_fBurnerElapsed < 100)
+		{
+			m_fBurnerElapsed += 1;
+		}
+	}
+
+	if (true == keyManager->GetKeyState(STATE_PUSH, VK_S))	//q
+	{
+		dwDirection |= VK_S;
+		if (m_fAircraftSpeed > 150)
+		{
+			m_fAircraftSpeed -=1.5;
+		}
+		if (m_fFOV > 60)
+		{
+			m_pCamera->GenerateProjectionMatrix(1.01f, 20000.0f, ASPECT_RATIO, m_fFOV -= 0.2f);
+		}
+		if (m_fBurnerElapsed > 0)
+		{
+			m_fBurnerElapsed -= 1;
+		}
+	}
+
+	if (true == keyManager->GetKeyState(STATE_UP, VK_W))
+	{
+		if (m_fAircraftSpeed > 200)
+		{
+			m_fAircraftSpeed -= 1;
+		}
+		if (m_fFOV > 60)
+		{
+			m_pCamera->GenerateProjectionMatrix(1.01f, 20000.0f, ASPECT_RATIO, m_fFOV -= 0.1f);
+		}
+		if (m_fBurnerElapsed > 0)
+		{
+			m_fBurnerElapsed -= 1;
+		}
+	}
+
+	if (true == keyManager->GetKeyState(STATE_UP, VK_S))
+	{
+		if (m_fAircraftSpeed < 1000 && m_fAircraftSpeed > 200)
+		{
+			m_fAircraftSpeed -= 0.5;
+		}
+	}
+
+	if (m_fAircraftSpeed >= 148 && m_fAircraftSpeed < 200)
+	{
+		if (m_fAircraftSpeed < 150)
+		{
+			m_fAircraftSpeed = 150;
+		}
+		m_fAircraftSpeed += 0.5;
+	}
+
+	cout << m_fAircraftSpeed << endl;
 	if (Roll_WingsRotateDegree != 0)
 		Rotate(0.0f, 0.0f, -Roll_WingsRotateDegree);
 	if (Pitch_WingsRotateDegree != 0)
 		Rotate(Pitch_WingsRotateDegree, 0.0f, 0.0f);
 	//cout << Pitch_WingsRotateDegree << endl;
-	Move(DIR_FORWARD, 600.0f * TimeDelta, true);
-	MoveForward(8.0f);
+
+	Move(DIR_FORWARD, m_fAircraftSpeed * TimeDelta, true);
+	//MoveForward(8.0f);
 
 	WingAnimate(TimeDelta, dwDirection);
 
@@ -235,6 +330,7 @@ void CPlayer::Animate(float fTimeElapsed)
 
 	Update_Input(fTimeElapsed);
 
+	SetAfterBurnerPosition(fTimeElapsed);
 	/*if (-1 ==Update_Input(fTimeElapsed))
 	{
 		return -1;
@@ -352,7 +448,61 @@ void CAirplanePlayer::OnPrepareAnimate()
 	m_pSP_1 = FindFrame("SP_1");
 	m_pSP_2 = FindFrame("SP_2");
 
-	m_xmMSL_1 = m_pMSL_1->m_xmf4x4World;
+	m_pLeft_AfterBurner[0] = FindFrame("Left_AfterBuner");
+	m_pLeft_AfterBurner[1] = FindFrame("Left_AfterBuner_1");
+	m_pLeft_AfterBurner[2] = FindFrame("Left_AfterBuner_2");
+	m_pLeft_AfterBurner[3] = FindFrame("Left_AfterBuner_3");
+	m_pLeft_AfterBurner[4] = FindFrame("Left_AfterBuner_4");
+	m_pLeft_AfterBurner[5] = FindFrame("Left_AfterBuner_5");
+	m_pLeft_AfterBurner[6] = FindFrame("Left_AfterBuner_6");
+	m_pLeft_AfterBurner[7] = FindFrame("Left_AfterBuner_7");
+	m_pLeft_AfterBurner[8] = FindFrame("Left_AfterBuner_8");
+	m_pLeft_AfterBurner[9] = FindFrame("Left_AfterBuner_9");
+
+	m_pRight_AfterBurner[0] = FindFrame("Right_AfterBuner");
+	m_pRight_AfterBurner[1] = FindFrame("Right_AfterBuner_1");
+	m_pRight_AfterBurner[2] = FindFrame("Right_AfterBuner_2");
+	m_pRight_AfterBurner[3] = FindFrame("Right_AfterBuner_3");
+	m_pRight_AfterBurner[4] = FindFrame("Right_AfterBuner_4");
+	m_pRight_AfterBurner[5] = FindFrame("Right_AfterBuner_5");
+	m_pRight_AfterBurner[6] = FindFrame("Right_AfterBuner_6");
+	m_pRight_AfterBurner[7] = FindFrame("Right_AfterBuner_7");
+	m_pRight_AfterBurner[8] = FindFrame("Right_AfterBuner_8");
+	m_pRight_AfterBurner[9] = FindFrame("Right_AfterBuner_9");
+
+	for (int i = 0; i < 10; ++i)
+	{
+		CAfterBurner* pBurner;
+		pBurner = new CAfterBurner();
+		pBurner->SetMesh((CMesh*)GET_MANAGER<ObjectManager>()->GetObjFromTag(L"AfterBurner", OBJ_EFFECT)->m_pPlaneMesh);
+		pBurner->m_pCamera = m_pCamera;
+		for (int i = 0; i < 10; ++i)
+			pBurner->m_pEffectTexture[i] = GET_MANAGER<ObjectManager>()->GetObjFromTag(L"AfterBurner", OBJ_EFFECT)->m_pEffectTexture[i];
+		pBurner->m_pEffectMaterial = new CMaterial(1);
+		pBurner->m_pEffectMaterial->SetTexture(pBurner->m_pEffectTexture[i]);
+		pBurner->m_pEffectMaterial->SetShader(GET_MANAGER<ObjectManager>()->GetObjFromTag(L"AfterBurner", OBJ_EFFECT)->m_EffectShader);
+		pBurner->SetMaterial(0, pBurner->m_pEffectMaterial);
+		m_pLeft_AfterBurner[i]->m_pAfterBurner = pBurner;
+		GET_MANAGER<ObjectManager>()->AddObject(L"AfterBurnerInstance", m_pLeft_AfterBurner[i]->m_pAfterBurner, OBJ_EFFECT);
+	}
+
+	for (int i = 0; i < 10; ++i)
+	{
+		CAfterBurner* pBurner;
+		pBurner = new CAfterBurner();
+		pBurner->SetMesh((CMesh*)GET_MANAGER<ObjectManager>()->GetObjFromTag(L"AfterBurner", OBJ_EFFECT)->m_pPlaneMesh);
+		pBurner->m_pCamera = m_pCamera;
+		for (int i = 0; i < 10; ++i)
+			pBurner->m_pEffectTexture[i] = GET_MANAGER<ObjectManager>()->GetObjFromTag(L"AfterBurner", OBJ_EFFECT)->m_pEffectTexture[i];
+		pBurner->m_pEffectMaterial = new CMaterial(1);
+		pBurner->m_pEffectMaterial->SetTexture(pBurner->m_pEffectTexture[i]);
+		pBurner->m_pEffectMaterial->SetShader(GET_MANAGER<ObjectManager>()->GetObjFromTag(L"AfterBurner", OBJ_EFFECT)->m_EffectShader);
+		pBurner->SetMaterial(0, pBurner->m_pEffectMaterial);
+		m_pRight_AfterBurner[i]->m_pAfterBurner = pBurner;
+		GET_MANAGER<ObjectManager>()->AddObject(L"AfterBurnerInstance", m_pRight_AfterBurner[i]->m_pAfterBurner, OBJ_EFFECT);
+	}
+
+	//m_xmMSL_1 = m_pMSL_1->m_xmf4x4World;
 }
 
 void CPlayer::WingAnimate(float fTimeElapsed, DWORD Direction)
@@ -445,6 +595,43 @@ void CAirplanePlayer::DownPitchAnimation(float fTimeElapsed)
 
 		Pitch_WingsRotateDegree += fTimeElapsed;
 		CGameObject::Animate(fTimeElapsed);
+
+	}
+}
+
+void CAirplanePlayer::LeftYawAnimation(float fTimeElapsed)
+{
+	if (Yaw_WingsRotateDegree > 0)
+	{
+		YawWingReturn(fTimeElapsed);
+		CGameObject::Animate(fTimeElapsed);
+		return;
+	}
+	if (Yaw_WingsRotateDegree > -0.7f)
+	{
+		XMMATRIX xmmtxRotate = XMMatrixRotationZ(XMConvertToRadians(-Yaw_WingsRotateDegree * 50.0f) * fTimeElapsed);
+		m_pYaw_Wing->m_xmf4x4ToParent = Matrix4x4::Multiply(xmmtxRotate, m_pYaw_Wing->m_xmf4x4ToParent);
+
+		Yaw_WingsRotateDegree -= fTimeElapsed;
+		CGameObject::Animate(fTimeElapsed);
+	}
+}
+
+void CAirplanePlayer::RightYawAnimation(float fTimeElapsed)
+{
+	if (Yaw_WingsRotateDegree < 0)
+	{
+		YawWingReturn(fTimeElapsed);
+		CGameObject::Animate(fTimeElapsed);
+		return;
+	}
+	if (Yaw_WingsRotateDegree < 0.7f)
+	{
+		XMMATRIX xmmtxRotate = XMMatrixRotationZ(XMConvertToRadians(-Yaw_WingsRotateDegree * 50.0f) * fTimeElapsed);
+		m_pYaw_Wing->m_xmf4x4ToParent = Matrix4x4::Multiply(xmmtxRotate, m_pYaw_Wing->m_xmf4x4ToParent);
+
+		Yaw_WingsRotateDegree += fTimeElapsed;
+		CGameObject::Animate(fTimeElapsed);
 	}
 }
 
@@ -519,6 +706,35 @@ void CAirplanePlayer::PitchWingReturn(float fTimeElapsed)
 		}
 	}
 }
+
+void CAirplanePlayer::YawWingReturn(float fTimeElapsed)
+{
+	if (Yaw_WingsRotateDegree < 0)
+	{
+		XMMATRIX xmmtxRotate = XMMatrixRotationZ(XMConvertToRadians(Yaw_WingsRotateDegree * 50.0f) * fTimeElapsed);
+		if (m_pYaw_Wing)m_pYaw_Wing->m_xmf4x4ToParent = Matrix4x4::Multiply(xmmtxRotate, m_pYaw_Wing->m_xmf4x4ToParent);
+
+		Yaw_WingsRotateDegree += fTimeElapsed;
+		if (Yaw_WingsRotateDegree > 0)
+		{
+			Yaw_WingsRotateDegree = 0;
+			m_pYaw_Wing->m_xmf4x4ToParent._21 = 0;
+		}
+	}
+	if (Yaw_WingsRotateDegree > 0)
+	{
+		XMMATRIX xmmtxRotate = XMMatrixRotationZ(XMConvertToRadians(Yaw_WingsRotateDegree * 50.0f) * fTimeElapsed);
+		if (m_pYaw_Wing)m_pYaw_Wing->m_xmf4x4ToParent = Matrix4x4::Multiply(xmmtxRotate, m_pYaw_Wing->m_xmf4x4ToParent);
+
+		Yaw_WingsRotateDegree -= fTimeElapsed;
+		if (Yaw_WingsRotateDegree < 0)
+		{
+			Yaw_WingsRotateDegree = 0;
+			m_pYaw_Wing->m_xmf4x4ToParent._21 = 0;
+		}
+	}
+}
+
 void CAirplanePlayer::MissleLaunch()
 {
 	CMissle* pMissle;
@@ -529,14 +745,35 @@ void CAirplanePlayer::MissleLaunch()
 	pMissle->m_xmf3Look = m_xmf3Look;
 	pMissle->m_xmf4x4ToParent = Matrix4x4::Multiply(XMMatrixScaling(1,1,1), m_xmf4x4ToParent);
 	pMissle->SetChild(m_pMissleModel->m_pModelRootObject);
-	pMissle->SetScale(10,10,10);
-
-	pMissle->SetPosition(m_xmf3Position);
+	pMissle->SetScale(1,1,1);
+	pMissle->SetPosition(m_pMSL_1->GetPosition());
 	m_ObjManager->AddObject(L"player_missle", pMissle, OBJ_MISSLE);
 	//cout << pMissle->SphereCollider->GetPosition().z << endl;
 	//cout << m_ObjManager->GetObjFromTag(L"player_missle", OBJ_MISSLE)->SphereCollider->GetPosition().z << endl;
 	//m_ObjManager->GetObjFromTag(L"player_missle", OBJ_MISSLE)->m_xmf4x4World = m_xmMSL_1;
 	//m_ObjManager->GetObjFromTag(L"player_missle", OBJ_MISSLE)->SetScale(10,10,10);
+}
+
+void CAirplanePlayer::SetAfterBurnerPosition(float fTimeElapsed)
+{
+	for (int i = 0; i < 10; ++i)
+	{
+		if (m_pLeft_AfterBurner[i])
+		{
+			if (m_fBurnerElapsed > i * 10)
+			{
+				m_pLeft_AfterBurner[i]->m_pAfterBurner->m_RenderOff = false;
+				m_pRight_AfterBurner[i]->m_pAfterBurner->m_RenderOff = false;
+			}
+			else
+			{
+				m_pLeft_AfterBurner[i]->m_pAfterBurner->m_RenderOff = true;
+				m_pRight_AfterBurner[i]->m_pAfterBurner->m_RenderOff = true;
+			}
+			m_pLeft_AfterBurner[i]->m_pAfterBurner->SetPosition(m_pLeft_AfterBurner[i]->GetPosition());
+			m_pRight_AfterBurner[i]->m_pAfterBurner->SetPosition(m_pRight_AfterBurner[i]->GetPosition());
+		}
+	}
 }
 
 void CAirplanePlayer::OnPrepareRender()
@@ -564,7 +801,7 @@ CCamera* CAirplanePlayer::ChangeCamera(DWORD nNewCameraMode, float fTimeElapsed)
 		m_pCamera->SetScissorRect(0, 0, FRAME_BUFFER_WIDTH, FRAME_BUFFER_HEIGHT);
 		break;
 	case SPACESHIP_CAMERA:
-		SetFriction(1000);
+		SetFriction(1200);
 		SetGravity(XMFLOAT3(0.0f, 0.0f, 0.0f));
 		SetMaxVelocityXZ(1000.0f);
 		SetMaxVelocityY(1000.0f);

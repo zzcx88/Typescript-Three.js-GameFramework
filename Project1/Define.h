@@ -26,6 +26,13 @@
 #define DIR_UP											0x10
 #define DIR_DOWN									0x20
 
+//VirtureKey
+#define VK_Q											0x51
+#define VK_E											    0x45
+#define VK_W											0x57
+#define VK_S												0x53
+#define VK_G												0x47
+
 //TextureType
 #define RESOURCE_TEXTURE2D					0x01
 #define RESOURCE_TEXTURE2D_ARRAY		0x02	//[]

@@ -440,8 +440,6 @@ void CGameObject::CollisionActivate(CGameObject* collideTarget)
 	m_pLockOnUI->m_isDead = true;
 }
 
-
-
 void CGameObject::Render(ID3D12GraphicsCommandList* pd3dCommandList, CCamera* pCamera)
 {
 	if (m_pSkinnedAnimationController) m_pSkinnedAnimationController->UpdateShaderVariables(pd3dCommandList);
