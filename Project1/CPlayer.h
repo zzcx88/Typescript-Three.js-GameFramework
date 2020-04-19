@@ -22,6 +22,9 @@ protected:
 	float Pitch_WingsRotateDegree = 0.0f;
 	float Yaw_WingsRotateDegree = 0.0f;
 
+	float m_fAircraftSpeed = 200;
+	float m_fFOV = 60;
+	float m_fBurnerElapsed;
 	XMFLOAT3					m_xmf3Velocity = XMFLOAT3(0.0f, 0.0f, 0.0f);
 	XMFLOAT3     				m_xmf3Gravity = XMFLOAT3(0.0f, 0.0f, 0.0f);
 	float           			m_fMaxVelocityXZ = 0.0f;
@@ -70,12 +73,17 @@ public:
 	virtual void RightRollAnimation(float fTimeElapsed) {}
 	virtual void UpPitchAnimation(float fTimeElapsed) {}
 	virtual void DownPitchAnimation(float fTimeElapsed) {}
+	virtual void LeftYawAnimation(float fTimeElapsed) {}
+	virtual void RightYawAnimation(float fTimeElapsed) {}
 	virtual void RollWingReturn(float fTimeElapsed) {}
 	virtual void PitchWingReturn(float fTimeElapsed) {}
+	virtual void YawWingReturn(float fTimeElapsed) {}
 	virtual void MissleLaunch() {}
 
-	int Update_Input(const float& TimeDelta);
-	virtual int Update(float fTimeElapsed);
+	void Update_Input(const float& TimeDelta);
+	virtual void WingAnimate(float fTimeElapsed, DWORD Direction);
+	virtual void Animate(float fTimeElapsed);
+	virtual void SetAfterBurnerPosition(float fTimeElapsed) {}
 
 	virtual void OnPlayerUpdateCallback(float fTimeElapsed) { }
 	void SetPlayerUpdatedContext(LPVOID pContext) { m_pPlayerUpdatedContext = pContext; }
@@ -117,6 +125,9 @@ public:
 	CGameObject* m_pSP_1 = NULL;
 	CGameObject* m_pSP_2 = NULL;
 
+	CGameObject* m_pLeft_AfterBurner[10];
+	CGameObject* m_pRight_AfterBurner[10];
+
 	CMissle* m_pMissle = NULL;
 	CLoadedModelInfo* m_pMissleModel;
 	CLoadedModelInfo* m_pMissleModelCol;
@@ -130,15 +141,19 @@ public:
 
 private:
 	virtual void OnPrepareAnimate();
-	virtual void Animate(float fTimeElapsed, DWORD Direction);
+	
 	virtual void LeftRollAnimation(float fTimeElapsed);
 	virtual void RightRollAnimation(float fTimeElapsed);
 	virtual void UpPitchAnimation(float fTimeElapsed);
 	virtual void DownPitchAnimation(float fTimeElapsed);
+	virtual void LeftYawAnimation(float fTimeElapsed);
+	virtual void RightYawAnimation(float fTimeElapsed);
 	virtual void RollWingReturn(float fTimeElapsed);
 	virtual void PitchWingReturn(float fTimeElapsed);
+	virtual void YawWingReturn(float fTimeElapsed);
 	virtual void MissleLaunch();
 
+	virtual void SetAfterBurnerPosition(float fTimeElapsed);
 public:
 	virtual CCamera* ChangeCamera(DWORD nNewCameraMode, float fTimeElapsed);
 	virtual void OnPrepareRender();

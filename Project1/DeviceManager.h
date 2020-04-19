@@ -93,6 +93,9 @@ private:
 	CBlur* m_pBlur = NULL;
 	CBlurFilter* m_pBlurFilter = NULL;
 	CCamera* m_pCamera = NULL;
+
+	unsigned int numerator, denominator;
+
 	int m_BlurSwitch = 0;
 };
 

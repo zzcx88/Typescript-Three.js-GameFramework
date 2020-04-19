@@ -10,6 +10,9 @@
 #include "CShaderManager.h"
 #include "CSphereCollider.h"
 #include "CMissle.h"
+#include "CMissleFog.h"
+#include "CWater.h"
+#include "CAfterBurner.h"
 
 
 
@@ -102,52 +105,53 @@ void CTestScene::BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandLis
 	BuildDefaultLightsAndMaterials();
 
 	m_pSkyBox = new CSkyBox(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature);
-
 	m_ObjManager->AddObject(L"skybox", m_pSkyBox, OBJ_MAP);
 
 	float fx = 0.5f /0.96f;
 	float fy = 0.5f / 0.54f;
 
 	m_nGameObjects = 10;
-	m_ppGameObjects = new CGameObject* [m_nGameObjects];
-	m_ppGameObjects[0] = new CUI(0, pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, 0.2f, 0.3f, 0.f , XMFLOAT2(0.5f,0.5f), XMFLOAT2(0.5f,0.5f) , XMFLOAT2(0.5f,0.5f), XMFLOAT2(0.5f, 0.5f));
+
+	m_nGameObjects = 10;
+	m_ppGameObjects = new CGameObject * [m_nGameObjects];
+	m_ppGameObjects[0] = new CUI(0, pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, 0.2f, 0.3f, 0.f, XMFLOAT2(0.5f, 0.5f), XMFLOAT2(0.5f, 0.5f), XMFLOAT2(0.5f, 0.5f), XMFLOAT2(0.5f, 0.5f));
 	m_ppGameObjects[1] = new CUI(1, pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, 0.2f, 0.35f, 0.f, XMFLOAT2(0.725f, -0.45f), XMFLOAT2(0.725f, -0.45f), XMFLOAT2(0.725f, -0.45f), XMFLOAT2(0.725f, -0.45f));
 	m_ppGameObjects[2] = new CUI(2, pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, 0.15f, 0.25f, 0.f, XMFLOAT2(-0.875f, 0.8f), XMFLOAT2(-0.875f, 0.8f), XMFLOAT2(-0.875f, 0.8f), XMFLOAT2(-0.875f, 0.8f));
 	m_ppGameObjects[3] = new CUI(3, pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, 0.125f, 0.2f, 0.f, XMFLOAT2(-0.25f, 0.f), XMFLOAT2(-0.25f, 0.f), XMFLOAT2(-0.25f, 0.f), XMFLOAT2(-0.25f, 0.0f));
 	m_ppGameObjects[4] = new CUI(4, pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, 0.125f, 0.2f, 0.f, XMFLOAT2(0.25f, 0.f), XMFLOAT2(0.25f, 0.f), XMFLOAT2(0.25f, 0.f), XMFLOAT2(0.25f, 0.0f));
 	m_ppGameObjects[5] = new CUI(5, pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, 0.1f, 0.3f, 0.f, XMFLOAT2(0.81f, -0.305f), XMFLOAT2(0.81f, -0.305f), XMFLOAT2(0.81f, -0.305f), XMFLOAT2(0.81f, -0.305f));
+	
 	m_ppGameObjects[6] = new CUI(7, pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, 0.3f / 9.6f, 0.3f / 5.4f, 0.f, XMFLOAT2(-0.f, -0.f), XMFLOAT2(0.f, 0.f), XMFLOAT2(0.f, 0.f), XMFLOAT2(0.f, 0.f));
-	m_ppGameObjects[7] = new CLockOnUI(0, pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, 100.f/960.f, 100.f/540.f, 0.f, XMFLOAT2(-0.f, -0.f), XMFLOAT2(0.f, 0.f), XMFLOAT2(0.f, 0.f), XMFLOAT2(0.f, 0.f));
-
+	m_ppGameObjects[7] = new CLockOnUI(0, pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, 100.f / 960.f, 100.f / 540.f, 0.f, XMFLOAT2(-0.f, -0.f), XMFLOAT2(0.f, 0.f), XMFLOAT2(0.f, 0.f), XMFLOAT2(0.f, 0.f));
 	m_ppGameObjects[8] = new CUI(6, pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, fx, fy, 0.f, XMFLOAT2(-0.f, -0.f), XMFLOAT2(-0.f, -0.f), XMFLOAT2(-0.f, -0.f), XMFLOAT2(-0.f, -0.f));
 	m_ppGameObjects[8]->SetPosition(-0.75f, -0.5f, 0.f);
 	m_ppGameObjects[9] = new CUI(8, pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, 0.3f / 9.6f, 0.3f / 5.4f, 0.f, XMFLOAT2(-0.f, -0.f), XMFLOAT2(0.f, 0.f), XMFLOAT2(0.f, 0.f), XMFLOAT2(0.f, 0.f));
 
-	m_ObjManager->AddObject(L"player_ui1", m_ppGameObjects[0], OBJ_UI);
-	m_ObjManager->AddObject(L"player_ui2", m_ppGameObjects[1], OBJ_UI);
-	m_ObjManager->AddObject(L"player_ui3", m_ppGameObjects[2], OBJ_UI);
-	m_ObjManager->AddObject(L"player_ui4", m_ppGameObjects[3], OBJ_UI);
-	m_ObjManager->AddObject(L"player_ui5", m_ppGameObjects[4], OBJ_UI);
-	m_ObjManager->AddObject(L"player_ui6", m_ppGameObjects[5], OBJ_UI);
-	m_ObjManager->AddObject(L"player_ui7", m_ppGameObjects[6], OBJ_UI);
-	m_ObjManager->AddObject(L"player_ui8", m_ppGameObjects[7], OBJ_UI);
-	m_ObjManager->AddObject(L"player_ui9", m_ppGameObjects[8], OBJ_UI);
-	m_ObjManager->AddObject(L"player_ui10_minimap", m_ppGameObjects[9], OBJ_UI);
 
-	XMFLOAT3 xmf3Scale(8.0f, 2.0f, 8.0f);
+	m_ObjManager->AddObject(L"player_ui1_testui", m_ppGameObjects[0], OBJ_UI);
+	m_ObjManager->AddObject(L"player_ui2_weapon", m_ppGameObjects[1], OBJ_UI);
+	m_ObjManager->AddObject(L"player_ui3_time_score", m_ppGameObjects[2], OBJ_UI);
+	m_ObjManager->AddObject(L"player_ui4_speed", m_ppGameObjects[3], OBJ_UI);
+	m_ObjManager->AddObject(L"player_ui5_alt", m_ppGameObjects[4], OBJ_UI);
+	m_ObjManager->AddObject(L"player_ui6_ammo", m_ppGameObjects[5], OBJ_UI);
+	m_ObjManager->AddObject(L"player_ui7_minimap_green", m_ppGameObjects[6], OBJ_MINIMAP_PLAYER);
+	m_ObjManager->AddObject(L"player_ui8_lockon", m_ppGameObjects[7], OBJ_UI);
+	m_ObjManager->AddObject(L"player_ui9_minimap", m_ppGameObjects[8], OBJ_UI);
+	m_ObjManager->AddObject(L"player_ui10_minimap_red", m_ppGameObjects[9], OBJ_MINIMAP_ENEMY);
+
+	/*XMFLOAT3 xmf3Scale(8.0f, 2.0f, 8.0f);
 	XMFLOAT4 xmf4Color(0.0f, 0.3f, 0.0f, 0.0f);
 	m_pTerrain = new CHeightMapTerrain(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, _T("Terrain/HeightMap.raw"), 257, 257, xmf3Scale, xmf4Color);
-	m_ObjManager->AddObject(L"terrain", m_pTerrain, OBJ_MAP);
+	m_ObjManager->AddObject(L"terrain", m_pTerrain, OBJ_MAP);*/
 
-	m_nHierarchicalGameObjects = 5;
+	/*m_nHierarchicalGameObjects = 0;
 	m_ppHierarchicalGameObjects = new CGameObject * [m_nHierarchicalGameObjects];
 
 	CLoadedModelInfo* pAngrybotModel = CGameObject::LoadGeometryAndAnimationFromFile(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, "Model/Angrybot.bin", NULL, MODEL_ANI);
 	CLoadedModelInfo* pWaterModel = CGameObject::LoadGeometryAndAnimationFromFile(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, "Model/water.bin", NULL, MODEL_STD);
-	CLoadedModelInfo* p052C = CGameObject::LoadGeometryAndAnimationFromFile(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, "Model/052C.bin", NULL, MODEL_STD);
+	
 	CLoadedModelInfo* pSphere = CGameObject::LoadGeometryAndAnimationFromFile(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, "Model/Sphere.bin", NULL, MODEL_STD);
 	CLoadedModelInfo* pMissle = CGameObject::LoadGeometryAndAnimationFromFile(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, "Model/Missle.bin", NULL, MODEL_ACE);
-	CLoadedModelInfo* pPlayer = CGameObject::LoadGeometryAndAnimationFromFile(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, "Model/F-4E_Phantom_II.bin", NULL, MODEL_ACE);
 
 	m_ppHierarchicalGameObjects[0] = new CAngrybotObject(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, pAngrybotModel, 1);
 	m_ppHierarchicalGameObjects[0]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, 0);
@@ -156,42 +160,78 @@ void CTestScene::BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandLis
 	m_ppHierarchicalGameObjects[1]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, 0);
 	m_ppHierarchicalGameObjects[1]->SetPosition(410.0f, m_pTerrain->GetHeight(410.0f, 775.0f) + 40, 735.0f);
 	m_ppHierarchicalGameObjects[1]->SetScale(1, 1, 1);
+
 	m_ppHierarchicalGameObjects[2] = new CGunshipObject(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature);
-	m_ppHierarchicalGameObjects[2]->SetChild(pWaterModel->m_pModelRootObject);
-	m_ppHierarchicalGameObjects[2]->SetPosition(0, 200, 0);
+	m_ppHierarchicalGameObjects[2]->SetChild(p052C->m_pModelRootObject);
+	m_ppHierarchicalGameObjects[2]->SetScale(50,50,50);
+	m_ppHierarchicalGameObjects[2]->SetPosition(410, 200, -5000);
+
 	m_ppHierarchicalGameObjects[3] = new CGunshipObject(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature);
-	m_ppHierarchicalGameObjects[3]->SetChild(p052C->m_pModelRootObject);
-	m_ppHierarchicalGameObjects[3]->SetScale(50,50,50);
-	m_ppHierarchicalGameObjects[3]->SetPosition(410, 200, -5000);
+	m_ppHierarchicalGameObjects[3]->SetChild(pMissle->m_pModelRootObject);
+	m_ppHierarchicalGameObjects[3]->SetPosition(410, 800, -5000);
+	m_ppHierarchicalGameObjects[3]->SetScale(50, 50, 50);*/
 
-	m_ppHierarchicalGameObjects[4] = new CGunshipObject(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature);
-	m_ppHierarchicalGameObjects[4]->SetChild(pMissle->m_pModelRootObject);
-	m_ppHierarchicalGameObjects[4]->SetPosition(410, 800, -5000);
-	m_ppHierarchicalGameObjects[4]->SetScale(50, 50, 50);
+	/*m_ObjManager->AddObject(L"enemy", m_ppHierarchicalGameObjects[0], OBJ_TEST);
+	m_ObjManager->AddObject(L"enemy", m_ppHierarchicalGameObjects[1], OBJ_TEST);
+	m_ObjManager->AddObject(L"destroyer", m_ppHierarchicalGameObjects[3], OBJ_TEST);
+	m_ObjManager->AddObject(L"Sphere", m_ppHierarchicalGameObjects[4], OBJ_TEST);*/
 
+	/*CLoadedModelInfo* p052C = CGameObject::LoadGeometryAndAnimationFromFile(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, "Model/052C.bin", NULL, MODEL_STD);*/
 
-	m_ObjManager->AddObject(L"enemy", m_ppHierarchicalGameObjects[0], OBJ_ENEMY);
-	m_ObjManager->AddObject(L"enemy", m_ppHierarchicalGameObjects[1], OBJ_ENEMY);
-	m_ObjManager->AddObject(L"water", m_ppHierarchicalGameObjects[2], OBJ_MAP);
-	m_ObjManager->AddObject(L"destroyer", m_ppHierarchicalGameObjects[3], OBJ_ENEMY);
-	m_ObjManager->AddObject(L"Sphere", m_ppHierarchicalGameObjects[4], OBJ_ENEMY);
+	CSuperCobraObject* pSphereCollider;
+	pSphereCollider = new CSuperCobraObject(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature);
+	//pSphereCollider->SetChild(p052C->m_pModelRootObject);
+	pSphereCollider->SetPosition(410, 1000, -3000);
+	pSphereCollider->SetScale(10,10,10);
+	m_ObjManager->AddObject(L"SphereCollider", pSphereCollider, OBJ_ENEMY);
 
-	CSuperCobraObject* m_pSphereCollider;
-	m_pSphereCollider = new CSuperCobraObject(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature);
-	m_pSphereCollider->SetChild(p052C->m_pModelRootObject);
-	//m_pSphereCollider->SetPosition(410, 1000, 6000);
-	m_pSphereCollider->SetPosition(410, 1000, -3000);
-	m_pSphereCollider->SetScale(10,10,10);
-	m_ObjManager->AddObject(L"SphereCollider", m_pSphereCollider, OBJ_ENEMY);
+	CSuperCobraObject* pSphereCollider2;
+	pSphereCollider2 = new CSuperCobraObject(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature);
+	//pSphereCollider2->SetChild(p052C->m_pModelRootObject);
+	pSphereCollider2->SetPosition(410, 1000, -3000);
+	pSphereCollider2->SetScale(10, 10, 10);
+	m_ObjManager->AddObject(L"SphereCollider2", pSphereCollider2, OBJ_ENEMY);
 
+	CSuperCobraObject* pSphereCollider3;
+	pSphereCollider3 = new CSuperCobraObject(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature);
+	//pSphereCollider3->SetChild(p052C->m_pModelRootObject);
+	pSphereCollider3->SetPosition(410, 1000, -3000);
+	pSphereCollider3->SetScale(10, 10, 10);
+	m_ObjManager->AddObject(L"SphereCollider3", pSphereCollider3, OBJ_ENEMY);
 
-	/*XMFLOAT3 temp(0,0,0);
-	CMissle* m_pMissle;
-	m_pMissle = new CMissle(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, temp);
-	m_pMissle->SetChild(pMissle->m_pModelRootObject);
-	m_pMissle->SetPosition(410, 600, -2000);
-	m_pMissle->SetScale(50, 50, 50);
-	m_ObjManager->AddObject(L"MissleCollider", m_pMissle, OBJ_MISSLE);*/
+	CSuperCobraObject* pSphereCollider4;
+	pSphereCollider4 = new CSuperCobraObject(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature);
+	//pSphereCollider4->SetChild(p052C->m_pModelRootObject);
+	pSphereCollider4->SetPosition(410, 1000, -3000);
+	pSphereCollider4->SetScale(10, 10, 10);
+	m_ObjManager->AddObject(L"SphereCollider4", pSphereCollider4, OBJ_ENEMY);
+
+	CSuperCobraObject* pSphereCollider5;
+	pSphereCollider5 = new CSuperCobraObject(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature);
+	//pSphereCollider5->SetChild(p052C->m_pModelRootObject);
+	pSphereCollider5->SetPosition(410, 1000, -3000);
+	pSphereCollider5->SetScale(10, 10, 10);
+	m_ObjManager->AddObject(L"SphereCollider5", pSphereCollider5, OBJ_ENEMY);
+
+	//Prepare EffectObject
+	//////////////////////////////////////////////////////
+	m_pMissleFog = new CMissleFog(0, pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, 4.f, 4.f, 0.f);
+	m_pMissleFog->m_bRefference = true;
+	m_ObjManager->AddObject(L"MissleFog", m_pMissleFog, OBJ_EFFECT);
+
+	m_pAfterBurner = new CAfterBurner(0, pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, 0.2f, 0.2f, 0.f);
+	m_pAfterBurner->m_bRefference = true;
+	m_ObjManager->AddObject(L"AfterBurner", m_pAfterBurner, OBJ_EFFECT);
+
+	m_pWater[0] = new CWater(0, pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, 64000.f, 64000.f, 0.f);
+	m_pWater[0]->SetPosition(0, 140, 0);
+	m_pWater[0]->Rotate(90, 0, 0);
+	m_ObjManager->AddObject(L"WaterBase", m_pWater[0], OBJ_MAP);
+
+	m_pWater[1] = new CWater(1, pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, 64000.f, 64000.f, 0.f);
+	m_pWater[1]->SetPosition(0, 155, 0);
+	m_pWater[1]->Rotate(90, 0, 0);
+	m_ObjManager->AddObject(L"WaterNormal", m_pWater[1], OBJ_MAP);
 
 
 	CreateShaderVariables(pd3dDevice, pd3dCommandList);
@@ -236,9 +276,7 @@ void CTestScene::ReleaseShaderVariables()
 
 void CTestScene::ReleaseUploadBuffers()
 {
-
 	m_ObjManager->ReleaseUploadBuffers();
-
 }
 
 bool CTestScene::OnProcessingMouseMessage(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam)
@@ -271,38 +309,33 @@ bool CTestScene::ProcessInput(UCHAR* pKeysBuffer)
 
 void CTestScene::AnimateObjects(float fTimeElapsed)
 {
-	//m_pLockOn->m_pCamera = m_pPlayer->GetCamera();
 
-	if (m_ObjManager->GetObjFromTag(L"SphereCollider", OBJ_ENEMY)->SphereCollider->m_BoundingSphere.Center.z != 0)
+	/*if (m_ObjManager->GetObjFromTag(L"SphereCollider", OBJ_ENEMY)->SphereCollider->m_BoundingSphere.Center.z != 0)
+
 	{
 		if (m_ObjManager->GetObjFromTag(L"SphereCollider", OBJ_ENEMY)->SphereCollider->m_BoundingSphere.Intersects(m_pPlayer->SphereCollider->m_BoundingSphere))
 		{
-			//m_pPlayer->SetPosition(XMFLOAT3(0, 0 ,0));
 			cout << "Player : " << m_pPlayer->SphereCollider->m_BoundingSphere.Center.z << ", Sphere : " << m_ObjManager->GetObjFromTag(L"SphereCollider", OBJ_ENEMY)->SphereCollider->m_BoundingSphere.Center.z << endl;
-			//m_ObjManager->ReleaseObjFromTag(L"SphereCollider", OBJ_ENEMY);
 		}
-		if (m_ObjManager->GetObjFromTag(L"player_missle", OBJ_ENEMY))
-			cout << m_ObjManager->GetObjFromTag(L"player_missle", OBJ_ENEMY)->m_xmf4x4World._41 << endl;
-	}
-	
-	/*if (m_ObjManager->GetObjFromTag(L"player_missle", OBJ_MISSLE))
-	{
-		if (m_ObjManager->GetObjFromTag(L"SphereCollider", OBJ_ENEMY)->SphereCollider->m_BoundingSphere.Intersects(m_ObjManager->GetObjFromTag(L"player_missle", OBJ_MISSLE)->SphereCollider->m_BoundingSphere))
-		{
-			cout << "Player : " << m_pPlayer->SphereCollider->m_BoundingSphere.Center.z << ", player_missle : " << 
-				m_ObjManager->GetObjFromTag(L"player_missle", OBJ_MISSLE)->SphereCollider->m_BoundingSphere.Center.z << endl;
-		}
-		if (m_ObjManager->GetObjFromTag(L"player_missle", OBJ_ENEMY))
-			cout << m_ObjManager->GetObjFromTag(L"player_missle", OBJ_ENEMY)->m_xmf4x4World._41 << endl;
+
 	}*/
+	if (m_ObjManager->GetObjFromTag(L"SphereCollider", OBJ_ENEMY))
+	{
+		m_ObjManager->GetObjFromTag(L"SphereCollider", OBJ_ENEMY)->Rotate(0, 0.1, 0);
+		m_ObjManager->GetObjFromTag(L"SphereCollider", OBJ_ENEMY)->MoveForward(200 * fTimeElapsed);
+	}
 
-	m_ObjManager->GetObjFromTag(L"SphereCollider", OBJ_ENEMY)->Rotate(0,0.1,0);
-	m_ObjManager->GetObjFromTag(L"SphereCollider", OBJ_ENEMY)->MoveForward(200 * fTimeElapsed);
-	//m_ObjManager->GetObjFromTag(L"SphereCollider", OBJ_ENEMY)->MoveUp(2);
+	m_ObjManager->GetObjFromTag(L"SphereCollider2", OBJ_ENEMY)->Rotate(0, 0, 0);
+	m_ObjManager->GetObjFromTag(L"SphereCollider2", OBJ_ENEMY)->MoveForward(300 * fTimeElapsed);
 
+	m_ObjManager->GetObjFromTag(L"SphereCollider3", OBJ_ENEMY)->Rotate(0, -0.1, 0);
+	m_ObjManager->GetObjFromTag(L"SphereCollider3", OBJ_ENEMY)->MoveForward(400 * fTimeElapsed);
 
-	
-	m_fElapsedTime += fTimeElapsed;
+	m_ObjManager->GetObjFromTag(L"SphereCollider4", OBJ_ENEMY)->Rotate(0, 0.1, 0);
+	m_ObjManager->GetObjFromTag(L"SphereCollider4", OBJ_ENEMY)->MoveForward(500 * fTimeElapsed);
+
+	m_ObjManager->GetObjFromTag(L"SphereCollider5", OBJ_ENEMY)->Rotate(0, -0.1, 0);
+	m_ObjManager->GetObjFromTag(L"SphereCollider5", OBJ_ENEMY)->MoveForward(600 * fTimeElapsed);
 
 	m_ObjManager->Update(fTimeElapsed);
 }
@@ -323,14 +356,16 @@ void CTestScene::Render(ID3D12GraphicsCommandList* pd3dCommandList, CCamera* pCa
 	D3D12_GPU_VIRTUAL_ADDRESS d3dcbLightsGpuVirtualAddress = m_pd3dcbLights->GetGPUVirtualAddress();
 	pd3dCommandList->SetGraphicsRootConstantBufferView(2, d3dcbLightsGpuVirtualAddress); //Lights
 
-	m_pLockOn->Render(GetScreenPos(XMFLOAT3(m_ObjManager->GetObjFromTag(L"SphereCollider", OBJ_ENEMY)->GetPosition().x, m_ObjManager->GetObjFromTag(L"SphereCollider", OBJ_ENEMY)->GetPosition().y, m_ObjManager->GetObjFromTag(L"SphereCollider", OBJ_ENEMY)->GetPosition().z), pCamera),
+	/*m_pLockOn->Render(GetScreenPos(XMFLOAT3(m_ObjManager->GetObjFromTag(L"SphereCollider", OBJ_ENEMY)->GetPosition().x, m_ObjManager->GetObjFromTag(L"SphereCollider", OBJ_ENEMY)->GetPosition().y, m_ObjManager->GetObjFromTag(L"SphereCollider", OBJ_ENEMY)->GetPosition().z), pCamera),
 		m_ObjManager->GetObjFromTag(L"SphereCollider", OBJ_ENEMY)->GetPosition(),
 		m_pPlayer->GetPosition(), m_pPlayer->GetLookVector(),
-		m_ppGameObjects[7]);
+		m_ppGameObjects[7]);*/
 
-	m_pUI->MoveMinimapPoint(m_pPlayer->GetPosition(), m_ppGameObjects[6]);
-	m_pUI->MoveMinimapPoint(m_ObjManager->GetObjFromTag(L"SphereCollider", OBJ_ENEMY)->GetPosition(), m_ppGameObjects[9]);
-	m_ObjManager->MoveMinimapPoint();
+
+	//m_pUI->MoveMinimapPoint(m_pPlayer->GetPosition(), m_ppGameObjects[6]);
+	//m_pUI->MoveMinimapPoint(m_ObjManager->GetObjFromTag(L"SphereCollider", OBJ_ENEMY)->GetPosition(), m_ppGameObjects[9]);
+
+	//m_ObjManager->MoveMinimapPoint();
 
 	m_ObjManager->Render(pd3dCommandList, pCamera);
 	//m_pSphereCollider->SphereCollider->Render(pd3dCommandList, pCamera);

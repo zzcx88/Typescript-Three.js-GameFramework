@@ -3,6 +3,7 @@
 #include "CAircraftMesh.h"
 #include "CSkinnedMesh.h"
 #include "CShaderManager.h"
+#include "CUI.h"
 #include "CScene.h"
 
 CTexture::CTexture(int nTextures, UINT nTextureType, int nSamplers)
@@ -428,6 +429,41 @@ void CGameObject::Animate(float fTimeElapsed)
 	m_xmpPosition = (XMFLOAT3*)&m_positionForMissle;
 }
 
+void CGameObject::CollisionActivate(CGameObject* collideTarget)
+{
+	cout << "Ãæµ¹" << endl;
+
+	m_isDead = true;
+	m_pUI->m_isDead = true;
+}
+
+void CGameObject::MoveMinimapPoint(CGameObject* pGameOBJ, CGameObject* pMiniOBJ)
+{
+	
+	float fx = 0.f;
+	float fy = 0.f;
+
+	XMFLOAT3 xmfposition = pGameOBJ->GetPosition();
+	
+	float ax = 1.f / 60000.f * 0.54;
+	float ay = 1.f / 60000.f * 0.96;
+
+	fx = (ax * (xmfposition.x + 30000.f)) - 1;
+	fy = (ay * (xmfposition.z + 30000.f)) - 1;
+
+	if (fx > -0.1f)
+		fx = -0.1f;
+	else if (fy > -0.1f)
+		fy = -0.1f;
+	else if (fx < -1.f)
+		fx = -1.f;
+	else if (fy < -1.f)
+		fy = -1.f;
+
+	pMiniOBJ->SetPosition(fx, fy, 0.f);
+
+	//cout << fx << ", " << fy << endl;
+}
 void CGameObject::Render(ID3D12GraphicsCommandList* pd3dCommandList, CCamera* pCamera)
 {
 	if (m_pSkinnedAnimationController) m_pSkinnedAnimationController->UpdateShaderVariables(pd3dCommandList);
@@ -445,7 +481,6 @@ void CGameObject::Render(ID3D12GraphicsCommandList* pd3dCommandList, CCamera* pC
 					if (m_ppMaterials[i]->m_pShader) m_ppMaterials[i]->m_pShader->Render(pd3dCommandList, pCamera);
 					m_ppMaterials[i]->UpdateShaderVariable(pd3dCommandList);
 				}
-
 				m_pMesh->Render(pd3dCommandList, i);
 			}
 		}
