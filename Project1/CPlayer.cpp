@@ -285,7 +285,7 @@ void CPlayer::Update_Input(const float& TimeDelta)
 		m_fAircraftSpeed += 0.5;
 	}
 
-	cout << m_fAircraftSpeed << endl;
+	//cout << m_fAircraftSpeed << endl;
 	if (Roll_WingsRotateDegree != 0)
 		Rotate(0.0f, 0.0f, -Roll_WingsRotateDegree);
 	if (Pitch_WingsRotateDegree != 0)

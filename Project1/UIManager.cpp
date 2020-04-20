@@ -21,9 +21,9 @@ void UIManager::MoveMinimapPoint(ObjectManager::MAPOBJ* PlyList, ObjectManager::
 		CUI* pUI;
 		pUI = new CUI();
 		pUI->SetMesh((CMesh*)GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player_ui7_minimap_green", OBJ_MINIMAP_PLAYER)->m_pUIPlaneMesh);
-		//pUI->m_ppUITexture[0] = GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player_ui7_minimap_green", OBJ_MINIMAP_PLAYER)->m_ppUITexture[6];
+		pUI->m_ppUITexture[0] = GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player_ui7_minimap_green", OBJ_MINIMAP_PLAYER)->m_ppUITexture[7];
 		pUI->m_pUIMaterial = new CMaterial(1);
-		pUI->m_pUIMaterial->SetTexture(pUI->m_ppUITexture[6]);
+		pUI->m_pUIMaterial->SetTexture(pUI->m_ppUITexture[0]);
 		pUI->m_pUIMaterial->SetShader(GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player_ui7_minimap_green", OBJ_MINIMAP_PLAYER)->m_pUIShader);
 		pUI->SetMaterial(0, pUI->m_pUIMaterial);
 		GET_MANAGER<ObjectManager>()->AddObject(L"MinimapInstance", pUI, OBJ_MINIMAP_PLAYER);
@@ -85,39 +85,20 @@ void UIManager::MoveLockOnUI(ObjectManager::MAPOBJ* PlyList, ObjectManager::MAPO
 			pLockOnUI->m_pLockOnUIMaterial->SetShader(GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player_ui8_lockon", OBJ_UI)->m_pLockOnUIShader);
 			pLockOnUI->SetMaterial(0, pLockOnUI->m_pLockOnUIMaterial);
 			GET_MANAGER<ObjectManager>()->AddObject(L"LockOnInstance", pLockOnUI, OBJ_UI);
-			
+
 			Ene.second->m_pLockOnUI = pLockOnUI;
 		}
-	
+
 		Ene.second->m_pLockOnUI->MoveLockOnUI(Ene.second->GetScreenPosition(), Ene.second->GetPosition(),
 			PlyList->begin()->second->GetPosition(), PlyList->begin()->second->GetLook(), Ene.second->m_pLockOnUI);
 
 		if (Ene.second->m_pLockOnUI->LockOn == true)
 		{
-			cout << "조준 가능" << endl;
-			if (Count == 0)
-			{
-				m_fMinLenth = Ene.second->m_pLockOnUI->m_fLenth;
-				Ene.second->m_pLockOnUI->m_pLockOnUIMaterial->m_ppTextures[0] = GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player_ui8_lockon", OBJ_UI)->m_ppLockOnUITexture[1];
-				++Count;
-			}
-			else
-			{
-				m_fMinLenth = min(m_fMinLenth, Ene.second->m_pLockOnUI->m_fLenth);
-
-				if(m_fMinLenth == Ene.second->m_pLockOnUI->m_fLenth)
-								Ene.second->m_pLockOnUI->m_pLockOnUIMaterial->m_ppTextures[0] = GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player_ui8_lockon", OBJ_UI)->m_ppLockOnUITexture[1];
-				else 
-					Ene.second->m_pLockOnUI->m_pLockOnUIMaterial->m_ppTextures[0] = GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player_ui8_lockon", OBJ_UI)->m_ppLockOnUITexture[0];
-			}
-
+			Ene.second->m_pLockOnUI->m_pLockOnUIMaterial->m_ppTextures[0] = GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player_ui8_lockon", OBJ_UI)->m_ppLockOnUITexture[1];
 		}
 		else
 		{
-			cout << "조준 불가능" << endl;
 			Ene.second->m_pLockOnUI->m_pLockOnUIMaterial->m_ppTextures[0] = GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player_ui8_lockon", OBJ_UI)->m_ppLockOnUITexture[0];
 		}
-
 	}
-
 }
