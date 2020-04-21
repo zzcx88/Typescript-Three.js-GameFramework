@@ -336,7 +336,6 @@ void CThirdPersonCamera::Update(XMFLOAT3& xmf3LookAt, float fTimeElapsed)
 		float fDistance = fLength * fTimeLagScale;
 		if (fDistance > fLength) fDistance = fLength;
 		if (fLength < 0.01f) fDistance = fLength;
-		cout << fDistance << endl;
 		if (fDistance < 0)
 		{
 			m_xmf3Position = Vector3::Add(m_xmf3Position, xmf3Direction, fDistance);
@@ -359,4 +358,12 @@ void CCamera::SetLookAt(XMFLOAT3& xmf3LookAt)
 	m_xmf3Right = XMFLOAT3(mtxLookAt._11, mtxLookAt._21, mtxLookAt._31);
 	m_xmf3Up = XMFLOAT3(mtxLookAt._12, mtxLookAt._22, mtxLookAt._32);
 	m_xmf3Look = XMFLOAT3(mtxLookAt._13, mtxLookAt._23, mtxLookAt._33);
+}
+
+void CCamera::SetLookPlayer()
+{
+	SetPosition(m_pPlayer->GetPosition());
+	m_xmf3Right = m_pPlayer->GetRightVector();
+	m_xmf3Up = m_pPlayer->GetUpVector();
+	m_xmf3Look = m_pPlayer->GetLookVector();
 }

@@ -25,6 +25,9 @@ protected:
 	float m_fAircraftSpeed = 200;
 	float m_fFOV = 60;
 	float m_fBurnerElapsed;
+
+	bool m_bEye_fixation = false;
+
 	XMFLOAT3					m_xmf3Velocity = XMFLOAT3(0.0f, 0.0f, 0.0f);
 	XMFLOAT3     				m_xmf3Gravity = XMFLOAT3(0.0f, 0.0f, 0.0f);
 	float           			m_fMaxVelocityXZ = 0.0f;

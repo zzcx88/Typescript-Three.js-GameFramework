@@ -25,7 +25,7 @@ public:
 
 	int m_nTextureIndex = 0;
 
-	bool m_RenderOff = true;
+	bool m_RenderOff = false;
 	bool m_bRefference = false;
 
 public:

@@ -139,6 +139,31 @@ void CPlayer::Update_Input(const float& TimeDelta)
 {
 	KeyManager* keyManager = GET_MANAGER<KeyManager>();
 	DWORD dwDirection = 0;
+	
+	if (true == keyManager->GetKeyState(STATE_DOWN, VK_TAB))
+	{
+		dwDirection |= VK_TAB;
+		if(m_bEye_fixation == false)
+		{
+			m_bEye_fixation = true;
+		}
+		else
+		{
+			m_bEye_fixation = false;
+		}
+
+		if (m_bEye_fixation == false)
+		{
+			m_fFOV = 60;
+			m_pCamera->GenerateProjectionMatrix(1.01f, 20000.0f, ASPECT_RATIO, m_fFOV);
+			m_pCamera->SetLookPlayer();
+			XMFLOAT3 xmf3Shift = XMFLOAT3(0, 0, 0);
+			xmf3Shift = Vector3::Add(xmf3Shift, m_xmf3Up, 1);
+			m_pCamera->SetPosition(Vector3::Add(m_xmf3Position, xmf3Shift));
+			xmf3Shift = Vector3::Add(xmf3Shift, m_xmf3Look, -5);
+			m_pCamera->SetPosition(Vector3::Add(m_xmf3Position, xmf3Shift));
+		}
+	}
 
 	if (true == keyManager->GetKeyState(STATE_DOWN, VK_SPACE))
 	{
@@ -225,7 +250,7 @@ void CPlayer::Update_Input(const float& TimeDelta)
 		{
 			m_fAircraftSpeed += 1;
 		}
-		if (m_fFOV < 70)
+		if (m_fFOV < 70 && m_bEye_fixation == false)
 		{
 			m_pCamera->GenerateProjectionMatrix(1.01f, 20000.0f, ASPECT_RATIO, m_fFOV += 0.1f);
 		}
@@ -258,7 +283,7 @@ void CPlayer::Update_Input(const float& TimeDelta)
 		{
 			m_fAircraftSpeed -= 1;
 		}
-		if (m_fFOV > 60)
+		if (m_fFOV > 60 )
 		{
 			m_pCamera->GenerateProjectionMatrix(1.01f, 20000.0f, ASPECT_RATIO, m_fFOV -= 0.1f);
 		}
@@ -274,6 +299,11 @@ void CPlayer::Update_Input(const float& TimeDelta)
 		{
 			m_fAircraftSpeed -= 0.5;
 		}
+	}
+
+	if (true == keyManager->GetKeyState(STATE_UP, VK_TAB))
+	{
+			
 	}
 
 	if (m_fAircraftSpeed >= 148 && m_fAircraftSpeed < 200)
@@ -292,9 +322,22 @@ void CPlayer::Update_Input(const float& TimeDelta)
 		Rotate(Pitch_WingsRotateDegree, 0.0f, 0.0f);
 	//cout << Pitch_WingsRotateDegree << endl;
 
+	if (m_bEye_fixation == true)
+	{
+		m_pCamera->SetPosition(XMFLOAT3(GetPosition().x - m_pCamera->GetLookVector().x * 5, GetPosition().y + 1 - m_pCamera->GetLookVector().y * 5,
+			GetPosition().z - m_pCamera->GetLookVector().z * 5));
+
+		auto temp = GET_MANAGER<ObjectManager>()->GetObjFromTag(L"SphereCollider", OBJ_ENEMY)->GetPosition();
+		m_pCamera->SetLookAt(temp);
+		if (m_fFOV > 40)
+		{
+			m_pCamera->GenerateProjectionMatrix(1.01f, 20000.0f, ASPECT_RATIO, m_fFOV);
+			m_fFOV -= 0.5;
+		}
+	}
+
 	Move(DIR_FORWARD, m_fAircraftSpeed * TimeDelta, true);
 	//MoveForward(8.0f);
-
 	WingAnimate(TimeDelta, dwDirection);
 
 }
@@ -756,7 +799,7 @@ void CAirplanePlayer::MissleLaunch()
 
 void CAirplanePlayer::SetAfterBurnerPosition(float fTimeElapsed)
 {
-	for (int i = 0; i < 10; ++i)
+	/*for (int i = 0; i < 10; ++i)
 	{
 		if (m_pLeft_AfterBurner[i])
 		{
@@ -769,6 +812,19 @@ void CAirplanePlayer::SetAfterBurnerPosition(float fTimeElapsed)
 			{
 				m_pLeft_AfterBurner[i]->m_pAfterBurner->m_RenderOff = true;
 				m_pRight_AfterBurner[i]->m_pAfterBurner->m_RenderOff = true;
+			}
+			m_pLeft_AfterBurner[i]->m_pAfterBurner->SetPosition(m_pLeft_AfterBurner[i]->GetPosition());
+			m_pRight_AfterBurner[i]->m_pAfterBurner->SetPosition(m_pRight_AfterBurner[i]->GetPosition());
+		}
+	}*/
+	for (int i = 0; i < 10; ++i)
+	{
+		if (m_pLeft_AfterBurner[i])
+		{
+			if (m_fBurnerElapsed / 100 < 1)
+			{
+				m_pLeft_AfterBurner[i]->m_pAfterBurner->SetScale(m_fBurnerElapsed / 100, m_fBurnerElapsed / 100, 0);
+				m_pRight_AfterBurner[i]->m_pAfterBurner->SetScale(m_fBurnerElapsed / 100, m_fBurnerElapsed / 100, 0);
 			}
 			m_pLeft_AfterBurner[i]->m_pAfterBurner->SetPosition(m_pLeft_AfterBurner[i]->GetPosition());
 			m_pRight_AfterBurner[i]->m_pAfterBurner->SetPosition(m_pRight_AfterBurner[i]->GetPosition());
