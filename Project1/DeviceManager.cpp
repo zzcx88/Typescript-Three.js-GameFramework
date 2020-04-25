@@ -86,6 +86,7 @@ void CDeviceManager::CreateD3DDevice()
 			{ 
 				numerator = displayModeList[i].RefreshRate.Numerator; 
 				denominator = displayModeList[i].RefreshRate.Denominator; 
+				FrameRate = numerator / denominator;
 			} 
 		} 
 	}
@@ -109,7 +110,7 @@ void CDeviceManager::CreateD3DDevice()
 	d3dMsaaQualityLevels.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
 	d3dMsaaQualityLevels.SampleCount = 4;
 	d3dMsaaQualityLevels.Flags = D3D12_MULTISAMPLE_QUALITY_LEVELS_FLAG_NONE;
-	d3dMsaaQualityLevels.NumQualityLevels = 0;
+	d3dMsaaQualityLevels.NumQualityLevels = 4;
 	hResult = m_pd3dDevice->CheckFeatureSupport(D3D12_FEATURE_MULTISAMPLE_QUALITY_LEVELS, &d3dMsaaQualityLevels, sizeof(D3D12_FEATURE_DATA_MULTISAMPLE_QUALITY_LEVELS));
 	m_nMsaa4xQualityLevels = d3dMsaaQualityLevels.NumQualityLevels;
 	m_bMsaa4xEnable = (m_nMsaa4xQualityLevels > 1) ? true : false;
@@ -474,7 +475,7 @@ void CDeviceManager::AnimateObjects()
 
 void CDeviceManager::FrameAdvance()
 {
-	m_GameTimer.Tick(75.0f);
+	m_GameTimer.Tick(FrameRate);
 
 	//ProcessInput();
 
