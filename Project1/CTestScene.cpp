@@ -327,13 +327,14 @@ void CTestScene::BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandLis
 		std::default_random_engine dre(time(NULL) * i * 151636);
 		std::uniform_real_distribution<float>fXPos(-64000.f, 64000.f);
 		std::uniform_real_distribution<float>fZPos(-64000.f, 64000.f);
+		std::uniform_int_distribution<int>nInstance(400, 500);
 		
 		for (int j = 0; j < 8; ++j)
 		{
 			float fX = fXPos(dre);
 			float fZ = fZPos(dre);
-			cout << fX << " " << fZ << endl;
-			pCloud[j] = new CCloud(j, pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, fX, fZ, 0, dre);
+			//cout << fX << " " << fZ << endl;
+			pCloud[j] = new CCloud(j, pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, fX, fZ, nInstance(dre), dre);
 			pCloud[j]->m_pCloudShader = pCloudRef->m_pCloudShader;
 			pCloud[j]->m_pCloudMaterial = new CMaterial(1);
 			pCloud[j]->m_pCloudMaterial->SetShader(pCloudRef->m_pCloudShader);

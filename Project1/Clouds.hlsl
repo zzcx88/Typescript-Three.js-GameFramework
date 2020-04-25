@@ -44,10 +44,10 @@ VS_BILLBOARD_INSTANCING_OUTPUT VSBillboardInstancing(VS_BILLBOARD_INSTANCING_INP
 		mtxWorld[2] = float4(f3Look, 0.0f);
 		mtxWorld[3] = float4(input.instancePosition, 1.0f);
 
-	if (length > 500)
-	{
+	//if (length > 500)
+	//{
 		output.position = mul(mul(mul(float4(input.position, 1.0f), mtxWorld), gmtxView), gmtxProjection);
-	}
+	//}
 	output.uv = input.uv;
 
 	return(output);
@@ -57,6 +57,7 @@ Texture2D gtxtTexture : register(t0);
 float4 PSBillboardInstancing(VS_BILLBOARD_INSTANCING_OUTPUT input) : SV_TARGET
 {
 	float4 cColor = gtxtTexture.Sample(gssWrap, input.uv);
-
+	//cColor.a = 0.7f;
+	//clip(cColor.a - 0.5f);
 	return(cColor);
 }
