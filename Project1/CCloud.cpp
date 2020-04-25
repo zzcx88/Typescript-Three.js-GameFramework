@@ -12,8 +12,9 @@ CCloud::CCloud(int nIndex, ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* 
 	VS_VB_BILLBOARD_INSTANCE* pInstanceInfos = new VS_VB_BILLBOARD_INSTANCE[m_nInstance];
 
 	std::uniform_real_distribution<float>y(5000, 6000);
-	std::uniform_real_distribution<float>x(fXPos - 2000, fXPos + 2000);
-	std::uniform_real_distribution<float>z(fZPos - 2000, fZPos + 2000);
+	std::uniform_real_distribution<float>range(1000, 3000);
+	std::uniform_real_distribution<float>x(fXPos - range(dre), fXPos + range(dre));
+	std::uniform_real_distribution<float>z(fZPos - range(dre) - 1000, fZPos + range(dre) - 1000);
 	std::uniform_real_distribution<float>size(1, 2);
 	float sizeTotal = size(dre);
 	m_pPlaneMesh = new CPlaneMesh(pd3dDevice, pd3dCommandList, 1024 * sizeTotal, 768 * sizeTotal, 1, XMFLOAT2(0, 0), XMFLOAT2(0, 0), XMFLOAT2(0, 0), XMFLOAT2(0, 0));

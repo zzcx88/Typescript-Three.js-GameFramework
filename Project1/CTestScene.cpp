@@ -322,7 +322,7 @@ void CTestScene::BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandLis
 
 	CCloud* pCloud[8];
 
-	for(int i = 0; i < 50; ++i)
+	for(int i = 0; i < 60; ++i)
 	{
 		std::default_random_engine dre(time(NULL) * i * 151636);
 		std::uniform_real_distribution<float>fXPos(-64000.f, 64000.f);
