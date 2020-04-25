@@ -22,6 +22,7 @@
 #include <tchar.h>
 #include <math.h>
 #include <cmath>
+#include <ctime>
 
 #include <string>
 #include <wrl.h>

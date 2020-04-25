@@ -89,11 +89,12 @@ void KeyManager::ComputeKeyState(const int& VirtualKey)
 			KeyStateUp = false;
 		}
 		// 이전에 누른적이 있는 상태에서 뗀경우
-		else
+		else //if(true == KeyStateDown || true == KeyStatePush)
 		{
 			KeyStateDown = false;
 			KeyStatePush = false;
 			KeyStateUp = true;
 		}
 	}
+	//cout << (bool)KeyStateDown << " " << (bool)KeyStatePush << " " << (bool)KeyStateUp << endl;
 }

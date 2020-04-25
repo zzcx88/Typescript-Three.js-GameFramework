@@ -186,6 +186,8 @@ public:
 	CGameObject* m_pChild = NULL;
 	CGameObject* m_pSibling = NULL;
 
+	CCamera* m_pCamera = NULL;
+
 	CSphereCollider* SphereCollider = NULL;
 
 	CUI*						m_pUI = NULL;

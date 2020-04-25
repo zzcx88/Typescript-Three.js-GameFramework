@@ -13,6 +13,7 @@
 #include "CMissleFog.h"
 #include "CWater.h"
 #include "CAfterBurner.h"
+#include "CCloud.h"
 
 
 ID3D12DescriptorHeap* CTestScene::m_pd3dCbvSrvDescriptorHeap = NULL;
@@ -229,13 +230,118 @@ void CTestScene::BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandLis
 	m_pWater[0] = new CWater(0, pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, 64000.f, 64000.f, 0.f);
 	m_pWater[0]->SetPosition(0, 140, 0);
 	m_pWater[0]->Rotate(90, 0, 0);
-	m_ObjManager->AddObject(L"WaterBase", m_pWater[0], OBJ_MAP);
+	m_ObjManager->AddObject(L"WaterBase", m_pWater[0], OBJ_ALPHAMAP);
 
 	m_pWater[1] = new CWater(1, pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, 64000.f, 64000.f, 0.f);
 	m_pWater[1]->SetPosition(0, 155, 0);
 	m_pWater[1]->Rotate(90, 0, 0);
 	m_ObjManager->AddObject(L"WaterNormal", m_pWater[1], OBJ_MAP);
 
+	m_pWater[2] = new CWater(0, pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, 64000.f, 64000.f, 0.f);
+	m_pWater[2]->SetPosition(64000.f, 140, 0);
+	m_pWater[2]->Rotate(90, 0, 0);
+	m_ObjManager->AddObject(L"WaterBase", m_pWater[2], OBJ_ALPHAMAP);
+
+	m_pWater[3] = new CWater(1, pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, 64000.f, 64000.f, 0.f);
+	m_pWater[3]->SetPosition(64000.f, 155, 0);
+	m_pWater[3]->Rotate(90, 0, 0);
+	m_ObjManager->AddObject(L"WaterNormal", m_pWater[3], OBJ_MAP);
+
+	m_pWater[4] = new CWater(0, pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, 64000.f, 64000.f, 0.f);
+	m_pWater[4]->SetPosition(-64000.f, 140, 0);
+	m_pWater[4]->Rotate(90, 0, 0);
+	m_ObjManager->AddObject(L"WaterBase", m_pWater[4], OBJ_ALPHAMAP);
+
+	m_pWater[5] = new CWater(1, pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, 64000.f, 64000.f, 0.f);
+	m_pWater[5]->SetPosition(-64000.f, 155, 0);
+	m_pWater[5]->Rotate(90, 0, 0);
+	m_ObjManager->AddObject(L"WaterNormal", m_pWater[5], OBJ_MAP);
+
+	m_pWater[6] = new CWater(0, pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, 64000.f, 64000.f, 0.f);
+	m_pWater[6]->SetPosition(-64000.f, 140, -64000.f);
+	m_pWater[6]->Rotate(90, 0, 0);
+	m_ObjManager->AddObject(L"WaterBase", m_pWater[6], OBJ_ALPHAMAP);
+
+	m_pWater[7] = new CWater(1, pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, 64000.f, 64000.f, 0.f);
+	m_pWater[7]->SetPosition(-64000.f, 155, -64000.f);
+	m_pWater[7]->Rotate(90, 0, 0);
+	m_ObjManager->AddObject(L"WaterBase", m_pWater[7], OBJ_ALPHAMAP);
+
+	m_pWater[8] = new CWater(0, pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, 64000.f, 64000.f, 0.f);
+	m_pWater[8]->SetPosition(64000.f, 140, 64000.f);
+	m_pWater[8]->Rotate(90, 0, 0);
+	m_ObjManager->AddObject(L"WaterBase", m_pWater[8], OBJ_ALPHAMAP);
+
+	m_pWater[9] = new CWater(1, pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, 64000.f, 64000.f, 0.f);
+	m_pWater[9]->SetPosition(64000.f, 155, 64000.f);
+	m_pWater[9]->Rotate(90, 0, 0);
+	m_ObjManager->AddObject(L"WaterNormal", m_pWater[9], OBJ_MAP);
+
+	m_pWater[10] = new CWater(0, pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, 64000.f, 64000.f, 0.f);
+	m_pWater[10]->SetPosition(0, 140, 64000.f);
+	m_pWater[10]->Rotate(90, 0, 0);
+	m_ObjManager->AddObject(L"WaterBase", m_pWater[10], OBJ_ALPHAMAP);
+
+	m_pWater[11] = new CWater(1, pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, 64000.f, 64000.f, 0.f);
+	m_pWater[11]->SetPosition(0, 155, 64000.f);
+	m_pWater[11]->Rotate(90, 0, 0);
+	m_ObjManager->AddObject(L"WaterNormal", m_pWater[11], OBJ_MAP);
+
+	m_pWater[12] = new CWater(0, pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, 64000.f, 64000.f, 0.f);
+	m_pWater[12]->SetPosition(0, 140, -64000.f);
+	m_pWater[12]->Rotate(90, 0, 0);
+	m_ObjManager->AddObject(L"WaterBase", m_pWater[12], OBJ_ALPHAMAP);
+
+	m_pWater[13] = new CWater(1, pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, 64000.f, 64000.f, 0.f);
+	m_pWater[13]->SetPosition(0, 155, -64000.f);
+	m_pWater[13]->Rotate(90, 0, 0);
+	m_ObjManager->AddObject(L"WaterNormal", m_pWater[13], OBJ_MAP);
+
+	m_pWater[14] = new CWater(0, pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, 64000.f, 64000.f, 0.f);
+	m_pWater[14]->SetPosition(64000.f, 140, -64000.f);
+	m_pWater[14]->Rotate(90, 0, 0);
+	m_ObjManager->AddObject(L"WaterBase", m_pWater[14], OBJ_ALPHAMAP);
+
+	m_pWater[15] = new CWater(1, pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, 64000.f, 64000.f, 0.f);
+	m_pWater[15]->SetPosition(64000.f, 155, -64000.f);
+	m_pWater[15]->Rotate(90, 0, 0);
+	m_ObjManager->AddObject(L"WaterNormal", m_pWater[15], OBJ_MAP);
+
+	m_pWater[16] = new CWater(0, pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, 64000.f, 64000.f, 0.f);
+	m_pWater[16]->SetPosition(-64000.f, 140, 64000.f);
+	m_pWater[16]->Rotate(90, 0, 0);
+	m_ObjManager->AddObject(L"WaterBase", m_pWater[16], OBJ_ALPHAMAP);
+
+	m_pWater[17] = new CWater(1, pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, 64000.f, 64000.f, 0.f);
+	m_pWater[17]->SetPosition(-64000.f, 155, 64000.f);
+	m_pWater[17]->Rotate(90, 0, 0);
+	m_ObjManager->AddObject(L"WaterNormal", m_pWater[17], OBJ_MAP);
+
+	CCloud* pCloudRef;
+	pCloudRef = new CCloud(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature);
+
+	CCloud* pCloud[8];
+
+	for(int i = 0; i < 50; ++i)
+	{
+		std::default_random_engine dre(time(NULL) * i * 151636);
+		std::uniform_real_distribution<float>fXPos(-64000.f, 64000.f);
+		std::uniform_real_distribution<float>fZPos(-64000.f, 64000.f);
+		
+		for (int j = 0; j < 8; ++j)
+		{
+			float fX = fXPos(dre);
+			float fZ = fZPos(dre);
+			cout << fX << " " << fZ << endl;
+			pCloud[j] = new CCloud(j, pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, fX, fZ, 0, dre);
+			pCloud[j]->m_pCloudShader = pCloudRef->m_pCloudShader;
+			pCloud[j]->m_pCloudMaterial = new CMaterial(1);
+			pCloud[j]->m_pCloudMaterial->SetShader(pCloudRef->m_pCloudShader);
+			pCloud[j]->m_pCloudMaterial->SetTexture(pCloudRef->m_pCloudTexture[j]);
+			pCloud[j]->SetMaterial(0, pCloud[j]->m_pCloudMaterial);
+			m_ObjManager->AddObject(L"cloud", pCloud[j], OBJ_ALPHAMAP);
+		}
+	}
 
 	CreateShaderVariables(pd3dDevice, pd3dCommandList);
 }

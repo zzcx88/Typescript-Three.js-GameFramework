@@ -37,8 +37,6 @@ protected:
 	LPVOID						m_pPlayerUpdatedContext = NULL;
 	LPVOID						m_pCameraUpdatedContext = NULL;
 
-	CCamera* m_pCamera = NULL;
-
 public:
 	CPlayer();
 	virtual ~CPlayer();

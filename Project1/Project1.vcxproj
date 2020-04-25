@@ -153,6 +153,7 @@
     <ClInclude Include="CAngrybotObject.h" />
     <ClInclude Include="CAnimationController.h" />
     <ClInclude Include="CCamera.h" />
+    <ClInclude Include="CCloud.h" />
     <ClInclude Include="CGameObject.h" />
     <ClInclude Include="CGunshipObject.h" />
     <ClInclude Include="CHeightMapTerrain.h" />
@@ -202,6 +203,7 @@
     <ClCompile Include="CAngrybotObject.cpp" />
     <ClCompile Include="CAnimationController.cpp" />
     <ClCompile Include="CCamera.cpp" />
+    <ClCompile Include="CCloud.cpp" />
     <ClCompile Include="CGameObject.cpp" />
     <ClCompile Include="CGunshipObject.cpp" />
     <ClCompile Include="CHeightMapTerrain.cpp" />
@@ -292,7 +294,7 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
     </FxCompile>
-    <FxCompile Include="Cloud.hlsl">
+    <FxCompile Include="Clouds.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Vertex</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Vertex</ShaderType>

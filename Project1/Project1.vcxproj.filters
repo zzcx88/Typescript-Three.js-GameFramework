@@ -133,6 +133,9 @@
     <Filter Include="GameObject\Plane\Effect\AfterBurner">
       <UniqueIdentifier>{93214177-68f5-4abb-a61e-9564627ed139}</UniqueIdentifier>
     </Filter>
+    <Filter Include="GameObject\Plane\Map\Cloud">
+      <UniqueIdentifier>{3efc0695-43dc-46b5-a4d5-33b66cc99544}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="targetver.h">
@@ -271,10 +274,13 @@
       <Filter>GameObject\Plane\UI</Filter>
     </ClInclude>
     <ClInclude Include="UIManager.h">
-      <Filter>Manager\UIManager</Filter>   
+      <Filter>Manager\UIManager</Filter>
     </ClInclude>
     <ClInclude Include="CAfterBurner.h">
       <Filter>GameObject\Plane\Effect\AfterBurner</Filter>
+    </ClInclude>
+    <ClInclude Include="CCloud.h">
+      <Filter>GameObject\Plane\Map\Cloud</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -398,6 +404,9 @@
     <ClCompile Include="CAfterBurner.cpp">
       <Filter>GameObject\Plane\Effect\AfterBurner</Filter>
     </ClCompile>
+    <ClCompile Include="CCloud.cpp">
+      <Filter>GameObject\Plane\Map\Cloud</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Project1.rc">
@@ -425,9 +434,6 @@
     <FxCompile Include="Blur.hlsl">
       <Filter>HLSL</Filter>
     </FxCompile>
-    <FxCompile Include="Cloud.hlsl">
-      <Filter>HLSL</Filter>
-    </FxCompile>
     <FxCompile Include="MissleFog.hlsl">
       <Filter>HLSL</Filter>
     </FxCompile>
@@ -435,6 +441,9 @@
       <Filter>HLSL</Filter>
     </FxCompile>
     <FxCompile Include="UI.hlsl">
+      <Filter>HLSL</Filter>
+    </FxCompile>
+    <FxCompile Include="Clouds.hlsl">
       <Filter>HLSL</Filter>
     </FxCompile>
   </ItemGroup>

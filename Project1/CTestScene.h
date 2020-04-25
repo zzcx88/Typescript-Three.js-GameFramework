@@ -45,6 +45,7 @@ struct LIGHTS
 class CMissleFog;
 class CWater;
 class CAfterBurner;
+class CCloud;
 class CTestScene : public CScene
 {
 public:
@@ -97,7 +98,8 @@ public:
 
 	CMissleFog* m_pMissleFog;
 	CAfterBurner* m_pAfterBurner;
-	CWater* m_pWater[2];
+	CWater* m_pWater[18];
+	CCloud* m_pCloud;
 
 	CLockOnUI* m_pLockOn = NULL;
 	CUI* m_pUI = NULL;
