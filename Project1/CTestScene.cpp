@@ -333,7 +333,6 @@ void CTestScene::BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandLis
 		{
 			float fX = fXPos(dre);
 			float fZ = fZPos(dre);
-			//cout << fX << " " << fZ << endl;
 			pCloud[j] = new CCloud(j, pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, fX, fZ, nInstance(dre), dre);
 			pCloud[j]->m_pCloudShader = pCloudRef->m_pCloudShader;
 			pCloud[j]->m_pCloudMaterial = new CMaterial(1);

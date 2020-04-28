@@ -95,7 +95,7 @@ void UIManager::MoveLockOnUI(ObjectManager::MAPOBJ* PlyList, ObjectManager::MAPO
 				return a->m_xmf4x4World._41 < b->m_xmf4x4World._41;
 				});
 
-			cout << Ene.second->m_pLockOnUI->GetState() << ", " << Ene.second->GetState() << endl;
+			//cout << Ene.second->m_pLockOnUI->GetState() << ", " << Ene.second->GetState() << endl;
 			if(Ene.second->bLockOnFire == true&&Ene.second->GetState() != true)
 			{ 
 				Ene.second->m_pLockOnUI->m_pLockOnUIMaterial->m_ppTextures[0] = GET_MANAGER<ObjectManager>()
@@ -129,9 +129,9 @@ void UIManager::MoveLockOnUI(ObjectManager::MAPOBJ* PlyList, ObjectManager::MAPO
 	KeyManager* keyManager = GET_MANAGER<KeyManager>();
 	DWORD dwDirection = 0;
 
-	if (true == keyManager->GetKeyState(STATE_DOWN, VK_F2))
+	if (true == keyManager->GetKeyState(STATE_DOWN, VK_F))
 	{
-		dwDirection |= VK_F2;
+		dwDirection |= VK_F;
 		Count++;
 		if (GameOBJs.size() <= Count)
 			Count = 0;

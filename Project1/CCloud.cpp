@@ -24,7 +24,8 @@ CCloud::CCloud(int nIndex, ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* 
 	{
 		pInstanceInfos[i].m_xmf3Position = XMFLOAT3(x(dre), y(dre), z(dre));
 	}
-	m_pd3dInstancesBuffer = ::CreateBufferResource(pd3dDevice, pd3dCommandList, pInstanceInfos, sizeof(VS_VB_BILLBOARD_INSTANCE) * m_nInstance, D3D12_HEAP_TYPE_DEFAULT, D3D12_RESOURCE_STATE_VERTEX_AND_CONSTANT_BUFFER, &m_pd3dInstanceUploadBuffer);
+	m_pd3dInstancesBuffer = ::CreateBufferResource(pd3dDevice, pd3dCommandList, pInstanceInfos, sizeof(VS_VB_BILLBOARD_INSTANCE) * m_nInstance, 
+		D3D12_HEAP_TYPE_DEFAULT, D3D12_RESOURCE_STATE_VERTEX_AND_CONSTANT_BUFFER, &m_pd3dInstanceUploadBuffer);
 
 	m_d3dInstancingBufferView.BufferLocation = m_pd3dInstancesBuffer->GetGPUVirtualAddress();
 	m_d3dInstancingBufferView.StrideInBytes = sizeof(VS_VB_BILLBOARD_INSTANCE);
@@ -35,9 +36,6 @@ CCloud::CCloud(int nIndex, ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* 
 
 CCloud::CCloud(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList, ID3D12RootSignature* pd3dGraphicsRootSignature)
 {
-	//m_pPlaneMesh = new CPlaneMesh(pd3dDevice, pd3dCommandList, fWidth, fHeight, fDepth, XMFLOAT2(0, 0), XMFLOAT2(0, 0), XMFLOAT2(0, 0), XMFLOAT2(0, 0));
-
-	//SetMesh(m_pPlaneMesh);
 	m_pCloudTexture[0] = new CTexture(1, RESOURCE_TEXTURE2D , 0);
 	m_pCloudTexture[0]->LoadTextureFromFile(pd3dDevice, pd3dCommandList, L"Effect/Cloud/cloud_1.dds", 0);
 	m_pCloudTexture[1] = new CTexture(1, RESOURCE_TEXTURE2D, 0);
@@ -58,25 +56,6 @@ CCloud::CCloud(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandL
 	m_pCloudShader = new CCloudShader();
 	m_pCloudShader->CreateShader(pd3dDevice, pd3dCommandList, pd3dGraphicsRootSignature);
 	for (int i = 0; i < TEXTURES; i++)CTestScene::CreateShaderResourceViews(pd3dDevice, m_pCloudTexture[i], 15, false);
-
-	/*m_pCloudMaterial = new CMaterial(1);
-	m_pCloudMaterial->SetTexture(m_pCloudTexture[0]);
-	m_pCloudMaterial->SetShader(m_pCloudShader);
-	SetMaterial(0, m_pCloudMaterial);*/
-
-	//for (int i = 0; i < m_nInstance; ++i)
-	//{
-	//	//pInstanceInfos[i].m_xmf3Position = XMFLOAT3(i * 10, 2000, i * 10);
-	//	//pInstanceInfos[i].m_xmf3Position = XMFLOAT3(410, 2000, -3000);
-	//}
-
-	/*m_pd3dInstancesBuffer = ::CreateBufferResource(pd3dDevice, pd3dCommandList, pInstanceInfos, sizeof(VS_VB_BILLBOARD_INSTANCE) * m_nInstance, D3D12_HEAP_TYPE_DEFAULT, D3D12_RESOURCE_STATE_VERTEX_AND_CONSTANT_BUFFER, &m_pd3dInstanceUploadBuffer);
-
-	m_d3dInstancingBufferView.BufferLocation = m_pd3dInstancesBuffer->GetGPUVirtualAddress();
-	m_d3dInstancingBufferView.StrideInBytes = sizeof(VS_VB_BILLBOARD_INSTANCE);
-	m_d3dInstancingBufferView.SizeInBytes = sizeof(VS_VB_BILLBOARD_INSTANCE) * m_nInstance;
-
-	if (pInstanceInfos) delete[] pInstanceInfos;*/
 }
 
 CCloud::~CCloud()

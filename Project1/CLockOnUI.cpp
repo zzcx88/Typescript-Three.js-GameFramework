@@ -64,9 +64,8 @@ void CLockOnUI::MoveLockOnUI(XMFLOAT2 screen, XMFLOAT3& xmfTarget, XMFLOAT3& xmf
 	if (screen.x < 0 || screen.y < 0 || screen.x >FRAME_BUFFER_WIDTH || screen.y >FRAME_BUFFER_HEIGHT || xmfAxis < 0.f)
 		pGameUIOBJ->SetPosition(-2.f, -2.f, -1.f);
 	else {
-		if (m_fLenth < 6000 &&( xmfAxis > 0.9f || xmfAxis < -0.9f))
+		if (m_fLenth < 10000 /*&&( xmfAxis > 0.1f || xmfAxis < -0.1f)*/)
 		{
-
 			bLockOn = true;
 		}
 		else
