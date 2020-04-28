@@ -35,6 +35,7 @@ public:
 	CMissleFog(int nIndex, ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList, ID3D12RootSignature* pd3dGraphicsRootSignature, float fWidth, float fHeight, float fDepth);
 	virtual ~CMissleFog();
 
+
 	virtual void Animate(float fTimeElapsed);
 	void TextureAnimate();
 	void SetLookAt(XMFLOAT3& xmfTarget);

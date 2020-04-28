@@ -36,6 +36,7 @@ CUI::CUI(int nIndex, ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCo
 	m_ppUITexture[7]->LoadTextureFromFile(pd3dDevice, pd3dCommandList, L"UI/MinimapPoint.dds", 0);
 	m_ppUITexture[8] = new CTexture(1, RESOURCE_TEXTURE2D, 0);
 	m_ppUITexture[8]->LoadTextureFromFile(pd3dDevice, pd3dCommandList, L"UI/MinimapRedPoint.dds", 0);
+
 	UINT ncbElementBytes = ((sizeof(CB_GAMEOBJECT_INFO) + 255) & ~255);
 	
 
@@ -79,6 +80,4 @@ void CUI::MoveMinimapPoint(XMFLOAT3& xmfPlayer, CGameObject* pGameOBJ)
 		fy = -1.f;
 
 	pGameOBJ->SetPosition(fx, fy, 0.f);
-
-	//cout << fx << ", " << fy << endl;
 }

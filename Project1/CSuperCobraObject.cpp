@@ -8,7 +8,9 @@ CSuperCobraObject::CSuperCobraObject(ID3D12Device* pd3dDevice, ID3D12GraphicsCom
 	SphereCollider = new CSphereCollider(pd3dDevice, pd3dCommandList, pd3dGraphicsRootSignature);
 	SphereCollider->SetScale(10, 10, 10);
 	SphereCollider->SetSphereCollider(GetPosition(), 10.0f);
+
 	SetChild(p052C->m_pModelRootObject);
+
 	OnPrepareAnimate();
 
 	CreateShaderVariables(pd3dDevice, pd3dCommandList);

@@ -83,6 +83,7 @@ public:
 	void Update_Input(const float& TimeDelta);
 	virtual void WingAnimate(float fTimeElapsed, DWORD Direction);
 	virtual void Animate(float fTimeElapsed);
+
 	virtual void SetAfterBurnerPosition(float fTimeElapsed) {}
 
 	virtual void OnPlayerUpdateCallback(float fTimeElapsed) { }

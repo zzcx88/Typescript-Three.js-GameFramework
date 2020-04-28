@@ -36,6 +36,7 @@ public:
 	virtual void ReleaseUploadBuffers() PURE;
 
 	CPlayer* m_pPlayer = NULL;
+	CCamera* m_pCamera = NULL;
 	ObjectManager* m_ObjManager = nullptr;
 
 	int mClientWidth = 800;
@@ -73,7 +74,6 @@ public:
 	D3D12_CPU_DESCRIPTOR_HANDLE GetCPUSrvDescriptorNextHandle() { return(m_d3dSrvCPUDescriptorNextHandle); }
 	D3D12_GPU_DESCRIPTOR_HANDLE GetGPUSrvDescriptorNextHandle() { return(m_d3dSrvGPUDescriptorNextHandle); }
 	
-	XMFLOAT2 GetScreenPos(XMFLOAT3& xmfTarget, CCamera* pCamera);
-
+	
 };
 

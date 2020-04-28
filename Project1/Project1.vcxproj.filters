@@ -127,7 +127,7 @@
     <Filter Include="GameObject\Plane\Effect\MissleFog">
       <UniqueIdentifier>{76b64a8c-49da-4cbd-aa94-17e9114e024e}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Manager\MinimapManager">
+    <Filter Include="Manager\UIManager">
       <UniqueIdentifier>{1c01627d-7ebd-46a9-8a0f-7f9baab662f5}</UniqueIdentifier>
     </Filter>
     <Filter Include="GameObject\Plane\Effect\AfterBurner">
@@ -270,8 +270,8 @@
     <ClInclude Include="CLockOnUI.h">
       <Filter>GameObject\Plane\UI</Filter>
     </ClInclude>
-    <ClInclude Include="MinimapManager.h">
-      <Filter>Manager\MinimapManager</Filter>
+    <ClInclude Include="UIManager.h">
+      <Filter>Manager\UIManager</Filter>   
     </ClInclude>
     <ClInclude Include="CAfterBurner.h">
       <Filter>GameObject\Plane\Effect\AfterBurner</Filter>
@@ -392,8 +392,8 @@
     <ClCompile Include="CLockOnUI.cpp">
       <Filter>GameObject\Plane\UI</Filter>
     </ClCompile>
-    <ClCompile Include="MinimapManager.cpp">
-      <Filter>Manager\MinimapManager</Filter>
+    <ClCompile Include="UIManager.cpp">
+      <Filter>Manager\UIManager</Filter>
     </ClCompile>
     <ClCompile Include="CAfterBurner.cpp">
       <Filter>GameObject\Plane\Effect\AfterBurner</Filter>

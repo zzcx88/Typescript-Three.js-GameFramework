@@ -4,6 +4,7 @@
 #include "CSkinnedMesh.h"
 #include "CShaderManager.h"
 #include "CUI.h"
+#include "CLockOnUI.h"
 #include "CScene.h"
 
 CTexture::CTexture(int nTextures, UINT nTextureType, int nSamplers)
@@ -263,6 +264,7 @@ CGameObject::CGameObject()
 {
 	m_xmf4x4ToParent = Matrix4x4::Identity();
 	m_xmf4x4World = Matrix4x4::Identity();
+	m_xmpScreenPosition = XMFLOAT2(0.f, 0.f);
 }
 
 CGameObject::CGameObject(int nMaterials) : CGameObject()
@@ -435,35 +437,9 @@ void CGameObject::CollisionActivate(CGameObject* collideTarget)
 
 	m_isDead = true;
 	m_pUI->m_isDead = true;
+	m_pLockOnUI->m_isDead = true;
 }
 
-void CGameObject::MoveMinimapPoint(CGameObject* pGameOBJ, CGameObject* pMiniOBJ)
-{
-	
-	float fx = 0.f;
-	float fy = 0.f;
-
-	XMFLOAT3 xmfposition = pGameOBJ->GetPosition();
-	
-	float ax = 1.f / 60000.f * 0.54;
-	float ay = 1.f / 60000.f * 0.96;
-
-	fx = (ax * (xmfposition.x + 30000.f)) - 1;
-	fy = (ay * (xmfposition.z + 30000.f)) - 1;
-
-	if (fx > -0.1f)
-		fx = -0.1f;
-	else if (fy > -0.1f)
-		fy = -0.1f;
-	else if (fx < -1.f)
-		fx = -1.f;
-	else if (fy < -1.f)
-		fy = -1.f;
-
-	pMiniOBJ->SetPosition(fx, fy, 0.f);
-
-	//cout << fx << ", " << fy << endl;
-}
 void CGameObject::Render(ID3D12GraphicsCommandList* pd3dCommandList, CCamera* pCamera)
 {
 	if (m_pSkinnedAnimationController) m_pSkinnedAnimationController->UpdateShaderVariables(pd3dCommandList);
@@ -540,6 +516,24 @@ void CGameObject::SetPosition(XMFLOAT3 xmf3Position)
 	SetPosition(xmf3Position.x, xmf3Position.y, xmf3Position.z);
 }
 
+void CGameObject::SetScreenPos(XMFLOAT3& xmfTarget, CCamera* pCamera)
+{
+	XMFLOAT3 point = xmfTarget;
+	XMFLOAT4X4 mat, pMatView, pMatProj;
+	pMatView = pCamera->GetViewMatrix();
+	pMatProj = pCamera->GetProjectionMatrix();
+
+	mat = Matrix4x4::Multiply(pMatView, pMatProj);
+
+	point.x = xmfTarget.x * mat._11 + xmfTarget.y * mat._21 + xmfTarget.z * mat._31 + mat._41;
+	point.y = xmfTarget.x * mat._12 + xmfTarget.y * mat._22 + xmfTarget.z * mat._32 + mat._42;
+	point.z = xmfTarget.x * mat._13 + xmfTarget.y * mat._23 + xmfTarget.z * mat._33 + mat._43;
+
+	m_xmpScreenPosition.x = (point.x / point.z + 1) * FRAME_BUFFER_WIDTH / 2;
+	m_xmpScreenPosition.y = (-point.y / point.z + 1) * FRAME_BUFFER_HEIGHT / 2;
+
+}
+
 void CGameObject::SetScale(float x, float y, float z)
 {
 	XMMATRIX mtxScale = XMMatrixScaling(x, y, z);
@@ -551,6 +545,11 @@ void CGameObject::SetScale(float x, float y, float z)
 XMFLOAT3 CGameObject::GetPosition()
 {
 	return(XMFLOAT3(m_xmf4x4World._41, m_xmf4x4World._42, m_xmf4x4World._43));
+}
+
+XMFLOAT2 CGameObject::GetScreenPosition()
+{
+	return m_xmpScreenPosition;
 }
 
 XMFLOAT3* CGameObject::GetPositionForMissle()

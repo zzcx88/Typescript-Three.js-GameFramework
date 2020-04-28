@@ -127,6 +127,7 @@ class CUIShader;
 class CWaterShader;
 class CPlaneMesh;
 class CUI;
+class CLockOnUI;
 class CAfterBurner;
 class CGameObject
 {
@@ -170,6 +171,13 @@ public:
 	CUIShader* m_pUIShader;
 	CMaterial* m_pUIMaterial;
 	CTexture* m_ppUITexture[10];
+	///////////////////////////////////////////
+	CPlaneMesh* m_pLockOnUIPlaneMesh;
+
+	CUIShader* m_pLockOnUIShader;
+	CMaterial* m_pLockOnUIMaterial;
+	CTexture* m_ppLockOnUITexture[2];
+	///////////////////////////////////////////
 
 	XMFLOAT4X4						m_xmf4x4ToParent;
 	XMFLOAT4X4						m_xmf4x4World;
@@ -181,6 +189,10 @@ public:
 	CSphereCollider* SphereCollider = NULL;
 
 	CUI*						m_pUI = NULL;
+	CLockOnUI*			m_pLockOnUI = NULL;
+	int m_iDistanceFromPlayer = 0;
+	bool bLockOn = false;
+	bool bLockOnFire = false;
 
 	OBJTYPE				m_ObjType = OBJ_END;
 
@@ -215,7 +227,9 @@ public:
 
 	virtual void ReleaseUploadBuffers();
 
+	XMFLOAT2 m_xmpScreenPosition;
 	XMFLOAT3 GetPosition();
+	XMFLOAT2 GetScreenPosition();
 	XMFLOAT3* GetPositionForMissle();
 	XMFLOAT3* m_xmpPosition = NULL;
 	XMFLOAT3 m_positionForMissle;
@@ -247,7 +261,27 @@ public:
 
 	CShader* GetShader();
 
-	void MoveMinimapPoint(CGameObject* pGameOBJ, CGameObject* pMiniOBJ);
+	void SetScreenPos(XMFLOAT3& xmfTarget, CCamera* pCamera);
+
+	bool operator ==(const CGameObject& a)const
+	{
+		return m_iDistanceFromPlayer == a.m_iDistanceFromPlayer;
+	}
+	/*
+	bool operator !=(const CGameObject& a)const
+	{
+		return !(*this == a);
+	}*/
+
+	bool operator <(const CGameObject& a) const
+	{
+		//if (m_iDistanceFromPlayer == a.m_iDistanceFromPlayer)
+			//return m_xmpPosition->x < a.m_xmpPosition->x;
+
+		//if (m_iDistanceFromPlayer != a.m_iDistanceFromPlayer)
+		return m_iDistanceFromPlayer < a.m_iDistanceFromPlayer;
+		
+	}
 
 public:
 	CAnimationController* m_pSkinnedAnimationController = NULL;

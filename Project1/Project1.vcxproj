@@ -184,7 +184,7 @@
     <ClInclude Include="CHeightMapMesh.h" />
     <ClInclude Include="framework.h" />
     <ClInclude Include="KeyManager.h" />
-    <ClInclude Include="MinimapManager.h" />
+    <ClInclude Include="UIManager.h" />
     <ClInclude Include="ObjectManager.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="Project1.h" />
@@ -227,7 +227,7 @@
     <ClCompile Include="DeviceManager.cpp" />
     <ClCompile Include="CHeightMapMesh.cpp" />
     <ClCompile Include="KeyManager.cpp" />
-    <ClCompile Include="MinimapManager.cpp" />
+    <ClCompile Include="UIManager.cpp" />
     <ClCompile Include="ObjectManager.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
