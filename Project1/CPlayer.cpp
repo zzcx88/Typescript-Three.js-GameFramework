@@ -155,7 +155,7 @@ void CPlayer::Update_Input(const float& TimeDelta)
 		if (m_bEye_fixation == false)
 		{
 			m_fFOV = 60;
-			m_pCamera->GenerateProjectionMatrix(1.01f, 1000000.0f, ASPECT_RATIO, m_fFOV);
+			m_pCamera->GenerateProjectionMatrix(1.01f, m_fFarPlaneDistance, ASPECT_RATIO, m_fFOV);
 			m_pCamera->SetLookPlayer();
 			XMFLOAT3 xmf3Shift = XMFLOAT3(0, 0, 0);
 			xmf3Shift = Vector3::Add(xmf3Shift, m_xmf3Up, 1);
@@ -334,7 +334,7 @@ void CPlayer::Update_Input(const float& TimeDelta)
 			}
 			if (m_fFOV < 70 && m_bEye_fixation == false)
 			{
-				m_pCamera->GenerateProjectionMatrix(1.01f, 1000000.0f, ASPECT_RATIO, m_fFOV += 0.1f);
+				m_pCamera->GenerateProjectionMatrix(1.01f, m_fFarPlaneDistance, ASPECT_RATIO, m_fFOV += 0.1f);
 			}
 			if (m_fBurnerElapsed < 100)
 			{
@@ -351,7 +351,7 @@ void CPlayer::Update_Input(const float& TimeDelta)
 			}
 			if (m_fFOV > 60)
 			{
-				m_pCamera->GenerateProjectionMatrix(1.01f, 1000000.0f, ASPECT_RATIO, m_fFOV -= 0.2f);
+				m_pCamera->GenerateProjectionMatrix(1.01f, m_fFarPlaneDistance, ASPECT_RATIO, m_fFOV -= 0.2f);
 			}
 			if (m_fBurnerElapsed > 0)
 			{
@@ -367,7 +367,7 @@ void CPlayer::Update_Input(const float& TimeDelta)
 		}
 		if (m_fFOV > 60)
 		{
-			m_pCamera->GenerateProjectionMatrix(1.01f, 1000000.0f, ASPECT_RATIO, m_fFOV -= 0.1f);
+			m_pCamera->GenerateProjectionMatrix(1.01f, m_fFarPlaneDistance, ASPECT_RATIO, m_fFOV -= 0.1f);
 		}
 		if (m_fBurnerElapsed > 0)
 		{
@@ -468,11 +468,14 @@ void CPlayer::Update_Input(const float& TimeDelta)
 		m_pCamera->SetPosition(XMFLOAT3(GetPosition().x - m_pCamera->GetLookVector().x * 5, GetPosition().y + 1 - m_pCamera->GetLookVector().y * 5,
 			GetPosition().z - m_pCamera->GetLookVector().z * 5));
 
-		auto temp = GET_MANAGER<ObjectManager>()->GetObjFromTag(L"SphereCollider", OBJ_ENEMY)->GetPosition();
-		m_pCamera->SetLookAt(XMFLOAT3(temp));
+		if (GET_MANAGER<ObjectManager>()->GetObjFromTag(L"SphereCollider", OBJ_ENEMY))
+		{
+			auto temp = GET_MANAGER<ObjectManager>()->GetObjFromTag(L"SphereCollider", OBJ_ENEMY)->GetPosition();
+			m_pCamera->SetLookAt(XMFLOAT3(temp));
+		}
 		if (m_fFOV > 40)
 		{
-			m_pCamera->GenerateProjectionMatrix(1.01f, 1000000.0f, ASPECT_RATIO, m_fFOV);
+			m_pCamera->GenerateProjectionMatrix(1.01f, m_fFarPlaneDistance, ASPECT_RATIO, m_fFOV);
 			m_fFOV -= 0.5;
 		}
 	}
@@ -1005,7 +1008,7 @@ CCamera* CAirplanePlayer::ChangeCamera(DWORD nNewCameraMode, float fTimeElapsed)
 		m_pCamera = OnChangeCamera(SPACESHIP_CAMERA, nCurrentCameraMode);
 		m_pCamera->SetTimeLag(0.0f);
 		m_pCamera->SetOffset(XMFLOAT3(0.0f, 1.0f, -5.0f));
-		m_pCamera->GenerateProjectionMatrix(1.01f, 3000000.0f, ASPECT_RATIO, 60.0f);
+		m_pCamera->GenerateProjectionMatrix(1.01f, m_fFarPlaneDistance, ASPECT_RATIO, 60.0f);
 		m_pCamera->OrthogonalProjectionMatrix(1.01f, 5000.0f, FRAME_BUFFER_WIDTH, FRAME_BUFFER_HEIGHT);
 		m_pCamera->SetViewport(0, 0, FRAME_BUFFER_WIDTH, FRAME_BUFFER_HEIGHT, 0.0f, 1.0f);
 		m_pCamera->SetScissorRect(0, 0, FRAME_BUFFER_WIDTH, FRAME_BUFFER_HEIGHT);

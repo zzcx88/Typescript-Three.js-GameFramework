@@ -95,7 +95,8 @@ private:
 	CBlurFilter* m_pBlurFilter = NULL;
 	CCamera* m_pCamera = NULL;
 
-	unsigned int numerator, denominator, FrameRate;
+	unsigned int numerator, denominator, FrameRate, stringLength;
+	char m_videoCardDescription[128];
 
 	int m_BlurSwitch = 0;
 };

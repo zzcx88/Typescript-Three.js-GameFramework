@@ -90,6 +90,10 @@ void CDeviceManager::CreateD3DDevice()
 			} 
 		} 
 	}
+	//DXGI_ADAPTER_DESC adapterDesc;
+	//adapter->GetDesc(&adapterDesc);
+	//wcstombs_s(&stringLength, m_videoCardDescription, 128, adapterDesc.Description, 128);
+	//cout << m_videoCardDescription << endl;
 	/////////////////
 
 

@@ -136,6 +136,15 @@
     <Filter Include="GameObject\Plane\Map\Cloud">
       <UniqueIdentifier>{3efc0695-43dc-46b5-a4d5-33b66cc99544}</UniqueIdentifier>
     </Filter>
+    <Filter Include="GameObject\Plane\Effect\MissleSplash">
+      <UniqueIdentifier>{dac87b33-b0d5-43e5-ba34-1cca994ed2a0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Manager\FileManager">
+      <UniqueIdentifier>{acc19733-c34a-4593-bae3-a6a87cf6c1fe}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Manager\LoadTextureManager">
+      <UniqueIdentifier>{ba5c510d-3c2d-4417-9152-d3795542f21e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="targetver.h">
@@ -282,6 +291,15 @@
     <ClInclude Include="CCloud.h">
       <Filter>GameObject\Plane\Map\Cloud</Filter>
     </ClInclude>
+    <ClInclude Include="CMissleSplash.h">
+      <Filter>GameObject\Plane\Effect\MissleSplash</Filter>
+    </ClInclude>
+    <ClInclude Include="FileManager.h">
+      <Filter>Manager\FileManager</Filter>
+    </ClInclude>
+    <ClInclude Include="LoadTextureManager.h">
+      <Filter>Manager\LoadTextureManager</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="DDSTextureLoader12.cpp">
@@ -406,6 +424,15 @@
     </ClCompile>
     <ClCompile Include="CCloud.cpp">
       <Filter>GameObject\Plane\Map\Cloud</Filter>
+    </ClCompile>
+    <ClCompile Include="CMissleSplash.cpp">
+      <Filter>GameObject\Plane\Effect\MissleSplash</Filter>
+    </ClCompile>
+    <ClCompile Include="FileManager.cpp">
+      <Filter>Manager\FileManager</Filter>
+    </ClCompile>
+    <ClCompile Include="LoadTextureManager.cpp">
+      <Filter>Manager\LoadTextureManager</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

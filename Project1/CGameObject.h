@@ -155,6 +155,8 @@ public:
 
 	int								m_nObjects = 0;
 	int								m_nMaterials = 0;
+	UINT m_nNumTex = 0;
+
 	CMaterial** m_ppMaterials = NULL;
 	
 	////////////////////////////////////////
@@ -162,7 +164,7 @@ public:
 public:
 	CMaterial* m_pEffectMaterial;
 	CPlaneMesh* m_pPlaneMesh;
-	CTexture* m_pEffectTexture[20];
+	CTexture* m_pEffectTexture[30];
 	CMissleFogShader* m_EffectShader;
 	CAfterBurner* m_pAfterBurner = NULL;
 ///////////////////////////////////////////

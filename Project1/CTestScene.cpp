@@ -14,7 +14,7 @@
 #include "CWater.h"
 #include "CAfterBurner.h"
 #include "CCloud.h"
-
+#include "CMissleSplash.h"
 
 ID3D12DescriptorHeap* CTestScene::m_pd3dCbvSrvDescriptorHeap = NULL;
 
@@ -322,12 +322,12 @@ void CTestScene::BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandLis
 
 	CCloud* pCloud[8];
 
-	for(int i = 0; i < 60; ++i)
+	for(int i = 0; i < 50; ++i)
 	{
 		std::default_random_engine dre(time(NULL) * i * 151636);
 		std::uniform_real_distribution<float>fXPos(-64000.f, 64000.f);
 		std::uniform_real_distribution<float>fZPos(-64000.f, 64000.f);
-		std::uniform_int_distribution<int>nInstance(400, 500);
+		std::uniform_int_distribution<int>nInstance(900, 1000);
 		
 		for (int j = 0; j < 8; ++j)
 		{
@@ -343,6 +343,9 @@ void CTestScene::BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandLis
 			m_ObjManager->AddObject(L"cloud", pCloud[j], OBJ_ALPHAMAP);
 		}
 	}
+
+	CMissleSplash* pMissleSplashRef = new CMissleSplash(0, pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, 400.f, 400.f, 0.f);
+	m_ObjManager->AddObject(L"MissleSplashRef", pMissleSplashRef, OBJ_EFFECT);
 
 	CreateShaderVariables(pd3dDevice, pd3dCommandList);
 }

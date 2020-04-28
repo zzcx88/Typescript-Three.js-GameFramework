@@ -2,6 +2,7 @@
 #include "CMissle.h"
 #include "CMissleFog.h"
 #include "ObjectManager.h"
+#include "CMissleSplash.h"
 
 CMissle::CMissle(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList, ID3D12RootSignature* pd3dGraphicsRootSignature, CLoadedModelInfo* pSphereModel, XMFLOAT3* xmfTarget, XMFLOAT3 xmfLunchPosition, ObjectManager* pObjectManager)
 {
@@ -73,8 +74,20 @@ void CMissle::Animate(float fTimeElapsed)
 
 void CMissle::CollisionActivate(CGameObject* collideTarget)
 {
-	m_isDead = true;
+	CMissleSplash* pMissleSplash = new CMissleSplash();
+	pMissleSplash = new CMissleSplash();
+	pMissleSplash->m_pPlaneMesh = GET_MANAGER<ObjectManager>()->GetObjFromTag(L"MissleSplashRef", OBJ_EFFECT)->m_pPlaneMesh;
+	pMissleSplash->SetMesh(pMissleSplash->m_pPlaneMesh);
+	for (int i = 0; i < GET_MANAGER<ObjectManager>()->GetObjFromTag(L"MissleSplashRef", OBJ_EFFECT)->m_nNumTex; ++i)
+		pMissleSplash->m_pEffectTexture[i] = GET_MANAGER<ObjectManager>()->GetObjFromTag(L"MissleSplashRef", OBJ_EFFECT)->m_pEffectTexture[i];
+	pMissleSplash->m_pEffectMaterial = new CMaterial(1);
+	pMissleSplash->m_pEffectMaterial->SetTexture(pMissleSplash->m_pEffectTexture[0]);
+	pMissleSplash->m_pEffectMaterial->SetShader(GET_MANAGER<ObjectManager>()->GetObjFromTag(L"MissleSplashRef", OBJ_EFFECT)->m_EffectShader);
+	pMissleSplash->SetMaterial(0, pMissleSplash->m_pEffectMaterial);
+	pMissleSplash->SetPosition(m_xmf4x4World._41, m_xmf4x4World._42, m_xmf4x4World._43);
+	GET_MANAGER<ObjectManager>()->AddObject(L"MissleSplashInstance", pMissleSplash, OBJ_EFFECT);
 
+	m_isDead = true;
 }
 
 void CMissle::Move(DWORD dwDirection, float fDistance, bool bUpdateVelocity)

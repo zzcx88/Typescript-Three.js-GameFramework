@@ -25,8 +25,10 @@
 #include <ctime>
 
 #include <string>
+#include <stdlib.h>
 #include <wrl.h>
 #include <shellapi.h>
+#include <comutil.h>
 
 #include <fstream>
 #include <random>
@@ -70,6 +72,9 @@ using Microsoft::WRL::ComPtr;
 #pragma comment(lib, "dxgi.lib")
 
 #pragma comment(lib, "dxguid.lib")
+
+#pragma comment(lib, "comsuppw.lib" )
+#pragma comment(lib, "comsuppwd.lib" )
 /*#pragma comment(lib, "DirectXTex.lib") */
 
 // TODO: 프로그램에 필요한 추가 헤더는 여기에서 참조합니다.
@@ -366,7 +371,8 @@ namespace Plane
 #include "CShaderManager.h"
 #include "CollisionManager.h"
 #include "UIManager.h"
-
+#include "FileManager.h"
+#include "LoadTextureManager.h"
 
 
 // 디버깅용 콘솔 창

@@ -162,6 +162,7 @@
     <ClInclude Include="CAircraftMesh.h" />
     <ClInclude Include="CMissle.h" />
     <ClInclude Include="CMissleFog.h" />
+    <ClInclude Include="CMissleSplash.h" />
     <ClInclude Include="CollisionManager.h" />
     <ClInclude Include="Constant.h" />
     <ClInclude Include="CPlane.h" />
@@ -183,8 +184,10 @@
     <ClInclude Include="DeviceManager.h" />
     <ClInclude Include="Enum.h" />
     <ClInclude Include="CHeightMapMesh.h" />
+    <ClInclude Include="FileManager.h" />
     <ClInclude Include="framework.h" />
     <ClInclude Include="KeyManager.h" />
+    <ClInclude Include="LoadTextureManager.h" />
     <ClInclude Include="UIManager.h" />
     <ClInclude Include="ObjectManager.h" />
     <ClInclude Include="stdafx.h" />
@@ -212,6 +215,7 @@
     <ClCompile Include="CAircraftMesh.cpp" />
     <ClCompile Include="CMissle.cpp" />
     <ClCompile Include="CMissleFog.cpp" />
+    <ClCompile Include="CMissleSplash.cpp" />
     <ClCompile Include="CollisionManager.cpp" />
     <ClCompile Include="CPlane.cpp" />
     <ClCompile Include="CPlaneMesh.cpp" />
@@ -228,7 +232,9 @@
     <ClCompile Include="DDSTextureLoader12.cpp" />
     <ClCompile Include="DeviceManager.cpp" />
     <ClCompile Include="CHeightMapMesh.cpp" />
+    <ClCompile Include="FileManager.cpp" />
     <ClCompile Include="KeyManager.cpp" />
+    <ClCompile Include="LoadTextureManager.cpp" />
     <ClCompile Include="UIManager.cpp" />
     <ClCompile Include="ObjectManager.cpp" />
     <ClCompile Include="stdafx.cpp">

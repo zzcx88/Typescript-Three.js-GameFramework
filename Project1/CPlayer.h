@@ -25,6 +25,7 @@ protected:
 	float m_fAircraftSpeed = 200;
 	float m_fFOV = 60;
 	float m_fBurnerElapsed;
+	float m_fFarPlaneDistance = 100000.0f;
 
 	bool m_bEye_fixation = false;
 
