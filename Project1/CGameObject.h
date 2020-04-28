@@ -195,6 +195,10 @@ public:
 	CUI*						m_pUI = NULL;
 	CLockOnUI*			m_pLockOnUI = NULL;
 
+	int m_iDistanceFromPlayer = 0;
+	bool bLockOn = false;
+	bool bLockOnFire = false;
+
 	OBJTYPE				m_ObjType = OBJ_END;
 
 	bool			m_isDead = false;
@@ -263,6 +267,26 @@ public:
 	CShader* GetShader();
 
 	void SetScreenPos(XMFLOAT3& xmfTarget, CCamera* pCamera);
+
+	bool operator ==(const CGameObject& a)const
+	{
+		return m_iDistanceFromPlayer == a.m_iDistanceFromPlayer;
+	}
+	/*
+	bool operator !=(const CGameObject& a)const
+	{
+		return !(*this == a);
+	}*/
+
+	bool operator <(const CGameObject& a) const
+	{
+		//if (m_iDistanceFromPlayer == a.m_iDistanceFromPlayer)
+			//return m_xmpPosition->x < a.m_xmpPosition->x;
+
+		//if (m_iDistanceFromPlayer != a.m_iDistanceFromPlayer)
+		return m_iDistanceFromPlayer < a.m_iDistanceFromPlayer;
+		
+	}
 
 public:
 	CAnimationController* m_pSkinnedAnimationController = NULL;

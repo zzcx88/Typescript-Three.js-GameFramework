@@ -283,7 +283,7 @@
       <Filter>GameObject\Plane\UI</Filter>
     </ClInclude>
     <ClInclude Include="UIManager.h">
-      <Filter>Manager\UIManager</Filter>
+      <Filter>Manager\UIManager</Filter>   
     </ClInclude>
     <ClInclude Include="CAfterBurner.h">
       <Filter>GameObject\Plane\Effect\AfterBurner</Filter>

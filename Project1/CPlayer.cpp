@@ -165,6 +165,8 @@ void CPlayer::Update_Input(const float& TimeDelta)
 		}
 	}
 
+	
+
 	if (true == keyManager->GetKeyState(STATE_DOWN, VK_SPACE))
 	{
 		dwDirection |= VK_SPACE;
@@ -925,16 +927,26 @@ void CAirplanePlayer::YawWingReturn(float fTimeElapsed)
 void CAirplanePlayer::MissleLaunch()
 {
 	CMissle* pMissle;
-	XMFLOAT3* temp = m_ObjManager->GetObjFromTag(L"SphereCollider", OBJ_ENEMY)->GetPositionForMissle();
 
-	pMissle = new CMissle(m_pd3dDevice, m_pd3dCommandList, m_pd3dGraphicsRootSignature,m_pMissleModelCol, temp, m_xmf3Position, m_ObjManager);
-	pMissle->m_pCamera = m_pCamera;
-	pMissle->m_xmf3Look = m_xmf3Look;
-	pMissle->m_xmf4x4ToParent = Matrix4x4::Multiply(XMMatrixScaling(1,1,1), m_xmf4x4ToParent);
-	pMissle->SetChild(m_pMissleModel->m_pModelRootObject);
-	pMissle->SetScale(1,1,1);
-	pMissle->SetPosition(m_pMSL_1->GetPosition());
-	m_ObjManager->AddObject(L"player_missle", pMissle, OBJ_MISSLE);
+	for (auto& Ene : m_ObjManager->GetObjFromType(OBJ_ENEMY))
+	{
+		if (Ene.second->bLockOnFire == true&&Ene.second->GetState() != true)
+		{
+			XMFLOAT3* temp = Ene.second->GetPositionForMissle();
+
+			pMissle = new CMissle(m_pd3dDevice, m_pd3dCommandList, m_pd3dGraphicsRootSignature, m_pMissleModelCol, temp, m_xmf3Position, m_ObjManager);
+			pMissle->m_pCamera = m_pCamera;
+			pMissle->m_xmf3Look = m_xmf3Look;
+			pMissle->m_xmf4x4ToParent = Matrix4x4::Multiply(XMMatrixScaling(1, 1, 1), m_xmf4x4ToParent);
+			pMissle->SetChild(m_pMissleModel->m_pModelRootObject);
+			pMissle->SetScale(1, 1, 1);
+			pMissle->SetPosition(m_pMSL_1->GetPosition());
+			m_ObjManager->AddObject(L"player_missle", pMissle, OBJ_MISSLE);
+		}
+	}
+
+
+	
 	//cout << pMissle->SphereCollider->GetPosition().z << endl;
 	//cout << m_ObjManager->GetObjFromTag(L"player_missle", OBJ_MISSLE)->SphereCollider->GetPosition().z << endl;
 	//m_ObjManager->GetObjFromTag(L"player_missle", OBJ_MISSLE)->m_xmf4x4World = m_xmMSL_1;

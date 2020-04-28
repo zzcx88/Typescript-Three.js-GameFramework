@@ -29,7 +29,7 @@ public:
 	virtual ~CLockOnUI();
 
 	
-	void MoveLockOnUI(XMFLOAT2 screen, XMFLOAT3& xmfTarget, XMFLOAT3& xmfPlayer, XMFLOAT3& xmfPlayerLook, CGameObject* pGameOBJ);
+	void MoveLockOnUI(XMFLOAT2 screen, XMFLOAT3& xmfTarget, XMFLOAT3& xmfPlayer, XMFLOAT3& xmfPlayerLook, CGameObject* pGameUIOBJ, CGameObject* pGameOBJ);
 
 };
 

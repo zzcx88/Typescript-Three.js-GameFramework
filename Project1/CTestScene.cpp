@@ -192,28 +192,28 @@ void CTestScene::BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandLis
 	CSuperCobraObject* pSphereCollider2;
 	pSphereCollider2 = new CSuperCobraObject(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature);
 	//pSphereCollider2->SetChild(p052C->m_pModelRootObject);
-	pSphereCollider2->SetPosition(410, 1000, -3000);
+	pSphereCollider2->SetPosition(110, 1000, -3000);
 	pSphereCollider2->SetScale(10, 10, 10);
 	m_ObjManager->AddObject(L"SphereCollider2", pSphereCollider2, OBJ_ENEMY);
 
 	CSuperCobraObject* pSphereCollider3;
 	pSphereCollider3 = new CSuperCobraObject(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature);
 	//pSphereCollider3->SetChild(p052C->m_pModelRootObject);
-	pSphereCollider3->SetPosition(410, 1000, -3000);
+	pSphereCollider3->SetPosition(310, 1000, -3000);
 	pSphereCollider3->SetScale(10, 10, 10);
 	m_ObjManager->AddObject(L"SphereCollider3", pSphereCollider3, OBJ_ENEMY);
 
 	CSuperCobraObject* pSphereCollider4;
 	pSphereCollider4 = new CSuperCobraObject(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature);
 	//pSphereCollider4->SetChild(p052C->m_pModelRootObject);
-	pSphereCollider4->SetPosition(410, 1000, -3000);
+	pSphereCollider4->SetPosition(510, 1000, -3000);
 	pSphereCollider4->SetScale(10, 10, 10);
 	m_ObjManager->AddObject(L"SphereCollider4", pSphereCollider4, OBJ_ENEMY);
 
 	CSuperCobraObject* pSphereCollider5;
 	pSphereCollider5 = new CSuperCobraObject(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature);
 	//pSphereCollider5->SetChild(p052C->m_pModelRootObject);
-	pSphereCollider5->SetPosition(410, 1000, -3000);
+	pSphereCollider5->SetPosition(210, 1000, -3000);
 	pSphereCollider5->SetScale(10, 10, 10);
 	m_ObjManager->AddObject(L"SphereCollider5", pSphereCollider5, OBJ_ENEMY);
 

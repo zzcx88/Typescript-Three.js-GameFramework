@@ -529,8 +529,6 @@ void CGameObject::SetScreenPos(XMFLOAT3& xmfTarget, CCamera* pCamera)
 	point.y = xmfTarget.x * mat._12 + xmfTarget.y * mat._22 + xmfTarget.z * mat._32 + mat._42;
 	point.z = xmfTarget.x * mat._13 + xmfTarget.y * mat._23 + xmfTarget.z * mat._33 + mat._43;
 
-	//cout << point.x << "Åõ¿µ ÁÂÇ¥°è!" << endl;
-
 	m_xmpScreenPosition.x = (point.x / point.z + 1) * FRAME_BUFFER_WIDTH / 2;
 	m_xmpScreenPosition.y = (-point.y / point.z + 1) * FRAME_BUFFER_HEIGHT / 2;
 

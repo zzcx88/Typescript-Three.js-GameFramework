@@ -42,7 +42,7 @@ CLockOnUI::~CLockOnUI()
 {
 }
 
-void CLockOnUI::MoveLockOnUI(XMFLOAT2 screen, XMFLOAT3& xmfTarget, XMFLOAT3& xmfPlayer, XMFLOAT3& xmfPlayerLook, CGameObject* pGameOBJ)
+void CLockOnUI::MoveLockOnUI(XMFLOAT2 screen, XMFLOAT3& xmfTarget, XMFLOAT3& xmfPlayer, XMFLOAT3& xmfPlayerLook, CGameObject* pGameUIOBJ, CGameObject* pGameOBJ)
 {
 	float fx = 0.f;
 	float fy = 0.f;
@@ -59,19 +59,21 @@ void CLockOnUI::MoveLockOnUI(XMFLOAT2 screen, XMFLOAT3& xmfTarget, XMFLOAT3& xmf
 
 	m_fLenth = sqrt(xmf3TargetVector2.x * xmf3TargetVector2.x + xmf3TargetVector2.y * xmf3TargetVector2.x + xmf3TargetVector2.z * xmf3TargetVector2.z);
 	
-
+	pGameOBJ->m_iDistanceFromPlayer = (int)m_fLenth;
+	
 	if (screen.x < 0 || screen.y < 0 || screen.x >FRAME_BUFFER_WIDTH || screen.y >FRAME_BUFFER_HEIGHT || xmfAxis < 0.f)
-		pGameOBJ->SetPosition(-2.f, -2.f, -1.f);
+		pGameUIOBJ->SetPosition(-2.f, -2.f, -1.f);
 	else {
-		if (m_fLenth < 3000 && (xmfAxis > 0.9f))
+		if (m_fLenth < 6000 &&( xmfAxis > 0.9f || xmfAxis < -0.9f))
 		{
-			LockOn = true;
+
+			bLockOn = true;
 		}
 		else
 		{
-			LockOn = false;
+			bLockOn = false;
 		}
-		pGameOBJ->SetPosition(fx, fy, 0.f);
+		pGameUIOBJ->SetPosition(fx, fy, 0.f);
 	}
 
 
