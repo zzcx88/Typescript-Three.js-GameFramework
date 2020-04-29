@@ -358,8 +358,8 @@ void CPlayer::Update_Input(const float& TimeDelta)
 
 	if (m_bEye_fixation == true)
 	{
-		m_pCamera->SetPosition(XMFLOAT3(GetPosition().x - m_pCamera->GetLookVector().x * 500 * TimeDelta, GetPosition().y + 1 - m_pCamera->GetLookVector().y * 500 * TimeDelta,
-			GetPosition().z - m_pCamera->GetLookVector().z * 500 * TimeDelta));
+		m_pCamera->SetPosition(XMFLOAT3(GetPosition().x - m_pCamera->GetLookVector().x * 7, GetPosition().y + 1 - m_pCamera->GetLookVector().y * 7,
+			GetPosition().z - m_pCamera->GetLookVector().z * 7));
 		for (auto& Ene : m_ObjManager->GetObjFromType(OBJ_ENEMY))
 		{
 			if (Ene.second->bLockOnFire == true && Ene.second->GetState() != true)
