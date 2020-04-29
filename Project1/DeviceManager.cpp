@@ -281,6 +281,32 @@ void CDeviceManager::ChangeSwapChainState()
 	m_pdxgiSwapChain->GetFullscreenState(&bFullScreenState, NULL);
 	m_pdxgiSwapChain->SetFullscreenState(!bFullScreenState, NULL);
 
+
+	HRESULT hResult2;
+	IDXGIAdapter* adapter;
+	hResult2 = m_pdxgiFactory->EnumAdapters(0, &adapter);
+	IDXGIOutput* adapterOutput;
+	hResult2 = adapter->EnumOutputs(0, &adapterOutput);
+	unsigned int numModes;
+	hResult2 = adapterOutput->GetDisplayModeList(DXGI_FORMAT_R8G8B8A8_UNORM, DXGI_ENUM_MODES_INTERLACED, &numModes, NULL);
+	DXGI_MODE_DESC* displayModeList;
+	displayModeList = new DXGI_MODE_DESC[numModes];
+	hResult2 = adapterOutput->GetDisplayModeList(DXGI_FORMAT_R8G8B8A8_UNORM, DXGI_ENUM_MODES_INTERLACED, &numModes, displayModeList);
+
+	for (int i = 0; i < numModes; i++)
+	{
+		if (displayModeList[i].Width == (unsigned int)GetSystemMetrics(SM_CXSCREEN))
+		{
+			if (displayModeList[i].Height == (unsigned int)GetSystemMetrics(SM_CYSCREEN))
+			{
+				numerator = displayModeList[i].RefreshRate.Numerator;
+				denominator = displayModeList[i].RefreshRate.Denominator;
+				FrameRate = numerator / denominator;
+			}
+		}
+	}
+
+
 	DXGI_MODE_DESC dxgiTargetParameters;
 	dxgiTargetParameters.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
 	dxgiTargetParameters.Width = m_nWndClientWidth;

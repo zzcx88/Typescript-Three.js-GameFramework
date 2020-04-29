@@ -23,6 +23,10 @@ protected:
 	float Yaw_WingsRotateDegree = 0.0f;
 
 	float m_fAircraftSpeed = 200;
+	float m_fRollPerformance = 0.0f;
+	float m_fPitchPerformance = 0.0f;
+	float m_fYawPerformance = 0.0f;
+
 	float m_fFOV = 60;
 	float m_fBurnerElapsed;
 	float m_fFarPlaneDistance = 100000.0f;
