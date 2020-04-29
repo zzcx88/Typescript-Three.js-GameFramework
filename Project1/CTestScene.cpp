@@ -438,18 +438,27 @@ void CTestScene::AnimateObjects(float fTimeElapsed)
 		m_ObjManager->GetObjFromTag(L"SphereCollider", OBJ_ENEMY)->MoveForward(200 * fTimeElapsed);
 	}
 
-	/*m_ObjManager->GetObjFromTag(L"SphereCollider2", OBJ_ENEMY)->Rotate(0, 0, 0);
-	m_ObjManager->GetObjFromTag(L"SphereCollider2", OBJ_ENEMY)->MoveForward(300 * fTimeElapsed);
+	/*if (m_ObjManager->GetObjFromTag(L"SphereCollider2", OBJ_ENEMY))
+	{
+		m_ObjManager->GetObjFromTag(L"SphereCollider2", OBJ_ENEMY)->Rotate(0, 0, 0);
+		m_ObjManager->GetObjFromTag(L"SphereCollider2", OBJ_ENEMY)->MoveForward(300 * fTimeElapsed);
+	}
 
-	m_ObjManager->GetObjFromTag(L"SphereCollider3", OBJ_ENEMY)->Rotate(0, -0.1, 0);
-	m_ObjManager->GetObjFromTag(L"SphereCollider3", OBJ_ENEMY)->MoveForward(400 * fTimeElapsed);
-
-	m_ObjManager->GetObjFromTag(L"SphereCollider4", OBJ_ENEMY)->Rotate(0, 0.1, 0);
-	m_ObjManager->GetObjFromTag(L"SphereCollider4", OBJ_ENEMY)->MoveForward(500 * fTimeElapsed);
-
-	m_ObjManager->GetObjFromTag(L"SphereCollider5", OBJ_ENEMY)->Rotate(0, -0.1, 0);
-	m_ObjManager->GetObjFromTag(L"SphereCollider5", OBJ_ENEMY)->MoveForward(600 * fTimeElapsed);*/
-
+	if (m_ObjManager->GetObjFromTag(L"SphereCollider3", OBJ_ENEMY))
+	{
+		m_ObjManager->GetObjFromTag(L"SphereCollider3", OBJ_ENEMY)->Rotate(0, -0.1, 0);
+		m_ObjManager->GetObjFromTag(L"SphereCollider3", OBJ_ENEMY)->MoveForward(400 * fTimeElapsed);
+	}
+	if (m_ObjManager->GetObjFromTag(L"SphereCollider4", OBJ_ENEMY))
+	{
+		m_ObjManager->GetObjFromTag(L"SphereCollider4", OBJ_ENEMY)->Rotate(0, 0.1, 0);
+		m_ObjManager->GetObjFromTag(L"SphereCollider4", OBJ_ENEMY)->MoveForward(500 * fTimeElapsed);
+	}
+	if (m_ObjManager->GetObjFromTag(L"SphereCollider5", OBJ_ENEMY))
+	{
+		m_ObjManager->GetObjFromTag(L"SphereCollider5", OBJ_ENEMY)->Rotate(0, -0.1, 0);
+		m_ObjManager->GetObjFromTag(L"SphereCollider5", OBJ_ENEMY)->MoveForward(600 * fTimeElapsed);
+	}*/
 
 	m_ObjManager->Update(fTimeElapsed);
 }
