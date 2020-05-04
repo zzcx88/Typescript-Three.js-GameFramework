@@ -145,6 +145,12 @@
     <Filter Include="Manager\LoadTextureManager">
       <UniqueIdentifier>{ba5c510d-3c2d-4417-9152-d3795542f21e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Manager\AI">
+      <UniqueIdentifier>{5f7c28f3-7b46-4e9d-9fe4-7c205d6ff0c5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Manager\AI\AIManager">
+      <UniqueIdentifier>{5daf32cc-2f5c-496d-b540-7cab5d2db11f}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="targetver.h">
@@ -283,7 +289,7 @@
       <Filter>GameObject\Plane\UI</Filter>
     </ClInclude>
     <ClInclude Include="UIManager.h">
-      <Filter>Manager\UIManager</Filter>   
+      <Filter>Manager\UIManager</Filter>
     </ClInclude>
     <ClInclude Include="CAfterBurner.h">
       <Filter>GameObject\Plane\Effect\AfterBurner</Filter>
@@ -299,6 +305,9 @@
     </ClInclude>
     <ClInclude Include="LoadTextureManager.h">
       <Filter>Manager\LoadTextureManager</Filter>
+    </ClInclude>
+    <ClInclude Include="AIManager.h">
+      <Filter>Manager\AI\AIManager</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -433,6 +442,9 @@
     </ClCompile>
     <ClCompile Include="LoadTextureManager.cpp">
       <Filter>Manager\LoadTextureManager</Filter>
+    </ClCompile>
+    <ClCompile Include="AIManager.cpp">
+      <Filter>Manager\AI\AIManager</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

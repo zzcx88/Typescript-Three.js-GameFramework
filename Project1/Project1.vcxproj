@@ -147,6 +147,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="AIManager.h" />
     <ClInclude Include="CAfterBurner.h" />
     <ClInclude Include="CBlur.h" />
     <ClInclude Include="CBlurFilter.h" />
@@ -200,6 +201,7 @@
     <ClInclude Include="WICTextureLoader12.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="AIManager.cpp" />
     <ClCompile Include="CAfterBurner.cpp" />
     <ClCompile Include="CBlur.cpp" />
     <ClCompile Include="CBlurFilter.cpp" />
