@@ -164,6 +164,7 @@
     <ClInclude Include="CMissle.h" />
     <ClInclude Include="CMissleFog.h" />
     <ClInclude Include="CMissleSplash.h" />
+    <ClInclude Include="CNode.h" />
     <ClInclude Include="CollisionManager.h" />
     <ClInclude Include="Constant.h" />
     <ClInclude Include="CPlane.h" />
@@ -218,6 +219,7 @@
     <ClCompile Include="CMissle.cpp" />
     <ClCompile Include="CMissleFog.cpp" />
     <ClCompile Include="CMissleSplash.cpp" />
+    <ClCompile Include="CNode.cpp" />
     <ClCompile Include="CollisionManager.cpp" />
     <ClCompile Include="CPlane.cpp" />
     <ClCompile Include="CPlaneMesh.cpp" />

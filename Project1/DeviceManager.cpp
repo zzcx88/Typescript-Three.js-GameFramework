@@ -405,6 +405,8 @@ void CDeviceManager::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPA
 			break;
 		case VK_F1:
 		case VK_F2:
+			m_GameTimer.Stop();
+			break;
 		case VK_F3:
 			m_pCamera = m_pPlayer->ChangeCamera((DWORD)(wParam - VK_F1 + 1), m_GameTimer.GetTimeElapsed());
 			break;

@@ -377,7 +377,7 @@ void CPlayer::Update_Input(const float& TimeDelta)
 	}
 
 	Move(DIR_FORWARD, m_fAircraftSpeed * TimeDelta, true);
-	//MoveForward(8.0f);
+	MoveForward(8.0f);
 	WingAnimate(TimeDelta, dwDirection);
 
 }

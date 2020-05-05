@@ -151,6 +151,12 @@
     <Filter Include="Manager\AI\AIManager">
       <UniqueIdentifier>{5daf32cc-2f5c-496d-b540-7cab5d2db11f}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Manager\AI\Node">
+      <UniqueIdentifier>{fd5324c4-0545-4f5f-b3d2-7d81ca45977e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Manager\AI\Act">
+      <UniqueIdentifier>{c0497780-212c-4e4d-9665-e78db3918ac2}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="targetver.h">
@@ -309,6 +315,9 @@
     <ClInclude Include="AIManager.h">
       <Filter>Manager\AI\AIManager</Filter>
     </ClInclude>
+    <ClInclude Include="CNode.h">
+      <Filter>Manager\AI\Node</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="DDSTextureLoader12.cpp">
@@ -445,6 +454,9 @@
     </ClCompile>
     <ClCompile Include="AIManager.cpp">
       <Filter>Manager\AI\AIManager</Filter>
+    </ClCompile>
+    <ClCompile Include="CNode.cpp">
+      <Filter>Manager\AI\Node</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
