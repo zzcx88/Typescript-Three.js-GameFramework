@@ -1,11 +1,12 @@
 #pragma once
 
+class CGameObject;
 namespace BT
 {
 	class CNode
 	{
 	public:
-		virtual bool Invoke() = 0;
+		virtual bool Invoke(CGameObject* pObj) = 0;
 	};
 
 	class CompositeNode : public CNode
@@ -27,11 +28,11 @@ namespace BT
 	class Selector : public CompositeNode
 	{
 	public:
-		virtual bool Invoke() override
+		virtual bool Invoke(CGameObject* pObj) override
 		{
 			for (auto node : GetChildren())
 			{
-				if (node->Invoke())
+				if (node->Invoke(pObj))
 					return true;
 			}
 			return false;
@@ -42,11 +43,11 @@ namespace BT
 	class Sequence : public CompositeNode
 	{
 	public:
-		virtual bool Invoke() override
+		virtual bool Invoke(CGameObject* pObj) override
 		{
 			for (auto node : GetChildren())
 			{
-				if (!node->Invoke())
+				if (!node->Invoke(pObj))
 					return false;
 			}
 			return true;
@@ -54,3 +55,27 @@ namespace BT
 	};
 }
 
+class IsEnemyNear : public BT::CompositeNode
+{
+public:
+	IsEnemyNear() {}
+	virtual ~IsEnemyNear(){}
+
+public:
+	virtual bool Invoke(CGameObject* pObj) override
+	{
+		XMFLOAT3 xmf3Pos, xmf3PlayerPos, xmf3TargetVector;
+		xmf3Pos = pObj->GetPosition();
+		xmf3PlayerPos = GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player", OBJ_PLAYER)->GetPosition();
+		xmf3TargetVector = Vector3::Subtract(xmf3Pos, xmf3PlayerPos);
+		float Lenth = sqrt(xmf3TargetVector.x * xmf3TargetVector.x + xmf3TargetVector.y * xmf3TargetVector.x + xmf3TargetVector.z * xmf3TargetVector.z);
+
+		if (Lenth < 3000)
+		{
+			cout << Lenth << endl;
+			return true;
+		}
+		else
+			return false;
+	}
+};

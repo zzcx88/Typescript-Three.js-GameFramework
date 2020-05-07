@@ -22,7 +22,7 @@ public:
 	//읽어온 정보를 행동트리로 만든다.
 	void MakeAction();
 	//만들어진 행동트리를 실행한다
-	void DoAction(AITYPE Type);
+	void DoAction(AITYPE Type, CGameObject* pObj);
 
 private:
 	std::unordered_multimap<AITYPE, NODELIST>			m_mapNode;

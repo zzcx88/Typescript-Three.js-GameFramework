@@ -32,6 +32,7 @@ protected:
 	float m_fFarPlaneDistance = 100000.0f;
 
 	bool m_bEye_fixation = false;
+	bool m_bGameOver = false;
 
 	XMFLOAT3					m_xmf3Velocity = XMFLOAT3(0.0f, 0.0f, 0.0f);
 	XMFLOAT3     				m_xmf3Gravity = XMFLOAT3(0.0f, 0.0f, 0.0f);

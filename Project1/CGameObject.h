@@ -202,6 +202,7 @@ public:
 	OBJTYPE				m_ObjType = OBJ_END;
 
 	bool			m_isDead = false;
+	bool			m_bAIEnable = false;
 
 	void SetMesh(CMesh* pMesh);
 	//void SetMesh(int nIndex, CMesh* pMesh);

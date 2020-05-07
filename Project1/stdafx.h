@@ -373,7 +373,7 @@ namespace Plane
 #include "UIManager.h"
 #include "FileManager.h"
 #include "LoadTextureManager.h"
-
+#include "AIManager.h"
 
 // 디버깅용 콘솔 창
 #ifdef UNICODE 

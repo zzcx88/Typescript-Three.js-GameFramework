@@ -142,6 +142,7 @@ void CPlayer::Update_Input(const float& TimeDelta)
 	
 	if (true == keyManager->GetKeyState(STATE_DOWN, VK_TAB))
 	{
+		//m_bGameOver = true;
 		dwDirection |= VK_TAB;
 		if(m_bEye_fixation == false)
 		{
@@ -384,36 +385,39 @@ void CPlayer::Update_Input(const float& TimeDelta)
 
 void CPlayer::Animate(float fTimeElapsed)
 {
-	m_xmf3Velocity = Vector3::Add(m_xmf3Velocity, Vector3::ScalarProduct(m_xmf3Gravity, fTimeElapsed, false));
-	float fLength = sqrtf(m_xmf3Velocity.x * m_xmf3Velocity.x + m_xmf3Velocity.z * m_xmf3Velocity.z);
-	float fMaxVelocityXZ = m_fMaxVelocityXZ * fTimeElapsed;
-	if (fLength > m_fMaxVelocityXZ)
+	if (!m_bGameOver)
 	{
-		m_xmf3Velocity.x *= (fMaxVelocityXZ / fLength);
-		m_xmf3Velocity.z *= (fMaxVelocityXZ / fLength);
+		m_xmf3Velocity = Vector3::Add(m_xmf3Velocity, Vector3::ScalarProduct(m_xmf3Gravity, fTimeElapsed, false));
+		float fLength = sqrtf(m_xmf3Velocity.x * m_xmf3Velocity.x + m_xmf3Velocity.z * m_xmf3Velocity.z);
+		float fMaxVelocityXZ = m_fMaxVelocityXZ * fTimeElapsed;
+		if (fLength > m_fMaxVelocityXZ)
+		{
+			m_xmf3Velocity.x *= (fMaxVelocityXZ / fLength);
+			m_xmf3Velocity.z *= (fMaxVelocityXZ / fLength);
+		}
+		float fMaxVelocityY = m_fMaxVelocityY * fTimeElapsed;
+		fLength = sqrtf(m_xmf3Velocity.y * m_xmf3Velocity.y);
+		if (fLength > m_fMaxVelocityY) m_xmf3Velocity.y *= (fMaxVelocityY / fLength);
+
+		Move(m_xmf3Velocity, false);
+
+		if (m_pPlayerUpdatedContext) OnPlayerUpdateCallback(fTimeElapsed);
+
+		DWORD nCurrentCameraMode = m_pCamera->GetMode();
+		if (nCurrentCameraMode == THIRD_PERSON_CAMERA) m_pCamera->Update(m_xmf3Position, fTimeElapsed);
+		if (m_pCameraUpdatedContext) OnCameraUpdateCallback(fTimeElapsed);
+		if (nCurrentCameraMode == THIRD_PERSON_CAMERA) m_pCamera->SetLookAt(m_xmf3Position);
+		m_pCamera->RegenerateViewMatrix();
+
+		fLength = Vector3::Length(m_xmf3Velocity);
+		float fDeceleration = (m_fFriction * fTimeElapsed);
+		if (fDeceleration > fLength) fDeceleration = fLength;
+		m_xmf3Velocity = Vector3::Add(m_xmf3Velocity, Vector3::ScalarProduct(m_xmf3Velocity, -fDeceleration, true));
+
+		Update_Input(fTimeElapsed);
+
+		SetAfterBurnerPosition(fTimeElapsed);
 	}
-	float fMaxVelocityY = m_fMaxVelocityY * fTimeElapsed;
-	fLength = sqrtf(m_xmf3Velocity.y * m_xmf3Velocity.y);
-	if (fLength > m_fMaxVelocityY) m_xmf3Velocity.y *= (fMaxVelocityY / fLength);
-
-	Move(m_xmf3Velocity, false);
-
-	if (m_pPlayerUpdatedContext) OnPlayerUpdateCallback(fTimeElapsed);
-
-	DWORD nCurrentCameraMode = m_pCamera->GetMode();
-	if (nCurrentCameraMode == THIRD_PERSON_CAMERA) m_pCamera->Update(m_xmf3Position, fTimeElapsed);
-	if (m_pCameraUpdatedContext) OnCameraUpdateCallback(fTimeElapsed);
-	if (nCurrentCameraMode == THIRD_PERSON_CAMERA) m_pCamera->SetLookAt(m_xmf3Position);
-	m_pCamera->RegenerateViewMatrix();
-
-	fLength = Vector3::Length(m_xmf3Velocity);
-	float fDeceleration = (m_fFriction * fTimeElapsed);
-	if (fDeceleration > fLength) fDeceleration = fLength;
-	m_xmf3Velocity = Vector3::Add(m_xmf3Velocity, Vector3::ScalarProduct(m_xmf3Velocity, -fDeceleration, true));
-
-	Update_Input(fTimeElapsed);
-
-	SetAfterBurnerPosition(fTimeElapsed);
 	/*if (-1 ==Update_Input(fTimeElapsed))
 	{
 		return -1;
@@ -478,9 +482,12 @@ void CPlayer::OnPrepareRender()
 
 void CPlayer::Render(ID3D12GraphicsCommandList* pd3dCommandList, CCamera* pCamera)
 {
-	DWORD nCameraMode = (pCamera) ? pCamera->GetMode() : 0x00;
-	if (nCameraMode == THIRD_PERSON_CAMERA) CGameObject::Render(pd3dCommandList, pCamera);
-	if (nCameraMode == SPACESHIP_CAMERA) CGameObject::Render(pd3dCommandList, pCamera);
+	if (!m_bGameOver)
+	{
+		DWORD nCameraMode = (pCamera) ? pCamera->GetMode() : 0x00;
+		if (nCameraMode == THIRD_PERSON_CAMERA) CGameObject::Render(pd3dCommandList, pCamera);
+		if (nCameraMode == SPACESHIP_CAMERA) CGameObject::Render(pd3dCommandList, pCamera);
+	}
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
