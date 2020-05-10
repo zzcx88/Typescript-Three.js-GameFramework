@@ -15,6 +15,7 @@ UIManager::~UIManager()
 
 void UIManager::MoveMinimapPoint(ObjectManager::MAPOBJ* PlyList, ObjectManager::MAPOBJ* EneList)
 {
+
 	if (PlyList->begin()->second->m_pUI == NULL)
 	{
 		CUI* pUI;
@@ -94,8 +95,10 @@ void UIManager::MoveLockOnUI(ObjectManager::MAPOBJ* PlyList, ObjectManager::MAPO
 			sort(begin(GameOBJs), end(GameOBJs), [](const CGameObject* a, const CGameObject* b) {
 				return a->m_xmf4x4World._41 < b->m_xmf4x4World._41;
 				});
+
 			//cout << Ene.second->m_pLockOnUI->GetState() << ", " << Ene.second->GetState() << endl;
 			if(Ene.second->m_bAiming == true&&Ene.second->GetState() != true)
+
 			{ 
 				if (Ene.second->m_pLockOnUI->bLockOn == true)
 				{

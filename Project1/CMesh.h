@@ -3,6 +3,7 @@
 class CMesh
 {
 public:
+	CMesh() {}
 	CMesh(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList);
 	virtual ~CMesh();
 

@@ -90,11 +90,12 @@ void CDeviceManager::CreateD3DDevice()
 			} 
 		} 
 	}
-	//DXGI_ADAPTER_DESC adapterDesc;
-	//adapter->GetDesc(&adapterDesc);
-	//wcstombs_s(&stringLength, m_videoCardDescription, 128, adapterDesc.Description, 128);
-	//cout << m_videoCardDescription << endl;
-	/////////////////
+
+	DXGI_ADAPTER_DESC adapterDesc;
+	adapter->GetDesc(&adapterDesc);
+	wcstombs_s(&stringLength, m_videoCardDescription, 128, adapterDesc.Description, 128);
+	cout << m_videoCardDescription << endl;
+
 
 
 	for (UINT i = 0; DXGI_ERROR_NOT_FOUND != m_pdxgiFactory->EnumAdapters1(i, &pd3dAdapter); i++)
@@ -102,13 +103,13 @@ void CDeviceManager::CreateD3DDevice()
 		DXGI_ADAPTER_DESC1 dxgiAdapterDesc;
 		pd3dAdapter->GetDesc1(&dxgiAdapterDesc);
 		if (dxgiAdapterDesc.Flags & DXGI_ADAPTER_FLAG_SOFTWARE) continue;
-		if (SUCCEEDED(D3D12CreateDevice(pd3dAdapter, D3D_FEATURE_LEVEL_12_0, _uuidof(ID3D12Device), (void**)&m_pd3dDevice))) break;
+		if (SUCCEEDED(D3D12CreateDevice(pd3dAdapter, D3D_FEATURE_LEVEL_12_1, _uuidof(ID3D12Device), (void**)&m_pd3dDevice))) break;
 	}
 
 	if (!pd3dAdapter)
 	{
-		m_pdxgiFactory->EnumWarpAdapter(_uuidof(IDXGIFactory4), (void**)&pd3dAdapter);
-		hResult = D3D12CreateDevice(pd3dAdapter, D3D_FEATURE_LEVEL_12_0, _uuidof(ID3D12Device), (void**)&m_pd3dDevice);
+		hResult = m_pdxgiFactory->EnumWarpAdapter(_uuidof(IDXGIAdapter1), (void**)&pd3dAdapter);
+		hResult = D3D12CreateDevice(pd3dAdapter, D3D_FEATURE_LEVEL_12_1, _uuidof(ID3D12Device), (void**)&m_pd3dDevice);
 	}
 	D3D12_FEATURE_DATA_MULTISAMPLE_QUALITY_LEVELS d3dMsaaQualityLevels;
 	d3dMsaaQualityLevels.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
@@ -410,6 +411,8 @@ void CDeviceManager::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPA
 			break;
 		case VK_F1:
 		case VK_F2:
+			m_GameTimer.Stop();
+			break;
 		case VK_F3:
 			m_pCamera = m_pPlayer->ChangeCamera((DWORD)(wParam - VK_F1 + 1), m_GameTimer.GetTimeElapsed());
 			break;

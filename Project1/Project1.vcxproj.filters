@@ -145,6 +145,27 @@
     <Filter Include="Manager\LoadTextureManager">
       <UniqueIdentifier>{ba5c510d-3c2d-4417-9152-d3795542f21e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Manager\AI">
+      <UniqueIdentifier>{5f7c28f3-7b46-4e9d-9fe4-7c205d6ff0c5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Manager\AI\AIManager">
+      <UniqueIdentifier>{5daf32cc-2f5c-496d-b540-7cab5d2db11f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Manager\AI\Node">
+      <UniqueIdentifier>{fd5324c4-0545-4f5f-b3d2-7d81ca45977e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Manager\AI\Act">
+      <UniqueIdentifier>{c0497780-212c-4e4d-9665-e78db3918ac2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GameObject\Mesh\BoxMesh">
+      <UniqueIdentifier>{bf1ebcd3-9abe-4cfe-af97-12c37219dff2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GameObject\Mesh\Vertex">
+      <UniqueIdentifier>{58e218ce-db0a-40d9-a4ab-9c5c1c884bcb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GameObject\Bullet">
+      <UniqueIdentifier>{22121b53-a5e2-42a2-a645-8c588d8f9a42}</UniqueIdentifier>
+    </Filter>
     <Filter Include="Scene\MenuScene">
       <UniqueIdentifier>{aa010675-6321-45e2-accc-386403d925d5}</UniqueIdentifier>
     </Filter>
@@ -303,6 +324,21 @@
     <ClInclude Include="LoadTextureManager.h">
       <Filter>Manager\LoadTextureManager</Filter>
     </ClInclude>
+    <ClInclude Include="AIManager.h">
+      <Filter>Manager\AI\AIManager</Filter>
+    </ClInclude>
+    <ClInclude Include="CNode.h">
+      <Filter>Manager\AI\Node</Filter>
+    </ClInclude>
+    <ClInclude Include="CVertex.h">
+      <Filter>GameObject\Mesh\Vertex</Filter>
+    </ClInclude>
+    <ClInclude Include="CBoxMesh.h">
+      <Filter>GameObject\Mesh\BoxMesh</Filter>
+    </ClInclude>
+    <ClInclude Include="CBullet.h">
+      <Filter>GameObject\Bullet</Filter>
+    </ClInclude>
     <ClInclude Include="CNumber.h">
       <Filter>GameObject\Plane\UI</Filter>
     </ClInclude>
@@ -442,6 +478,21 @@
     </ClCompile>
     <ClCompile Include="LoadTextureManager.cpp">
       <Filter>Manager\LoadTextureManager</Filter>
+    </ClCompile>
+    <ClCompile Include="AIManager.cpp">
+      <Filter>Manager\AI\AIManager</Filter>
+    </ClCompile>
+    <ClCompile Include="CNode.cpp">
+      <Filter>Manager\AI\Node</Filter>
+    </ClCompile>
+    <ClCompile Include="CVertex.cpp">
+      <Filter>GameObject\Mesh\Vertex</Filter>
+    </ClCompile>
+    <ClCompile Include="CBoxMesh.cpp">
+      <Filter>GameObject\Mesh\BoxMesh</Filter>
+    </ClCompile>
+    <ClCompile Include="CBullet.cpp">
+      <Filter>GameObject\Bullet</Filter>
     </ClCompile>
     <ClCompile Include="CNumber.cpp">
       <Filter>GameObject\Plane\UI</Filter>

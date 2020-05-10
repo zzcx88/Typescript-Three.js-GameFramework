@@ -142,6 +142,7 @@ void CPlayer::Update_Input(const float& TimeDelta)
 	
 	if (true == keyManager->GetKeyState(STATE_DOWN, VK_TAB))
 	{
+		//m_bGameOver = true;
 		dwDirection |= VK_TAB;
 		if(m_bEye_fixation == false)
 		{
@@ -163,6 +164,22 @@ void CPlayer::Update_Input(const float& TimeDelta)
 			xmf3Shift = Vector3::Add(xmf3Shift, m_xmf3Look, -5);
 			m_pCamera->SetPosition(Vector3::Add(m_xmf3Position, xmf3Shift));
 		}
+	}
+
+	if (true == keyManager->GetKeyState(STATE_PUSH, VK_LCONTROL))
+	{
+		if(!m_bEye_fixation)
+			m_fFOV = 60;
+		m_bGunFire = true;
+		m_fGunFireElapsed += TimeDelta;
+		dwDirection |= VK_LCONTROL;
+		GunFire(TimeDelta);
+	}
+
+	if (true == keyManager->GetKeyState(STATE_UP, VK_LCONTROL))
+	{
+		m_bGunFire = false;
+		dwDirection |= VK_LCONTROL;
 	}
 
 	if (true == keyManager->GetKeyState(STATE_DOWN, VK_SPACE))
@@ -291,7 +308,8 @@ void CPlayer::Update_Input(const float& TimeDelta)
 				}
 				if (m_fFOV < 70 && m_bEye_fixation == false)
 				{
-					m_pCamera->GenerateProjectionMatrix(1.01f, m_fFarPlaneDistance, ASPECT_RATIO, m_fFOV += 10.f * TimeDelta);
+					if(!m_bGunFire)
+						m_pCamera->GenerateProjectionMatrix(1.01f, m_fFarPlaneDistance, ASPECT_RATIO, m_fFOV += 10.f * TimeDelta);
 				}
 				if (m_fBurnerElapsed < 100)
 				{
@@ -309,7 +327,8 @@ void CPlayer::Update_Input(const float& TimeDelta)
 			}
 			if (m_fFOV > 60)
 			{
-				m_pCamera->GenerateProjectionMatrix(1.01f, m_fFarPlaneDistance, ASPECT_RATIO, m_fFOV -= 20.f * TimeDelta);
+				if (!m_bGunFire)
+					m_pCamera->GenerateProjectionMatrix(1.01f, m_fFarPlaneDistance, ASPECT_RATIO, m_fFOV -= 20.f * TimeDelta);
 			}
 			if (m_fBurnerElapsed > 0)
 			{
@@ -377,44 +396,46 @@ void CPlayer::Update_Input(const float& TimeDelta)
 	}
 
 	Move(DIR_FORWARD, m_fAircraftSpeed * TimeDelta, true);
-	//MoveForward(8.0f);
+	MoveForward(8.0f);
 	WingAnimate(TimeDelta, dwDirection);
-	
-
+	GunCameraMove(TimeDelta);
 }
 
 void CPlayer::Animate(float fTimeElapsed)
 {
-	m_xmf3Velocity = Vector3::Add(m_xmf3Velocity, Vector3::ScalarProduct(m_xmf3Gravity, fTimeElapsed, false));
-	float fLength = sqrtf(m_xmf3Velocity.x * m_xmf3Velocity.x + m_xmf3Velocity.z * m_xmf3Velocity.z);
-	float fMaxVelocityXZ = m_fMaxVelocityXZ * fTimeElapsed;
-	if (fLength > m_fMaxVelocityXZ)
+	if (!m_bGameOver)
 	{
-		m_xmf3Velocity.x *= (fMaxVelocityXZ / fLength);
-		m_xmf3Velocity.z *= (fMaxVelocityXZ / fLength);
+		m_xmf3Velocity = Vector3::Add(m_xmf3Velocity, Vector3::ScalarProduct(m_xmf3Gravity, fTimeElapsed, false));
+		float fLength = sqrtf(m_xmf3Velocity.x * m_xmf3Velocity.x + m_xmf3Velocity.z * m_xmf3Velocity.z);
+		float fMaxVelocityXZ = m_fMaxVelocityXZ * fTimeElapsed;
+		if (fLength > m_fMaxVelocityXZ)
+		{
+			m_xmf3Velocity.x *= (fMaxVelocityXZ / fLength);
+			m_xmf3Velocity.z *= (fMaxVelocityXZ / fLength);
+		}
+		float fMaxVelocityY = m_fMaxVelocityY * fTimeElapsed;
+		fLength = sqrtf(m_xmf3Velocity.y * m_xmf3Velocity.y);
+		if (fLength > m_fMaxVelocityY) m_xmf3Velocity.y *= (fMaxVelocityY / fLength);
+
+		Move(m_xmf3Velocity, false);
+
+		if (m_pPlayerUpdatedContext) OnPlayerUpdateCallback(fTimeElapsed);
+
+		DWORD nCurrentCameraMode = m_pCamera->GetMode();
+		if (nCurrentCameraMode == THIRD_PERSON_CAMERA) m_pCamera->Update(m_xmf3Position, fTimeElapsed);
+		if (m_pCameraUpdatedContext) OnCameraUpdateCallback(fTimeElapsed);
+		if (nCurrentCameraMode == THIRD_PERSON_CAMERA) m_pCamera->SetLookAt(m_xmf3Position);
+		m_pCamera->RegenerateViewMatrix();
+
+		fLength = Vector3::Length(m_xmf3Velocity);
+		float fDeceleration = (m_fFriction * fTimeElapsed);
+		if (fDeceleration > fLength) fDeceleration = fLength;
+		m_xmf3Velocity = Vector3::Add(m_xmf3Velocity, Vector3::ScalarProduct(m_xmf3Velocity, -fDeceleration, true));
+
+		Update_Input(fTimeElapsed);
+
+		SetAfterBurnerPosition(fTimeElapsed);
 	}
-	float fMaxVelocityY = m_fMaxVelocityY * fTimeElapsed;
-	fLength = sqrtf(m_xmf3Velocity.y * m_xmf3Velocity.y);
-	if (fLength > m_fMaxVelocityY) m_xmf3Velocity.y *= (fMaxVelocityY / fLength);
-
-	Move(m_xmf3Velocity, false);
-
-	if (m_pPlayerUpdatedContext) OnPlayerUpdateCallback(fTimeElapsed);
-
-	DWORD nCurrentCameraMode = m_pCamera->GetMode();
-	if (nCurrentCameraMode == THIRD_PERSON_CAMERA) m_pCamera->Update(m_xmf3Position, fTimeElapsed);
-	if (m_pCameraUpdatedContext) OnCameraUpdateCallback(fTimeElapsed);
-	if (nCurrentCameraMode == THIRD_PERSON_CAMERA) m_pCamera->SetLookAt(m_xmf3Position);
-	m_pCamera->RegenerateViewMatrix();
-
-	fLength = Vector3::Length(m_xmf3Velocity);
-	float fDeceleration = (m_fFriction * fTimeElapsed);
-	if (fDeceleration > fLength) fDeceleration = fLength;
-	m_xmf3Velocity = Vector3::Add(m_xmf3Velocity, Vector3::ScalarProduct(m_xmf3Velocity, -fDeceleration, true));
-
-	Update_Input(fTimeElapsed);
-
-	SetAfterBurnerPosition(fTimeElapsed);
 	/*if (-1 ==Update_Input(fTimeElapsed))
 	{
 		return -1;
@@ -479,9 +500,12 @@ void CPlayer::OnPrepareRender()
 
 void CPlayer::Render(ID3D12GraphicsCommandList* pd3dCommandList, CCamera* pCamera)
 {
-	DWORD nCameraMode = (pCamera) ? pCamera->GetMode() : 0x00;
-	if (nCameraMode == THIRD_PERSON_CAMERA) CGameObject::Render(pd3dCommandList, pCamera);
-	if (nCameraMode == SPACESHIP_CAMERA) CGameObject::Render(pd3dCommandList, pCamera);
+	if (!m_bGameOver)
+	{
+		DWORD nCameraMode = (pCamera) ? pCamera->GetMode() : 0x00;
+		if (nCameraMode == THIRD_PERSON_CAMERA) CGameObject::Render(pd3dCommandList, pCamera);
+		if (nCameraMode == SPACESHIP_CAMERA) CGameObject::Render(pd3dCommandList, pCamera);
+	}
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -536,7 +560,10 @@ void CAirplanePlayer::OnPrepareAnimate()
 	m_pMSL_3 = FindFrame("MSL_3");
 	m_pMSL_4 = FindFrame("MSL_4");
 	m_pSP_1 = FindFrame("SP_1");
-	m_pSP_2 = FindFrame("SP_2");
+	m_pGunMuzzle = FindFrame("GunMuzzle");
+	
+	m_pGunCamera = FindFrame("GunCamera");
+	m_pCameraPos = FindFrame("CameraPos");
 
 	m_pLeft_AfterBurner[0] = FindFrame("Left_AfterBuner");
 	m_pLeft_AfterBurner[1] = FindFrame("Left_AfterBuner_1");
@@ -851,13 +878,58 @@ void CAirplanePlayer::MissleLaunch()
 		}
 
 	}
+}
 
+void CAirplanePlayer::GunFire(float fTimeElapsed)
+{
+	if (m_fGunFireElapsed > m_fGunFireFrequency)
+	{
+		CBullet* pBullet;
+		pBullet = new CBullet();
+		pBullet->m_xmf3Look = m_xmf3Look;
+		pBullet->m_xmf4x4ToParent = m_xmf4x4ToParent;
+		pBullet->m_fBulletSpeed = m_fAircraftSpeed + 300.f;
+		pBullet->SetMesh((CMesh*)m_ObjManager->GetObjFromTag(L"bulletRef", OBJ_BULLET)->m_pBulletMesh);
+		pBullet->m_pEffectMaterial = new CMaterial(1);
+		pBullet->m_pEffectMaterial->SetTexture(m_ObjManager->GetObjFromTag(L"bulletRef", OBJ_BULLET)->m_pBulletTexture);
+		pBullet->m_pEffectMaterial->SetShader(m_ObjManager->GetObjFromTag(L"bulletRef", OBJ_BULLET)->m_pBulletShader);
+		pBullet->SetMaterial(0, pBullet->m_pEffectMaterial);
+		pBullet->SetPosition(XMFLOAT3(m_pGunMuzzle->GetPosition().x - GetLookVector().x * 3, m_pGunMuzzle->GetPosition().y - GetLookVector().y * 3, m_pGunMuzzle->GetPosition().z - GetLookVector().z * 3));
+		m_ObjManager->AddObject(L"player_bullet", pBullet, OBJ_BULLET);
+		m_fGunFireElapsed = 0.0f;
+	}
+}
 
-	
-	//cout << pMissle->SphereCollider->GetPosition().z << endl;
-	//cout << m_ObjManager->GetObjFromTag(L"player_missle", OBJ_MISSLE)->SphereCollider->GetPosition().z << endl;
-	//m_ObjManager->GetObjFromTag(L"player_missle", OBJ_MISSLE)->m_xmf4x4World = m_xmMSL_1;
-	//m_ObjManager->GetObjFromTag(L"player_missle", OBJ_MISSLE)->SetScale(10,10,10);
+void CAirplanePlayer::GunCameraMove(float fTimeElapsed)
+{
+	if (!m_bEye_fixation)
+	{
+		if (m_bGunFire)
+		{
+			if (m_fGunFOV > 50)
+			{
+				m_fGunFOV -= 40.f * fTimeElapsed;
+				m_pCamera->GenerateProjectionMatrix(1.01f, m_fFarPlaneDistance, ASPECT_RATIO, m_fGunFOV);
+			}
+			XMVECTOR Dest = XMLoadFloat3(&m_pGunCamera->GetPosition());
+			XMVECTOR Start = XMLoadFloat3(&m_pCamera->GetPosition());
+			XMVECTOR Result = XMVectorLerp(Start, Dest, 10.f * fTimeElapsed);
+			XMFLOAT3 xmf3Result;
+			XMStoreFloat3(&xmf3Result, Result);
+			m_pCamera->SetPosition(xmf3Result);
+		}
+		else
+		{
+			m_fGunFOV = 60.f;
+			m_pCamera->GenerateProjectionMatrix(1.01f, m_fFarPlaneDistance, ASPECT_RATIO, m_fFOV);
+			m_pCamera->SetLookPlayer();
+			XMFLOAT3 xmf3Shift = XMFLOAT3(0, 0, 0);
+			xmf3Shift = Vector3::Add(xmf3Shift, m_xmf3Up, 1);
+			m_pCamera->SetPosition(Vector3::Add(m_xmf3Position, xmf3Shift));
+			xmf3Shift = Vector3::Add(xmf3Shift, m_xmf3Look, -5);
+			m_pCamera->SetPosition(Vector3::Add(m_xmf3Position, xmf3Shift));
+		}
+	}
 }
 
 void CAirplanePlayer::SetAfterBurnerPosition(float fTimeElapsed)

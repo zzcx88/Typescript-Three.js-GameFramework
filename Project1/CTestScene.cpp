@@ -16,6 +16,7 @@
 #include "CAfterBurner.h"
 #include "CCloud.h"
 #include "CMissleSplash.h"
+#include "CBullet.h"
 
 ID3D12DescriptorHeap* CTestScene::m_pd3dCbvSrvDescriptorHeap = NULL;
 
@@ -161,7 +162,6 @@ void CTestScene::BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandLis
 	m_ppGameObjects[20]->SetPosition(m_ppGameObjects[1]->GetPosition().x+0.08f, m_ppGameObjects[1]->GetPosition().y+ 0.093f, 0.f);
 	m_ppGameObjects[21] = new CNumber(0, pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, 0.5f / 9.6f, 0.5f / 5.4f, 0.f);
 	m_ppGameObjects[21]->SetPosition(m_ppGameObjects[1]->GetPosition().x+0.06f, m_ppGameObjects[1]->GetPosition().y+ 0.093f, 0.f);
-
 
 
 	m_ObjManager->AddObject(L"player_ui1_testui", m_ppGameObjects[0], OBJ_UI);
@@ -392,6 +392,11 @@ void CTestScene::BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandLis
 
 	CMissleSplash* pMissleSplashRef = new CMissleSplash(0, pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, 400.f, 400.f, 0.f);
 	m_ObjManager->AddObject(L"MissleSplashRef", pMissleSplashRef, OBJ_EFFECT);
+
+	CBullet* pBullet = new CBullet(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature);
+	pBullet->SetPosition(0,0,0);
+	//pBullet->SetScale(100,100,100);
+	m_ObjManager->AddObject(L"bulletRef", pBullet, OBJ_BULLET);
 
 	CreateShaderVariables(pd3dDevice, pd3dCommandList);
 }

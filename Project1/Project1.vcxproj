@@ -147,11 +147,14 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="AIManager.h" />
     <ClInclude Include="CAfterBurner.h" />
     <ClInclude Include="CBlur.h" />
     <ClInclude Include="CBlurFilter.h" />
     <ClInclude Include="CAngrybotObject.h" />
     <ClInclude Include="CAnimationController.h" />
+    <ClInclude Include="CBoxMesh.h" />
+    <ClInclude Include="CBullet.h" />
     <ClInclude Include="CCamera.h" />
     <ClInclude Include="CCloud.h" />
     <ClInclude Include="CGameObject.h" />
@@ -164,6 +167,7 @@
     <ClInclude Include="CMissle.h" />
     <ClInclude Include="CMissleFog.h" />
     <ClInclude Include="CMissleSplash.h" />
+    <ClInclude Include="CNode.h" />
     <ClInclude Include="CNumber.h" />
     <ClInclude Include="CollisionManager.h" />
     <ClInclude Include="Constant.h" />
@@ -179,6 +183,7 @@
     <ClInclude Include="CSuperCobraObject.h" />
     <ClInclude Include="CTestScene.h" />
     <ClInclude Include="CUI.h" />
+    <ClInclude Include="CVertex.h" />
     <ClInclude Include="CWater.h" />
     <ClInclude Include="d3dx12.h" />
     <ClInclude Include="DDSTextureLoader12.h" />
@@ -202,11 +207,14 @@
     <ClInclude Include="WICTextureLoader12.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="AIManager.cpp" />
     <ClCompile Include="CAfterBurner.cpp" />
     <ClCompile Include="CBlur.cpp" />
     <ClCompile Include="CBlurFilter.cpp" />
     <ClCompile Include="CAngrybotObject.cpp" />
     <ClCompile Include="CAnimationController.cpp" />
+    <ClCompile Include="CBoxMesh.cpp" />
+    <ClCompile Include="CBullet.cpp" />
     <ClCompile Include="CCamera.cpp" />
     <ClCompile Include="CCloud.cpp" />
     <ClCompile Include="CGameObject.cpp" />
@@ -219,6 +227,7 @@
     <ClCompile Include="CMissle.cpp" />
     <ClCompile Include="CMissleFog.cpp" />
     <ClCompile Include="CMissleSplash.cpp" />
+    <ClCompile Include="CNode.cpp" />
     <ClCompile Include="CNumber.cpp" />
     <ClCompile Include="CollisionManager.cpp" />
     <ClCompile Include="CPlane.cpp" />
@@ -232,6 +241,7 @@
     <ClCompile Include="CSphereCollider.cpp" />
     <ClCompile Include="CSuperCobraObject.cpp" />
     <ClCompile Include="CTestScene.cpp" />
+    <ClCompile Include="CVertex.cpp" />
     <ClCompile Include="CWater.cpp" />
     <ClCompile Include="DDSTextureLoader12.cpp" />
     <ClCompile Include="DeviceManager.cpp" />

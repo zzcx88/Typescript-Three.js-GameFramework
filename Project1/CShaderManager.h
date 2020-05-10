@@ -316,3 +316,20 @@ public:
 
 	virtual D3D12_BLEND_DESC CreateBlendState();
 };
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//
+class CBulletShader : public CShader
+{
+public:
+	CBulletShader();
+	virtual ~CBulletShader();
+
+	virtual D3D12_INPUT_LAYOUT_DESC CreateInputLayout();
+
+	virtual D3D12_SHADER_BYTECODE CreateVertexShader();
+	virtual D3D12_SHADER_BYTECODE CreatePixelShader();
+
+	virtual D3D12_RASTERIZER_DESC CreateRasterizerState();
+
+};

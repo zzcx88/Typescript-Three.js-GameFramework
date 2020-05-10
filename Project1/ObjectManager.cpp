@@ -56,8 +56,8 @@ void ObjectManager::Update(const float& TimeDelta)
 			// 죽은 상태라면 컨테이너에서 삭제한다.
 			if (true == (*iter).second->GetState())
 			{
-				//(*iter).second->Release();
-				delete (*iter).second;
+				(*iter).second->Release();
+				//delete (*iter).second;
 				(*iter).second = nullptr;
 				iter = m_mapObj[i].erase(iter);
 			}
