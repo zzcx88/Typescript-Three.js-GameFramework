@@ -178,18 +178,6 @@ void CPlayer::Update_Input(const float& TimeDelta)
 	{
 		m_bGunFire = false;
 		dwDirection |= VK_LCONTROL;
-
-		if (m_bEye_fixation == false)
-		{
-			m_fFOV = 60;
-			m_pCamera->GenerateProjectionMatrix(1.01f, m_fFarPlaneDistance, ASPECT_RATIO, m_fFOV);
-			m_pCamera->SetLookPlayer();
-			XMFLOAT3 xmf3Shift = XMFLOAT3(0, 0, 0);
-			xmf3Shift = Vector3::Add(xmf3Shift, m_xmf3Up, 1);
-			m_pCamera->SetPosition(Vector3::Add(m_xmf3Position, xmf3Shift));
-			xmf3Shift = Vector3::Add(xmf3Shift, m_xmf3Look, -5);
-			m_pCamera->SetPosition(Vector3::Add(m_xmf3Position, xmf3Shift));
-		}
 	}
 
 	if (true == keyManager->GetKeyState(STATE_DOWN, VK_SPACE))
@@ -910,25 +898,27 @@ void CAirplanePlayer::GunFire(float fTimeElapsed)
 
 void CAirplanePlayer::GunCameraMove(float fTimeElapsed)
 {
-	if (m_bGunFire)
+	if (m_bEye_fixation == false)
 	{
-		XMVECTOR Dest = XMLoadFloat3(&m_pGunCamera->GetPosition());
-		XMVECTOR Start = XMLoadFloat3(&m_pCamera->GetPosition());
-		XMVECTOR Result = XMVectorLerp(Start, Dest, 10.f * fTimeElapsed);
-		XMFLOAT3 xmf3Result;
-		XMStoreFloat3(&xmf3Result, Result);
-		m_pCamera->SetPosition(xmf3Result);
-	}
-	else
-	{
-		//m_fFOV = 60;
-		m_pCamera->GenerateProjectionMatrix(1.01f, m_fFarPlaneDistance, ASPECT_RATIO, m_fFOV);
-		m_pCamera->SetLookPlayer();
-		XMFLOAT3 xmf3Shift = XMFLOAT3(0, 0, 0);
-		xmf3Shift = Vector3::Add(xmf3Shift, m_xmf3Up, 1);
-		m_pCamera->SetPosition(Vector3::Add(m_xmf3Position, xmf3Shift));
-		xmf3Shift = Vector3::Add(xmf3Shift, m_xmf3Look, -5);
-		m_pCamera->SetPosition(Vector3::Add(m_xmf3Position, xmf3Shift));
+		if (m_bGunFire)
+		{
+			XMVECTOR Dest = XMLoadFloat3(&m_pGunCamera->GetPosition());
+			XMVECTOR Start = XMLoadFloat3(&m_pCamera->GetPosition());
+			XMVECTOR Result = XMVectorLerp(Start, Dest, 10.f * fTimeElapsed);
+			XMFLOAT3 xmf3Result;
+			XMStoreFloat3(&xmf3Result, Result);
+			m_pCamera->SetPosition(xmf3Result);
+		}
+		else
+		{
+			m_pCamera->GenerateProjectionMatrix(1.01f, m_fFarPlaneDistance, ASPECT_RATIO, m_fFOV);
+			m_pCamera->SetLookPlayer();
+			XMFLOAT3 xmf3Shift = XMFLOAT3(0, 0, 0);
+			xmf3Shift = Vector3::Add(xmf3Shift, m_xmf3Up, 1);
+			m_pCamera->SetPosition(Vector3::Add(m_xmf3Position, xmf3Shift));
+			xmf3Shift = Vector3::Add(xmf3Shift, m_xmf3Look, -5);
+			m_pCamera->SetPosition(Vector3::Add(m_xmf3Position, xmf3Shift));
+		}
 	}
 }
 
