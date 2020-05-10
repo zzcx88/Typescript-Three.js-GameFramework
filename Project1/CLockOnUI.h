@@ -18,8 +18,14 @@ public:
 	float m_fScaleX = 1, m_fScaleY = 1;
 
 	float m_fTimeElapsed = 0.f;
+	float m_fFadeTimeElapsed = 0.f;
+	float m_fFadeFrequence = 0.15f;
+
+	int m_nTextureRender = 0;
+
 	bool m_bRefference = false;
-	bool LockOn = false;
+	bool bDetectable = false;
+	bool bLockOn = false;
 
 	float m_fLenth = 0.f;
 	
@@ -29,7 +35,10 @@ public:
 	virtual ~CLockOnUI();
 
 	
-	void MoveLockOnUI(XMFLOAT2 screen, XMFLOAT3& xmfTarget, XMFLOAT3& xmfPlayer, XMFLOAT3& xmfPlayerLook, CGameObject* pGameUIOBJ, CGameObject* pGameOBJ);
+	void MoveLockOnUI(XMFLOAT2 screen, XMFLOAT3& xmfTarget, XMFLOAT3& xmfPlayer, XMFLOAT3& xmfPlayerLook, CGameObject* pGameUIOBJ, CCamera* pCamera);
+	virtual void Animate(float fTimeElapsed);
+	void TextureAnimate();
+	void Render(ID3D12GraphicsCommandList* pd3dCommandList, CCamera* pCamera);
 
 };
 

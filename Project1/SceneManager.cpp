@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "SceneManager.h"
 #include "CTestScene.h"
+#include "CMenuScene.h"
 
 SceneManager::SceneManager()
 {
@@ -18,6 +19,7 @@ bool SceneManager::ChangeSceneState(SCENESTATE SceneState, ID3D12Device* pd3dDev
 	{
 		Release();
 	}
+
 	if (m_Scene) m_Scene->ReleaseUploadBuffers();
 	GET_MANAGER<ObjectManager>()->ReleaseAll();
 
@@ -25,6 +27,9 @@ bool SceneManager::ChangeSceneState(SCENESTATE SceneState, ID3D12Device* pd3dDev
 	{
 	case SCENE_TEST:
 		m_Scene = new CTestScene;
+		break;
+	case SCENE_MENU:
+		m_Scene = new CMenuScene;
 		break;
 	}
 

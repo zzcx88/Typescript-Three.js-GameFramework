@@ -23,8 +23,16 @@ protected:
 	float Yaw_WingsRotateDegree = 0.0f;
 
 	float m_fAircraftSpeed = 200;
+	float m_fRollPerformance = 0.0f;
+	float m_fPitchPerformance = 0.0f;
+	float m_fYawPerformance = 0.0f;
+
 	float m_fFOV = 60;
 	float m_fBurnerElapsed;
+	float m_fFarPlaneDistance = 100000.0f;
+
+	bool m_bEye_fixation = false;
+
 	XMFLOAT3					m_xmf3Velocity = XMFLOAT3(0.0f, 0.0f, 0.0f);
 	XMFLOAT3     				m_xmf3Gravity = XMFLOAT3(0.0f, 0.0f, 0.0f);
 	float           			m_fMaxVelocityXZ = 0.0f;
@@ -34,7 +42,8 @@ protected:
 	LPVOID						m_pPlayerUpdatedContext = NULL;
 	LPVOID						m_pCameraUpdatedContext = NULL;
 
-	CCamera* m_pCamera = NULL;
+	// Weapon Count
+	int m_nMSL_Count = 0;
 
 public:
 	CPlayer();
@@ -54,10 +63,14 @@ public:
 
 	void SetScale(XMFLOAT3& xmf3Scale) { m_xmf3Scale = xmf3Scale; }
 
+	void SetMissleCount(int nCount) { m_nMSL_Count = nCount; }
+
 	const XMFLOAT3& GetVelocity() const { return(m_xmf3Velocity); }
+	float GetAircraftSpeed() const { return(m_fAircraftSpeed); }
 	float GetYaw() const { return(m_fYaw); }
 	float GetPitch() const { return(m_fPitch); }
 	float GetRoll() const { return(m_fRoll); }
+	int GetMSLCount() const { return(m_nMSL_Count); }
 
 	ObjectManager* m_ObjManager;
 
@@ -125,6 +138,9 @@ public:
 	CGameObject* m_pMSL_4 = NULL;
 	CGameObject* m_pSP_1 = NULL;
 	CGameObject* m_pSP_2 = NULL;
+
+	// Weapon Count
+	int m_nMSL_Count = 0;
 
 	CGameObject* m_pLeft_AfterBurner[10];
 	CGameObject* m_pRight_AfterBurner[10];

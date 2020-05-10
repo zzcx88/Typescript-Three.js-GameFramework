@@ -32,6 +32,7 @@
 #define VK_W											0x57
 #define VK_S												0x53
 #define VK_G												0x47
+#define VK_F												0x46
 
 //TextureType
 #define RESOURCE_TEXTURE2D					0x01
@@ -69,8 +70,6 @@
 #define FIRST_PERSON_CAMERA			0x01
 #define SPACESHIP_CAMERA					0x02
 #define THIRD_PERSON_CAMERA			0x03
-
-#define D3DCOMPILE_DEBUG 1
 
 //Blur Switch
 #define BLUR_OFF 0 

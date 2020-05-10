@@ -139,8 +139,31 @@ void CPlayer::Update_Input(const float& TimeDelta)
 {
 	KeyManager* keyManager = GET_MANAGER<KeyManager>();
 	DWORD dwDirection = 0;
-
 	
+	if (true == keyManager->GetKeyState(STATE_DOWN, VK_TAB))
+	{
+		dwDirection |= VK_TAB;
+		if(m_bEye_fixation == false)
+		{
+			m_bEye_fixation = true;
+		}
+		else
+		{
+			m_bEye_fixation = false;
+		}
+
+		if (m_bEye_fixation == false)
+		{
+			m_fFOV = 60;
+			m_pCamera->GenerateProjectionMatrix(1.01f, m_fFarPlaneDistance, ASPECT_RATIO, m_fFOV);
+			m_pCamera->SetLookPlayer();
+			XMFLOAT3 xmf3Shift = XMFLOAT3(0, 0, 0);
+			xmf3Shift = Vector3::Add(xmf3Shift, m_xmf3Up, 1);
+			m_pCamera->SetPosition(Vector3::Add(m_xmf3Position, xmf3Shift));
+			xmf3Shift = Vector3::Add(xmf3Shift, m_xmf3Look, -5);
+			m_pCamera->SetPosition(Vector3::Add(m_xmf3Position, xmf3Shift));
+		}
+	}
 
 	if (true == keyManager->GetKeyState(STATE_DOWN, VK_SPACE))
 	{
@@ -148,133 +171,170 @@ void CPlayer::Update_Input(const float& TimeDelta)
 		MissleLaunch();
 	}
 
-	if (true == keyManager->GetKeyState(STATE_PUSH, VK_LEFT))
+	if (keyManager->GetKeyState(STATE_PUSH, VK_RIGHT) || keyManager->GetKeyState(STATE_PUSH, VK_LEFT))
 	{
-		dwDirection |= VK_LEFT;
-		Rotate(0.0f, 0.0f, -Roll_WingsRotateDegree);
-		LeftRollAnimation(TimeDelta);
-	}
+		if (true == keyManager->GetKeyState(STATE_PUSH, VK_RIGHT))
+		{
+			if (!(true == keyManager->GetKeyState(STATE_PUSH, VK_LEFT)))
+			{
+				dwDirection |= VK_RIGHT;
+				Rotate(0.0f, 0.0f, -Roll_WingsRotateDegree * m_fRollPerformance * TimeDelta);
+				RightRollAnimation(TimeDelta);
+			}
+			else
+			{
+				if (Roll_WingsRotateDegree != 0)
+					Rotate(0.0f, 0.0f, -Roll_WingsRotateDegree * m_fRollPerformance * TimeDelta);
+				RollWingReturn(TimeDelta);
+			}
+		}
 
-	if (true == keyManager->GetKeyState(STATE_PUSH, VK_RIGHT))
-	{
-		dwDirection |= VK_RIGHT;
-		Rotate(0.0f, 0.0f, -Roll_WingsRotateDegree);
-		RightRollAnimation(TimeDelta);
+		if (true == keyManager->GetKeyState(STATE_PUSH, VK_LEFT))
+		{
+			if (!(true == keyManager->GetKeyState(STATE_PUSH, VK_RIGHT)))
+			{
+				dwDirection |= VK_LEFT;
+				Rotate(0.0f, 0.0f, -Roll_WingsRotateDegree * m_fRollPerformance * TimeDelta);
+				LeftRollAnimation(TimeDelta);
+			}
+		}
 	}
-
-	if (true == keyManager->GetKeyState(STATE_PUSH, VK_UP))
+	else
 	{
-		dwDirection |= VK_UP;
-		Rotate(Pitch_WingsRotateDegree / 2, 0.0f, 0.0f);
-		DownPitchAnimation(TimeDelta);
-	}
-
-	if (true == keyManager->GetKeyState(STATE_PUSH, VK_DOWN))
-	{
-		dwDirection |= VK_DOWN;
-		Rotate(Pitch_WingsRotateDegree / 2, 0.0f, 0.0f);
-		UpPitchAnimation(TimeDelta);
-	}
-
-	if (true == keyManager->GetKeyState(STATE_UP, VK_LEFT))
-	{
+		if (Roll_WingsRotateDegree != 0)
+			Rotate(0.0f, 0.0f, -Roll_WingsRotateDegree * m_fRollPerformance * TimeDelta);
 		RollWingReturn(TimeDelta);
 	}
 
-	if (true == keyManager->GetKeyState(STATE_UP, VK_RIGHT))
+	if (keyManager->GetKeyState(STATE_PUSH, VK_UP) || keyManager->GetKeyState(STATE_PUSH, VK_DOWN))
 	{
-		RollWingReturn(TimeDelta);
-	}
+		if (true == keyManager->GetKeyState(STATE_PUSH, VK_UP))
+		{
+			if (!(true == keyManager->GetKeyState(STATE_PUSH, VK_DOWN)))
+			{
+				dwDirection |= VK_UP;
+				Rotate(Pitch_WingsRotateDegree * m_fPitchPerformance * TimeDelta, 0.0f, 0.0f);
+				DownPitchAnimation(TimeDelta);
+			}
+			else
+			{
+				if (Pitch_WingsRotateDegree != 0)
+					Rotate(Pitch_WingsRotateDegree * m_fPitchPerformance * TimeDelta, 0.0f, 0.0f);
+				PitchWingReturn(TimeDelta);
+			}
+		}
 
-	if (true == keyManager->GetKeyState(STATE_UP, VK_UP))
+		if (true == keyManager->GetKeyState(STATE_PUSH, VK_DOWN))
+		{
+			if (!(true == keyManager->GetKeyState(STATE_PUSH, VK_UP)))
+			{
+				dwDirection |= VK_DOWN;
+				Rotate(Pitch_WingsRotateDegree * m_fPitchPerformance * TimeDelta, 0.0f, 0.0f);
+				UpPitchAnimation(TimeDelta);
+			}
+		}
+	}
+	else
 	{
+		if (Pitch_WingsRotateDegree != 0)
+			Rotate(Pitch_WingsRotateDegree * m_fPitchPerformance * TimeDelta, 0.0f, 0.0f);
 		PitchWingReturn(TimeDelta);
 	}
 
-	if (true == keyManager->GetKeyState(STATE_UP, VK_DOWN))
-	{
-		PitchWingReturn(TimeDelta);
-	}
 
-	if (true == keyManager->GetKeyState(STATE_PUSH, VK_Q))	//q
+	if (keyManager->GetKeyState(STATE_PUSH, VK_Q) || keyManager->GetKeyState(STATE_PUSH, VK_E))
 	{
-		dwDirection |= VK_Q;
-		Rotate(0.0f, Yaw_WingsRotateDegree / 5, 0.0f);
-		LeftYawAnimation(TimeDelta);
-	}
+		if (true == keyManager->GetKeyState(STATE_PUSH, VK_Q))
+		{
+			if (!(true == keyManager->GetKeyState(STATE_PUSH, VK_E)))
+			{
+				dwDirection |= VK_Q;
+				Rotate(0.0f, Yaw_WingsRotateDegree * m_fYawPerformance * TimeDelta, 0.0f);
+				LeftYawAnimation(TimeDelta);
+			}
+			else
+			{
+				if (Yaw_WingsRotateDegree != 0)
+					Rotate(0.0f, Yaw_WingsRotateDegree * m_fYawPerformance * TimeDelta, 0.0f);
+				YawWingReturn(TimeDelta);
+			}
+		}
 
-	if (true == keyManager->GetKeyState(STATE_PUSH, VK_E))	//q
-	{
-		dwDirection |= VK_E;
-		Rotate(0.0f, Yaw_WingsRotateDegree / 5, 0.0f);
-		RightYawAnimation(TimeDelta);
+		if (true == keyManager->GetKeyState(STATE_PUSH, VK_E))
+		{
+			if (!(true == keyManager->GetKeyState(STATE_PUSH, VK_Q)))
+			{
+				dwDirection |= VK_E;
+				Rotate(0.0f, Yaw_WingsRotateDegree * m_fYawPerformance * TimeDelta, 0.0f);
+				RightYawAnimation(TimeDelta);
+			}
+		}
 	}
-
-	if (true == keyManager->GetKeyState(STATE_UP, VK_Q))
+	else
 	{
+		if(Yaw_WingsRotateDegree != 0)
+			Rotate(0.0f, Yaw_WingsRotateDegree * m_fYawPerformance * TimeDelta, 0.0f);
 		YawWingReturn(TimeDelta);
 	}
 
-	if (true == keyManager->GetKeyState(STATE_UP, VK_E))
-	{
-		YawWingReturn(TimeDelta);
-	}
 
-	if (true == keyManager->GetKeyState(STATE_PUSH, VK_W))
+	if (keyManager->GetKeyState(STATE_PUSH, VK_W) || keyManager->GetKeyState(STATE_PUSH, VK_S))
 	{
-		dwDirection |= VK_W;
-		if (m_fAircraftSpeed < 1000)
+		if (true == keyManager->GetKeyState(STATE_PUSH, VK_W))
 		{
-			m_fAircraftSpeed += 1;
+			if (!(true == keyManager->GetKeyState(STATE_PUSH, VK_S)))
+			{
+				dwDirection |= VK_W;
+				if (m_fAircraftSpeed < 1000)
+				{
+					m_fAircraftSpeed += 100 * TimeDelta;
+				}
+				if (m_fFOV < 70 && m_bEye_fixation == false)
+				{
+					m_pCamera->GenerateProjectionMatrix(1.01f, m_fFarPlaneDistance, ASPECT_RATIO, m_fFOV += 10.f * TimeDelta);
+				}
+				if (m_fBurnerElapsed < 100)
+				{
+					m_fBurnerElapsed += 100 * TimeDelta;
+				}
+			}
 		}
-		if (m_fFOV < 70)
+
+		if (true == keyManager->GetKeyState(STATE_PUSH, VK_S))
 		{
-			m_pCamera->GenerateProjectionMatrix(1.01f, 20000.0f, ASPECT_RATIO, m_fFOV += 0.1f);
-		}
-		if (m_fBurnerElapsed < 100)
-		{
-			m_fBurnerElapsed += 1;
+			dwDirection |= VK_S;
+			if (m_fAircraftSpeed > 150)
+			{
+				m_fAircraftSpeed -= 150 * TimeDelta;
+			}
+			if (m_fFOV > 60)
+			{
+				m_pCamera->GenerateProjectionMatrix(1.01f, m_fFarPlaneDistance, ASPECT_RATIO, m_fFOV -= 20.f * TimeDelta);
+			}
+			if (m_fBurnerElapsed > 0)
+			{
+				m_fBurnerElapsed -= 100 * TimeDelta;
+			}
 		}
 	}
-
-	if (true == keyManager->GetKeyState(STATE_PUSH, VK_S))	//q
-	{
-		dwDirection |= VK_S;
-		if (m_fAircraftSpeed > 150)
-		{
-			m_fAircraftSpeed -=1.5;
-		}
-		if (m_fFOV > 60)
-		{
-			m_pCamera->GenerateProjectionMatrix(1.01f, 20000.0f, ASPECT_RATIO, m_fFOV -= 0.2f);
-		}
-		if (m_fBurnerElapsed > 0)
-		{
-			m_fBurnerElapsed -= 1;
-		}
-	}
-
-	if (true == keyManager->GetKeyState(STATE_UP, VK_W))
+	else
 	{
 		if (m_fAircraftSpeed > 200)
 		{
-			m_fAircraftSpeed -= 1;
+			m_fAircraftSpeed -= 100 * TimeDelta;
 		}
 		if (m_fFOV > 60)
 		{
-			m_pCamera->GenerateProjectionMatrix(1.01f, 20000.0f, ASPECT_RATIO, m_fFOV -= 0.1f);
+			m_pCamera->GenerateProjectionMatrix(1.01f, m_fFarPlaneDistance, ASPECT_RATIO, m_fFOV -= 10.f * TimeDelta);
 		}
 		if (m_fBurnerElapsed > 0)
 		{
-			m_fBurnerElapsed -= 1;
+			m_fBurnerElapsed -= 100 * TimeDelta;
 		}
-	}
 
-	if (true == keyManager->GetKeyState(STATE_UP, VK_S))
-	{
 		if (m_fAircraftSpeed < 1000 && m_fAircraftSpeed > 200)
 		{
-			m_fAircraftSpeed -= 0.5;
+			m_fAircraftSpeed -= 50 * TimeDelta;
 		}
 	}
 
@@ -284,20 +344,42 @@ void CPlayer::Update_Input(const float& TimeDelta)
 		{
 			m_fAircraftSpeed = 150;
 		}
-		m_fAircraftSpeed += 0.5;
+		m_fAircraftSpeed += 50 * TimeDelta;
 	}
 
-	//cout << m_fAircraftSpeed << endl;
-	if (Roll_WingsRotateDegree != 0)
-		Rotate(0.0f, 0.0f, -Roll_WingsRotateDegree);
-	if (Pitch_WingsRotateDegree != 0)
-		Rotate(Pitch_WingsRotateDegree, 0.0f, 0.0f);
-	//cout << Pitch_WingsRotateDegree << endl;
+	if (m_fAircraftSpeed >= 148 && m_fAircraftSpeed < 200)
+	{
+		if (m_fAircraftSpeed < 150)
+		{
+			m_fAircraftSpeed = 150;
+		}
+		m_fAircraftSpeed += 50 * TimeDelta;
+	}
+
+	if (m_bEye_fixation == true)
+	{
+		m_pCamera->SetPosition(XMFLOAT3(GetPosition().x - m_pCamera->GetLookVector().x * 7, GetPosition().y + 1 - m_pCamera->GetLookVector().y * 7,
+			GetPosition().z - m_pCamera->GetLookVector().z * 7));
+		for (auto& Ene : m_ObjManager->GetObjFromType(OBJ_ENEMY))
+		{
+			if (Ene.second->m_bAiming == true && Ene.second->GetState() != true)
+			{
+				XMFLOAT3 temp = Ene.second->GetPosition();
+				//auto temp = GET_MANAGER<ObjectManager>()->GetObjFromTag(L"SphereCollider", OBJ_ENEMY)->GetPosition();
+				m_pCamera->SetLookAt(XMFLOAT3(temp));
+			}
+		}
+			if (m_fFOV > 40)
+			{
+				m_pCamera->GenerateProjectionMatrix(1.01f, m_fFarPlaneDistance, ASPECT_RATIO, m_fFOV);
+				m_fFOV -= 30 * TimeDelta;
+			}
+	}
 
 	Move(DIR_FORWARD, m_fAircraftSpeed * TimeDelta, true);
 	//MoveForward(8.0f);
-
 	WingAnimate(TimeDelta, dwDirection);
+	
 
 }
 
@@ -414,8 +496,14 @@ CAirplanePlayer::CAirplanePlayer(ID3D12Device* pd3dDevice, ID3D12GraphicsCommand
 	m_pMissleModel = CGameObject::LoadGeometryAndAnimationFromFile(pd3dDevice, pd3dCommandList, pd3dGraphicsRootSignature, "Model/Missle.bin", NULL, MODEL_ACE);
 	m_pMissleModelCol = CGameObject::LoadGeometryAndAnimationFromFile(pd3dDevice, pd3dCommandList, pd3dGraphicsRootSignature, "Model/Sphere.bin", NULL, MODEL_COL);
 
+	m_nMSL_Count = CPlayer::GetMSLCount();
+
 	CLoadedModelInfo* pModel = CGameObject::LoadGeometryAndAnimationFromFile(pd3dDevice, pd3dCommandList, pd3dGraphicsRootSignature, "Model/F-4E_Phantom_II.bin", NULL, MODEL_ACE);
 	SetChild(pModel->m_pModelRootObject);
+
+	m_fRollPerformance = 100.0f;
+	m_fPitchPerformance = 70.0f;
+	m_fYawPerformance = 20.0f;
 
 	m_pd3dDevice = pd3dDevice;
 	m_pd3dCommandList = pd3dCommandList;
@@ -740,10 +828,12 @@ void CAirplanePlayer::YawWingReturn(float fTimeElapsed)
 void CAirplanePlayer::MissleLaunch()
 {
 	CMissle* pMissle;
+	m_nMSL_Count = CPlayer::GetMSLCount();
+	cout << m_nMSL_Count << endl;
 
 	for (auto& Ene : m_ObjManager->GetObjFromType(OBJ_ENEMY))
 	{
-		if (Ene.second->bLockOnFire == true&&Ene.second->GetState() != true)
+		if (Ene.second->m_bCanFire == true&&Ene.second->GetState() != true&&m_nMSL_Count !=0)
 		{
 			XMFLOAT3* temp = Ene.second->GetPositionForMissle();
 
@@ -755,7 +845,11 @@ void CAirplanePlayer::MissleLaunch()
 			pMissle->SetScale(1, 1, 1);
 			pMissle->SetPosition(m_pMSL_1->GetPosition());
 			m_ObjManager->AddObject(L"player_missle", pMissle, OBJ_MISSLE);
+			
+			CPlayer::SetMissleCount(--m_nMSL_Count);
+			break;
 		}
+
 	}
 
 
@@ -772,15 +866,10 @@ void CAirplanePlayer::SetAfterBurnerPosition(float fTimeElapsed)
 	{
 		if (m_pLeft_AfterBurner[i])
 		{
-			if (m_fBurnerElapsed > i * 10)
+			if (m_fBurnerElapsed / 100 < 1)
 			{
-				m_pLeft_AfterBurner[i]->m_pAfterBurner->m_RenderOff = false;
-				m_pRight_AfterBurner[i]->m_pAfterBurner->m_RenderOff = false;
-			}
-			else
-			{
-				m_pLeft_AfterBurner[i]->m_pAfterBurner->m_RenderOff = true;
-				m_pRight_AfterBurner[i]->m_pAfterBurner->m_RenderOff = true;
+				m_pLeft_AfterBurner[i]->m_pAfterBurner->SetScale(m_fBurnerElapsed / 100, m_fBurnerElapsed / 100, 0);
+				m_pRight_AfterBurner[i]->m_pAfterBurner->SetScale(m_fBurnerElapsed / 100, m_fBurnerElapsed / 100, 0);
 			}
 			m_pLeft_AfterBurner[i]->m_pAfterBurner->SetPosition(m_pLeft_AfterBurner[i]->GetPosition());
 			m_pRight_AfterBurner[i]->m_pAfterBurner->SetPosition(m_pRight_AfterBurner[i]->GetPosition());
@@ -820,7 +909,7 @@ CCamera* CAirplanePlayer::ChangeCamera(DWORD nNewCameraMode, float fTimeElapsed)
 		m_pCamera = OnChangeCamera(SPACESHIP_CAMERA, nCurrentCameraMode);
 		m_pCamera->SetTimeLag(0.0f);
 		m_pCamera->SetOffset(XMFLOAT3(0.0f, 1.0f, -5.0f));
-		m_pCamera->GenerateProjectionMatrix(1.01f, 20000.0f, ASPECT_RATIO, 60.0f);
+		m_pCamera->GenerateProjectionMatrix(1.01f, m_fFarPlaneDistance, ASPECT_RATIO, 60.0f);
 		m_pCamera->OrthogonalProjectionMatrix(1.01f, 5000.0f, FRAME_BUFFER_WIDTH, FRAME_BUFFER_HEIGHT);
 		m_pCamera->SetViewport(0, 0, FRAME_BUFFER_WIDTH, FRAME_BUFFER_HEIGHT, 0.0f, 1.0f);
 		m_pCamera->SetScissorRect(0, 0, FRAME_BUFFER_WIDTH, FRAME_BUFFER_HEIGHT);

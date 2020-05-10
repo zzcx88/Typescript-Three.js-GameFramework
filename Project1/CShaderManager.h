@@ -291,3 +291,28 @@ public:
 	virtual void OnPrepareRender(ID3D12GraphicsCommandList* pd3dCommandList, int nPipelineState = 0);
 	virtual void Render(ID3D12GraphicsCommandList* pd3dCommandList);*/
 };
+
+struct VS_VB_BILLBOARD_INSTANCE
+{
+	XMFLOAT3						m_xmf3Position;
+	//XMFLOAT4X4						m_xmWorld;
+};
+
+class CCloudShader : public CShader
+{
+public:
+	ID3D12Resource* m_pd3dcbGameObjects = NULL;
+
+public:
+	CCloudShader();
+	virtual ~CCloudShader();
+
+	virtual D3D12_INPUT_LAYOUT_DESC CreateInputLayout();
+
+	virtual D3D12_SHADER_BYTECODE CreateVertexShader();
+	virtual D3D12_SHADER_BYTECODE CreatePixelShader();
+
+	virtual D3D12_RASTERIZER_DESC CreateRasterizerState();
+
+	virtual D3D12_BLEND_DESC CreateBlendState();
+};

@@ -37,11 +37,13 @@ int KeyManager::UpdateKey()
 	ComputeKeyState(VK_SPACE);
 	ComputeKeyState(VK_LCONTROL);
 	ComputeKeyState(VK_LSHIFT);
+	ComputeKeyState(VK_TAB);
 	ComputeKeyState(VK_Q);
 	ComputeKeyState(VK_E);
 	ComputeKeyState(VK_W);
 	ComputeKeyState(VK_S);
 	ComputeKeyState(VK_G);
+	ComputeKeyState(VK_F);
 	ComputeKeyState(VK_F1);
 	ComputeKeyState(VK_F2);
 	ComputeKeyState(VK_RETURN);
@@ -88,11 +90,12 @@ void KeyManager::ComputeKeyState(const int& VirtualKey)
 			KeyStateUp = false;
 		}
 		// 이전에 누른적이 있는 상태에서 뗀경우
-		else
+		else //if(true == KeyStateDown || true == KeyStatePush)
 		{
 			KeyStateDown = false;
 			KeyStatePush = false;
 			KeyStateUp = true;
 		}
 	}
+	//cout << (bool)KeyStateDown << " " << (bool)KeyStatePush << " " << (bool)KeyStateUp << endl;
 }

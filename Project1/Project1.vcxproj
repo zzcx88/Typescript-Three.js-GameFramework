@@ -153,14 +153,18 @@
     <ClInclude Include="CAngrybotObject.h" />
     <ClInclude Include="CAnimationController.h" />
     <ClInclude Include="CCamera.h" />
+    <ClInclude Include="CCloud.h" />
     <ClInclude Include="CGameObject.h" />
     <ClInclude Include="CGunshipObject.h" />
     <ClInclude Include="CHeightMapTerrain.h" />
     <ClInclude Include="CLockOnUI.h" />
+    <ClInclude Include="CMenuScene.h" />
     <ClInclude Include="CMesh.h" />
     <ClInclude Include="CAircraftMesh.h" />
     <ClInclude Include="CMissle.h" />
     <ClInclude Include="CMissleFog.h" />
+    <ClInclude Include="CMissleSplash.h" />
+    <ClInclude Include="CNumber.h" />
     <ClInclude Include="CollisionManager.h" />
     <ClInclude Include="Constant.h" />
     <ClInclude Include="CPlane.h" />
@@ -182,8 +186,10 @@
     <ClInclude Include="DeviceManager.h" />
     <ClInclude Include="Enum.h" />
     <ClInclude Include="CHeightMapMesh.h" />
+    <ClInclude Include="FileManager.h" />
     <ClInclude Include="framework.h" />
     <ClInclude Include="KeyManager.h" />
+    <ClInclude Include="LoadTextureManager.h" />
     <ClInclude Include="UIManager.h" />
     <ClInclude Include="ObjectManager.h" />
     <ClInclude Include="stdafx.h" />
@@ -202,14 +208,18 @@
     <ClCompile Include="CAngrybotObject.cpp" />
     <ClCompile Include="CAnimationController.cpp" />
     <ClCompile Include="CCamera.cpp" />
+    <ClCompile Include="CCloud.cpp" />
     <ClCompile Include="CGameObject.cpp" />
     <ClCompile Include="CGunshipObject.cpp" />
     <ClCompile Include="CHeightMapTerrain.cpp" />
     <ClCompile Include="CLockOnUI.cpp" />
+    <ClCompile Include="CMenuScene.cpp" />
     <ClCompile Include="CMesh.cpp" />
     <ClCompile Include="CAircraftMesh.cpp" />
     <ClCompile Include="CMissle.cpp" />
     <ClCompile Include="CMissleFog.cpp" />
+    <ClCompile Include="CMissleSplash.cpp" />
+    <ClCompile Include="CNumber.cpp" />
     <ClCompile Include="CollisionManager.cpp" />
     <ClCompile Include="CPlane.cpp" />
     <ClCompile Include="CPlaneMesh.cpp" />
@@ -226,7 +236,9 @@
     <ClCompile Include="DDSTextureLoader12.cpp" />
     <ClCompile Include="DeviceManager.cpp" />
     <ClCompile Include="CHeightMapMesh.cpp" />
+    <ClCompile Include="FileManager.cpp" />
     <ClCompile Include="KeyManager.cpp" />
+    <ClCompile Include="LoadTextureManager.cpp" />
     <ClCompile Include="UIManager.cpp" />
     <ClCompile Include="ObjectManager.cpp" />
     <ClCompile Include="stdafx.cpp">
@@ -292,7 +304,7 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
     </FxCompile>
-    <FxCompile Include="Cloud.hlsl">
+    <FxCompile Include="Clouds.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Vertex</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Vertex</ShaderType>

@@ -152,9 +152,13 @@ public:
 
 	CMesh* m_pMesh = NULL;
 	//CMesh** m_ppMeshes = NULL;
+	float m_fPlayerSpeed = 0.f;
 
 	int								m_nObjects = 0;
 	int								m_nMaterials = 0;
+	
+	UINT m_nNumTex = 0;
+
 	CMaterial** m_ppMaterials = NULL;
 	
 	////////////////////////////////////////
@@ -162,22 +166,21 @@ public:
 public:
 	CMaterial* m_pEffectMaterial;
 	CPlaneMesh* m_pPlaneMesh;
-	CTexture* m_pEffectTexture[20];
+	CTexture* m_pEffectTexture[50];
 	CMissleFogShader* m_EffectShader;
 	CAfterBurner* m_pAfterBurner = NULL;
 ///////////////////////////////////////////
-
 	CPlaneMesh* m_pUIPlaneMesh;
 	CUIShader* m_pUIShader;
 	CMaterial* m_pUIMaterial;
 	CTexture* m_ppUITexture[10];
 	///////////////////////////////////////////
 	CPlaneMesh* m_pLockOnUIPlaneMesh;
-
 	CUIShader* m_pLockOnUIShader;
 	CMaterial* m_pLockOnUIMaterial;
 	CTexture* m_ppLockOnUITexture[2];
 	///////////////////////////////////////////
+
 
 	XMFLOAT4X4						m_xmf4x4ToParent;
 	XMFLOAT4X4						m_xmf4x4World;
@@ -186,13 +189,15 @@ public:
 	CGameObject* m_pChild = NULL;
 	CGameObject* m_pSibling = NULL;
 
+	CCamera* m_pCamera = NULL;
+
 	CSphereCollider* SphereCollider = NULL;
 
 	CUI*						m_pUI = NULL;
 	CLockOnUI*			m_pLockOnUI = NULL;
-	int m_iDistanceFromPlayer = 0;
-	bool bLockOn = false;
-	bool bLockOnFire = false;
+
+	bool m_bAiming = false;
+	bool m_bCanFire = false;
 
 	OBJTYPE				m_ObjType = OBJ_END;
 
@@ -262,26 +267,6 @@ public:
 	CShader* GetShader();
 
 	void SetScreenPos(XMFLOAT3& xmfTarget, CCamera* pCamera);
-
-	bool operator ==(const CGameObject& a)const
-	{
-		return m_iDistanceFromPlayer == a.m_iDistanceFromPlayer;
-	}
-	/*
-	bool operator !=(const CGameObject& a)const
-	{
-		return !(*this == a);
-	}*/
-
-	bool operator <(const CGameObject& a) const
-	{
-		//if (m_iDistanceFromPlayer == a.m_iDistanceFromPlayer)
-			//return m_xmpPosition->x < a.m_xmpPosition->x;
-
-		//if (m_iDistanceFromPlayer != a.m_iDistanceFromPlayer)
-		return m_iDistanceFromPlayer < a.m_iDistanceFromPlayer;
-		
-	}
 
 public:
 	CAnimationController* m_pSkinnedAnimationController = NULL;
