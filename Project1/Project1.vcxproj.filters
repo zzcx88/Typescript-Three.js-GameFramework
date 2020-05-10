@@ -157,6 +157,15 @@
     <Filter Include="Manager\AI\Act">
       <UniqueIdentifier>{c0497780-212c-4e4d-9665-e78db3918ac2}</UniqueIdentifier>
     </Filter>
+    <Filter Include="GameObject\Mesh\BoxMesh">
+      <UniqueIdentifier>{bf1ebcd3-9abe-4cfe-af97-12c37219dff2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GameObject\Mesh\Vertex">
+      <UniqueIdentifier>{58e218ce-db0a-40d9-a4ab-9c5c1c884bcb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GameObject\Bullet">
+      <UniqueIdentifier>{22121b53-a5e2-42a2-a645-8c588d8f9a42}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="targetver.h">
@@ -318,6 +327,15 @@
     <ClInclude Include="CNode.h">
       <Filter>Manager\AI\Node</Filter>
     </ClInclude>
+    <ClInclude Include="CVertex.h">
+      <Filter>GameObject\Mesh\Vertex</Filter>
+    </ClInclude>
+    <ClInclude Include="CBoxMesh.h">
+      <Filter>GameObject\Mesh\BoxMesh</Filter>
+    </ClInclude>
+    <ClInclude Include="CBullet.h">
+      <Filter>GameObject\Bullet</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="DDSTextureLoader12.cpp">
@@ -457,6 +475,15 @@
     </ClCompile>
     <ClCompile Include="CNode.cpp">
       <Filter>Manager\AI\Node</Filter>
+    </ClCompile>
+    <ClCompile Include="CVertex.cpp">
+      <Filter>GameObject\Mesh\Vertex</Filter>
+    </ClCompile>
+    <ClCompile Include="CBoxMesh.cpp">
+      <Filter>GameObject\Mesh\BoxMesh</Filter>
+    </ClCompile>
+    <ClCompile Include="CBullet.cpp">
+      <Filter>GameObject\Bullet</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

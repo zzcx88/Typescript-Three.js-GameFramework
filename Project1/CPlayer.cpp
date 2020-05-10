@@ -172,6 +172,20 @@ void CPlayer::Update_Input(const float& TimeDelta)
 		MissleLaunch();
 	}
 
+	if (true == keyManager->GetKeyState(STATE_PUSH, VK_LCONTROL))
+	{
+		m_bGunFire = true;
+		m_fGunFireElapsed += TimeDelta;
+		dwDirection |= VK_LCONTROL;
+		GunFire(TimeDelta);
+	}
+
+	if (true == keyManager->GetKeyState(STATE_UP, VK_LCONTROL))
+	{
+		m_bGunFire = false;
+		dwDirection |= VK_LCONTROL;
+	}
+
 	if (keyManager->GetKeyState(STATE_PUSH, VK_RIGHT) || keyManager->GetKeyState(STATE_PUSH, VK_LEFT))
 	{
 		if (true == keyManager->GetKeyState(STATE_PUSH, VK_RIGHT))
@@ -380,7 +394,7 @@ void CPlayer::Update_Input(const float& TimeDelta)
 	Move(DIR_FORWARD, m_fAircraftSpeed * TimeDelta, true);
 	MoveForward(8.0f);
 	WingAnimate(TimeDelta, dwDirection);
-
+	GunCameraMove(TimeDelta);
 }
 
 void CPlayer::Animate(float fTimeElapsed)
@@ -540,7 +554,10 @@ void CAirplanePlayer::OnPrepareAnimate()
 	m_pMSL_3 = FindFrame("MSL_3");
 	m_pMSL_4 = FindFrame("MSL_4");
 	m_pSP_1 = FindFrame("SP_1");
-	m_pSP_2 = FindFrame("SP_2");
+	m_pGunMuzzle = FindFrame("GunMuzzle");
+	
+	m_pGunCamera = FindFrame("GunCamera");
+	m_pCameraPos = FindFrame("CameraPos");
 
 	m_pLeft_AfterBurner[0] = FindFrame("Left_AfterBuner");
 	m_pLeft_AfterBurner[1] = FindFrame("Left_AfterBuner_1");
@@ -849,13 +866,50 @@ void CAirplanePlayer::MissleLaunch()
 			m_ObjManager->AddObject(L"player_missle", pMissle, OBJ_MISSLE);
 		}
 	}
+}
 
+void CAirplanePlayer::GunFire(float fTimeElapsed)
+{
+	if (m_fGunFireElapsed > m_fGunFireFrequency)
+	{
+		CBullet* pBullet;
+		pBullet = new CBullet();
+		pBullet->m_xmf3Look = m_xmf3Look;
+		pBullet->m_xmf4x4ToParent = m_xmf4x4ToParent;
+		pBullet->m_fBulletSpeed = m_fAircraftSpeed + 300.f;
+		pBullet->SetMesh((CMesh*)m_ObjManager->GetObjFromTag(L"bulletRef", OBJ_BULLET)->m_pBulletMesh);
+		pBullet->m_pEffectMaterial = new CMaterial(1);
+		pBullet->m_pEffectMaterial->SetTexture(m_ObjManager->GetObjFromTag(L"bulletRef", OBJ_BULLET)->m_pBulletTexture);
+		pBullet->m_pEffectMaterial->SetShader(m_ObjManager->GetObjFromTag(L"bulletRef", OBJ_BULLET)->m_pBulletShader);
+		pBullet->SetMaterial(0, pBullet->m_pEffectMaterial);
+		pBullet->SetPosition(XMFLOAT3(m_pGunMuzzle->GetPosition().x - GetLookVector().x * 3, m_pGunMuzzle->GetPosition().y - GetLookVector().y * 3, m_pGunMuzzle->GetPosition().z - GetLookVector().z * 3));
+		m_ObjManager->AddObject(L"player_bullet", pBullet, OBJ_BULLET);
+		m_fGunFireElapsed = 0.0f;
+	}
+}
 
-	
-	//cout << pMissle->SphereCollider->GetPosition().z << endl;
-	//cout << m_ObjManager->GetObjFromTag(L"player_missle", OBJ_MISSLE)->SphereCollider->GetPosition().z << endl;
-	//m_ObjManager->GetObjFromTag(L"player_missle", OBJ_MISSLE)->m_xmf4x4World = m_xmMSL_1;
-	//m_ObjManager->GetObjFromTag(L"player_missle", OBJ_MISSLE)->SetScale(10,10,10);
+void CAirplanePlayer::GunCameraMove(float fTimeElapsed)
+{
+	if (m_bGunFire)
+	{
+		XMVECTOR Dest = XMLoadFloat3(&m_pGunCamera->GetPosition());
+		XMVECTOR Start = XMLoadFloat3(&m_pCamera->GetPosition());
+		XMVECTOR Result = XMVectorLerp(Start, Dest, 10.f * fTimeElapsed);
+		XMFLOAT3 xmf3Result;
+		XMStoreFloat3(&xmf3Result, Result);
+		m_pCamera->SetPosition(xmf3Result);
+	}
+	else
+	{
+		//m_fFOV = 60;
+		m_pCamera->GenerateProjectionMatrix(1.01f, m_fFarPlaneDistance, ASPECT_RATIO, m_fFOV);
+		m_pCamera->SetLookPlayer();
+		XMFLOAT3 xmf3Shift = XMFLOAT3(0, 0, 0);
+		xmf3Shift = Vector3::Add(xmf3Shift, m_xmf3Up, 1);
+		m_pCamera->SetPosition(Vector3::Add(m_xmf3Position, xmf3Shift));
+		xmf3Shift = Vector3::Add(xmf3Shift, m_xmf3Look, -5);
+		m_pCamera->SetPosition(Vector3::Add(m_xmf3Position, xmf3Shift));
+	}
 }
 
 void CAirplanePlayer::SetAfterBurnerPosition(float fTimeElapsed)

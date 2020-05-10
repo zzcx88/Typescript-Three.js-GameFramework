@@ -125,10 +125,12 @@ class CSphereCollider;
 class CMissleFogShader;
 class CUIShader;
 class CWaterShader;
+class CBulletShader;
 class CPlaneMesh;
 class CUI;
 class CLockOnUI;
 class CAfterBurner;
+class CBoxMesh;
 class CGameObject
 {
 private:
@@ -180,7 +182,11 @@ public:
 	CMaterial* m_pLockOnUIMaterial;
 	CTexture* m_ppLockOnUITexture[2];
 	///////////////////////////////////////////
-
+	CBoxMesh* m_pBulletMesh;
+	CBulletShader* m_pBulletShader;
+	CTexture* m_pBulletTexture;
+	CMaterial* m_pBulletMaterial;
+	///////////////////////////////////////////
 	XMFLOAT4X4						m_xmf4x4ToParent;
 	XMFLOAT4X4						m_xmf4x4World;
 

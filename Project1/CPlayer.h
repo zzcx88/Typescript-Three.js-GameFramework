@@ -2,6 +2,7 @@
 #include "CGameObject.h"
 #include "CMissle.h"
 #include "CCamera.h"
+#include "CBullet.h"
 #include "CSphereCollider.h"
 
 class CPlayer : public CGameObject
@@ -31,11 +32,18 @@ protected:
 	float m_fBurnerElapsed;
 	float m_fFarPlaneDistance = 100000.0f;
 
+	float m_fGunFireElapsed = 0.0f;
+	float m_fGunFireFrequency = 0.1f;
+
 	bool m_bEye_fixation = false;
 	bool m_bGameOver = false;
+	bool m_bGunFire = false;
 
 	XMFLOAT3					m_xmf3Velocity = XMFLOAT3(0.0f, 0.0f, 0.0f);
 	XMFLOAT3     				m_xmf3Gravity = XMFLOAT3(0.0f, 0.0f, 0.0f);
+
+	XMFLOAT3					m_xmf3GunCameraPosition = XMFLOAT3(0.0f, 0.0f, 0.0f);
+
 	float           			m_fMaxVelocityXZ = 0.0f;
 	float           			m_fMaxVelocityY = 0.0f;
 	float           			m_fFriction = 0.0f;
@@ -86,6 +94,8 @@ public:
 	virtual void PitchWingReturn(float fTimeElapsed) {}
 	virtual void YawWingReturn(float fTimeElapsed) {}
 	virtual void MissleLaunch() {}
+	virtual void GunFire(float fTimeElapsed) {}
+	virtual void GunCameraMove(float fTimeElapsed) {}
 
 	void Update_Input(const float& TimeDelta);
 	virtual void WingAnimate(float fTimeElapsed, DWORD Direction);
@@ -132,11 +142,14 @@ public:
 	CGameObject* m_pMSL_4 = NULL;
 	CGameObject* m_pSP_1 = NULL;
 	CGameObject* m_pSP_2 = NULL;
+	CGameObject* m_pGunMuzzle = NULL;
 
 	CGameObject* m_pLeft_AfterBurner[10];
 	CGameObject* m_pRight_AfterBurner[10];
 
-	CMissle* m_pMissle = NULL;
+	CGameObject* m_pGunCamera = NULL;
+	CGameObject* m_pCameraPos = NULL;
+
 	CLoadedModelInfo* m_pMissleModel;
 	CLoadedModelInfo* m_pMissleModelCol;
 
@@ -160,6 +173,8 @@ private:
 	virtual void PitchWingReturn(float fTimeElapsed);
 	virtual void YawWingReturn(float fTimeElapsed);
 	virtual void MissleLaunch();
+	virtual void GunFire(float fTimeElapsed);
+	virtual void GunCameraMove(float fTimeElapsed);
 
 	virtual void SetAfterBurnerPosition(float fTimeElapsed);
 public:
