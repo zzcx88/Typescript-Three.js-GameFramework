@@ -3,7 +3,7 @@
 #include "CPlaneMesh.h"
 #include "CTestScene.h"
 
-#define TEXTURES 9
+#define TEXTURES 11
 CUI::CUI()
 {}
 
@@ -36,6 +36,11 @@ CUI::CUI(int nIndex, ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCo
 	m_ppUITexture[7]->LoadTextureFromFile(pd3dDevice, pd3dCommandList, L"UI/MinimapPoint.dds", 0);
 	m_ppUITexture[8] = new CTexture(1, RESOURCE_TEXTURE2D, 0);
 	m_ppUITexture[8]->LoadTextureFromFile(pd3dDevice, pd3dCommandList, L"UI/MinimapRedPoint.dds", 0);
+	m_ppUITexture[9] = new CTexture(1, RESOURCE_TEXTURE2D, 0);
+	m_ppUITexture[9]->LoadTextureFromFile(pd3dDevice, pd3dCommandList, L"UI/CrossHair.dds", 0);
+	m_ppUITexture[10] = new CTexture(1, RESOURCE_TEXTURE2D, 0);
+	m_ppUITexture[10]->LoadTextureFromFile(pd3dDevice, pd3dCommandList, L"UI/StartMenu.dds", 0);
+
 
 	UINT ncbElementBytes = ((sizeof(CB_GAMEOBJECT_INFO) + 255) & ~255);
 	
@@ -70,12 +75,12 @@ void CUI::MoveMinimapPoint(XMFLOAT3& xmfPlayer, CGameObject* pGameOBJ)
 	fx = (ax*(xmfPlayer.x+30000.f))-1;
 	fy = (ay*(xmfPlayer.z+30000.f))-1;
 
-	if (fx > -0.1f)
-		fx = -0.1f;
+	if (fx > -0.6f)
+		fx = -0.6f;
 	else if (fy > -0.1f)
 		fy = -0.1f;
-	else if (fx < -1.f)
-		fx = -1.f;
+	else if (fx < -0.95f)
+		fx = -0.95f;
 	else if (fy < -1.f)
 		fy = -1.f;
 

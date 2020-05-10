@@ -67,6 +67,7 @@ public:
 	void ReleaseUploadBuffers();
 
 public:
+	vector<int> vSpeed, vAlt, vMSL, vSecond, vMinute, vHour, vScore;
 	float fx, fy = 0.f;
 	
 	float								m_fElapsedTime = 0.0f;

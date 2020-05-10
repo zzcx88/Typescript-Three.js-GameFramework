@@ -101,6 +101,6 @@ private:
 	char m_videoCardDescription[128];
 
 	int m_BlurSwitch = 0;
-	int m_SceneSwitch = SCENE_TEST;
+	int m_SceneSwitch = SCENE_MENU;
 };
 

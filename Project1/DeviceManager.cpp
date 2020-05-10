@@ -334,21 +334,25 @@ void CDeviceManager::BuildScene()
 	m_pd3dCommandList->Reset(m_pd3dCommandAllocator, NULL);
 	//CAirplanePlayer* pAPlayer = NULL;
 
-	if (m_SceneSwitch == SCENE_TEST)
-	{
-		m_pSceneManager->ChangeSceneState(SCENE_TEST, m_pd3dDevice, m_pd3dCommandList);
+	/*if (m_SceneSwitch == SCENE_TEST)
+	{*/
+		/*m_pSceneManager->ChangeSceneState(SCENE_TEST, m_pd3dDevice, m_pd3dCommandList);
 		CAirplanePlayer* pPlayer = new CAirplanePlayer(m_pd3dDevice, m_pd3dCommandList, m_pSceneManager->GetGraphicsRootSignature(), NULL);
 		pPlayer->SetPosition(XMFLOAT3(410, 1000, -9000));
-		pPlayer->SetMissleCount(100);
-		m_pPlayer = pPlayer;
-	}
+		pPlayer->SetMissileCount(100);
+		m_pPlayer = pPlayer;*/
+	/*}
 	else
 	{
 		m_pSceneManager->ChangeSceneState(SCENE_MENU, m_pd3dDevice, m_pd3dCommandList);
 		CTerrainPlayer* pPlayer = new CTerrainPlayer(m_pd3dDevice, m_pd3dCommandList, m_pSceneManager->GetGraphicsRootSignature(), NULL);
 		m_pPlayer = pPlayer;
-	}
-	
+	}*/
+	m_pSceneManager->ChangeSceneState(SCENE_MENU, m_pd3dDevice, m_pd3dCommandList);
+	CTerrainPlayer* pPlayer = new CTerrainPlayer(m_pd3dDevice, m_pd3dCommandList, m_pSceneManager->GetGraphicsRootSignature(), NULL);
+	pPlayer->SetGameOver(true);
+	m_pPlayer = pPlayer;
+
 	m_pCamera = m_pPlayer->GetCamera();
 
 	m_pBlur = new CBlur(m_pd3dDevice, m_pd3dCommandList, m_pSceneManager->GetComputeRootSignature());
@@ -368,7 +372,6 @@ void CDeviceManager::BuildScene()
 
 	m_pSceneManager->SetPlayer(m_pPlayer);
 	m_pSceneManager->SetObjManagerInPlayer();
-	
 	
 	if (m_pPlayer) m_pPlayer->ReleaseUploadBuffers();
 	if (m_pSceneManager) m_pSceneManager->ReleaseUploadBuffers();
@@ -422,9 +425,52 @@ void CDeviceManager::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPA
 			break;
 		case VK_F5:
 			if (m_SceneSwitch == SCENE_MENU)
+			{
+				m_pd3dCommandList->Reset(m_pd3dCommandAllocator, NULL);
 				m_SceneSwitch = SCENE_TEST;
-			else 
+				m_pSceneManager->ChangeSceneState(SCENE_TEST, m_pd3dDevice, m_pd3dCommandList);
+				CAirplanePlayer* pPlayer = new CAirplanePlayer(m_pd3dDevice, m_pd3dCommandList, m_pSceneManager->GetGraphicsRootSignature(), NULL);
+				pPlayer->SetGameOver(false);
+				pPlayer->SetPosition(XMFLOAT3(410, 1000, -9000));
+				pPlayer->SetMissileCount(100);
+				m_pPlayer = pPlayer;
+				
+				m_pCamera = m_pPlayer->GetCamera();
+				m_pd3dCommandList->Close();
+				ID3D12CommandList* ppd3dCommandLists[] = { m_pd3dCommandList };
+				m_pd3dCommandQueue->ExecuteCommandLists(1, ppd3dCommandLists);
+
+				WaitForGpuComplete();
+
+				m_pSceneManager->SetPlayer(m_pPlayer);
+				m_pSceneManager->SetObjManagerInPlayer();
+
+				if (m_pPlayer) m_pPlayer->ReleaseUploadBuffers();
+				if (m_pSceneManager) m_pSceneManager->ReleaseUploadBuffers();
+				m_GameTimer.Reset();
+			}
+			else
+			{
+				m_pd3dCommandList->Reset(m_pd3dCommandAllocator, NULL);
 				m_SceneSwitch = SCENE_MENU;
+				m_pSceneManager->ChangeSceneState(SCENE_MENU, m_pd3dDevice, m_pd3dCommandList);
+				CTerrainPlayer* pPlayer = new CTerrainPlayer(m_pd3dDevice, m_pd3dCommandList, m_pSceneManager->GetGraphicsRootSignature(), NULL);
+				pPlayer->SetGameOver(true);
+				m_pPlayer = pPlayer;
+			
+				m_pCamera = m_pPlayer->GetCamera();
+				m_pd3dCommandList->Close();
+				ID3D12CommandList* ppd3dCommandLists[] = { m_pd3dCommandList };
+				m_pd3dCommandQueue->ExecuteCommandLists(1, ppd3dCommandLists);
+
+				WaitForGpuComplete();
+				m_pSceneManager->SetPlayer(m_pPlayer);
+				m_pSceneManager->SetObjManagerInPlayer();
+
+				if (m_pPlayer) m_pPlayer->ReleaseUploadBuffers();
+				if (m_pSceneManager) m_pSceneManager->ReleaseUploadBuffers();
+				m_GameTimer.Reset();
+			}
 			break;
 		case VK_F9:
 			ChangeSwapChainState();
@@ -541,7 +587,7 @@ void CDeviceManager::FrameAdvance()
 	D3D12_CPU_DESCRIPTOR_HANDLE d3dRtvCPUDescriptorHandle = m_pd3dRtvDescriptorHeap->GetCPUDescriptorHandleForHeapStart();
 	d3dRtvCPUDescriptorHandle.ptr += (m_nSwapChainBufferIndex * m_nRtvDescriptorIncrementSize);
 
-	float pfClearColor[4] = { 0.0f, 0.125f, 0.3f, 1.0f };
+	float pfClearColor[4] = { 0.525f, 0.75f, 1.f, 1.0f };
 	m_pd3dCommandList->ClearRenderTargetView(d3dRtvCPUDescriptorHandle, pfClearColor/*Colors::Azure*/, 0, NULL);
 
 	D3D12_CPU_DESCRIPTOR_HANDLE d3dDsvCPUDescriptorHandle = m_pd3dDsvDescriptorHeap->GetCPUDescriptorHandleForHeapStart();

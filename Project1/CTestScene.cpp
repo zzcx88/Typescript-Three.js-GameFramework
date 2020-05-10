@@ -112,30 +112,33 @@ void CTestScene::BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandLis
 	float fx = 0.5f /0.96f;
 	float fy = 0.5f / 0.54f;
 
-	m_nGameObjects = 22;
+	m_nGameObjects = 33;
 	m_ppGameObjects = new CGameObject * [m_nGameObjects];
 	m_ppGameObjects[0] = new CUI(0, pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, 0.2f, 0.3f, 0.f, XMFLOAT2(0.5f, 0.5f), XMFLOAT2(0.5f, 0.5f), XMFLOAT2(0.5f, 0.5f), XMFLOAT2(0.5f, 0.5f));
-	m_ppGameObjects[1] = new CUI(1, pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, fx/2.f, fy/2.f, 0.f, XMFLOAT2(0.f, 0.f), XMFLOAT2(0.f, 0.f), XMFLOAT2(0.f, 0.f), XMFLOAT2(0.f, 0.f));
-	m_ppGameObjects[1]->SetPosition(0.7f, -0.5f, 0.f);
+	m_ppGameObjects[1] = new CUI(1, pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, fx/2.2f, fy/2.2f, 0.f, XMFLOAT2(0.f, 0.f), XMFLOAT2(0.f, 0.f), XMFLOAT2(0.f, 0.f), XMFLOAT2(0.f, 0.f));
+	m_ppGameObjects[1]->SetPosition(0.8f, -0.6f, 0.f);
 
-	m_ppGameObjects[2] = new CUI(2, pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, 0.15f, 0.25f, 0.f, XMFLOAT2(-0.875f, 0.8f), XMFLOAT2(-0.875f, 0.8f), XMFLOAT2(-0.875f, 0.8f), XMFLOAT2(-0.875f, 0.8f));
+	m_ppGameObjects[2] = new CUI(2, pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, fx/3.f, fy/3.f, 0.f, XMFLOAT2(0.f, 0.f), XMFLOAT2(0.f, 0.f), XMFLOAT2(0.f, 0.f), XMFLOAT2(0.f, 0.f));
+	m_ppGameObjects[2]->SetPosition(-0.9f, 0.8f, 0.f);
+
 	m_ppGameObjects[3] = new CUI(3, pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, 0.125f, 0.2f, 0.f, XMFLOAT2(-0.25f, 0.f), XMFLOAT2(-0.25f, 0.f), XMFLOAT2(-0.25f, 0.f), XMFLOAT2(-0.25f, 0.0f));
 	m_ppGameObjects[4] = new CUI(4, pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, 0.125f, 0.2f, 0.f, XMFLOAT2(0.25f, 0.f), XMFLOAT2(0.25f, 0.f), XMFLOAT2(0.25f, 0.f), XMFLOAT2(0.25f, 0.0f));
 	m_ppGameObjects[4]->SetPosition(-0.005f, 0.006f, 0.f);
 
 	m_ppGameObjects[5] = new CUI(5, pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, 0.1f, 0.3f, 0.f, XMFLOAT2(0.81f, -0.305f), XMFLOAT2(0.81f, -0.305f), XMFLOAT2(0.81f, -0.305f), XMFLOAT2(0.81f, -0.305f));
 	
-	m_ppGameObjects[6] = new CUI(7, pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, 0.3f / 9.6f, 0.3f / 5.4f, 0.f, XMFLOAT2(-0.f, -0.f), XMFLOAT2(0.f, 0.f), XMFLOAT2(0.f, 0.f), XMFLOAT2(0.f, 0.f));
+	m_ppGameObjects[6] = new CUI(7, pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, 0.2f / 9.6f, 0.2f / 5.4f, 0.f, XMFLOAT2(-0.f, -0.f), XMFLOAT2(0.f, 0.f), XMFLOAT2(0.f, 0.f), XMFLOAT2(0.f, 0.f));
 	m_ppGameObjects[6]->SetPosition(-2.f, -2.f, 0.f);
 	
-	m_ppGameObjects[7] = new CLockOnUI(0, pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, 100.f / 960.f, 100.f / 540.f, 0.f, XMFLOAT2(-0.f, -0.f), XMFLOAT2(0.f, 0.f), XMFLOAT2(0.f, 0.f), XMFLOAT2(0.f, 0.f));
+	m_ppGameObjects[7] = new CLockOnUI(0, pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, fx/8.f, fy/8.f, 0.f, XMFLOAT2(-0.f, -0.f), XMFLOAT2(0.f, 0.f), XMFLOAT2(0.f, 0.f), XMFLOAT2(0.f, 0.f));
 	m_ppGameObjects[7]->SetPosition(-2.f, -2.f, 0.f);
 
 	m_ppGameObjects[8] = new CUI(6, pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, fx, fy, 0.f, XMFLOAT2(-0.f, -0.f), XMFLOAT2(-0.f, -0.f), XMFLOAT2(-0.f, -0.f), XMFLOAT2(-0.f, -0.f));
-	m_ppGameObjects[8]->SetPosition(-0.75f, -0.5f, 0.f);
-	m_ppGameObjects[9] = new CUI(8, pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, 0.3f / 9.6f, 0.3f / 5.4f, 0.f, XMFLOAT2(-0.f, -0.f), XMFLOAT2(0.f, 0.f), XMFLOAT2(0.f, 0.f), XMFLOAT2(0.f, 0.f));
+	m_ppGameObjects[8]->SetPosition(-0.7f, -0.5f, 0.f);
+	m_ppGameObjects[9] = new CUI(8, pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, 0.2f / 9.6f, 0.2f / 5.4f, 0.f, XMFLOAT2(-0.f, -0.f), XMFLOAT2(0.f, 0.f), XMFLOAT2(0.f, 0.f), XMFLOAT2(0.f, 0.f));
 	m_ppGameObjects[9]->SetPosition(-2.f, -2.f, 0.f);
 
+	// Speed
 	m_ppGameObjects[10] = new CNumber(0, pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, 0.3f / 9.6f, 0.3f / 5.4f, 0.f);
 	m_ppGameObjects[10]->SetPosition(-0.23f, -0.015f, 0.f);
 	m_ppGameObjects[11] = new CNumber(0, pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, 0.3f / 9.6f, 0.3f / 5.4f, 0.f);
@@ -145,25 +148,53 @@ void CTestScene::BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandLis
 	m_ppGameObjects[13] = new CNumber(0, pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, 0.3f / 9.6f, 0.3f / 5.4f, 0.f);
 	m_ppGameObjects[13]->SetPosition(-0.275f, -0.015f, 0.f);
 
+	// Alt
 	m_ppGameObjects[14] = new CNumber(0, pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, 0.3f / 9.6f, 0.3f / 5.4f, 0.f);
-	m_ppGameObjects[14]->SetPosition(0.285f, -0.015f, 0.f);
+	m_ppGameObjects[14]->SetPosition(0.285f, -0.017f, 0.f);
 	m_ppGameObjects[15] = new CNumber(0, pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, 0.3f / 9.6f, 0.3f / 5.4f, 0.f);
-	m_ppGameObjects[15]->SetPosition(0.27f, -0.015f, 0.f);
+	m_ppGameObjects[15]->SetPosition(0.27f, -0.017f, 0.f);
 	m_ppGameObjects[16] = new CNumber(0, pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, 0.3f / 9.6f, 0.3f / 5.4f, 0.f);
-	m_ppGameObjects[16]->SetPosition(0.255f, -0.015f, 0.f);
+	m_ppGameObjects[16]->SetPosition(0.255f, -0.017f, 0.f);
 	m_ppGameObjects[17] = new CNumber(0, pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, 0.3f / 9.6f, 0.3f / 5.4f, 0.f);
-	m_ppGameObjects[17]->SetPosition(0.24f, -0.015f, 0.f);
+	m_ppGameObjects[17]->SetPosition(0.24f, -0.017f, 0.f);
 	m_ppGameObjects[18] = new CNumber(0, pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, 0.3f / 9.6f, 0.3f / 5.4f, 0.f);
-	m_ppGameObjects[18]->SetPosition(0.225f, -0.015f, 0.f);
+	m_ppGameObjects[18]->SetPosition(0.225f, -0.017f, 0.f);
 	
+	// Missile
 	m_ppGameObjects[19] = new CNumber(0, pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, 0.5f / 9.6f, 0.5f / 5.4f, 0.f);
-	m_ppGameObjects[19]->SetPosition(m_ppGameObjects[1]->GetPosition().x+0.1f, m_ppGameObjects[1]->GetPosition().y+0.093f, 0.f);
+	m_ppGameObjects[19]->SetPosition(m_ppGameObjects[1]->GetPosition().x+0.1f, m_ppGameObjects[1]->GetPosition().y+0.085f, 0.f);
 	m_ppGameObjects[20] = new CNumber(0, pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, 0.5f / 9.6f, 0.5f / 5.4f, 0.f);
-	m_ppGameObjects[20]->SetPosition(m_ppGameObjects[1]->GetPosition().x+0.08f, m_ppGameObjects[1]->GetPosition().y+ 0.093f, 0.f);
+	m_ppGameObjects[20]->SetPosition(m_ppGameObjects[1]->GetPosition().x+0.08f, m_ppGameObjects[1]->GetPosition().y+ 0.085f, 0.f);
 	m_ppGameObjects[21] = new CNumber(0, pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, 0.5f / 9.6f, 0.5f / 5.4f, 0.f);
-	m_ppGameObjects[21]->SetPosition(m_ppGameObjects[1]->GetPosition().x+0.06f, m_ppGameObjects[1]->GetPosition().y+ 0.093f, 0.f);
+	m_ppGameObjects[21]->SetPosition(m_ppGameObjects[1]->GetPosition().x+0.06f, m_ppGameObjects[1]->GetPosition().y+ 0.085f, 0.f);
 
+	// Time s, m, h
+	m_ppGameObjects[22] = new CNumber(0, pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, 0.5f / 9.6f, 0.5f / 5.4f, 0.f);
+	m_ppGameObjects[22]->SetPosition(m_ppGameObjects[2]->GetPosition().x + 0.22f, m_ppGameObjects[2]->GetPosition().y + 0.093f, 0.f);
+	m_ppGameObjects[23] = new CNumber(0, pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, 0.5f / 9.6f, 0.5f / 5.4f, 0.f);
+	m_ppGameObjects[23]->SetPosition(m_ppGameObjects[2]->GetPosition().x + 0.2f, m_ppGameObjects[2]->GetPosition().y + 0.093f, 0.f);
+	
+	m_ppGameObjects[24] = new CNumber(0, pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, 0.5f / 9.6f, 0.5f / 5.4f, 0.f);
+	m_ppGameObjects[24]->SetPosition(m_ppGameObjects[2]->GetPosition().x + 0.16f, m_ppGameObjects[2]->GetPosition().y + 0.093f, 0.f);
+	m_ppGameObjects[25] = new CNumber(0, pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, 0.5f / 9.6f, 0.5f / 5.4f, 0.f);
+	m_ppGameObjects[25]->SetPosition(m_ppGameObjects[2]->GetPosition().x + 0.14f, m_ppGameObjects[2]->GetPosition().y + 0.093f, 0.f);
+	
+	m_ppGameObjects[26] = new CNumber(0, pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, 0.5f / 9.6f, 0.5f / 5.4f, 0.f);
+	m_ppGameObjects[26]->SetPosition(m_ppGameObjects[2]->GetPosition().x + 0.1f, m_ppGameObjects[2]->GetPosition().y + 0.093f, 0.f);
+	m_ppGameObjects[27] = new CNumber(0, pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, 0.5f / 9.6f, 0.5f / 5.4f, 0.f);
+	m_ppGameObjects[27]->SetPosition(m_ppGameObjects[2]->GetPosition().x + 0.08f, m_ppGameObjects[2]->GetPosition().y + 0.093f, 0.f);
 
+	// Score
+	m_ppGameObjects[28] = new CNumber(0, pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, 0.5f / 9.6f, 0.5f / 5.4f, 0.f);
+	m_ppGameObjects[28]->SetPosition(m_ppGameObjects[2]->GetPosition().x + 0.14f, m_ppGameObjects[2]->GetPosition().y, 0.f);
+	m_ppGameObjects[29] = new CNumber(0, pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, 0.5f / 9.6f, 0.5f / 5.4f, 0.f);
+	m_ppGameObjects[29]->SetPosition(m_ppGameObjects[2]->GetPosition().x + 0.12f, m_ppGameObjects[2]->GetPosition().y, 0.f);
+	m_ppGameObjects[30] = new CNumber(0, pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, 0.5f / 9.6f, 0.5f / 5.4f, 0.f);
+	m_ppGameObjects[30]->SetPosition(m_ppGameObjects[2]->GetPosition().x + 0.1f, m_ppGameObjects[2]->GetPosition().y, 0.f);
+	m_ppGameObjects[31] = new CNumber(0, pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, 0.5f / 9.6f, 0.5f / 5.4f, 0.f);
+	m_ppGameObjects[31]->SetPosition(m_ppGameObjects[2]->GetPosition().x + 0.08f, m_ppGameObjects[2]->GetPosition().y, 0.f);
+
+	m_ppGameObjects[32] = new CUI(9, pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, fx/4.f, fy/4.f, 0.f, XMFLOAT2(-0.f, -0.f), XMFLOAT2(-0.f, -0.f), XMFLOAT2(-0.f, -0.f), XMFLOAT2(-0.f, -0.f));
 
 	m_ObjManager->AddObject(L"player_ui1_testui", m_ppGameObjects[0], OBJ_UI);
 	m_ObjManager->AddObject(L"player_ui2_weapon", m_ppGameObjects[1], OBJ_UI);
@@ -190,6 +221,22 @@ void CTestScene::BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandLis
 	m_ObjManager->AddObject(L"player_ui20_missle_number", m_ppGameObjects[19], OBJ_UI);
 	m_ObjManager->AddObject(L"player_ui21_missle_number", m_ppGameObjects[20], OBJ_UI);
 	m_ObjManager->AddObject(L"player_ui22_missle_number", m_ppGameObjects[21], OBJ_UI);
+
+	m_ObjManager->AddObject(L"player_ui23_stime_number", m_ppGameObjects[22], OBJ_UI);
+	m_ObjManager->AddObject(L"player_ui24_stime_number", m_ppGameObjects[23], OBJ_UI);
+
+	m_ObjManager->AddObject(L"player_ui25_mtime_number", m_ppGameObjects[24], OBJ_UI);
+	m_ObjManager->AddObject(L"player_ui26_mtime_number", m_ppGameObjects[25], OBJ_UI);
+
+	m_ObjManager->AddObject(L"player_ui27_htime_number", m_ppGameObjects[26], OBJ_UI);
+	m_ObjManager->AddObject(L"player_ui28_htime_number", m_ppGameObjects[27], OBJ_UI);
+
+	m_ObjManager->AddObject(L"player_ui29_score_number", m_ppGameObjects[28], OBJ_UI);
+	m_ObjManager->AddObject(L"player_ui30_score_number", m_ppGameObjects[29], OBJ_UI);
+	m_ObjManager->AddObject(L"player_ui31_score_number", m_ppGameObjects[30], OBJ_UI);
+	m_ObjManager->AddObject(L"player_ui32_score_number", m_ppGameObjects[31], OBJ_UI);
+
+	m_ObjManager->AddObject(L"player_ui33_crosshair", m_ppGameObjects[32], OBJ_UI);
 
 	/*XMFLOAT3 xmf3Scale(8.0f, 2.0f, 8.0f);
 	XMFLOAT4 xmf4Color(0.0f, 0.3f, 0.0f, 0.0f);
@@ -486,123 +533,33 @@ void CTestScene::AnimateObjects(float fTimeElapsed)
 
 	}*/
 
-	//if (m_ObjManager->GetObjFromTag(L"SphereCollider", OBJ_ENEMY))
-	//{
-	//	m_ObjManager->GetObjFromTag(L"SphereCollider", OBJ_ENEMY)->Rotate(0, 0.1, 0);
-	//	m_ObjManager->GetObjFromTag(L"SphereCollider", OBJ_ENEMY)->MoveForward(200 * fTimeElapsed);
-	//}
-
-	//if (m_ObjManager->GetObjFromTag(L"SphereCollider2", OBJ_ENEMY))
-	//{
-	//	m_ObjManager->GetObjFromTag(L"SphereCollider2", OBJ_ENEMY)->Rotate(0, 0, 0);
-	//	m_ObjManager->GetObjFromTag(L"SphereCollider2", OBJ_ENEMY)->MoveForward(300 * fTimeElapsed);
-	//}
-
-	//if (m_ObjManager->GetObjFromTag(L"SphereCollider3", OBJ_ENEMY))
-	//{
-	//	m_ObjManager->GetObjFromTag(L"SphereCollider3", OBJ_ENEMY)->Rotate(0, -0.1, 0);
-	//	m_ObjManager->GetObjFromTag(L"SphereCollider3", OBJ_ENEMY)->MoveForward(400 * fTimeElapsed);
-	//}
-	//if (m_ObjManager->GetObjFromTag(L"SphereCollider4", OBJ_ENEMY))
-	//{
-	//	m_ObjManager->GetObjFromTag(L"SphereCollider4", OBJ_ENEMY)->Rotate(0, 0.1, 0);
-	//	m_ObjManager->GetObjFromTag(L"SphereCollider4", OBJ_ENEMY)->MoveForward(500 * fTimeElapsed);
-	//}
-	//if (m_ObjManager->GetObjFromTag(L"SphereCollider5", OBJ_ENEMY))
-	//{
-	//	m_ObjManager->GetObjFromTag(L"SphereCollider5", OBJ_ENEMY)->Rotate(0, -0.1, 0);
-	//	m_ObjManager->GetObjFromTag(L"SphereCollider5", OBJ_ENEMY)->MoveForward(600 * fTimeElapsed);
-	//}
-
-	vector<int> v, v2, v3;
-
-	int number = fabs((int)m_pPlayer->GetAircraftSpeed());
-	int number2 = fabs((int)m_pPlayer->GetPosition().y);
-	int number3 = fabs((int)m_pPlayer->GetMSLCount());
-
-	while (number != 0 || number2 !=0 || number3 !=0)
+	if (m_ObjManager->GetObjFromTag(L"SphereCollider", OBJ_ENEMY))
 	{
-		v.emplace_back(number % 10);
-		v2.emplace_back(number2 % 10);
-		v3.emplace_back(number3 % 10);
-
-		number /= 10;
-		number2 /= 10;
-		number3 /= 10;
+		m_ObjManager->GetObjFromTag(L"SphereCollider", OBJ_ENEMY)->Rotate(0, 0.1, 0);
+		m_ObjManager->GetObjFromTag(L"SphereCollider", OBJ_ENEMY)->MoveForward(200 * fTimeElapsed);
 	}
 
-	// SpeedNumb Update
-	if (v3.size() == 0)
+	if (m_ObjManager->GetObjFromTag(L"SphereCollider2", OBJ_ENEMY))
 	{
-		m_ppGameObjects[10]->m_pUIMaterial->m_ppTextures[0] = m_ppGameObjects[10]->m_ppUITexture[0];
-	}
-	if(v.size() > 0)
-		m_ppGameObjects[10]->m_pUIMaterial->m_ppTextures[0] = m_ppGameObjects[10]->m_ppUITexture[v[0]];
-	if (v.size() > 1)
-		m_ppGameObjects[11]->m_pUIMaterial->m_ppTextures[0] = m_ppGameObjects[11]->m_ppUITexture[v[1]];
-	if (v.size() > 2)
-	{
-		m_ppGameObjects[12]->m_pUIMaterial->m_ppTextures[0] = m_ppGameObjects[12]->m_ppUITexture[v[2]];
-		m_ppGameObjects[13]->m_pUIMaterial->m_ppTextures[0] = m_ppGameObjects[13]->m_ppUITexture[0];
-	}
-	if (v.size() > 3)
-		m_ppGameObjects[13]->m_pUIMaterial->m_ppTextures[0] = m_ppGameObjects[13]->m_ppUITexture[v[3]];
-	
-	// AltNumb Update
-	if (v2.size() == 0)
-	{
-		m_ppGameObjects[14]->m_pUIMaterial->m_ppTextures[0] = m_ppGameObjects[14]->m_ppUITexture[0];
-	}
-	if (v2.size() > 0)
-	{
-		m_ppGameObjects[14]->m_pUIMaterial->m_ppTextures[0] = m_ppGameObjects[14]->m_ppUITexture[v2[0]];
-		m_ppGameObjects[15]->m_pUIMaterial->m_ppTextures[0] = m_ppGameObjects[15]->m_ppUITexture[0];
-	}
-	if (v2.size() > 1)
-	{
-		m_ppGameObjects[15]->m_pUIMaterial->m_ppTextures[0] = m_ppGameObjects[15]->m_ppUITexture[v2[1]];
-		m_ppGameObjects[16]->m_pUIMaterial->m_ppTextures[0] = m_ppGameObjects[16]->m_ppUITexture[0];
-	}
-	if (v2.size() > 2)
-	{
-		m_ppGameObjects[16]->m_pUIMaterial->m_ppTextures[0] = m_ppGameObjects[16]->m_ppUITexture[v2[2]];
-		m_ppGameObjects[17]->m_pUIMaterial->m_ppTextures[0] = m_ppGameObjects[17]->m_ppUITexture[0];
-	}
-	if (v2.size() > 3)
-	{
-		m_ppGameObjects[17]->m_pUIMaterial->m_ppTextures[0] = m_ppGameObjects[17]->m_ppUITexture[v2[3]];
-		m_ppGameObjects[18]->m_pUIMaterial->m_ppTextures[0] = m_ppGameObjects[18]->m_ppUITexture[0];
-	}
-	if (v2.size() > 4)
-	{
-		m_ppGameObjects[18]->m_pUIMaterial->m_ppTextures[0] = m_ppGameObjects[18]->m_ppUITexture[v2[4]];
+		m_ObjManager->GetObjFromTag(L"SphereCollider2", OBJ_ENEMY)->Rotate(0, 0, 0);
+		m_ObjManager->GetObjFromTag(L"SphereCollider2", OBJ_ENEMY)->MoveForward(300 * fTimeElapsed);
 	}
 
-	// MissleNumb Update
-	if (v3.size() == 0)
+	if (m_ObjManager->GetObjFromTag(L"SphereCollider3", OBJ_ENEMY))
 	{
-		m_ppGameObjects[19]->m_pUIMaterial->m_ppTextures[0] = m_ppGameObjects[19]->m_ppUITexture[0];
+		m_ObjManager->GetObjFromTag(L"SphereCollider3", OBJ_ENEMY)->Rotate(0, -0.1, 0);
+		m_ObjManager->GetObjFromTag(L"SphereCollider3", OBJ_ENEMY)->MoveForward(400 * fTimeElapsed);
 	}
-	if (v3.size() > 0)
+	if (m_ObjManager->GetObjFromTag(L"SphereCollider4", OBJ_ENEMY))
 	{
-		m_ppGameObjects[19]->m_pUIMaterial->m_ppTextures[0] = m_ppGameObjects[19]->m_ppUITexture[v3[0]];
-		m_ppGameObjects[20]->m_pUIMaterial->m_ppTextures[0] = m_ppGameObjects[20]->m_ppUITexture[0];
+		m_ObjManager->GetObjFromTag(L"SphereCollider4", OBJ_ENEMY)->Rotate(0, 0.1, 0);
+		m_ObjManager->GetObjFromTag(L"SphereCollider4", OBJ_ENEMY)->MoveForward(500 * fTimeElapsed);
 	}
-	if (v3.size() > 1)
+	if (m_ObjManager->GetObjFromTag(L"SphereCollider5", OBJ_ENEMY))
 	{
-		m_ppGameObjects[20]->m_pUIMaterial->m_ppTextures[0] = m_ppGameObjects[20]->m_ppUITexture[v3[1]];
-		m_ppGameObjects[21]->m_pUIMaterial->m_ppTextures[0] = m_ppGameObjects[21]->m_ppUITexture[0];
+		m_ObjManager->GetObjFromTag(L"SphereCollider5", OBJ_ENEMY)->Rotate(0, -0.1, 0);
+		m_ObjManager->GetObjFromTag(L"SphereCollider5", OBJ_ENEMY)->MoveForward(600 * fTimeElapsed);
 	}
-	if (v3.size() > 2)
-	{
-		m_ppGameObjects[21]->m_pUIMaterial->m_ppTextures[0] = m_ppGameObjects[21]->m_ppUITexture[v3[2]];
-	}
-
-	v.clear();
-	v2.clear();
-	v3.clear();
-
-	cout << m_fElapsedTime << endl;
 
 	if (m_fElapsedTime >= 60.f)
 	{
@@ -610,7 +567,179 @@ void CTestScene::AnimateObjects(float fTimeElapsed)
 		m_nMinute += 1;
 		if (m_nMinute >= 60)
 			m_nHour += 1;
+		if (m_nHour >= 99)
+			m_nHour = 0;
 	}
+
+	int nSpeed = fabs((int)m_pPlayer->GetAircraftSpeed());
+	int nAlt = fabs((int)m_pPlayer->GetPosition().y);
+	int nMSL = fabs((int)m_pPlayer->GetMSLCount());
+	int nSecond = (int)m_fElapsedTime;
+	int nMinute = (int)m_nMinute;
+	int nHour = (int)m_nHour;
+	int nScore = m_ObjManager->GetObjFromTag(L"player_ui29_score_number", OBJ_UI)->GetScore();
+
+	while (nSpeed != 0 || nAlt != 0 || nMSL != 0 || nScore != 0 || nSecond != 0 || nMinute != 0 || nHour != 0)
+	{
+		vSpeed.emplace_back(nSpeed % 10);
+		vAlt.emplace_back(nAlt % 10);
+		vMSL.emplace_back(nMSL % 10);
+		vSecond.emplace_back(nSecond % 10);
+		vMinute.emplace_back(nMinute % 10);
+		vHour.emplace_back(nHour % 10);
+		vScore.emplace_back(nScore % 10);
+
+		nSpeed /= 10;
+		nAlt /= 10;
+		nMSL /= 10;
+		nSecond /= 10;
+		nMinute /= 10;
+		nHour /= 10;
+		nScore /= 10;
+	}
+
+	// SpeedNumb Update
+	if (vSpeed.size() == 0)
+	{
+		m_ppGameObjects[10]->m_pUIMaterial->m_ppTextures[0] = m_ppGameObjects[10]->m_ppUITexture[0];
+	}
+	if (vSpeed.size() > 0)
+		m_ppGameObjects[10]->m_pUIMaterial->m_ppTextures[0] = m_ppGameObjects[10]->m_ppUITexture[vSpeed[0]];
+	if (vSpeed.size() > 1)
+		m_ppGameObjects[11]->m_pUIMaterial->m_ppTextures[0] = m_ppGameObjects[11]->m_ppUITexture[vSpeed[1]];
+	if (vSpeed.size() > 2)
+	{
+		m_ppGameObjects[12]->m_pUIMaterial->m_ppTextures[0] = m_ppGameObjects[12]->m_ppUITexture[vSpeed[2]];
+		m_ppGameObjects[13]->m_pUIMaterial->m_ppTextures[0] = m_ppGameObjects[13]->m_ppUITexture[0];
+	}
+	if (vSpeed.size() > 3)
+		m_ppGameObjects[13]->m_pUIMaterial->m_ppTextures[0] = m_ppGameObjects[13]->m_ppUITexture[vSpeed[3]];
+
+	// AltNumb Update
+	if (vAlt.size() == 0)
+	{
+		m_ppGameObjects[14]->m_pUIMaterial->m_ppTextures[0] = m_ppGameObjects[14]->m_ppUITexture[0];
+	}
+	if (vAlt.size() > 0)
+	{
+		m_ppGameObjects[14]->m_pUIMaterial->m_ppTextures[0] = m_ppGameObjects[14]->m_ppUITexture[vAlt[0]];
+		m_ppGameObjects[15]->m_pUIMaterial->m_ppTextures[0] = m_ppGameObjects[15]->m_ppUITexture[0];
+	}
+	if (vAlt.size() > 1)
+	{
+		m_ppGameObjects[15]->m_pUIMaterial->m_ppTextures[0] = m_ppGameObjects[15]->m_ppUITexture[vAlt[1]];
+		m_ppGameObjects[16]->m_pUIMaterial->m_ppTextures[0] = m_ppGameObjects[16]->m_ppUITexture[0];
+	}
+	if (vAlt.size() > 2)
+	{
+		m_ppGameObjects[16]->m_pUIMaterial->m_ppTextures[0] = m_ppGameObjects[16]->m_ppUITexture[vAlt[2]];
+		m_ppGameObjects[17]->m_pUIMaterial->m_ppTextures[0] = m_ppGameObjects[17]->m_ppUITexture[0];
+	}
+	if (vAlt.size() > 3)
+	{
+		m_ppGameObjects[17]->m_pUIMaterial->m_ppTextures[0] = m_ppGameObjects[17]->m_ppUITexture[vAlt[3]];
+		m_ppGameObjects[18]->m_pUIMaterial->m_ppTextures[0] = m_ppGameObjects[18]->m_ppUITexture[0];
+	}
+	if (vAlt.size() > 4)
+	{
+		m_ppGameObjects[18]->m_pUIMaterial->m_ppTextures[0] = m_ppGameObjects[18]->m_ppUITexture[vAlt[4]];
+	}
+
+	// MissileNumb Update
+	if (vMSL.size() == 0)
+	{
+		m_ppGameObjects[19]->m_pUIMaterial->m_ppTextures[0] = m_ppGameObjects[19]->m_ppUITexture[0];
+	}
+	if (vMSL.size() > 0)
+	{
+		m_ppGameObjects[19]->m_pUIMaterial->m_ppTextures[0] = m_ppGameObjects[19]->m_ppUITexture[vMSL[0]];
+		m_ppGameObjects[20]->m_pUIMaterial->m_ppTextures[0] = m_ppGameObjects[20]->m_ppUITexture[0];
+	}
+	if (vMSL.size() > 1)
+	{
+		m_ppGameObjects[20]->m_pUIMaterial->m_ppTextures[0] = m_ppGameObjects[20]->m_ppUITexture[vMSL[1]];
+		m_ppGameObjects[21]->m_pUIMaterial->m_ppTextures[0] = m_ppGameObjects[21]->m_ppUITexture[0];
+	}
+	if (vMSL.size() > 2)
+	{
+		m_ppGameObjects[21]->m_pUIMaterial->m_ppTextures[0] = m_ppGameObjects[21]->m_ppUITexture[vMSL[2]];
+	}
+
+	// Time(s)Numb Update
+	if (vSecond.size() == 0)
+	{
+		m_ppGameObjects[22]->m_pUIMaterial->m_ppTextures[0] = m_ppGameObjects[22]->m_ppUITexture[0];
+	}
+	if (vSecond.size() > 0)
+	{
+		m_ppGameObjects[22]->m_pUIMaterial->m_ppTextures[0] = m_ppGameObjects[22]->m_ppUITexture[vSecond[0]];
+		m_ppGameObjects[23]->m_pUIMaterial->m_ppTextures[0] = m_ppGameObjects[23]->m_ppUITexture[0];
+	}
+	if (vSecond.size() > 1)
+	{
+		m_ppGameObjects[23]->m_pUIMaterial->m_ppTextures[0] = m_ppGameObjects[23]->m_ppUITexture[vSecond[1]];
+	}
+
+	// Time(m)Numb Update
+	if (vMinute.size() == 0)
+	{
+		m_ppGameObjects[24]->m_pUIMaterial->m_ppTextures[0] = m_ppGameObjects[24]->m_ppUITexture[0];
+	}
+	if (vMinute.size() > 0)
+	{
+		m_ppGameObjects[24]->m_pUIMaterial->m_ppTextures[0] = m_ppGameObjects[24]->m_ppUITexture[vMinute[0]];
+		m_ppGameObjects[25]->m_pUIMaterial->m_ppTextures[0] = m_ppGameObjects[25]->m_ppUITexture[0];
+	}
+	if (vMinute.size() > 1)
+	{
+		m_ppGameObjects[25]->m_pUIMaterial->m_ppTextures[0] = m_ppGameObjects[25]->m_ppUITexture[vMinute[1]];
+	}
+
+	// Time(h)Numb Update
+	if (vHour.size() == 0)
+	{
+		m_ppGameObjects[26]->m_pUIMaterial->m_ppTextures[0] = m_ppGameObjects[26]->m_ppUITexture[0];
+	}
+	if (vHour.size() > 0)
+	{
+		m_ppGameObjects[26]->m_pUIMaterial->m_ppTextures[0] = m_ppGameObjects[26]->m_ppUITexture[vHour[0]];
+		m_ppGameObjects[27]->m_pUIMaterial->m_ppTextures[0] = m_ppGameObjects[27]->m_ppUITexture[0];
+	}
+	if (vHour.size() > 1)
+	{
+		m_ppGameObjects[27]->m_pUIMaterial->m_ppTextures[0] = m_ppGameObjects[27]->m_ppUITexture[vHour[1]];
+	}
+
+	// ScoreNumb Update
+	if (vScore.size() == 0)
+	{
+		m_ppGameObjects[28]->m_pUIMaterial->m_ppTextures[0] = m_ppGameObjects[28]->m_ppUITexture[0];
+	}
+	if (vScore.size() > 0)
+	{
+		m_ppGameObjects[28]->m_pUIMaterial->m_ppTextures[0] = m_ppGameObjects[28]->m_ppUITexture[vScore[0]];
+		m_ppGameObjects[29]->m_pUIMaterial->m_ppTextures[0] = m_ppGameObjects[29]->m_ppUITexture[0];
+	}
+	if (vScore.size() > 1)
+	{
+		m_ppGameObjects[29]->m_pUIMaterial->m_ppTextures[0] = m_ppGameObjects[29]->m_ppUITexture[vScore[1]];
+		m_ppGameObjects[30]->m_pUIMaterial->m_ppTextures[0] = m_ppGameObjects[30]->m_ppUITexture[0];
+	}
+	if (vScore.size() > 2)
+	{
+		m_ppGameObjects[30]->m_pUIMaterial->m_ppTextures[0] = m_ppGameObjects[30]->m_ppUITexture[vScore[2]];
+		m_ppGameObjects[31]->m_pUIMaterial->m_ppTextures[0] = m_ppGameObjects[31]->m_ppUITexture[0];
+	}
+	if (vScore.size() > 3)
+		m_ppGameObjects[31]->m_pUIMaterial->m_ppTextures[0] = m_ppGameObjects[31]->m_ppUITexture[vScore[3]];
+
+	vSpeed.clear();
+	vAlt.clear();
+	vMSL.clear();
+	vSecond.clear();
+	vMinute.clear();
+	vHour.clear();
+	vScore.clear();
 
 	m_ObjManager->Update(fTimeElapsed);
 	
@@ -641,7 +770,6 @@ void CTestScene::Render(ID3D12GraphicsCommandList* pd3dCommandList, CCamera* pCa
 	//m_pUI->MoveMinimapPoint(m_ObjManager->GetObjFromTag(L"SphereCollider", OBJ_ENEMY)->GetPosition(), m_ppGameObjects[9]);
 
 	//m_ObjManager->MoveMinimapPoint();
-	cout << m_pPlayer->GetAircraftSpeed() << endl;
 	
 	m_ObjManager->Render(pd3dCommandList, pCamera);
 	//m_pSphereCollider->SphereCollider->Render(pd3dCommandList, pCamera);

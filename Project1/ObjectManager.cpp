@@ -77,11 +77,14 @@ void ObjectManager::Update(const float& TimeDelta)
 	GET_MANAGER<CollisionManager>()->CollisionPixelToRect(&m_mapObj[OBJ_BACK], &m_mapObj[OBJ_PLAYER]);
 	GET_MANAGER<CollisionManager>()->CollisionRect(&m_mapObj[OBJ_PLAYER], &m_mapObj[OBJ_PORTAL]);*/
 	
-	// Minimap
-	GET_MANAGER<UIManager>()->MoveMinimapPoint(&m_mapObj[OBJ_PLAYER], &m_mapObj[OBJ_ENEMY]);
-	
-	// LockOn
-	GET_MANAGER<UIManager>()->MoveLockOnUI(&m_mapObj[OBJ_PLAYER], &m_mapObj[OBJ_ENEMY]);
+	if (GET_MANAGER<SceneManager>()->GetCurrentSceneState() == SCENE_TEST)
+	{
+		// Minimap
+		GET_MANAGER<UIManager>()->MoveMinimapPoint(&m_mapObj[OBJ_PLAYER], &m_mapObj[OBJ_ENEMY]);
+
+		// LockOn
+		GET_MANAGER<UIManager>()->MoveLockOnUI(&m_mapObj[OBJ_PLAYER], &m_mapObj[OBJ_ENEMY]);
+	}
 
 }
 
@@ -126,12 +129,11 @@ void ObjectManager::ReleaseAll()
 				{
 					delete obj.second;
 					obj.second = nullptr;
-
 				}  
 				else 
 				{
 					obj.second->Release();
-					delete obj.second;
+					//delete obj.second;
 					obj.second = nullptr;
 				}
 			}

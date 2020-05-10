@@ -155,6 +155,7 @@ public:
 	CMesh* m_pMesh = NULL;
 	//CMesh** m_ppMeshes = NULL;
 	float m_fPlayerSpeed = 0.f;
+	int m_nPlayerScore = 0;
 
 	int								m_nObjects = 0;
 	int								m_nMaterials = 0;
@@ -175,7 +176,7 @@ public:
 	CPlaneMesh* m_pUIPlaneMesh;
 	CUIShader* m_pUIShader;
 	CMaterial* m_pUIMaterial;
-	CTexture* m_ppUITexture[10];
+	CTexture* m_ppUITexture[11];
 	///////////////////////////////////////////
 	CPlaneMesh* m_pLockOnUIPlaneMesh;
 	CUIShader* m_pLockOnUIShader;
@@ -251,6 +252,7 @@ public:
 	XMFLOAT3 GetRight();
 
 	const bool& GetState() { return m_isDead; }
+	int GetScore() const { return m_nPlayerScore; }
 
 	void SetPosition(float x, float y, float z);
 	void SetPosition(XMFLOAT3 xmf3Position);
