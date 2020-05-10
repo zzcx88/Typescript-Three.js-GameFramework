@@ -97,8 +97,10 @@ private:
 
 	unsigned int numerator, denominator, FrameRate;
 	size_t stringLength;
+
 	char m_videoCardDescription[128];
 
 	int m_BlurSwitch = 0;
+	int m_SceneSwitch = SCENE_TEST;
 };
 

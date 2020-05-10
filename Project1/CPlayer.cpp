@@ -166,12 +166,6 @@ void CPlayer::Update_Input(const float& TimeDelta)
 		}
 	}
 
-	if (true == keyManager->GetKeyState(STATE_DOWN, VK_SPACE))
-	{
-		dwDirection |= VK_SPACE;
-		MissleLaunch();
-	}
-
 	if (true == keyManager->GetKeyState(STATE_PUSH, VK_LCONTROL))
 	{
 		m_bGunFire = true;
@@ -184,6 +178,24 @@ void CPlayer::Update_Input(const float& TimeDelta)
 	{
 		m_bGunFire = false;
 		dwDirection |= VK_LCONTROL;
+
+		if (m_bEye_fixation == false)
+		{
+			m_fFOV = 60;
+			m_pCamera->GenerateProjectionMatrix(1.01f, m_fFarPlaneDistance, ASPECT_RATIO, m_fFOV);
+			m_pCamera->SetLookPlayer();
+			XMFLOAT3 xmf3Shift = XMFLOAT3(0, 0, 0);
+			xmf3Shift = Vector3::Add(xmf3Shift, m_xmf3Up, 1);
+			m_pCamera->SetPosition(Vector3::Add(m_xmf3Position, xmf3Shift));
+			xmf3Shift = Vector3::Add(xmf3Shift, m_xmf3Look, -5);
+			m_pCamera->SetPosition(Vector3::Add(m_xmf3Position, xmf3Shift));
+		}
+	}
+
+	if (true == keyManager->GetKeyState(STATE_DOWN, VK_SPACE))
+	{
+		dwDirection |= VK_SPACE;
+		MissleLaunch();
 	}
 
 	if (keyManager->GetKeyState(STATE_PUSH, VK_RIGHT) || keyManager->GetKeyState(STATE_PUSH, VK_LEFT))
@@ -377,7 +389,7 @@ void CPlayer::Update_Input(const float& TimeDelta)
 			GetPosition().z - m_pCamera->GetLookVector().z * 7));
 		for (auto& Ene : m_ObjManager->GetObjFromType(OBJ_ENEMY))
 		{
-			if (Ene.second->bLockOnFire == true && Ene.second->GetState() != true)
+			if (Ene.second->m_bAiming == true && Ene.second->GetState() != true)
 			{
 				XMFLOAT3 temp = Ene.second->GetPosition();
 				//auto temp = GET_MANAGER<ObjectManager>()->GetObjFromTag(L"SphereCollider", OBJ_ENEMY)->GetPosition();
@@ -515,6 +527,8 @@ CAirplanePlayer::CAirplanePlayer(ID3D12Device* pd3dDevice, ID3D12GraphicsCommand
 
 	m_pMissleModel = CGameObject::LoadGeometryAndAnimationFromFile(pd3dDevice, pd3dCommandList, pd3dGraphicsRootSignature, "Model/Missle.bin", NULL, MODEL_ACE);
 	m_pMissleModelCol = CGameObject::LoadGeometryAndAnimationFromFile(pd3dDevice, pd3dCommandList, pd3dGraphicsRootSignature, "Model/Sphere.bin", NULL, MODEL_COL);
+
+	m_nMSL_Count = CPlayer::GetMSLCount();
 
 	CLoadedModelInfo* pModel = CGameObject::LoadGeometryAndAnimationFromFile(pd3dDevice, pd3dCommandList, pd3dGraphicsRootSignature, "Model/F-4E_Phantom_II.bin", NULL, MODEL_ACE);
 	SetChild(pModel->m_pModelRootObject);
@@ -849,10 +863,12 @@ void CAirplanePlayer::YawWingReturn(float fTimeElapsed)
 void CAirplanePlayer::MissleLaunch()
 {
 	CMissle* pMissle;
+	m_nMSL_Count = CPlayer::GetMSLCount();
+	cout << m_nMSL_Count << endl;
 
 	for (auto& Ene : m_ObjManager->GetObjFromType(OBJ_ENEMY))
 	{
-		if (Ene.second->bLockOnFire == true&&Ene.second->GetState() != true)
+		if (Ene.second->m_bCanFire == true&&Ene.second->GetState() != true&&m_nMSL_Count !=0)
 		{
 			XMFLOAT3* temp = Ene.second->GetPositionForMissle();
 
@@ -864,7 +880,11 @@ void CAirplanePlayer::MissleLaunch()
 			pMissle->SetScale(1, 1, 1);
 			pMissle->SetPosition(m_pMSL_1->GetPosition());
 			m_ObjManager->AddObject(L"player_missle", pMissle, OBJ_MISSLE);
+			
+			CPlayer::SetMissleCount(--m_nMSL_Count);
+			break;
 		}
+
 	}
 }
 

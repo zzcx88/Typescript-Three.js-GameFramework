@@ -90,11 +90,12 @@ void CDeviceManager::CreateD3DDevice()
 			} 
 		} 
 	}
+
 	DXGI_ADAPTER_DESC adapterDesc;
 	adapter->GetDesc(&adapterDesc);
 	wcstombs_s(&stringLength, m_videoCardDescription, 128, adapterDesc.Description, 128);
 	cout << m_videoCardDescription << endl;
-	///////////////
+
 
 
 	for (UINT i = 0; DXGI_ERROR_NOT_FOUND != m_pdxgiFactory->EnumAdapters1(i, &pd3dAdapter); i++)
@@ -331,18 +332,23 @@ void CDeviceManager::ChangeSwapChainState()
 void CDeviceManager::BuildScene()
 {
 	m_pd3dCommandList->Reset(m_pd3dCommandAllocator, NULL);
-	m_pSceneManager->ChangeSceneState(SCENE_TEST, m_pd3dDevice, m_pd3dCommandList);
+	//CAirplanePlayer* pAPlayer = NULL;
 
-	CAirplanePlayer* pPlayer = new CAirplanePlayer(m_pd3dDevice, m_pd3dCommandList, m_pSceneManager->GetGraphicsRootSignature(), NULL);
-	//pPlayer->SetPosition(XMFLOAT3(0, 0, 0));
-
-	pPlayer->SetPosition(XMFLOAT3(410, 1000, -9000));
-
-	//pPlayer->SetPosition(XMFLOAT3(-1000, 3000, -10000));
-	//pPlayer->SetScale(XMFLOAT3(0.1, 0.1, 0.1));
-	m_pPlayer = pPlayer;
+	if (m_SceneSwitch == SCENE_TEST)
+	{
+		m_pSceneManager->ChangeSceneState(SCENE_TEST, m_pd3dDevice, m_pd3dCommandList);
+		CAirplanePlayer* pPlayer = new CAirplanePlayer(m_pd3dDevice, m_pd3dCommandList, m_pSceneManager->GetGraphicsRootSignature(), NULL);
+		pPlayer->SetPosition(XMFLOAT3(410, 1000, -9000));
+		pPlayer->SetMissleCount(100);
+		m_pPlayer = pPlayer;
+	}
+	else
+	{
+		m_pSceneManager->ChangeSceneState(SCENE_MENU, m_pd3dDevice, m_pd3dCommandList);
+		CTerrainPlayer* pPlayer = new CTerrainPlayer(m_pd3dDevice, m_pd3dCommandList, m_pSceneManager->GetGraphicsRootSignature(), NULL);
+		m_pPlayer = pPlayer;
+	}
 	
-	//m_pPlayer->SetScale(XMFLOAT3(10,10,10));
 	m_pCamera = m_pPlayer->GetCamera();
 
 	m_pBlur = new CBlur(m_pd3dDevice, m_pd3dCommandList, m_pSceneManager->GetComputeRootSignature());
@@ -363,7 +369,7 @@ void CDeviceManager::BuildScene()
 	m_pSceneManager->SetPlayer(m_pPlayer);
 	m_pSceneManager->SetObjManagerInPlayer();
 	
-
+	
 	if (m_pPlayer) m_pPlayer->ReleaseUploadBuffers();
 	if (m_pSceneManager) m_pSceneManager->ReleaseUploadBuffers();
 	m_GameTimer.Reset();
@@ -413,6 +419,12 @@ void CDeviceManager::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPA
 		case VK_F4:
 			if (m_BlurSwitch == BLUR_OFF) m_BlurSwitch = BLUR_ON;
 			else m_BlurSwitch = BLUR_OFF;
+			break;
+		case VK_F5:
+			if (m_SceneSwitch == SCENE_MENU)
+				m_SceneSwitch = SCENE_TEST;
+			else 
+				m_SceneSwitch = SCENE_MENU;
 			break;
 		case VK_F9:
 			ChangeSwapChainState();

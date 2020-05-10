@@ -166,6 +166,9 @@
     <Filter Include="GameObject\Bullet">
       <UniqueIdentifier>{22121b53-a5e2-42a2-a645-8c588d8f9a42}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Scene\MenuScene">
+      <UniqueIdentifier>{aa010675-6321-45e2-accc-386403d925d5}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="targetver.h">
@@ -336,6 +339,12 @@
     <ClInclude Include="CBullet.h">
       <Filter>GameObject\Bullet</Filter>
     </ClInclude>
+    <ClInclude Include="CNumber.h">
+      <Filter>GameObject\Plane\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="CMenuScene.h">
+      <Filter>Scene\MenuScene</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="DDSTextureLoader12.cpp">
@@ -484,6 +493,12 @@
     </ClCompile>
     <ClCompile Include="CBullet.cpp">
       <Filter>GameObject\Bullet</Filter>
+    </ClCompile>
+    <ClCompile Include="CNumber.cpp">
+      <Filter>GameObject\Plane\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="CMenuScene.cpp">
+      <Filter>Scene\MenuScene</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -39,6 +39,7 @@ protected:
 	bool m_bGameOver = false;
 	bool m_bGunFire = false;
 
+
 	XMFLOAT3					m_xmf3Velocity = XMFLOAT3(0.0f, 0.0f, 0.0f);
 	XMFLOAT3     				m_xmf3Gravity = XMFLOAT3(0.0f, 0.0f, 0.0f);
 
@@ -50,6 +51,9 @@ protected:
 
 	LPVOID						m_pPlayerUpdatedContext = NULL;
 	LPVOID						m_pCameraUpdatedContext = NULL;
+
+	// Weapon Count
+	int m_nMSL_Count = 0;
 
 public:
 	CPlayer();
@@ -69,10 +73,14 @@ public:
 
 	void SetScale(XMFLOAT3& xmf3Scale) { m_xmf3Scale = xmf3Scale; }
 
+	void SetMissleCount(int nCount) { m_nMSL_Count = nCount; }
+
 	const XMFLOAT3& GetVelocity() const { return(m_xmf3Velocity); }
+	float GetAircraftSpeed() const { return(m_fAircraftSpeed); }
 	float GetYaw() const { return(m_fYaw); }
 	float GetPitch() const { return(m_fPitch); }
 	float GetRoll() const { return(m_fRoll); }
+	int GetMSLCount() const { return(m_nMSL_Count); }
 
 	ObjectManager* m_ObjManager;
 
@@ -143,6 +151,9 @@ public:
 	CGameObject* m_pSP_1 = NULL;
 	CGameObject* m_pSP_2 = NULL;
 	CGameObject* m_pGunMuzzle = NULL;
+
+	// Weapon Count
+	int m_nMSL_Count = 0;
 
 	CGameObject* m_pLeft_AfterBurner[10];
 	CGameObject* m_pRight_AfterBurner[10];

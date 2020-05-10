@@ -8,9 +8,6 @@
 #include "CHeightMapTerrain.h"
 #include "CSuperCobraObject.h"
 
-
-
-
 #define MAX_LIGHTS							16 
 
 #define POINT_LIGHT							1
@@ -73,6 +70,8 @@ public:
 	float fx, fy = 0.f;
 	
 	float								m_fElapsedTime = 0.0f;
+	int m_nMinute = 0;
+	int m_nHour = 0;
 
 	int									m_nGameObjects = 0;
 	CGameObject** m_ppGameObjects = NULL;
@@ -101,8 +100,7 @@ public:
 	CWater* m_pWater[18];
 	CCloud* m_pCloud;
 
-	CLockOnUI* m_pLockOn = NULL;
-	CUI* m_pUI = NULL;
+	CGameTimer					m_GameTimer;
 
 };
 

@@ -42,7 +42,7 @@ CLockOnUI::~CLockOnUI()
 {
 }
 
-void CLockOnUI::MoveLockOnUI(XMFLOAT2 screen, XMFLOAT3& xmfTarget, XMFLOAT3& xmfPlayer, XMFLOAT3& xmfPlayerLook, CGameObject* pGameUIOBJ, CGameObject* pGameOBJ)
+void CLockOnUI::MoveLockOnUI(XMFLOAT2 screen, XMFLOAT3& xmfTarget, XMFLOAT3& xmfPlayer, XMFLOAT3& xmfPlayerLook, CGameObject* pGameUIOBJ, CCamera* pCamera)
 {
 	float fx = 0.f;
 	float fy = 0.f;
@@ -51,7 +51,8 @@ void CLockOnUI::MoveLockOnUI(XMFLOAT2 screen, XMFLOAT3& xmfTarget, XMFLOAT3& xmf
 	xmf3TargetVector = Vector3::Normalize(xmf3TargetVector);
 
 	float xmfAxis = Vector3::DotProduct(xmfPlayerLook, xmf3TargetVector);
-
+	float xmfCameraAxis = Vector3::DotProduct(pCamera->GetLookVector(), xmf3TargetVector);
+	
 	fx = ((1.f / ((float)FRAME_BUFFER_WIDTH / 2.f)) * screen.x) - 1;
 	fy = (((1.f / ((float)FRAME_BUFFER_HEIGHT / 2.f)) * screen.y) - 1) * -1;
 
@@ -59,18 +60,21 @@ void CLockOnUI::MoveLockOnUI(XMFLOAT2 screen, XMFLOAT3& xmfTarget, XMFLOAT3& xmf
 
 	m_fLenth = sqrt(xmf3TargetVector2.x * xmf3TargetVector2.x + xmf3TargetVector2.y * xmf3TargetVector2.x + xmf3TargetVector2.z * xmf3TargetVector2.z);
 	
-	pGameOBJ->m_iDistanceFromPlayer = (int)m_fLenth;
-	
-	if (screen.x < 0 || screen.y < 0 || screen.x >FRAME_BUFFER_WIDTH || screen.y >FRAME_BUFFER_HEIGHT || xmfAxis < 0.f)
+	if (screen.x < 0 || screen.y < 0 || screen.x >FRAME_BUFFER_WIDTH || screen.y >FRAME_BUFFER_HEIGHT || xmfCameraAxis < 0.f)
 		pGameUIOBJ->SetPosition(-2.f, -2.f, -1.f);
 	else {
-		if (m_fLenth < 10000 /*&&( xmfAxis > 0.1f || xmfAxis < -0.1f)*/)
+		if (m_fLenth < 30000 )
 		{
-			bLockOn = true;
+			bDetectable = true;
+
+			if(m_fLenth < 5000 && (xmfAxis > 0.9f || xmfAxis < -0.9f))
+				bLockOn = true;
+			else
+				bLockOn = false;
 		}
 		else
 		{
-			bLockOn = false;
+			bDetectable = false;
 		}
 		pGameUIOBJ->SetPosition(fx, fy, 0.f);
 	}
@@ -78,4 +82,37 @@ void CLockOnUI::MoveLockOnUI(XMFLOAT2 screen, XMFLOAT3& xmfTarget, XMFLOAT3& xmf
 
 }
 
+void CLockOnUI::Animate(float fTimeElapsed)
+{
+	//시간 이벤트를 위한 누적 시간
+	m_fTimeElapsed += fTimeElapsed;
+	m_fFadeTimeElapsed += fTimeElapsed;
 
+	//TextureAnimate();
+}
+
+void CLockOnUI::TextureAnimate()
+{
+	if (!m_bRefference)
+	{
+		if (m_fFadeTimeElapsed > m_fFadeFrequence)
+		{
+			m_fFadeTimeElapsed = 0.f;
+
+			if (m_nTextureRender < TEXTURES)
+			{
+				m_nTextureRender++;
+			}
+			else
+			{
+				m_nTextureRender = 0;
+			}
+		}
+	}
+}
+
+void CLockOnUI::Render(ID3D12GraphicsCommandList* pd3dCommandList, CCamera* pCamera)
+{
+	if(m_nTextureRender == 0)
+		CGameObject::Render(pd3dCommandList, pCamera);
+}

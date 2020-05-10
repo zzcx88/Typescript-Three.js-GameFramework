@@ -2,6 +2,7 @@
 #include "UIManager.h"
 #include "CGameObject.h"
 #include "CUI.h"
+#include "CNumber.h"
 #include "CLockOnUI.h"
 
 UIManager::UIManager()
@@ -85,9 +86,9 @@ void UIManager::MoveLockOnUI(ObjectManager::MAPOBJ* PlyList, ObjectManager::MAPO
 		}
 	
 		Ene.second->m_pLockOnUI->MoveLockOnUI(Ene.second->GetScreenPosition(), Ene.second->GetPosition(),
-			PlyList->begin()->second->GetPosition(), PlyList->begin()->second->GetLook(), Ene.second->m_pLockOnUI, Ene.second);
+			PlyList->begin()->second->GetPosition(), PlyList->begin()->second->GetLook(), Ene.second->m_pLockOnUI, PlyList->begin()->second->m_pCamera);
 		
-		if (Ene.second->m_pLockOnUI->bLockOn == true)
+		if (Ene.second->m_pLockOnUI->bDetectable == true)
 		{
 			GameOBJs.emplace_back(Ene.second);
 
@@ -96,13 +97,27 @@ void UIManager::MoveLockOnUI(ObjectManager::MAPOBJ* PlyList, ObjectManager::MAPO
 				});
 
 			//cout << Ene.second->m_pLockOnUI->GetState() << ", " << Ene.second->GetState() << endl;
-			if(Ene.second->bLockOnFire == true&&Ene.second->GetState() != true)
+			if(Ene.second->m_bAiming == true&&Ene.second->GetState() != true)
+
 			{ 
-				Ene.second->m_pLockOnUI->m_pLockOnUIMaterial->m_ppTextures[0] = GET_MANAGER<ObjectManager>()
-					->GetObjFromTag(L"player_ui8_lockon", OBJ_UI)->m_ppLockOnUITexture[1];
+				if (Ene.second->m_pLockOnUI->bLockOn == true)
+				{
+					Ene.second->m_pLockOnUI->m_nTextureRender = 0;
+					Ene.second->m_pLockOnUI->m_pLockOnUIMaterial->m_ppTextures[0] = GET_MANAGER<ObjectManager>()
+						->GetObjFromTag(L"player_ui8_lockon", OBJ_UI)->m_ppLockOnUITexture[1];
+					Ene.second->m_bCanFire = true;
+				}
+				else 
+				{
+					Ene.second->m_pLockOnUI->m_pLockOnUIMaterial->m_ppTextures[0] = GET_MANAGER<ObjectManager>()
+						->GetObjFromTag(L"player_ui8_lockon", OBJ_UI)->m_ppLockOnUITexture[0];
+					Ene.second->m_pLockOnUI->TextureAnimate();
+					Ene.second->m_bCanFire = false;
+				}
 			}
 			else
 			{
+				Ene.second->m_pLockOnUI->m_nTextureRender = 0;
 				Ene.second->m_pLockOnUI->m_pLockOnUIMaterial->m_ppTextures[0] = GET_MANAGER<ObjectManager>()
 					->GetObjFromTag(L"player_ui8_lockon", OBJ_UI)->m_ppLockOnUITexture[0];
 			}
@@ -110,7 +125,7 @@ void UIManager::MoveLockOnUI(ObjectManager::MAPOBJ* PlyList, ObjectManager::MAPO
 		}
 		else
 		{
-			Ene.second->bLockOnFire = false;
+			Ene.second->m_bAiming = false;
 			Ene.second->m_pLockOnUI->m_pLockOnUIMaterial->m_ppTextures[0] = GET_MANAGER<ObjectManager>()
 				->GetObjFromTag(L"player_ui8_lockon", OBJ_UI)->m_ppLockOnUITexture[0];
 		}
@@ -120,9 +135,13 @@ void UIManager::MoveLockOnUI(ObjectManager::MAPOBJ* PlyList, ObjectManager::MAPO
 	for (int i = 0; i < GameOBJs.size(); ++i)
 	{
 		if (i == Count)
-			GameOBJs[i]->bLockOnFire = true;
+			GameOBJs[i]->m_bAiming = true;
 		else
-			GameOBJs[i]->bLockOnFire = false;
+		{
+			GameOBJs[i]->m_bAiming = false;
+			GameOBJs[i]->m_bCanFire = false;
+			GameOBJs[i]->m_pLockOnUI->m_nTextureRender = 0;
+		}
 	}
 	
 
@@ -139,4 +158,22 @@ void UIManager::MoveLockOnUI(ObjectManager::MAPOBJ* PlyList, ObjectManager::MAPO
 
 	
 	GameOBJs.clear();
+}
+
+
+void UIManager::NumberTextureAnimate(int fPlayerSpeed, ObjectManager::MAPOBJ* EneList)
+{
+	vector<int> v;
+
+	while (fPlayerSpeed != 0)
+	{
+		v.emplace_back(fPlayerSpeed % 10);
+
+		fPlayerSpeed /= 10;
+	}
+
+	
+
+	v.clear();
+	
 }

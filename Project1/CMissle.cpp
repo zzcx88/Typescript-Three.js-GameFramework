@@ -44,7 +44,9 @@ void CMissle::Animate(float fTimeElapsed)
 		m_isDead = true;
 	}
 
+	//if(m_bLockOn == true)
   	SetLookAt(fTimeElapsed);
+
  	Move(DIR_FORWARD, 1500.0f * fTimeElapsed, false);
 	CGameObject::Animate(fTimeElapsed);
 	if (SphereCollider)SphereCollider->SetPosition(GetPosition());

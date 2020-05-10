@@ -331,4 +331,5 @@ public:
 	virtual D3D12_SHADER_BYTECODE CreatePixelShader();
 
 	virtual D3D12_RASTERIZER_DESC CreateRasterizerState();
+
 };
