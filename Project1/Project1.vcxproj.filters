@@ -169,6 +169,12 @@
     <Filter Include="Scene\MenuScene">
       <UniqueIdentifier>{aa010675-6321-45e2-accc-386403d925d5}</UniqueIdentifier>
     </Filter>
+    <Filter Include="GameObject\ColisionObject\SphereCollider">
+      <UniqueIdentifier>{c8e3ffb4-c14f-489e-8cc1-1dee9ae53757}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GameObject\ColisionObject\BoxCollider">
+      <UniqueIdentifier>{dbea42f5-1d19-4fe2-a67b-e79fff6a301c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="targetver.h">
@@ -279,9 +285,6 @@
     <ClInclude Include="CPlane.h">
       <Filter>GameObject\Plane</Filter>
     </ClInclude>
-    <ClInclude Include="CSphereCollider.h">
-      <Filter>GameObject\ColisionObject</Filter>
-    </ClInclude>
     <ClInclude Include="CMissle.h">
       <Filter>GameObject\Missle</Filter>
     </ClInclude>
@@ -344,6 +347,12 @@
     </ClInclude>
     <ClInclude Include="CMenuScene.h">
       <Filter>Scene\MenuScene</Filter>
+    </ClInclude>
+    <ClInclude Include="CSphereCollider.h">
+      <Filter>GameObject\ColisionObject\SphereCollider</Filter>
+    </ClInclude>
+    <ClInclude Include="CBoxCollider.h">
+      <Filter>GameObject\ColisionObject\BoxCollider</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -434,9 +443,6 @@
     <ClCompile Include="CPlane.cpp">
       <Filter>GameObject\Plane</Filter>
     </ClCompile>
-    <ClCompile Include="CSphereCollider.cpp">
-      <Filter>GameObject\ColisionObject</Filter>
-    </ClCompile>
     <ClCompile Include="CMissle.cpp">
       <Filter>GameObject\Missle</Filter>
     </ClCompile>
@@ -499,6 +505,12 @@
     </ClCompile>
     <ClCompile Include="CMenuScene.cpp">
       <Filter>Scene\MenuScene</Filter>
+    </ClCompile>
+    <ClCompile Include="CSphereCollider.cpp">
+      <Filter>GameObject\ColisionObject\SphereCollider</Filter>
+    </ClCompile>
+    <ClCompile Include="CBoxCollider.cpp">
+      <Filter>GameObject\ColisionObject\BoxCollider</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

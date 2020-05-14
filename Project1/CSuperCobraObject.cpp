@@ -43,6 +43,7 @@ void CSuperCobraObject::Animate(float fTimeElapsed)
 	if (SphereCollider)SphereCollider->SetPosition(GetPosition());
 	if (SphereCollider)SphereCollider->m_xmf4x4ToParent = Matrix4x4::Multiply(XMMatrixScaling(5, 5, 5), m_xmf4x4ToParent);
 	if (SphereCollider)SphereCollider->Animate(fTimeElapsed, GetPosition());
+
 	GET_MANAGER<AIManager>()->DoAction(AI_AIRCRAFT, this);
 }
 

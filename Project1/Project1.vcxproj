@@ -153,6 +153,7 @@
     <ClInclude Include="CBlurFilter.h" />
     <ClInclude Include="CAngrybotObject.h" />
     <ClInclude Include="CAnimationController.h" />
+    <ClInclude Include="CBoxCollider.h" />
     <ClInclude Include="CBoxMesh.h" />
     <ClInclude Include="CBullet.h" />
     <ClInclude Include="CCamera.h" />
@@ -213,6 +214,7 @@
     <ClCompile Include="CBlurFilter.cpp" />
     <ClCompile Include="CAngrybotObject.cpp" />
     <ClCompile Include="CAnimationController.cpp" />
+    <ClCompile Include="CBoxCollider.cpp" />
     <ClCompile Include="CBoxMesh.cpp" />
     <ClCompile Include="CBullet.cpp" />
     <ClCompile Include="CCamera.cpp" />

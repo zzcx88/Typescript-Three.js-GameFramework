@@ -395,7 +395,6 @@ void CTestScene::BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandLis
 
 	CBullet* pBullet = new CBullet(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature);
 	pBullet->SetPosition(0,0,0);
-	//pBullet->SetScale(100,100,100);
 	m_ObjManager->AddObject(L"bulletRef", pBullet, OBJ_BULLET);
 
 	CreateShaderVariables(pd3dDevice, pd3dCommandList);
@@ -601,7 +600,7 @@ void CTestScene::AnimateObjects(float fTimeElapsed)
 	v2.clear();
 	v3.clear();
 
-	cout << m_fElapsedTime << endl;
+	//cout << m_fElapsedTime << endl;
 
 	if (m_fElapsedTime >= 60.f)
 	{
@@ -640,7 +639,7 @@ void CTestScene::Render(ID3D12GraphicsCommandList* pd3dCommandList, CCamera* pCa
 	//m_pUI->MoveMinimapPoint(m_ObjManager->GetObjFromTag(L"SphereCollider", OBJ_ENEMY)->GetPosition(), m_ppGameObjects[9]);
 
 	//m_ObjManager->MoveMinimapPoint();
-	cout << m_pPlayer->GetAircraftSpeed() << endl;
+	//cout << m_pPlayer->GetAircraftSpeed() << endl;
 	
 	m_ObjManager->Render(pd3dCommandList, pCamera);
 	//m_pSphereCollider->SphereCollider->Render(pd3dCommandList, pCamera);

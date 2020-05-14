@@ -178,7 +178,18 @@ void CPlayer::Update_Input(const float& TimeDelta)
 
 	if (true == keyManager->GetKeyState(STATE_UP, VK_LCONTROL))
 	{
-		m_bGunFire = false;
+		if (m_bGunFire != false && m_bEye_fixation == false)
+		{
+			m_bGunFire = false;
+			m_fGunFOV = 60.f;
+			m_pCamera->GenerateProjectionMatrix(1.01f, m_fFarPlaneDistance, ASPECT_RATIO, m_fFOV);
+			m_pCamera->SetLookPlayer();
+			XMFLOAT3 xmf3Shift = XMFLOAT3(0, 0, 0);
+			xmf3Shift = Vector3::Add(xmf3Shift, m_xmf3Up, 1);
+			m_pCamera->SetPosition(Vector3::Add(m_xmf3Position, xmf3Shift));
+			xmf3Shift = Vector3::Add(xmf3Shift, m_xmf3Look, -5);
+			m_pCamera->SetPosition(Vector3::Add(m_xmf3Position, xmf3Shift));
+		}
 		dwDirection |= VK_LCONTROL;
 	}
 
@@ -190,6 +201,7 @@ void CPlayer::Update_Input(const float& TimeDelta)
 
 	if (keyManager->GetKeyState(STATE_PUSH, VK_RIGHT) || keyManager->GetKeyState(STATE_PUSH, VK_LEFT))
 	{
+		m_fTimeLegElapsed += TimeDelta;
 		if (true == keyManager->GetKeyState(STATE_PUSH, VK_RIGHT))
 		{
 			if (!(true == keyManager->GetKeyState(STATE_PUSH, VK_LEFT)))
@@ -225,6 +237,7 @@ void CPlayer::Update_Input(const float& TimeDelta)
 
 	if (keyManager->GetKeyState(STATE_PUSH, VK_UP) || keyManager->GetKeyState(STATE_PUSH, VK_DOWN))
 	{
+		m_fTimeLegElapsed += TimeDelta;
 		if (true == keyManager->GetKeyState(STATE_PUSH, VK_UP))
 		{
 			if (!(true == keyManager->GetKeyState(STATE_PUSH, VK_DOWN)))
@@ -261,6 +274,7 @@ void CPlayer::Update_Input(const float& TimeDelta)
 
 	if (keyManager->GetKeyState(STATE_PUSH, VK_Q) || keyManager->GetKeyState(STATE_PUSH, VK_E))
 	{
+		m_fTimeLegElapsed += TimeDelta;
 		if (true == keyManager->GetKeyState(STATE_PUSH, VK_Q))
 		{
 			if (!(true == keyManager->GetKeyState(STATE_PUSH, VK_E)))
@@ -395,6 +409,13 @@ void CPlayer::Update_Input(const float& TimeDelta)
 			}
 	}
 
+	if (m_fAircraftSpeed > 700)
+	{
+		GET_MANAGER<CDeviceManager>()->SetBulrSwitch(true);
+	}
+	if (m_fAircraftSpeed < 600 && GET_MANAGER<CDeviceManager>()->GetBlurAmount() == 0)
+		GET_MANAGER<CDeviceManager>()->SetBulrSwitch(false);
+
 	Move(DIR_FORWARD, m_fAircraftSpeed * TimeDelta, true);
 	MoveForward(8.0f);
 	WingAnimate(TimeDelta, dwDirection);
@@ -403,6 +424,7 @@ void CPlayer::Update_Input(const float& TimeDelta)
 
 void CPlayer::Animate(float fTimeElapsed)
 {
+	m_pCamera->m_fTimeElapsed = fTimeElapsed;
 	if (!m_bGameOver)
 	{
 		m_xmf3Velocity = Vector3::Add(m_xmf3Velocity, Vector3::ScalarProduct(m_xmf3Gravity, fTimeElapsed, false));
@@ -425,6 +447,7 @@ void CPlayer::Animate(float fTimeElapsed)
 		if (nCurrentCameraMode == THIRD_PERSON_CAMERA) m_pCamera->Update(m_xmf3Position, fTimeElapsed);
 		if (m_pCameraUpdatedContext) OnCameraUpdateCallback(fTimeElapsed);
 		if (nCurrentCameraMode == THIRD_PERSON_CAMERA) m_pCamera->SetLookAt(m_xmf3Position);
+		//m_pCamera->Update(m_xmf3Position, fTimeElapsed);
 		m_pCamera->RegenerateViewMatrix();
 
 		fLength = Vector3::Length(m_xmf3Velocity);
@@ -920,14 +943,6 @@ void CAirplanePlayer::GunCameraMove(float fTimeElapsed)
 		}
 		else
 		{
-			m_fGunFOV = 60.f;
-			m_pCamera->GenerateProjectionMatrix(1.01f, m_fFarPlaneDistance, ASPECT_RATIO, m_fFOV);
-			m_pCamera->SetLookPlayer();
-			XMFLOAT3 xmf3Shift = XMFLOAT3(0, 0, 0);
-			xmf3Shift = Vector3::Add(xmf3Shift, m_xmf3Up, 1);
-			m_pCamera->SetPosition(Vector3::Add(m_xmf3Position, xmf3Shift));
-			xmf3Shift = Vector3::Add(xmf3Shift, m_xmf3Look, -5);
-			m_pCamera->SetPosition(Vector3::Add(m_xmf3Position, xmf3Shift));
 		}
 	}
 }

@@ -558,8 +558,30 @@ void CDeviceManager::FrameAdvance()
 
 	if (m_BlurSwitch == BLUR_ON)
 	{
-		m_pBlurFilter->Execute(m_pd3dCommandList, m_pSceneManager->GetComputeRootSignature(),
-			m_pBlur->m_pHBlurPipelineState, m_pBlur->m_pVBlurPipelineState, CurrentBackBuffer(), 4);
+		if (m_pPlayer->GetPitchWingsRotateDegree() != 0)
+		{
+			if (m_fBlurControl < 4.0f && m_pPlayer->GetAircraftSpeed() > 500)
+				m_fBlurControl += m_GameTimer.GetTimeElapsed(); 
+			else 
+				if(m_fBlurControl > 0.0f)
+					m_fBlurControl -= 4.0f * m_GameTimer.GetTimeElapsed();
+		}
+		else
+		{
+			if (m_fBlurControl > 0.f)
+				m_fBlurControl -= 2.0f * m_GameTimer.GetTimeElapsed() ;
+			else
+				m_fBlurControl = 0.0f;
+		}
+		if (m_pPlayer->GetPitchWingsRotateDegree() > 0)
+		{
+			m_fBlurAmount = m_pPlayer->GetPitchWingsRotateDegree() * m_fBlurControl;
+		}
+		else
+			m_fBlurAmount = m_pPlayer->GetPitchWingsRotateDegree() * -m_fBlurControl;
+		if (m_pPlayer)
+			m_pBlurFilter->Execute(m_pd3dCommandList, m_pSceneManager->GetComputeRootSignature(),
+			m_pBlur->m_pHBlurPipelineState, m_pBlur->m_pVBlurPipelineState, CurrentBackBuffer(), m_fBlurAmount);
 
 		// Prepare to copy blurred output to the back buffer. 후면 버퍼에 블러처리한 텍스쳐를 복사할 수 있도록 상태 전이
 		d3dResourceBarrier.Transition.pResource = CurrentBackBuffer();
@@ -579,6 +601,8 @@ void CDeviceManager::FrameAdvance()
 	}
 	else
 	{
+		m_fBlurAmount = 0;
+		m_fBlurControl = 0;
 		d3dResourceBarrier.Transition.StateBefore = D3D12_RESOURCE_STATE_RENDER_TARGET;
 		d3dResourceBarrier.Transition.StateAfter = D3D12_RESOURCE_STATE_PRESENT;
 		d3dResourceBarrier.Transition.Subresource = D3D12_RESOURCE_BARRIER_ALL_SUBRESOURCES;

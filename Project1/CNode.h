@@ -79,3 +79,28 @@ public:
 			return false;
 	}
 };
+
+class MoveToEnemy : public BT::CompositeNode
+{
+public:
+	MoveToEnemy() {}
+	virtual ~MoveToEnemy() {}
+
+public:
+	virtual bool Invoke(CGameObject* pObj) override
+	{
+		XMFLOAT3 xmf3Pos, xmf3PlayerPos, xmf3TargetVector;
+		xmf3Pos = pObj->GetPosition();
+		xmf3PlayerPos = GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player", OBJ_PLAYER)->GetPosition();
+		xmf3TargetVector = Vector3::Subtract(xmf3Pos, xmf3PlayerPos);
+		float Lenth = sqrt(xmf3TargetVector.x * xmf3TargetVector.x + xmf3TargetVector.y * xmf3TargetVector.x + xmf3TargetVector.z * xmf3TargetVector.z);
+
+		if (Lenth < 3000)
+		{
+			cout << Lenth << endl;
+			return true;
+		}
+		else
+			return false;
+	}
+};

@@ -23,6 +23,10 @@ public:
 	void CreateDepthStencilView();
 	void ChangeSwapChainState();
 
+	void SetBulrSwitch(bool blurOn) { m_BlurSwitch = blurOn; }
+	float GetBlurControl() { return m_fBlurControl; }
+	float GetBlurAmount() { return m_fBlurAmount; }
+
 	ID3D12Resource *CurrentBackBuffer()const;
 	D3D12_CPU_DESCRIPTOR_HANDLE CurrentBackBufferView()const;
 	
@@ -101,6 +105,9 @@ private:
 	char m_videoCardDescription[128];
 
 	int m_BlurSwitch = 0;
+	float m_fBlurAmount = 0.f;
+	float m_fBlurControl = 0.f;
+
 	int m_SceneSwitch = SCENE_TEST;
 };
 
