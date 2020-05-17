@@ -72,7 +72,7 @@ public:
 
 		if (Lenth < 3000)
 		{
-			cout << Lenth << endl;
+			//cout << Lenth << endl;
 			return true;
 		}
 		else
@@ -92,15 +92,17 @@ public:
 		XMFLOAT3 xmf3Pos, xmf3PlayerPos, xmf3TargetVector;
 		xmf3Pos = pObj->GetPosition();
 		xmf3PlayerPos = GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player", OBJ_PLAYER)->GetPosition();
-		xmf3TargetVector = Vector3::Subtract(xmf3Pos, xmf3PlayerPos);
-		float Lenth = sqrt(xmf3TargetVector.x * xmf3TargetVector.x + xmf3TargetVector.y * xmf3TargetVector.x + xmf3TargetVector.z * xmf3TargetVector.z);
 
-		if (Lenth < 3000)
-		{
-			cout << Lenth << endl;
-			return true;
-		}
-		else
-			return false;
+		/*float Lenth = sqrt(xmf3TargetVector.x * xmf3TargetVector.x + xmf3TargetVector.y * xmf3TargetVector.x + xmf3TargetVector.z * xmf3TargetVector.z);
+		cout << Lenth << endl;*/
+
+		float theta = 50.f * GET_MANAGER<CDeviceManager>()->GetGameTimer().GetTimeElapsed();
+		xmf3TargetVector = Vector3::Subtract(xmf3PlayerPos, xmf3Pos);
+		xmf3TargetVector = Vector3::Normalize(xmf3TargetVector);
+		XMFLOAT3 xmfAxis = Vector3::CrossProduct(pObj->m_xmf3Look, xmf3TargetVector);
+		xmfAxis = Vector3::Normalize(xmfAxis);
+		pObj->Move(DIR_FORWARD, 200 * GET_MANAGER<CDeviceManager>()->GetGameTimer().GetTimeElapsed() , false);
+		pObj->RotateFallow(&xmfAxis, theta);
+		return true;
 	}
 };

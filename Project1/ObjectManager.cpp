@@ -71,7 +71,8 @@ void ObjectManager::Update(const float& TimeDelta)
 
 	// Collision
 	GET_MANAGER<CollisionManager>()->CollisionSphere(&m_mapObj[OBJ_ENEMY], &m_mapObj[OBJ_MISSLE]);
-
+	GET_MANAGER<CollisionManager>()->CollisionSphereToOrientedBox(&m_mapObj[OBJ_ENEMY], & m_mapObj[OBJ_ALLYBULLET]);
+	GET_MANAGER<CollisionManager>()->CollisionFloor();
 	/*GET_MANAGER<CollisionManager>()->CollisionRect(&m_mapObj[OBJ_PLAYER], &m_mapObj[OBJ_MONSTER]);
 	GET_MANAGER<CollisionManager>()->CollisionRectEx(&m_mapObj[OBJ_PLAYER], &m_mapObj[OBJ_MONSTER]);
 	GET_MANAGER<CollisionManager>()->CollisionPixelToRect(&m_mapObj[OBJ_BACK], &m_mapObj[OBJ_PLAYER]);

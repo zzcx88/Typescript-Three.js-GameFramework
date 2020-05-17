@@ -39,7 +39,6 @@ protected:
 	float m_fTimeLegElapsed = 0.0f;
 
 	bool m_bEye_fixation = false;
-	bool m_bGameOver = false;
 	bool m_bGunFire = false;
 
 

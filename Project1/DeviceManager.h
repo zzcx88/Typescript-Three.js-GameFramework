@@ -26,6 +26,7 @@ public:
 	void SetBulrSwitch(bool blurOn) { m_BlurSwitch = blurOn; }
 	float GetBlurControl() { return m_fBlurControl; }
 	float GetBlurAmount() { return m_fBlurAmount; }
+	CGameTimer GetGameTimer() { return m_GameTimer; }
 
 	ID3D12Resource *CurrentBackBuffer()const;
 	D3D12_CPU_DESCRIPTOR_HANDLE CurrentBackBufferView()const;

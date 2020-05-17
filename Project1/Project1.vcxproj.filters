@@ -172,7 +172,7 @@
     <Filter Include="GameObject\ColisionObject\SphereCollider">
       <UniqueIdentifier>{c8e3ffb4-c14f-489e-8cc1-1dee9ae53757}</UniqueIdentifier>
     </Filter>
-    <Filter Include="GameObject\ColisionObject\BoxCollider">
+    <Filter Include="GameObject\ColisionObject\OrientedBoxCollider">
       <UniqueIdentifier>{dbea42f5-1d19-4fe2-a67b-e79fff6a301c}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
@@ -351,8 +351,8 @@
     <ClInclude Include="CSphereCollider.h">
       <Filter>GameObject\ColisionObject\SphereCollider</Filter>
     </ClInclude>
-    <ClInclude Include="CBoxCollider.h">
-      <Filter>GameObject\ColisionObject\BoxCollider</Filter>
+    <ClInclude Include="COrientedBoxCollider.h">
+      <Filter>GameObject\ColisionObject\OrientedBoxCollider</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -509,8 +509,8 @@
     <ClCompile Include="CSphereCollider.cpp">
       <Filter>GameObject\ColisionObject\SphereCollider</Filter>
     </ClCompile>
-    <ClCompile Include="CBoxCollider.cpp">
-      <Filter>GameObject\ColisionObject\BoxCollider</Filter>
+    <ClCompile Include="COrientedBoxCollider.cpp">
+      <Filter>GameObject\ColisionObject\OrientedBoxCollider</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

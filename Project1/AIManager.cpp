@@ -25,12 +25,13 @@ void AIManager::MakeAction()
 
 	BT::Sequence* seqOffence = new BT::Sequence();
 
-	BT::CNode* EnemyNear = new IsEnemyNear();
-
+	BT::CNode* BT_EnemyNear = new IsEnemyNear();
+	BT::CNode* BT_MoveToEnemy = new MoveToEnemy();
 	
 	root->AddChild(selector);
 	selector->AddChild(seqPatrol);
-	seqPatrol->AddChild(EnemyNear);
+	seqPatrol->AddChild(BT_EnemyNear);
+	seqPatrol->AddChild(BT_MoveToEnemy);
 
 	m_mapNode.insert(MAPNODE::value_type(AI_AIRCRAFT, root->GetChildren()));
 }

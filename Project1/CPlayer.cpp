@@ -537,7 +537,7 @@ CAirplanePlayer::CAirplanePlayer(ID3D12Device* pd3dDevice, ID3D12GraphicsCommand
 {
 	m_pCamera = ChangeCamera(SPACESHIP_CAMERA, 0.0f);
 	SphereCollider = new CSphereCollider(pd3dDevice, pd3dCommandList, pd3dGraphicsRootSignature);
-	SphereCollider->SetScale(10, 10, 10);
+	SphereCollider->SetScale(100, 100, 100);
 	SphereCollider->SetSphereCollider(GetPosition() , 10.0f);
 
 	m_pMissleModel = CGameObject::LoadGeometryAndAnimationFromFile(pd3dDevice, pd3dCommandList, pd3dGraphicsRootSignature, "Model/Missle.bin", NULL, MODEL_ACE);
@@ -886,13 +886,12 @@ void CAirplanePlayer::MissleLaunch()
 		if (Ene.second->m_bCanFire == true&&Ene.second->GetState() != true&&m_nMSL_Count !=0)
 		{
 			XMFLOAT3* temp = Ene.second->GetPositionForMissle();
-
 			pMissle = new CMissle(m_pd3dDevice, m_pd3dCommandList, m_pd3dGraphicsRootSignature, m_pMissleModelCol, temp, m_xmf3Position, m_ObjManager);
 			pMissle->m_pCamera = m_pCamera;
 			pMissle->m_xmf3Look = m_xmf3Look;
-			pMissle->m_xmf4x4ToParent = Matrix4x4::Multiply(XMMatrixScaling(1, 1, 1), m_xmf4x4ToParent);
+			pMissle->m_xmf4x4ToParent = Matrix4x4::Multiply(XMMatrixScaling(10, 10, 10), m_xmf4x4ToParent);
 			pMissle->SetChild(m_pMissleModel->m_pModelRootObject);
-			pMissle->SetScale(1, 1, 1);
+			pMissle->SetScale(10, 10, 10);
 			pMissle->SetPosition(m_pMSL_1->GetPosition());
 			m_ObjManager->AddObject(L"player_missle", pMissle, OBJ_MISSLE);
 			
@@ -908,17 +907,16 @@ void CAirplanePlayer::GunFire(float fTimeElapsed)
 	if (m_fGunFireElapsed > m_fGunFireFrequency)
 	{
 		CBullet* pBullet;
-		pBullet = new CBullet();
+		pBullet = new CBullet(XMFLOAT3(m_pGunMuzzle->GetPosition().x - GetLookVector().x * 3, m_pGunMuzzle->GetPosition().y - GetLookVector().y * 3, m_pGunMuzzle->GetPosition().z - GetLookVector().z * 3));
 		pBullet->m_xmf3Look = m_xmf3Look;
 		pBullet->m_xmf4x4ToParent = m_xmf4x4ToParent;
 		pBullet->m_fBulletSpeed = m_fAircraftSpeed + 300.f;
-		pBullet->SetMesh((CMesh*)m_ObjManager->GetObjFromTag(L"bulletRef", OBJ_BULLET)->m_pBulletMesh);
 		pBullet->m_pEffectMaterial = new CMaterial(1);
-		pBullet->m_pEffectMaterial->SetTexture(m_ObjManager->GetObjFromTag(L"bulletRef", OBJ_BULLET)->m_pBulletTexture);
-		pBullet->m_pEffectMaterial->SetShader(m_ObjManager->GetObjFromTag(L"bulletRef", OBJ_BULLET)->m_pBulletShader);
+		pBullet->m_pEffectMaterial->SetTexture(m_ObjManager->GetObjFromTag(L"bulletRef", OBJ_ALLYBULLET)->m_pBulletTexture);
+		pBullet->m_pEffectMaterial->SetShader(m_ObjManager->GetObjFromTag(L"bulletRef", OBJ_ALLYBULLET)->m_pBulletShader);
 		pBullet->SetMaterial(0, pBullet->m_pEffectMaterial);
 		pBullet->SetPosition(XMFLOAT3(m_pGunMuzzle->GetPosition().x - GetLookVector().x * 3, m_pGunMuzzle->GetPosition().y - GetLookVector().y * 3, m_pGunMuzzle->GetPosition().z - GetLookVector().z * 3));
-		m_ObjManager->AddObject(L"player_bullet", pBullet, OBJ_BULLET);
+		m_ObjManager->AddObject(L"player_bullet", pBullet, OBJ_ALLYBULLET);
 		m_fGunFireElapsed = 0.0f;
 	}
 }
