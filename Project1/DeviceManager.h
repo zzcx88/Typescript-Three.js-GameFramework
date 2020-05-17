@@ -23,6 +23,11 @@ public:
 	void CreateDepthStencilView();
 	void ChangeSwapChainState();
 
+	void SetBulrSwitch(bool blurOn) { m_BlurSwitch = blurOn; }
+	float GetBlurControl() { return m_fBlurControl; }
+	float GetBlurAmount() { return m_fBlurAmount; }
+	CGameTimer GetGameTimer() { return m_GameTimer; }
+
 	ID3D12Resource *CurrentBackBuffer()const;
 	D3D12_CPU_DESCRIPTOR_HANDLE CurrentBackBufferView()const;
 	
@@ -106,5 +111,8 @@ private:
 	XMFLOAT3 m_xmf3prePosition = XMFLOAT3(0,0,0);
 	XMFLOAT3 m_xmf3postPosition = XMFLOAT3(0, 0, 0);
 	XMFLOAT3 m_xmf3TargetVector = XMFLOAT3(0, 0, 0);
+	float m_fBlurAmount = 0.f;
+	float m_fBlurControl = 0.f;
+
 };
 

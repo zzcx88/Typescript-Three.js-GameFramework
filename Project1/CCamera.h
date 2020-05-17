@@ -43,6 +43,9 @@ protected:
 	VS_CB_CAMERA_INFO* m_pcbMappedCamera = NULL;
 
 public:
+	float m_fTimeElapsed = 0.f;
+
+public:
 	CCamera();
 	CCamera(CCamera* pCamera);
 	virtual ~CCamera();
@@ -109,6 +112,7 @@ public:
 	virtual ~CSpaceShipCamera() { }
 
 	virtual void Rotate(float fPitch = 0.0f, float fYaw = 0.0f, float fRoll = 0.0f);
+	virtual void Update(XMFLOAT3& xmf3LookAt, float fTimeElapsed);
 };
 
 class CFirstPersonCamera : public CCamera

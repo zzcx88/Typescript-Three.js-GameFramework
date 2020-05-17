@@ -29,14 +29,17 @@ protected:
 	float m_fYawPerformance = 0.0f;
 
 	float m_fFOV = 60;
+	float m_fGunFOV = 60;
 	float m_fBurnerElapsed;
 	float m_fFarPlaneDistance = 100000.0f;
 
 	float m_fGunFireElapsed = 0.0f;
 	float m_fGunFireFrequency = 0.1f;
 
+
+	float m_fTimeLegElapsed = 0.0f;
+
 	bool m_bEye_fixation = false;
-	bool m_bGameOver = false;
 	bool m_bGunFire = false;
 
 
@@ -80,6 +83,7 @@ public:
 
 	const XMFLOAT3& GetVelocity() const { return(m_xmf3Velocity); }
 	float GetAircraftSpeed() const { return(m_fAircraftSpeed); }
+	float GetPitchWingsRotateDegree() const { return Pitch_WingsRotateDegree; }
 	float GetYaw() const { return(m_fYaw); }
 	float GetPitch() const { return(m_fPitch); }
 	float GetRoll() const { return(m_fRoll); }

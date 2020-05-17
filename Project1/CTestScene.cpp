@@ -276,6 +276,10 @@ void CTestScene::BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandLis
 	m_ObjManager->AddObject(L"Sphere", m_ppHierarchicalGameObjects[4], OBJ_TEST);*/
 
 	/*CLoadedModelInfo* p052C = CGameObject::LoadGeometryAndAnimationFromFile(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, "Model/052C.bin", NULL, MODEL_STD);*/
+	
+	CBullet* pBullet = new CBullet(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature);
+	pBullet->SetPosition(0, 0, 0);
+	m_ObjManager->AddObject(L"bulletRef", pBullet, OBJ_ALLYBULLET);
 
 	CSuperCobraObject* pSphereCollider;
 	pSphereCollider = new CSuperCobraObject(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature);
@@ -694,6 +698,7 @@ void CTestScene::AnimateObjects(float fTimeElapsed)
 	{
 		m_ppGameObjects[25]->m_pUIMaterial->m_ppTextures[0] = m_ppGameObjects[25]->m_ppUITexture[vMinute[1]];
 	}
+
 
 	// Time(h)Numb Update
 	if (vHour.size() == 0)

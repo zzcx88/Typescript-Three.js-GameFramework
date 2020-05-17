@@ -156,13 +156,14 @@ void CMissle::Rotate(XMFLOAT3* pxmf3Axis, float fAngle)
 	m_xmf4x4ToParent._22 = m_xmf3Up.y * 100;
 	m_xmf4x4ToParent._23 = m_xmf3Up.z * 100;
 
+
 	m_xmf3Look = Vector3::Normalize(m_xmf3Look);
 	m_xmf3Right = Vector3::CrossProduct(m_xmf3Up, m_xmf3Look, true);
 	m_xmf3Up = Vector3::CrossProduct(m_xmf3Look, m_xmf3Right, true);
 
-	m_xmf4x4ToParent._11 = m_xmf3Right.x * 100;
-	m_xmf4x4ToParent._12 = m_xmf3Right.y * 100;
-	m_xmf4x4ToParent._13 = m_xmf3Right.z * 100;
+	m_xmf4x4ToParent._11 = m_xmf3Right.x * 10;
+	m_xmf4x4ToParent._12 = m_xmf3Right.y * 10;
+	m_xmf4x4ToParent._13 = m_xmf3Right.z * 10;
 }
 
 

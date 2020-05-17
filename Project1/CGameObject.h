@@ -122,6 +122,7 @@ struct CB_GAMEOBJECT_INFO
 };
 
 class CSphereCollider;
+class COrientedBoxCollider;
 class CMissleFogShader;
 class CUIShader;
 class CWaterShader;
@@ -193,13 +194,20 @@ public:
 	XMFLOAT4X4						m_xmf4x4ToParent;
 	XMFLOAT4X4						m_xmf4x4World;
 
+	XMFLOAT3					m_xmf3Position = XMFLOAT3(0.0f, 0.0f, 0.0f);
+	XMFLOAT3					m_xmf3Right = XMFLOAT3(1.0f, 0.0f, 0.0f);
+	XMFLOAT3					m_xmf3Up = XMFLOAT3(0.0f, 1.0f, 0.0f);
+	XMFLOAT3					m_xmf3Look = XMFLOAT3(0.0f, 0.0f, 1.0f);
+	XMFLOAT3					m_xmf3Velocity = XMFLOAT3(0.0f, 0.0f, 0.0f);
+
 	CGameObject* m_pParent = NULL;
 	CGameObject* m_pChild = NULL;
 	CGameObject* m_pSibling = NULL;
 
 	CCamera* m_pCamera = NULL;
 
-	CSphereCollider* SphereCollider = NULL;
+	CSphereCollider*			SphereCollider = NULL;
+	COrientedBoxCollider*	OrientedBoxCollider = NULL;
 
 	CUI*						m_pUI = NULL;
 	CLockOnUI*			m_pLockOnUI = NULL;
@@ -211,6 +219,8 @@ public:
 
 	bool			m_isDead = false;
 	bool			m_bAIEnable = false;
+
+	bool			m_bGameOver = false;
 
 	void SetMesh(CMesh* pMesh);
 	//void SetMesh(int nIndex, CMesh* pMesh);
@@ -258,12 +268,15 @@ public:
 	void SetPosition(XMFLOAT3 xmf3Position);
 	void SetScale(float x, float y, float z);
 
+	void Move(DWORD nDirection, float fDistance, bool bVelocity = false);
+	void Move(const XMFLOAT3& xmf3Shift, bool bVelocity = false);
 	void MoveStrafe(float fDistance = 1.0f);
 	void MoveUp(float fDistance = 1.0f);
 	void MoveForward(float fDistance = 1.0f);
 
 	void Rotate(float fPitch = 10.0f, float fYaw = 10.0f, float fRoll = 10.0f);
 	void Rotate(XMFLOAT3* pxmf3Axis, float fAngle);
+	void RotateFallow(XMFLOAT3* pxmf3Axis, float fAngle);
 	void Rotate(XMFLOAT4* pxmf4Quaternion);
 
 	CGameObject* GetParent() { return(m_pParent); }

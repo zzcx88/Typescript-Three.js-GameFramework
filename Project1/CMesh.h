@@ -3,6 +3,13 @@
 class CMesh
 {
 public:
+	BoundingOrientedBox			m_xmOOBB;
+
+	void SetOOBB(XMFLOAT3& xmCenter, XMFLOAT3& xmExtents, XMFLOAT4& xmOrientation)
+	{
+		m_xmOOBB = BoundingOrientedBox(xmCenter, xmExtents, xmOrientation);
+	}
+public:
 	CMesh() {}
 	CMesh(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList);
 	virtual ~CMesh();

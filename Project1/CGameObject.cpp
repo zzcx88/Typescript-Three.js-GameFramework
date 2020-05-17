@@ -573,6 +573,35 @@ XMFLOAT3 CGameObject::GetRight()
 	return(Vector3::Normalize(XMFLOAT3(m_xmf4x4World._11, m_xmf4x4World._12, m_xmf4x4World._13)));
 }
 
+void CGameObject::Move(DWORD dwDirection, float fDistance, bool bUpdateVelocity)
+{
+	if (dwDirection)
+	{
+		XMFLOAT3 xmf3Shift = XMFLOAT3(0, 0, 0);
+		if (dwDirection & DIR_FORWARD) xmf3Shift = Vector3::Add(xmf3Shift, m_xmf3Look, fDistance);
+		if (dwDirection & DIR_BACKWARD) xmf3Shift = Vector3::Add(xmf3Shift, m_xmf3Look, -fDistance);
+		if (dwDirection & DIR_RIGHT) xmf3Shift = Vector3::Add(xmf3Shift, m_xmf3Right, fDistance);
+		if (dwDirection & DIR_LEFT) xmf3Shift = Vector3::Add(xmf3Shift, m_xmf3Right, -fDistance);
+		if (dwDirection & DIR_UP) xmf3Shift = Vector3::Add(xmf3Shift, m_xmf3Up, fDistance);
+		if (dwDirection & DIR_DOWN) xmf3Shift = Vector3::Add(xmf3Shift, m_xmf3Up, -fDistance);
+
+		Move(xmf3Shift, bUpdateVelocity);
+	}
+}
+
+void CGameObject::Move(const XMFLOAT3& xmf3Shift, bool bUpdateVelocity)
+{
+	if (bUpdateVelocity)
+	{
+		m_xmf3Velocity = Vector3::Add(m_xmf3Velocity, xmf3Shift);
+	}
+	else
+	{
+		m_xmf3Position = Vector3::Add(m_xmf3Position, xmf3Shift);
+		SetPosition(m_xmf3Position);
+	}
+}
+
 void CGameObject::MoveStrafe(float fDistance)
 {
 	XMFLOAT3 xmf3Position = GetPosition();
@@ -611,6 +640,29 @@ void CGameObject::Rotate(XMFLOAT3* pxmf3Axis, float fAngle)
 	m_xmf4x4ToParent = Matrix4x4::Multiply(mtxRotate, m_xmf4x4ToParent);
 
 	UpdateTransform(NULL);
+}
+
+void CGameObject::RotateFallow(XMFLOAT3* pxmf3Axis, float fAngle)
+{
+	XMMATRIX xmmtxRotate = XMMatrixRotationAxis(XMLoadFloat3(pxmf3Axis), XMConvertToRadians(fAngle));
+	m_xmf3Look = Vector3::TransformNormal(m_xmf3Look, xmmtxRotate);
+	m_xmf3Up = Vector3::TransformNormal(m_xmf3Up, xmmtxRotate);
+
+	m_xmf4x4ToParent._31 = m_xmf3Look.x * 10;
+	m_xmf4x4ToParent._32 = m_xmf3Look.y * 10;
+	m_xmf4x4ToParent._33 = m_xmf3Look.z * 10;
+
+	m_xmf4x4ToParent._21 = m_xmf3Up.x * 10;
+	m_xmf4x4ToParent._22 = m_xmf3Up.y * 10;
+	m_xmf4x4ToParent._23 = m_xmf3Up.z * 10;
+
+	m_xmf3Look = Vector3::Normalize(m_xmf3Look);
+	m_xmf3Right = Vector3::CrossProduct(m_xmf3Up, m_xmf3Look, true);
+	m_xmf3Up = Vector3::CrossProduct(m_xmf3Look, m_xmf3Right, true);
+
+	m_xmf4x4ToParent._11 = m_xmf3Right.x * 10;
+	m_xmf4x4ToParent._12 = m_xmf3Right.y * 10;
+	m_xmf4x4ToParent._13 = m_xmf3Right.z * 10;
 }
 
 void CGameObject::Rotate(XMFLOAT4* pxmf4Quaternion)

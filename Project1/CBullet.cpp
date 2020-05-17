@@ -3,6 +3,14 @@
 #include "CBoxMesh.h"
 #include "CTestScene.h"
 
+CBullet::CBullet(XMFLOAT3 xmf3Position)
+{
+	OrientedBoxCollider = new COrientedBoxCollider();
+	m_pBulletMesh = GET_MANAGER<ObjectManager>()->GetObjFromTag(L"bulletRef", OBJ_ALLYBULLET)->m_pBulletMesh;
+	m_pBulletMesh->SetOOBB(XMFLOAT3(0,0,0), XMFLOAT3(20.0f, 20.0f, 20.0f), XMFLOAT4(0.0f, 0.0f, 0.0f, 1.f));
+	SetMesh(m_pBulletMesh);
+}
+
 CBullet::CBullet(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList, ID3D12RootSignature* pd3dGraphicsRootSignature)
 {
 	m_bRefference = true;
@@ -41,6 +49,9 @@ void CBullet::Animate(float fTimeElapsed)
 
 		m_fDeleteElapsed += fTimeElapsed;
 		Move(DIR_FORWARD, m_fBulletSpeed * fTimeElapsed);
+		
+		if (OrientedBoxCollider)OrientedBoxCollider->SetPosition(GetPosition());
+		if (OrientedBoxCollider)OrientedBoxCollider->Animate(m_pBulletMesh, &m_xmf4x4World, GetPosition());
 
 		if (m_fDeleteElapsed > m_fDeleteFrequence)
 		{

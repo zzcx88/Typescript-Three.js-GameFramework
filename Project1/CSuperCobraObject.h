@@ -15,5 +15,6 @@ private:
 public:
 	virtual void OnPrepareAnimate();
 	virtual void Animate(float fTimeElapsed);
+	void CollisionActivate(CGameObject* collideTarget);
 	virtual void Render(ID3D12GraphicsCommandList* pd3dCommandList, CCamera* pCamera);
 };

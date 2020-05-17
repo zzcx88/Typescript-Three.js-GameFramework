@@ -1164,3 +1164,4 @@ D3D12_RASTERIZER_DESC CMotionBlurShader::CreateRasterizerState()
 
 	return(d3dRasterizerDesc);
 }
+

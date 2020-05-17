@@ -1,5 +1,6 @@
 #pragma once
 #include "CPlane.h"
+#include "COrientedBoxCollider.h"
 
 class CBullet : public CPlane
 {
@@ -8,12 +9,12 @@ public:
 	XMFLOAT3					m_xmf3Look = XMFLOAT3(0.0f, 0.0f, 1.0f);
 	float					m_fBulletSpeed = 0.0f;
 
-	float m_fDeleteFrequence = 2.0f;
+	float m_fDeleteFrequence = 3.0f;
 	float m_fDeleteElapsed = 0.0f;
 
 	bool m_bRefference = false;
 public:
-	CBullet() {}
+	CBullet(XMFLOAT3 xmf3Position);
 	CBullet(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList, ID3D12RootSignature* pd3dGraphicsRootSignature);
 	virtual ~CBullet();
 
