@@ -39,13 +39,12 @@ void CMenuScene::BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandLis
 
 	BuildDefaultLightsAndMaterials();
 
-	float fx = 1.f / 0.96f;
-	float fy = 1.f / 0.54f;
+	//float fx = 1.f / 0.96f;
+	//float fy = 1.f / 0.54f;
 
 	m_nGameObjects = 1;
 	m_ppGameObjects = new CGameObject * [m_nGameObjects];
-	m_ppGameObjects[0] = new CUI(10, pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, fx, fy, 0.f, XMFLOAT2(0.f, 0.f), XMFLOAT2(0.f, 0.f), XMFLOAT2(0.f, 0.f), XMFLOAT2(0.f, 0.f));
-	m_ppGameObjects[0]->SetPosition(0.f, 0.2f, 0.f);
+	m_ppGameObjects[0] = new CUI(10, pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, 2.f, 2.f, 0.f, XMFLOAT2(0.f, 0.f), XMFLOAT2(0.f, 0.f), XMFLOAT2(0.f, 0.f), XMFLOAT2(0.f, 0.f));
 
 	m_ObjManager->AddObject(L"player_ui1_testui", m_ppGameObjects[0], OBJ_UI);
 
