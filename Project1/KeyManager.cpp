@@ -46,6 +46,7 @@ int KeyManager::UpdateKey()
 	ComputeKeyState(VK_F);
 	ComputeKeyState(VK_F1);
 	ComputeKeyState(VK_F2);
+	ComputeKeyState(VK_BACK);
 	ComputeKeyState(VK_RETURN);
 
 	// Mouse

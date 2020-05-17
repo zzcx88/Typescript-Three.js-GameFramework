@@ -409,63 +409,6 @@ void CDeviceManager::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPA
 			else m_BlurSwitch = BLUR_OFF;
 			break;
 		case VK_F5:
-			if (m_SceneSwitch == SCENE_MENU)
-			{
-				m_pd3dCommandList->Reset(m_pd3dCommandAllocator, NULL);
-				m_SceneSwitch = SCENE_TEST;
-				m_pSceneManager->ChangeSceneState(SCENE_TEST, m_pd3dDevice, m_pd3dCommandList);
-				CAirplanePlayer* pPlayer = new CAirplanePlayer(m_pd3dDevice, m_pd3dCommandList, m_pSceneManager->GetGraphicsRootSignature(), NULL);
-				pPlayer->SetGameOver(false);
-				pPlayer->SetPosition(XMFLOAT3(410, 1000, -9000));
-				pPlayer->SetMissileCount(100);
-				m_pPlayer = pPlayer;
-				
-				m_pCamera = m_pPlayer->GetCamera();
-
-				m_pBlur = new CBlur(m_pd3dDevice, m_pd3dCommandList, m_pSceneManager->GetComputeRootSignature());
-
-				m_pBlurFilter = new CBlurFilter(m_pd3dDevice, FRAME_BUFFER_WIDTH, FRAME_BUFFER_HEIGHT, DXGI_FORMAT_R8G8B8A8_UNORM);
-
-				m_pBlurFilter->BuildDescriptors(
-					CD3DX12_CPU_DESCRIPTOR_HANDLE(m_pSceneManager->GetCbvSrvDescriptorHeap()->GetCPUDescriptorHandleForHeapStart(), 11, 32),
-					CD3DX12_GPU_DESCRIPTOR_HANDLE(m_pSceneManager->GetCbvSrvDescriptorHeap()->GetGPUDescriptorHandleForHeapStart(), 11, 32),
-					32);
-
-				m_pd3dCommandList->Close();
-				ID3D12CommandList* ppd3dCommandLists[] = { m_pd3dCommandList };
-				m_pd3dCommandQueue->ExecuteCommandLists(1, ppd3dCommandLists);
-
-				WaitForGpuComplete();
-
-				m_pSceneManager->SetPlayer(m_pPlayer);
-				m_pSceneManager->SetObjManagerInPlayer();
-
-				if (m_pPlayer) m_pPlayer->ReleaseUploadBuffers();
-				if (m_pSceneManager) m_pSceneManager->ReleaseUploadBuffers();
-				m_GameTimer.Reset();
-			}
-			else
-			{
-				m_pd3dCommandList->Reset(m_pd3dCommandAllocator, NULL);
-				m_SceneSwitch = SCENE_MENU;
-				m_pSceneManager->ChangeSceneState(SCENE_MENU, m_pd3dDevice, m_pd3dCommandList);
-				CTerrainPlayer* pPlayer = new CTerrainPlayer(m_pd3dDevice, m_pd3dCommandList, m_pSceneManager->GetGraphicsRootSignature(), NULL);
-				pPlayer->SetGameOver(true);
-				m_pPlayer = pPlayer;
-			
-				m_pCamera = m_pPlayer->GetCamera();
-				m_pd3dCommandList->Close();
-				ID3D12CommandList* ppd3dCommandLists[] = { m_pd3dCommandList };
-				m_pd3dCommandQueue->ExecuteCommandLists(1, ppd3dCommandLists);
-
-				WaitForGpuComplete();
-				m_pSceneManager->SetPlayer(m_pPlayer);
-				m_pSceneManager->SetObjManagerInPlayer();
-
-				if (m_pPlayer) m_pPlayer->ReleaseUploadBuffers();
-				if (m_pSceneManager) m_pSceneManager->ReleaseUploadBuffers();
-				m_GameTimer.Reset();
-			}
 			break;
 		case VK_F9:
 			ChangeSwapChainState();
@@ -476,6 +419,73 @@ void CDeviceManager::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPA
 		break;
 	default:
 		break;
+	}
+}
+
+void CDeviceManager::SceneChangeInput()
+{
+	KeyManager* keyManager = GET_MANAGER<KeyManager>();
+	DWORD dwDirection = 0;
+
+	if (true == keyManager->GetKeyState(STATE_PUSH, VK_SPACE))
+	{
+		if (m_SceneSwitch == SCENE_MENU)
+		{
+			m_pd3dCommandList->Reset(m_pd3dCommandAllocator, NULL);
+			m_SceneSwitch = SCENE_TEST;
+			m_pSceneManager->ChangeSceneState(SCENE_TEST, m_pd3dDevice, m_pd3dCommandList);
+			CAirplanePlayer* pPlayer = new CAirplanePlayer(m_pd3dDevice, m_pd3dCommandList, m_pSceneManager->GetGraphicsRootSignature(), NULL);
+			pPlayer->SetGameOver(false);
+			pPlayer->SetPosition(XMFLOAT3(410, 1000, -9000));
+			pPlayer->SetMissileCount(100);
+			m_pPlayer = pPlayer;
+
+			m_pCamera = m_pPlayer->GetCamera();
+
+			m_pBlur = new CBlur(m_pd3dDevice, m_pd3dCommandList, m_pSceneManager->GetComputeRootSignature());
+
+			m_pBlurFilter = new CBlurFilter(m_pd3dDevice, FRAME_BUFFER_WIDTH, FRAME_BUFFER_HEIGHT, DXGI_FORMAT_R8G8B8A8_UNORM);
+
+			m_pBlurFilter->BuildDescriptors(
+				CD3DX12_CPU_DESCRIPTOR_HANDLE(m_pSceneManager->GetCbvSrvDescriptorHeap()->GetCPUDescriptorHandleForHeapStart(), 11, 32),
+				CD3DX12_GPU_DESCRIPTOR_HANDLE(m_pSceneManager->GetCbvSrvDescriptorHeap()->GetGPUDescriptorHandleForHeapStart(), 11, 32),
+				32);
+
+			m_pd3dCommandList->Close();
+			ID3D12CommandList* ppd3dCommandLists[] = { m_pd3dCommandList };
+			m_pd3dCommandQueue->ExecuteCommandLists(1, ppd3dCommandLists);
+
+			WaitForGpuComplete();
+
+			m_pSceneManager->SetPlayer(m_pPlayer);
+			m_pSceneManager->SetObjManagerInPlayer();
+
+			if (m_pPlayer) m_pPlayer->ReleaseUploadBuffers();
+			if (m_pSceneManager) m_pSceneManager->ReleaseUploadBuffers();
+			m_GameTimer.Reset();
+		}
+	}
+	else if (true == keyManager->GetKeyState(STATE_PUSH, VK_BACK))
+	{
+		m_pd3dCommandList->Reset(m_pd3dCommandAllocator, NULL);
+		m_SceneSwitch = SCENE_MENU;
+		m_pSceneManager->ChangeSceneState(SCENE_MENU, m_pd3dDevice, m_pd3dCommandList);
+		CTerrainPlayer* pPlayer = new CTerrainPlayer(m_pd3dDevice, m_pd3dCommandList, m_pSceneManager->GetGraphicsRootSignature(), NULL);
+		pPlayer->SetGameOver(true);
+		m_pPlayer = pPlayer;
+
+		m_pCamera = m_pPlayer->GetCamera();
+		m_pd3dCommandList->Close();
+		ID3D12CommandList* ppd3dCommandLists[] = { m_pd3dCommandList };
+		m_pd3dCommandQueue->ExecuteCommandLists(1, ppd3dCommandLists);
+
+		WaitForGpuComplete();
+		m_pSceneManager->SetPlayer(m_pPlayer);
+		m_pSceneManager->SetObjManagerInPlayer();
+
+		if (m_pPlayer) m_pPlayer->ReleaseUploadBuffers();
+		if (m_pSceneManager) m_pSceneManager->ReleaseUploadBuffers();
+		m_GameTimer.Reset();
 	}
 }
 
