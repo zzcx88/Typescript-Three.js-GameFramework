@@ -445,11 +445,6 @@ void CTestScene::BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandLis
 	CMissleSplash* pMissleSplashRef = new CMissleSplash(0, pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, 400.f, 400.f, 0.f);
 	m_ObjManager->AddObject(L"MissleSplashRef", pMissleSplashRef, OBJ_EFFECT);
 
-	CBullet* pBullet = new CBullet(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature);
-	pBullet->SetPosition(0,0,0);
-	//pBullet->SetScale(100,100,100);
-	m_ObjManager->AddObject(L"bulletRef", pBullet, OBJ_BULLET);
-
 	CreateShaderVariables(pd3dDevice, pd3dCommandList);
 }
 

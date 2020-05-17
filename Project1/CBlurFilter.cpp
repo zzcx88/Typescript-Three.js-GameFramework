@@ -65,7 +65,7 @@ void CBlurFilter::Execute(ID3D12GraphicsCommandList* pd3dCommandList,
 	ID3D12Resource* input,
 	int blurCount)
 {
-	auto weights = CalcGaussWeights(0.5f);    // 표준 편차를 2.5로 하고 가우스 함수로 가중치를 계산한다.
+	auto weights = CalcGaussWeights(3.5f);    // 표준 편차를 2.5로 하고 가우스 함수로 가중치를 계산한다.
 	int blurRadius = (int)weights.size() / 2;     // 내림(m = n 인 행렬 크기 / 2)
 
 	pd3dCommandList->SetComputeRootSignature(pd3dRootSignature);

@@ -106,3 +106,15 @@ public:
 		return true;
 	}
 };
+
+class MoveRotate : public BT::CompositeNode
+{
+public:
+	MoveRotate() {}
+	virtual ~MoveRotate() {}
+
+public:
+	virtual bool Invoke(CGameObject* pObj) override
+	{
+	}
+};

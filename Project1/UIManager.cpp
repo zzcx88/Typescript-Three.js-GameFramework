@@ -83,6 +83,10 @@ void UIManager::MoveLockOnUI(ObjectManager::MAPOBJ* PlyList, ObjectManager::MAPO
 			GET_MANAGER<ObjectManager>()->AddObject(L"LockOnInstance", pLockOnUI, OBJ_UI);
 
 			Ene.second->m_pLockOnUI = pLockOnUI;
+			GameOBJs.emplace_back(Ene.second);
+			sort(begin(GameOBJs), end(GameOBJs), [](const CGameObject* a, const CGameObject* b) {
+				return a->m_xmf4x4World._41 < b->m_xmf4x4World._41;
+				});
 		}
 
 		Ene.second->m_pLockOnUI->MoveLockOnUI(Ene.second->GetScreenPosition(), Ene.second->GetPosition(),
@@ -90,12 +94,7 @@ void UIManager::MoveLockOnUI(ObjectManager::MAPOBJ* PlyList, ObjectManager::MAPO
 
 		if (Ene.second->m_pLockOnUI->bDetectable == true)
 		{
-			GameOBJs.emplace_back(Ene.second);
-
-			sort(begin(GameOBJs), end(GameOBJs), [](const CGameObject* a, const CGameObject* b) {
-				return a->m_xmf4x4World._41 < b->m_xmf4x4World._41;
-				});
-
+			
 			//cout << Ene.second->m_pLockOnUI->GetState() << ", " << Ene.second->GetState() << endl;
 			if(Ene.second->m_bAiming == true&&Ene.second->GetState() != true)
 			{ 
@@ -131,24 +130,43 @@ void UIManager::MoveLockOnUI(ObjectManager::MAPOBJ* PlyList, ObjectManager::MAPO
 
 	}
 
-	for (int i = 0; i < GameOBJs.size(); ++i)
+	for (auto p = GameOBJs.begin(); p != GameOBJs.end(); ++p)
 	{
-		if (i == Count)
-			GameOBJs[i]->m_bAiming = true;
-		else
+		if (*p != NULL)
 		{
-			GameOBJs[i]->m_bAiming = false;
-			GameOBJs[i]->m_bCanFire = false;
-			GameOBJs[i]->m_pLockOnUI->m_nTextureRender = 0;
+			if ((*p)->GetState() != true)
+			{
+				if (p == GameOBJs.begin() + Count)
+					(*p)->m_bAiming = true;
+				else
+				{
+					(*p)->m_bAiming = false;
+					(*p)->m_bCanFire = false;
+				}
+			}
+			else
+			{
+				p = GameOBJs.erase(p);
+				if (GameOBJs.size() <= Count)
+				{
+					Count /= 2;
+					p = GameOBJs.begin() + Count;
+				}
+				sort(begin(GameOBJs), end(GameOBJs), [](const CGameObject* a, const CGameObject* b) {
+					return a->m_xmf4x4World._41 < b->m_xmf4x4World._41;
+					});
+			}
 		}
 	}
 
+	
 
 	KeyManager* keyManager = GET_MANAGER<KeyManager>();
 	DWORD dwDirection = 0;
 
 	if (true == keyManager->GetKeyState(STATE_DOWN, VK_F))
 	{
+		cout << "Ä«¿îÆ®!" << Count << endl;
 		dwDirection |= VK_F;
 		Count++;
 		if (GameOBJs.size() <= Count)
@@ -156,7 +174,7 @@ void UIManager::MoveLockOnUI(ObjectManager::MAPOBJ* PlyList, ObjectManager::MAPO
 	}
 
 
-	GameOBJs.clear();
+	//GameOBJs.clear();
 }
 
 
