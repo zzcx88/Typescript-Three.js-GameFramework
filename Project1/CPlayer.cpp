@@ -391,7 +391,7 @@ void CPlayer::Update_Input(const float& TimeDelta)
 
 	if (m_bEye_fixation == true)
 	{
-		m_pCamera->SetPosition(XMFLOAT3(GetPosition().x - m_pCamera->GetLookVector().x * 7, GetPosition().y + 1 - m_pCamera->GetLookVector().y * 7,
+		m_pCamera->SetPosition(XMFLOAT3(GetPosition().x - m_pCamera->GetLookVector().x * 7, GetPosition().y + 1.3 - m_pCamera->GetLookVector().y * 7,
 			GetPosition().z - m_pCamera->GetLookVector().z * 7));
 		for (auto& Ene : m_ObjManager->GetObjFromType(OBJ_ENEMY))
 		{
@@ -950,7 +950,7 @@ void CAirplanePlayer::MissleLaunch()
 	pMissle->m_bLockOn = false;
 	pMissle->m_xmf4x4ToParent = Matrix4x4::Multiply(XMMatrixScaling(1, 1, 1), m_xmf4x4ToParent);
 	pMissle->SetChild(m_pMissleModel->m_pModelRootObject);
-	pMissle->SetScale(100, 100, 100);
+	pMissle->SetScale(10, 10, 10);
 	pMissle->SetPosition(m_pMSL_1->GetPosition());
 	m_ObjManager->AddObject(L"player_missle", pMissle, OBJ_MISSLE);
 	CPlayer::SetMissileCount(--m_nMSL_Count);

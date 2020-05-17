@@ -146,11 +146,17 @@ void UIManager::MoveLockOnUI(ObjectManager::MAPOBJ* PlyList, ObjectManager::MAPO
 			}
 			else
 			{
-				p = GameOBJs.erase(p);
-				if (GameOBJs.size() <= Count)
+				if (GameOBJs.size() != 1)
 				{
-					Count /= 2;
+					p = GameOBJs.erase(p);
+					Count = 0;
 					p = GameOBJs.begin() + Count;
+				}
+				else
+				{
+					GameOBJs.clear();
+					p = GameOBJs.end();
+					break;
 				}
 				sort(begin(GameOBJs), end(GameOBJs), [](const CGameObject* a, const CGameObject* b) {
 					return a->m_xmf4x4World._41 < b->m_xmf4x4World._41;
