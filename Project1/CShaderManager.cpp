@@ -878,33 +878,6 @@ CBlurHShader::CBlurHShader()
 CBlurHShader::~CBlurHShader()
 {
 }
-//
-//void CShader::CreateHShader(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList, ID3D12RootSignature* pd3dGraphicsRootSignature)
-//{
-//	::ZeroMemory(&m_d3dComputeBlurHPipelineStateDesc, sizeof(D3D12_COMPUTE_PIPELINE_STATE_DESC));
-//
-//	m_d3dComputeBlurHPipelineStateDesc.pRootSignature = pd3dGraphicsRootSignature;
-//
-//	m_d3dComputeBlurHPipelineStateDesc.CS = CreateComputeShaderH();
-//
-//	m_d3dComputeBlurHPipelineStateDesc.Flags = D3D12_PIPELINE_STATE_FLAG_NONE;
-//
-//	HRESULT hResult = pd3dDevice->CreateComputePipelineState(&m_d3dComputeBlurHPipelineStateDesc, __uuidof(ID3D12PipelineState), (void**) &m_pd3dHorzBlurPipelineState);
-//
-//	if (m_pd3dComputeShaderHBlob) m_pd3dComputeShaderHBlob->Release();
-//	
-//}
-//
-//void CBlurHShader::OnPrepareRender(ID3D12GraphicsCommandList* pd3dCommandList, int nPipelineState)
-//{
-//	if (m_pd3dHorzBlurPipelineState) pd3dCommandList->SetPipelineState(m_pd3dHorzBlurPipelineState);
-//
-//}
-//
-//void CBlurHShader::Render(ID3D12GraphicsCommandList* pd3dCommandList)
-//{
-//	OnPrepareRender(pd3dCommandList);
-//}
 
 D3D12_SHADER_BYTECODE CBlurHShader::CreateComputeShaderH()
 {
@@ -922,39 +895,14 @@ CBlurVShader::CBlurVShader()
 CBlurVShader::~CBlurVShader()
 {
 }
-//
-//void CShader::CreateVShader(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList, ID3D12RootSignature* pd3dGraphicsRootSignature)
-//{
-//	::ZeroMemory(&m_d3dComputeBlurVPipelineStateDesc, sizeof(D3D12_COMPUTE_PIPELINE_STATE_DESC));
-//
-//	m_d3dComputeBlurVPipelineStateDesc.pRootSignature = pd3dGraphicsRootSignature;
-//
-//	m_d3dComputeBlurVPipelineStateDesc.CS = CreateComputeShaderV();
-//
-//
-//	m_d3dComputeBlurVPipelineStateDesc.Flags = D3D12_PIPELINE_STATE_FLAG_NONE;
-//
-//	HRESULT hResult = pd3dDevice->CreateComputePipelineState(&m_d3dComputeBlurVPipelineStateDesc, __uuidof(ID3D12PipelineState), (void**)&m_pd3dVertBlurPipelineState);
-//
-//	if (m_pd3dComputeShaderVBlob) m_pd3dComputeShaderVBlob->Release();
-//
-//}
-//void CBlurVShader::OnPrepareRender(ID3D12GraphicsCommandList* pd3dCommandList, int nPipelineState)
-//{
-//	if (m_pd3dVertBlurPipelineState) pd3dCommandList->SetPipelineState(m_pd3dVertBlurPipelineState);
-//
-//}
-//
-//void CBlurVShader::Render(ID3D12GraphicsCommandList* pd3dCommandList)
-//{
-//	OnPrepareRender(pd3dCommandList);
-//}
+
 
 D3D12_SHADER_BYTECODE CBlurVShader::CreateComputeShaderV()
 {
 	return(CShader::CompileShaderFromFile(L"Blur.hlsl", "VertBlurCS", "cs_5_1", &m_pd3dComputeShaderVBlob));
 }
-
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//
 CWaterShader::CWaterShader()
 {
 }
@@ -1141,6 +1089,63 @@ D3D12_SHADER_BYTECODE CBulletShader::CreatePixelShader()
 
 
 D3D12_RASTERIZER_DESC CBulletShader::CreateRasterizerState()
+{
+	D3D12_RASTERIZER_DESC d3dRasterizerDesc;
+	::ZeroMemory(&d3dRasterizerDesc, sizeof(D3D12_RASTERIZER_DESC));
+	//	d3dRasterizerDesc.FillMode = D3D12_FILL_MODE_WIREFRAME;
+	d3dRasterizerDesc.FillMode = D3D12_FILL_MODE_SOLID;
+	d3dRasterizerDesc.CullMode = D3D12_CULL_MODE_BACK;
+	d3dRasterizerDesc.FrontCounterClockwise = FALSE;
+	d3dRasterizerDesc.DepthBias = 0;
+	d3dRasterizerDesc.DepthBiasClamp = 0.0f;
+	d3dRasterizerDesc.SlopeScaledDepthBias = 0.0f;
+	d3dRasterizerDesc.DepthClipEnable = TRUE;
+	d3dRasterizerDesc.MultisampleEnable = FALSE;
+	d3dRasterizerDesc.AntialiasedLineEnable = FALSE;
+	d3dRasterizerDesc.ForcedSampleCount = 0;
+	d3dRasterizerDesc.ConservativeRaster = D3D12_CONSERVATIVE_RASTERIZATION_MODE_OFF;
+
+	return(d3dRasterizerDesc);
+}
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+CMotionBlurShader::CMotionBlurShader()
+{
+}
+
+CMotionBlurShader::~CMotionBlurShader()
+{
+}
+
+D3D12_INPUT_LAYOUT_DESC CMotionBlurShader::CreateInputLayout()
+{
+	UINT nInputElementDescs = 3;
+	D3D12_INPUT_ELEMENT_DESC* pd3dInputElementDescs = new D3D12_INPUT_ELEMENT_DESC[nInputElementDescs];
+
+	pd3dInputElementDescs[0] = { "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 };
+	pd3dInputElementDescs[1] = { "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 12, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 };
+	pd3dInputElementDescs[2] = { "NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 2, 0, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 };
+
+	D3D12_INPUT_LAYOUT_DESC d3dInputLayoutDesc;
+	d3dInputLayoutDesc.pInputElementDescs = pd3dInputElementDescs;
+	d3dInputLayoutDesc.NumElements = nInputElementDescs;
+
+	return(d3dInputLayoutDesc);
+}
+
+D3D12_SHADER_BYTECODE CMotionBlurShader::CreateVertexShader()
+{
+	return(CShader::CompileShaderFromFile(L"MotionBlur.hlsl", "VS_CreateVMap", "vs_5_1", &m_pd3dVertexShaderBlob));
+}
+
+D3D12_SHADER_BYTECODE CMotionBlurShader::CreatePixelShader()
+{
+	return(CShader::CompileShaderFromFile(L"MotionBlur.hlsl", "PS_CreateVMap", "ps_5_1", &m_pd3dPixelShaderBlob));
+}
+
+
+D3D12_RASTERIZER_DESC CMotionBlurShader::CreateRasterizerState()
 {
 	D3D12_RASTERIZER_DESC d3dRasterizerDesc;
 	::ZeroMemory(&d3dRasterizerDesc, sizeof(D3D12_RASTERIZER_DESC));

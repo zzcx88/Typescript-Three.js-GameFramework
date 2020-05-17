@@ -133,7 +133,6 @@ void ObjectManager::ReleaseAll()
 				else 
 				{
 					obj.second->Release();
-					//delete obj.second;
 					obj.second = nullptr;
 				}
 			}

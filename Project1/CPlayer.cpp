@@ -853,6 +853,7 @@ void CAirplanePlayer::YawWingReturn(float fTimeElapsed)
 void CAirplanePlayer::MissleLaunch()
 {
 	CMissle* pMissle;
+	XMFLOAT3* temp = NULL;
 	m_nMSL_Count = CPlayer::GetMSLCount();
 	cout << m_nMSL_Count << endl;
 
@@ -860,11 +861,12 @@ void CAirplanePlayer::MissleLaunch()
 	{
 		if (Ene.second->m_bCanFire == true&&Ene.second->GetState() != true&&m_nMSL_Count !=0)
 		{
-			XMFLOAT3* temp = Ene.second->GetPositionForMissle();
+			temp = Ene.second->GetPositionForMissle();
 
 			pMissle = new CMissle(m_pd3dDevice, m_pd3dCommandList, m_pd3dGraphicsRootSignature, m_pMissleModelCol, temp, m_xmf3Position, m_ObjManager);
 			pMissle->m_pCamera = m_pCamera;
 			pMissle->m_xmf3Look = m_xmf3Look;
+			pMissle->m_bLockOn = true;
 			pMissle->m_xmf4x4ToParent = Matrix4x4::Multiply(XMMatrixScaling(1, 1, 1), m_xmf4x4ToParent);
 			pMissle->SetChild(m_pMissleModel->m_pModelRootObject);
 			pMissle->SetScale(1, 1, 1);
@@ -872,10 +874,22 @@ void CAirplanePlayer::MissleLaunch()
 			m_ObjManager->AddObject(L"player_missle", pMissle, OBJ_MISSLE);
 			
 			CPlayer::SetMissileCount(--m_nMSL_Count);
-			break;
+			return;
 		}
 
 	}
+
+	pMissle = new CMissle(m_pd3dDevice, m_pd3dCommandList, m_pd3dGraphicsRootSignature, m_pMissleModelCol, temp, m_xmf3Position, m_ObjManager);
+	pMissle->m_pCamera = m_pCamera;
+	pMissle->m_xmf3Look = m_xmf3Look;
+	pMissle->m_bLockOn = false;
+	pMissle->m_xmf4x4ToParent = Matrix4x4::Multiply(XMMatrixScaling(1, 1, 1), m_xmf4x4ToParent);
+	pMissle->SetChild(m_pMissleModel->m_pModelRootObject);
+	pMissle->SetScale(100, 100, 100);
+	pMissle->SetPosition(m_pMSL_1->GetPosition());
+	m_ObjManager->AddObject(L"player_missle", pMissle, OBJ_MISSLE);
+
+	CPlayer::SetMissileCount(--m_nMSL_Count);
 }
 
 void CAirplanePlayer::GunFire(float fTimeElapsed)

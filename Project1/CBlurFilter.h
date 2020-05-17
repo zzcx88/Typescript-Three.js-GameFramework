@@ -36,7 +36,7 @@ private:
 private:
 
 
-	const int MaxBlurRadius = 5;															// 최대 블러 반지름
+	const int MaxBlurRadius = 10;															// 최대 블러 반지름
 
 	ID3D12Device* md3dDevice = nullptr;
 

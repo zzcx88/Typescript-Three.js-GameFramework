@@ -102,5 +102,9 @@ private:
 
 	int m_BlurSwitch = 0;
 	int m_SceneSwitch = SCENE_MENU;
+
+	XMFLOAT3 m_xmf3prePosition = XMFLOAT3(0,0,0);
+	XMFLOAT3 m_xmf3postPosition = XMFLOAT3(0, 0, 0);
+	XMFLOAT3 m_xmf3TargetVector = XMFLOAT3(0, 0, 0);
 };
 

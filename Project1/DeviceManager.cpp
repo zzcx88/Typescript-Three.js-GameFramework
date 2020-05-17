@@ -332,22 +332,7 @@ void CDeviceManager::ChangeSwapChainState()
 void CDeviceManager::BuildScene()
 {
 	m_pd3dCommandList->Reset(m_pd3dCommandAllocator, NULL);
-	//CAirplanePlayer* pAPlayer = NULL;
-
-	/*if (m_SceneSwitch == SCENE_TEST)
-	{*/
-		/*m_pSceneManager->ChangeSceneState(SCENE_TEST, m_pd3dDevice, m_pd3dCommandList);
-		CAirplanePlayer* pPlayer = new CAirplanePlayer(m_pd3dDevice, m_pd3dCommandList, m_pSceneManager->GetGraphicsRootSignature(), NULL);
-		pPlayer->SetPosition(XMFLOAT3(410, 1000, -9000));
-		pPlayer->SetMissileCount(100);
-		m_pPlayer = pPlayer;*/
-	/*}
-	else
-	{
-		m_pSceneManager->ChangeSceneState(SCENE_MENU, m_pd3dDevice, m_pd3dCommandList);
-		CTerrainPlayer* pPlayer = new CTerrainPlayer(m_pd3dDevice, m_pd3dCommandList, m_pSceneManager->GetGraphicsRootSignature(), NULL);
-		m_pPlayer = pPlayer;
-	}*/
+	
 	m_pSceneManager->ChangeSceneState(SCENE_MENU, m_pd3dDevice, m_pd3dCommandList);
 	CTerrainPlayer* pPlayer = new CTerrainPlayer(m_pd3dDevice, m_pd3dCommandList, m_pSceneManager->GetGraphicsRootSignature(), NULL);
 	pPlayer->SetGameOver(true);
@@ -436,6 +421,16 @@ void CDeviceManager::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPA
 				m_pPlayer = pPlayer;
 				
 				m_pCamera = m_pPlayer->GetCamera();
+
+				m_pBlur = new CBlur(m_pd3dDevice, m_pd3dCommandList, m_pSceneManager->GetComputeRootSignature());
+
+				m_pBlurFilter = new CBlurFilter(m_pd3dDevice, FRAME_BUFFER_WIDTH, FRAME_BUFFER_HEIGHT, DXGI_FORMAT_R8G8B8A8_UNORM);
+
+				m_pBlurFilter->BuildDescriptors(
+					CD3DX12_CPU_DESCRIPTOR_HANDLE(m_pSceneManager->GetCbvSrvDescriptorHeap()->GetCPUDescriptorHandleForHeapStart(), 11, 32),
+					CD3DX12_GPU_DESCRIPTOR_HANDLE(m_pSceneManager->GetCbvSrvDescriptorHeap()->GetGPUDescriptorHandleForHeapStart(), 11, 32),
+					32);
+
 				m_pd3dCommandList->Close();
 				ID3D12CommandList* ppd3dCommandLists[] = { m_pd3dCommandList };
 				m_pd3dCommandQueue->ExecuteCommandLists(1, ppd3dCommandLists);
@@ -640,7 +635,14 @@ void CDeviceManager::FrameAdvance()
 
 	m_pdxgiSwapChain->Present(0, 0);
 
+	m_xmf3prePosition = m_pPlayer->GetPosition();
+
 	MoveToNextFrame();
+
+	m_xmf3postPosition = m_pPlayer->GetPosition();
+
+	m_xmf3TargetVector = Vector3::Subtract(m_xmf3postPosition, m_xmf3prePosition);
+	m_xmf3TargetVector = Vector3::Normalize(m_xmf3TargetVector);
 
 	m_GameTimer.GetFrameRate(m_pszFrameRate + 12, 37);
 	size_t nLength = _tcslen(m_pszFrameRate);

@@ -533,33 +533,33 @@ void CTestScene::AnimateObjects(float fTimeElapsed)
 
 	}*/
 
-	if (m_ObjManager->GetObjFromTag(L"SphereCollider", OBJ_ENEMY))
-	{
-		m_ObjManager->GetObjFromTag(L"SphereCollider", OBJ_ENEMY)->Rotate(0, 0.1, 0);
-		m_ObjManager->GetObjFromTag(L"SphereCollider", OBJ_ENEMY)->MoveForward(200 * fTimeElapsed);
-	}
+	//if (m_ObjManager->GetObjFromTag(L"SphereCollider", OBJ_ENEMY))
+	//{
+	//	m_ObjManager->GetObjFromTag(L"SphereCollider", OBJ_ENEMY)->Rotate(0, 0.1, 0);
+	//	m_ObjManager->GetObjFromTag(L"SphereCollider", OBJ_ENEMY)->MoveForward(200 * fTimeElapsed);
+	//}
 
-	if (m_ObjManager->GetObjFromTag(L"SphereCollider2", OBJ_ENEMY))
-	{
-		m_ObjManager->GetObjFromTag(L"SphereCollider2", OBJ_ENEMY)->Rotate(0, 0, 0);
-		m_ObjManager->GetObjFromTag(L"SphereCollider2", OBJ_ENEMY)->MoveForward(300 * fTimeElapsed);
-	}
+	//if (m_ObjManager->GetObjFromTag(L"SphereCollider2", OBJ_ENEMY))
+	//{
+	//	m_ObjManager->GetObjFromTag(L"SphereCollider2", OBJ_ENEMY)->Rotate(0, 0, 0);
+	//	m_ObjManager->GetObjFromTag(L"SphereCollider2", OBJ_ENEMY)->MoveForward(300 * fTimeElapsed);
+	//}
 
-	if (m_ObjManager->GetObjFromTag(L"SphereCollider3", OBJ_ENEMY))
-	{
-		m_ObjManager->GetObjFromTag(L"SphereCollider3", OBJ_ENEMY)->Rotate(0, -0.1, 0);
-		m_ObjManager->GetObjFromTag(L"SphereCollider3", OBJ_ENEMY)->MoveForward(400 * fTimeElapsed);
-	}
-	if (m_ObjManager->GetObjFromTag(L"SphereCollider4", OBJ_ENEMY))
-	{
-		m_ObjManager->GetObjFromTag(L"SphereCollider4", OBJ_ENEMY)->Rotate(0, 0.1, 0);
-		m_ObjManager->GetObjFromTag(L"SphereCollider4", OBJ_ENEMY)->MoveForward(500 * fTimeElapsed);
-	}
-	if (m_ObjManager->GetObjFromTag(L"SphereCollider5", OBJ_ENEMY))
-	{
-		m_ObjManager->GetObjFromTag(L"SphereCollider5", OBJ_ENEMY)->Rotate(0, -0.1, 0);
-		m_ObjManager->GetObjFromTag(L"SphereCollider5", OBJ_ENEMY)->MoveForward(600 * fTimeElapsed);
-	}
+	//if (m_ObjManager->GetObjFromTag(L"SphereCollider3", OBJ_ENEMY))
+	//{
+	//	m_ObjManager->GetObjFromTag(L"SphereCollider3", OBJ_ENEMY)->Rotate(0, -0.1, 0);
+	//	m_ObjManager->GetObjFromTag(L"SphereCollider3", OBJ_ENEMY)->MoveForward(400 * fTimeElapsed);
+	//}
+	//if (m_ObjManager->GetObjFromTag(L"SphereCollider4", OBJ_ENEMY))
+	//{
+	//	m_ObjManager->GetObjFromTag(L"SphereCollider4", OBJ_ENEMY)->Rotate(0, 0.1, 0);
+	//	m_ObjManager->GetObjFromTag(L"SphereCollider4", OBJ_ENEMY)->MoveForward(500 * fTimeElapsed);
+	//}
+	//if (m_ObjManager->GetObjFromTag(L"SphereCollider5", OBJ_ENEMY))
+	//{
+	//	m_ObjManager->GetObjFromTag(L"SphereCollider5", OBJ_ENEMY)->Rotate(0, -0.1, 0);
+	//	m_ObjManager->GetObjFromTag(L"SphereCollider5", OBJ_ENEMY)->MoveForward(600 * fTimeElapsed);
+	//}
 
 	if (m_fElapsedTime >= 60.f)
 	{
@@ -568,12 +568,12 @@ void CTestScene::AnimateObjects(float fTimeElapsed)
 		if (m_nMinute >= 60)
 			m_nHour += 1;
 		if (m_nHour >= 99)
-			m_nHour = 0;
+			m_nHour = 99;
 	}
 
 	int nSpeed = fabs((int)m_pPlayer->GetAircraftSpeed());
 	int nAlt = fabs((int)m_pPlayer->GetPosition().y);
-	int nMSL = fabs((int)m_pPlayer->GetMSLCount());
+	int nMSL = m_pPlayer->GetMSLCount();
 	int nSecond = (int)m_fElapsedTime;
 	int nMinute = (int)m_nMinute;
 	int nHour = (int)m_nHour;

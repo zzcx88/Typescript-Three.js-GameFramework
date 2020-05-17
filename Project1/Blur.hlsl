@@ -20,9 +20,19 @@ cbuffer cbSettings : register(b0)
 	float w8;
 	float w9;
 	float w10;
+	float w11;
+	float w12;
+	float w13;
+	float w14;
+	float w15;
+	float w16;
+	float w17;
+	float w18;
+	float w19;
+	float w20;
 };
 
-static const int gMaxBlurRadius = 5;
+static const int gMaxBlurRadius = 10;
 
 
 Texture2D gInput            : register(t4);
@@ -37,7 +47,7 @@ void HorzBlurCS(int3 groupThreadID : SV_GroupThreadID,
 				int3 dispatchThreadID : SV_DispatchThreadID)
 {
 	// 가중치들을 배열에 넣는다(색인으로 접근할 수 있도록)
-	float weights[11] = { w0, w1, w2, w3, w4, w5, w6, w7, w8, w9, w10 };
+	float weights[21] = { w0, w1, w2, w3, w4, w5, w6, w7, w8, w9, w10, w11, w12, w13, w14, w15, w16, w17, w18, w19, w20 };
 
 	//
 	// 대역폭을 줄이기 위해 지역 스레드 저장소를 채운다.
@@ -122,11 +132,11 @@ void VertBlurCS(int3 groupThreadID : SV_GroupThreadID,
 	
 	float4 blurColor = float4(0, 0, 0, 0);
 	
-	for(int i = -5; i <= 5; ++i)
+	for(int i = -gBlurRadius; i <= gBlurRadius; ++i)
 	{
-		int k = groupThreadID.y + 5 + i;
+		int k = groupThreadID.y + gBlurRadius + i;
 		
-		blurColor += weights[i+ 5]*gCache[k];
+		blurColor += weights[i+ gBlurRadius]*gCache[k];
 	}
 	
 	gOutput[dispatchThreadID.xy] = blurColor;

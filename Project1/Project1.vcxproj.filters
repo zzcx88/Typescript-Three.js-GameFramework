@@ -186,9 +186,6 @@
     <ClInclude Include="SingletonBase.h">
       <Filter>SingletonBase</Filter>
     </ClInclude>
-    <ClInclude Include="DeviceManager.h">
-      <Filter>Manager\DeviceManager</Filter>
-    </ClInclude>
     <ClInclude Include="SceneManager.h">
       <Filter>Manager\SceneManager</Filter>
     </ClInclude>
@@ -344,6 +341,9 @@
     </ClInclude>
     <ClInclude Include="CMenuScene.h">
       <Filter>Scene\MenuScene</Filter>
+    </ClInclude>
+    <ClInclude Include="DeviceManager.h">
+      <Filter>Manager\DeviceManager</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -537,6 +537,9 @@
       <Filter>HLSL</Filter>
     </FxCompile>
     <FxCompile Include="Clouds.hlsl">
+      <Filter>HLSL</Filter>
+    </FxCompile>
+    <FxCompile Include="MotionBlur.hlsl">
       <Filter>HLSL</Filter>
     </FxCompile>
   </ItemGroup>

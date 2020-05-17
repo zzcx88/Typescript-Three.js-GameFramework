@@ -7,17 +7,17 @@
 #include "CShaderManager.h"
 #include "CSphereCollider.h"
 
-//ID3D12DescriptorHeap* CTestScene::m_pd3dCbvSrvDescriptorHeap = NULL;
+//ID3D12DescriptorHeap* CMenuScene::m_pd3dCbvSrvDescriptorHeap = NULL;
 //
-//D3D12_CPU_DESCRIPTOR_HANDLE	CTestScene::m_d3dCbvCPUDescriptorStartHandle;
-//D3D12_GPU_DESCRIPTOR_HANDLE	CTestScene::m_d3dCbvGPUDescriptorStartHandle;
-//D3D12_CPU_DESCRIPTOR_HANDLE	CTestScene::m_d3dSrvCPUDescriptorStartHandle;
-//D3D12_GPU_DESCRIPTOR_HANDLE	CTestScene::m_d3dSrvGPUDescriptorStartHandle;
+//D3D12_CPU_DESCRIPTOR_HANDLE	CMenuScene::m_d3dCbvCPUDescriptorStartHandle;
+//D3D12_GPU_DESCRIPTOR_HANDLE	CMenuScene::m_d3dCbvGPUDescriptorStartHandle;
+//D3D12_CPU_DESCRIPTOR_HANDLE	CMenuScene::m_d3dSrvCPUDescriptorStartHandle;
+//D3D12_GPU_DESCRIPTOR_HANDLE	CMenuScene::m_d3dSrvGPUDescriptorStartHandle;
 //
-//D3D12_CPU_DESCRIPTOR_HANDLE	CTestScene::m_d3dCbvCPUDescriptorNextHandle;
-//D3D12_GPU_DESCRIPTOR_HANDLE	CTestScene::m_d3dCbvGPUDescriptorNextHandle;
-//D3D12_CPU_DESCRIPTOR_HANDLE	CTestScene::m_d3dSrvCPUDescriptorNextHandle;
-//D3D12_GPU_DESCRIPTOR_HANDLE	CTestScene::m_d3dSrvGPUDescriptorNextHandle;
+//D3D12_CPU_DESCRIPTOR_HANDLE	CMenuScene::m_d3dCbvCPUDescriptorNextHandle;
+//D3D12_GPU_DESCRIPTOR_HANDLE	CMenuScene::m_d3dCbvGPUDescriptorNextHandle;
+//D3D12_CPU_DESCRIPTOR_HANDLE	CMenuScene::m_d3dSrvCPUDescriptorNextHandle;
+//D3D12_GPU_DESCRIPTOR_HANDLE	CMenuScene::m_d3dSrvGPUDescriptorNextHandle;
 
 CMenuScene::CMenuScene()
 {

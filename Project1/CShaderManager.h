@@ -333,3 +333,20 @@ public:
 	virtual D3D12_RASTERIZER_DESC CreateRasterizerState();
 
 };
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//
+class CMotionBlurShader : public CShader
+{
+public:
+	CMotionBlurShader();
+	virtual ~CMotionBlurShader();
+
+	virtual D3D12_INPUT_LAYOUT_DESC CreateInputLayout();
+
+	virtual D3D12_SHADER_BYTECODE CreateVertexShader();
+	virtual D3D12_SHADER_BYTECODE CreatePixelShader();
+
+	virtual D3D12_RASTERIZER_DESC CreateRasterizerState();
+
+};
