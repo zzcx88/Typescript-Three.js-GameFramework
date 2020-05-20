@@ -3,6 +3,7 @@
 #include "CTestScene.h"
 #include "CNumber.h"
 #include "CUI.h"
+#include "AnimateMenuTitle.h"
 #include "CLockOnUI.h"
 #include "CShaderManager.h"
 #include "CSphereCollider.h"
@@ -44,7 +45,10 @@ void CMenuScene::BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandLis
 
 	m_nGameObjects = 1;
 	m_ppGameObjects = new CGameObject * [m_nGameObjects];
-	m_ppGameObjects[0] = new CUI(10, pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, 2.f, 2.f, 0.f, XMFLOAT2(0.f, 0.f), XMFLOAT2(0.f, 0.f), XMFLOAT2(0.f, 0.f), XMFLOAT2(0.f, 0.f));
+	m_ppGameObjects[0] = new CUI(10, pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, 2.f,2.f, 0.f, XMFLOAT2(0.f, 0.f), XMFLOAT2(0.f, 0.f), XMFLOAT2(0.f, 0.f), XMFLOAT2(0.f, 0.f));
+	
+	AnimateMenuTitle* TitleAniamation = new AnimateMenuTitle(0, pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, 2.f, 2.f, 0.f);
+	m_ObjManager->AddObject(L"TitleAnimation", TitleAniamation, OBJ_EFFECT);
 
 	m_ObjManager->AddObject(L"player_ui1_testui", m_ppGameObjects[0], OBJ_UI);
 

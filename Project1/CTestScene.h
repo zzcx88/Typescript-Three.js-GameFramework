@@ -103,5 +103,11 @@ public:
 
 	CGameTimer					m_GameTimer;
 
+	bool quadrant1 = false;
+	bool quadrant2 = false;
+	bool quadrant3 = false;
+	bool quadrant4 = false;
+
+	int RotateMode = 0;
 };
 

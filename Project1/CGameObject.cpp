@@ -644,6 +644,11 @@ void CGameObject::Rotate(XMFLOAT3* pxmf3Axis, float fAngle)
 
 void CGameObject::RotateFallow(XMFLOAT3* pxmf3Axis, float fAngle)
 {
+	if (pxmf3Axis->x == 0 && pxmf3Axis->y == 0 && pxmf3Axis->z == 0)
+	{
+		MoveUp(0.1f);
+		return;
+	}
 	XMMATRIX xmmtxRotate = XMMatrixRotationAxis(XMLoadFloat3(pxmf3Axis), XMConvertToRadians(fAngle));
 	m_xmf3Look = Vector3::TransformNormal(m_xmf3Look, xmmtxRotate);
 	m_xmf3Up = Vector3::TransformNormal(m_xmf3Up, xmmtxRotate);

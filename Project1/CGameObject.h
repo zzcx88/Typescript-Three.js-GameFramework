@@ -132,6 +132,8 @@ class CUI;
 class CLockOnUI;
 class CAfterBurner;
 class CBoxMesh;
+class CMinimapShader;
+class CNumber;
 class CGameObject
 {
 private:
@@ -176,8 +178,9 @@ public:
 ///////////////////////////////////////////
 	CPlaneMesh* m_pUIPlaneMesh;
 	CUIShader* m_pUIShader;
+	CMinimapShader* m_pMinimapShader;
 	CMaterial* m_pUIMaterial;
-	CTexture* m_ppUITexture[11];
+	CTexture* m_ppUITexture[12];
 	///////////////////////////////////////////
 	CPlaneMesh* m_pLockOnUIPlaneMesh;
 	CUIShader* m_pLockOnUIShader;
@@ -211,6 +214,7 @@ public:
 
 	CUI*						m_pUI = NULL;
 	CLockOnUI*			m_pLockOnUI = NULL;
+	CNumber* number = NULL;
 
 	bool m_bAiming = false;
 	bool m_bCanFire = false;

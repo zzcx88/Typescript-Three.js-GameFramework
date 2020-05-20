@@ -436,7 +436,7 @@ void CDeviceManager::SceneChangeInput()
 			m_pSceneManager->ChangeSceneState(SCENE_TEST, m_pd3dDevice, m_pd3dCommandList);
 			CAirplanePlayer* pPlayer = new CAirplanePlayer(m_pd3dDevice, m_pd3dCommandList, m_pSceneManager->GetGraphicsRootSignature(), NULL);
 			pPlayer->SetGameOver(false);
-			pPlayer->SetPosition(XMFLOAT3(410, 1000, -9000));
+			pPlayer->SetPosition(XMFLOAT3(410, 1000, -5000));
 			pPlayer->SetMissileCount(100);
 			m_pPlayer = pPlayer;
 

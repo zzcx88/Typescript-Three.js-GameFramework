@@ -8,6 +8,8 @@ CCamera::CCamera()
 	m_xmf4x4Identity = Matrix4x4::Identity();
 	m_xmf4x4Projection = Matrix4x4::Identity();
 	m_xmf4x4OrthogonalProjection = Matrix4x4::Identity();
+	
+
 	m_d3dViewport = { 0, 0, FRAME_BUFFER_WIDTH , FRAME_BUFFER_HEIGHT, 0.0f, 1.0f };
 	m_d3dScissorRect = { 0, 0, FRAME_BUFFER_WIDTH , FRAME_BUFFER_HEIGHT };
 	m_xmf3Position = XMFLOAT3(0.0f, 0.0f, 0.0f);
@@ -143,7 +145,7 @@ void CCamera::UpdateShaderVariables(ID3D12GraphicsCommandList* pd3dCommandList)
 	XMFLOAT4X4 xmf4x4OrthogonalProjection;
 	XMStoreFloat4x4(&xmf4x4OrthogonalProjection, XMMatrixTranspose(XMLoadFloat4x4(&m_xmf4x4OrthogonalProjection)));
 	::memcpy(&m_pcbMappedCamera->m_xmf4x4OrthogonalProjection, &xmf4x4OrthogonalProjection, sizeof(XMFLOAT4X4));
-
+	
 	::memcpy(&m_pcbMappedCamera->m_xmf3Position, &m_xmf3Position, sizeof(XMFLOAT3));
 
 	D3D12_GPU_VIRTUAL_ADDRESS d3dGpuVirtualAddress = m_pd3dcbCamera->GetGPUVirtualAddress();

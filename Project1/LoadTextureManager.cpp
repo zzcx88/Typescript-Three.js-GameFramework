@@ -25,7 +25,7 @@ UINT LoadTextureManager::LoadTextureFromFolder(ID3D12Device* pd3dDevice, ID3D12G
 		memset(tmpPath, 0, sizeof(TCHAR) * 1024);
 		lstrcpy(tmpPath, originPath);
 		lstrcat(tmpPath, (TCHAR*)file);
-		cout << (bstr_t)tmpPath << endl;
+		//cout << (bstr_t)tmpPath << endl;
 		pTexture[(UINT)i] = new CTexture(1, RESOURCE_TEXTURE2D, 0);
 		pTexture[(UINT)i]->LoadTextureFromFile(pd3dDevice, pd3dCommandList, (bstr_t)tmpPath, 0);
 		++i;

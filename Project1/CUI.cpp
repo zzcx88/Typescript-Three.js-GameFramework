@@ -39,7 +39,7 @@ CUI::CUI(int nIndex, ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCo
 	m_ppUITexture[9] = new CTexture(1, RESOURCE_TEXTURE2D, 0);
 	m_ppUITexture[9]->LoadTextureFromFile(pd3dDevice, pd3dCommandList, L"UI/CrossHair.dds", 0);
 	m_ppUITexture[10] = new CTexture(1, RESOURCE_TEXTURE2D, 0);
-	m_ppUITexture[10]->LoadTextureFromFile(pd3dDevice, pd3dCommandList, L"UI/StartMenu.dds", 0);
+	m_ppUITexture[10]->LoadTextureFromFile(pd3dDevice, pd3dCommandList, L"UI/Title.dds", 0);
 
 
 	UINT ncbElementBytes = ((sizeof(CB_GAMEOBJECT_INFO) + 255) & ~255);
@@ -69,20 +69,17 @@ void CUI::MoveMinimapPoint(XMFLOAT3& xmfPlayer, CGameObject* pGameOBJ)
 	float fx = 0.f;
 	float fy = 0.f;
 	
-	float ax = 1.f / 60000.f * 0.54;
-	float ay = 1.f / 60000.f* 0.96;
+	float getx = 0.f;
+	float gety = 0.f;
 
-	fx = (ax*(xmfPlayer.x+30000.f))-1;
-	fy = (ay*(xmfPlayer.z+30000.f))-1;
+	getx = GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player_ui9_minimap", OBJ_UI)->GetPosition().x;
+	gety = GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player_ui9_minimap", OBJ_UI)->GetPosition().y;
 
-	if (fx > -0.6f)
-		fx = -0.6f;
-	else if (fy > -0.1f)
-		fy = -0.1f;
-	else if (fx < -0.95f)
-		fx = -0.95f;
-	else if (fy < -1.f)
-		fy = -1.f;
+	fx = getx + (200.f / 10000.f) *xmfPlayer.x;
+	fy = gety + (200.f / 10000.f) * xmfPlayer.z;
+
+	cout << "-------------" << endl;
+	cout << fx << ", " <<fy << endl;
 
 	pGameOBJ->SetPosition(fx, fy, 0.f);
 }

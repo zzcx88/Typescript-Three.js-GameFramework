@@ -51,7 +51,6 @@ void UIManager::MoveMinimapPoint(ObjectManager::MAPOBJ* PlyList, ObjectManager::
 
 			Ene.second->m_pUI = pUI;
 		}
-
 		Ene.second->m_pUI->MoveMinimapPoint(Ene.second->GetPosition(), Ene.second->m_pUI);
 	}
 
@@ -74,13 +73,13 @@ void UIManager::MoveLockOnUI(ObjectManager::MAPOBJ* PlyList, ObjectManager::MAPO
 		{
 			CLockOnUI* pLockOnUI;
 			pLockOnUI = new CLockOnUI();
-			pLockOnUI->SetMesh((CMesh*)GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player_ui8_lockon", OBJ_UI)->m_pLockOnUIPlaneMesh);
-			pLockOnUI->m_ppLockOnUITexture[0] = GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player_ui8_lockon", OBJ_UI)->m_ppLockOnUITexture[0];
+			pLockOnUI->SetMesh((CMesh*)GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player_ui8_lockon", OBJ_LOCKONUI)->m_pLockOnUIPlaneMesh);
+			pLockOnUI->m_ppLockOnUITexture[0] = GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player_ui8_lockon", OBJ_LOCKONUI)->m_ppLockOnUITexture[0];
 			pLockOnUI->m_pLockOnUIMaterial = new CMaterial(1);
 			pLockOnUI->m_pLockOnUIMaterial->SetTexture(pLockOnUI->m_ppLockOnUITexture[0]);
-			pLockOnUI->m_pLockOnUIMaterial->SetShader(GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player_ui8_lockon", OBJ_UI)->m_pLockOnUIShader);
+			pLockOnUI->m_pLockOnUIMaterial->SetShader(GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player_ui8_lockon", OBJ_LOCKONUI)->m_pLockOnUIShader);
 			pLockOnUI->SetMaterial(0, pLockOnUI->m_pLockOnUIMaterial);
-			GET_MANAGER<ObjectManager>()->AddObject(L"LockOnInstance", pLockOnUI, OBJ_UI);
+			GET_MANAGER<ObjectManager>()->AddObject(L"LockOnInstance", pLockOnUI, OBJ_LOCKONUI);
 
 			Ene.second->m_pLockOnUI = pLockOnUI;
 			GameOBJs.emplace_back(Ene.second);
@@ -98,18 +97,43 @@ void UIManager::MoveLockOnUI(ObjectManager::MAPOBJ* PlyList, ObjectManager::MAPO
 			//cout << Ene.second->m_pLockOnUI->GetState() << ", " << Ene.second->GetState() << endl;
 			if(Ene.second->m_bAiming == true&&Ene.second->GetState() != true)
 			{ 
+				if (Ene.second->number == NULL)
+				{
+					CNumber* pnum;
+					pnum = new CNumber();
+					pnum->SetMesh((CMesh*)GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player_ui11_speed_number_o", OBJ_UI)->m_pUIPlaneMesh);
+					pnum->m_ppUITexture[0] = GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player_ui11_speed_number_o", OBJ_UI)->m_ppUITexture[0];
+					pnum->m_pUIMaterial = new CMaterial(1);
+					pnum->m_pUIMaterial->SetTexture(pnum->m_ppUITexture[0]);
+					pnum->m_pUIMaterial->SetShader(GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player_ui11_speed_number_o", OBJ_UI)->m_pUIShader);
+					pnum->SetMaterial(0, pnum->m_pUIMaterial);
+					pnum->SetScale(0.6f, 0.6f,0.f);
+					GET_MANAGER<ObjectManager>()->AddObject(L"NumInstance", pnum, OBJ_UI);
+
+					Ene.second->number = pnum;
+				}
+				//AnimateNum((Ene.second->GetPosition());
 				if (Ene.second->m_pLockOnUI->bLockOn == true)
 				{
 					Ene.second->m_pLockOnUI->m_nTextureRender = 0;
 					Ene.second->m_pLockOnUI->m_pLockOnUIMaterial->m_ppTextures[0] = GET_MANAGER<ObjectManager>()
-						->GetObjFromTag(L"player_ui8_lockon", OBJ_UI)->m_ppLockOnUITexture[1];
+						->GetObjFromTag(L"player_ui8_lockon", OBJ_LOCKONUI)->m_ppLockOnUITexture[1];
+
+					float fx = Ene.second->GetScreenPosition().x - ((float)FRAME_BUFFER_WIDTH / 2.f);
+					float fy = (Ene.second->GetScreenPosition().y - ((float)FRAME_BUFFER_HEIGHT / 2.f)) * -1;
+
+					Ene.second->number->SetPosition(fx-20.f, fy+8.f, 0.f);
+
 					Ene.second->m_bCanFire = true;
 				}
 				else
 				{
 					Ene.second->m_pLockOnUI->m_pLockOnUIMaterial->m_ppTextures[0] = GET_MANAGER<ObjectManager>()
-						->GetObjFromTag(L"player_ui8_lockon", OBJ_UI)->m_ppLockOnUITexture[0];
+						->GetObjFromTag(L"player_ui8_lockon", OBJ_LOCKONUI)->m_ppLockOnUITexture[0];
 					Ene.second->m_pLockOnUI->TextureAnimate();
+
+					Ene.second->number->SetPosition(-20000.f, -20000.f, 0.f);
+
 					Ene.second->m_bCanFire = false;
 				}
 			}
@@ -117,7 +141,7 @@ void UIManager::MoveLockOnUI(ObjectManager::MAPOBJ* PlyList, ObjectManager::MAPO
 			{
 				Ene.second->m_pLockOnUI->m_nTextureRender = 0;
 				Ene.second->m_pLockOnUI->m_pLockOnUIMaterial->m_ppTextures[0] = GET_MANAGER<ObjectManager>()
-					->GetObjFromTag(L"player_ui8_lockon", OBJ_UI)->m_ppLockOnUITexture[0];
+					->GetObjFromTag(L"player_ui8_lockon", OBJ_LOCKONUI)->m_ppLockOnUITexture[0];
 			}
 
 		}
@@ -125,7 +149,7 @@ void UIManager::MoveLockOnUI(ObjectManager::MAPOBJ* PlyList, ObjectManager::MAPO
 		{
 			Ene.second->m_bAiming = false;
 			Ene.second->m_pLockOnUI->m_pLockOnUIMaterial->m_ppTextures[0] = GET_MANAGER<ObjectManager>()
-				->GetObjFromTag(L"player_ui8_lockon", OBJ_UI)->m_ppLockOnUITexture[0];
+				->GetObjFromTag(L"player_ui8_lockon", OBJ_LOCKONUI)->m_ppLockOnUITexture[0];
 		}
 
 	}
@@ -172,7 +196,6 @@ void UIManager::MoveLockOnUI(ObjectManager::MAPOBJ* PlyList, ObjectManager::MAPO
 
 	if (true == keyManager->GetKeyState(STATE_DOWN, VK_F))
 	{
-		cout << "Ä«¿îÆ®!" << Count << endl;
 		dwDirection |= VK_F;
 		Count++;
 		if (GameOBJs.size() <= Count)

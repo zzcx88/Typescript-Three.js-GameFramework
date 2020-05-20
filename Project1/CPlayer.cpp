@@ -159,9 +159,9 @@ void CPlayer::Update_Input(const float& TimeDelta)
 			m_pCamera->GenerateProjectionMatrix(1.01f, m_fFarPlaneDistance, ASPECT_RATIO, m_fFOV);
 			m_pCamera->SetLookPlayer();
 			XMFLOAT3 xmf3Shift = XMFLOAT3(0, 0, 0);
-			xmf3Shift = Vector3::Add(xmf3Shift, m_xmf3Up, 1);
+			xmf3Shift = Vector3::Add(xmf3Shift, m_xmf3Up, 0.6);
 			m_pCamera->SetPosition(Vector3::Add(m_xmf3Position, xmf3Shift));
-			xmf3Shift = Vector3::Add(xmf3Shift, m_xmf3Look, -5);
+			xmf3Shift = Vector3::Add(xmf3Shift, m_xmf3Look, -4.1);
 			m_pCamera->SetPosition(Vector3::Add(m_xmf3Position, xmf3Shift));
 		}
 	}
@@ -185,9 +185,9 @@ void CPlayer::Update_Input(const float& TimeDelta)
 			m_pCamera->GenerateProjectionMatrix(1.01f, m_fFarPlaneDistance, ASPECT_RATIO, m_fFOV);
 			m_pCamera->SetLookPlayer();
 			XMFLOAT3 xmf3Shift = XMFLOAT3(0, 0, 0);
-			xmf3Shift = Vector3::Add(xmf3Shift, m_xmf3Up, 1);
+			xmf3Shift = Vector3::Add(xmf3Shift, m_xmf3Up, 0.6);
 			m_pCamera->SetPosition(Vector3::Add(m_xmf3Position, xmf3Shift));
-			xmf3Shift = Vector3::Add(xmf3Shift, m_xmf3Look, -5);
+			xmf3Shift = Vector3::Add(xmf3Shift, m_xmf3Look, -4.1);
 			m_pCamera->SetPosition(Vector3::Add(m_xmf3Position, xmf3Shift));
 		}
 		dwDirection |= VK_LCONTROL;
@@ -921,7 +921,7 @@ void CAirplanePlayer::MissleLaunch()
 	CMissle* pMissle;
 	XMFLOAT3* temp = NULL;
 	m_nMSL_Count = CPlayer::GetMSLCount();
-	cout << m_nMSL_Count << endl;
+	//cout << m_nMSL_Count << endl;
 
 	for (auto& Ene : m_ObjManager->GetObjFromType(OBJ_ENEMY))
 	{
@@ -1048,9 +1048,9 @@ CCamera* CAirplanePlayer::ChangeCamera(DWORD nNewCameraMode, float fTimeElapsed)
 		SetMaxVelocityY(1000.0f);
 		m_pCamera = OnChangeCamera(SPACESHIP_CAMERA, nCurrentCameraMode);
 		m_pCamera->SetTimeLag(0.0f);
-		m_pCamera->SetOffset(XMFLOAT3(0.0f, 1.0f, -5.0f));
+		m_pCamera->SetOffset(XMFLOAT3(0.0f, 0.6f, -4.1f));
 		m_pCamera->GenerateProjectionMatrix(1.01f, m_fFarPlaneDistance, ASPECT_RATIO, 60.0f);
-		m_pCamera->OrthogonalProjectionMatrix(1.01f, 5000.0f, FRAME_BUFFER_WIDTH, FRAME_BUFFER_HEIGHT);
+		m_pCamera->OrthogonalProjectionMatrix(-5000.f, m_fFarPlaneDistance, FRAME_BUFFER_WIDTH, FRAME_BUFFER_HEIGHT);
 		m_pCamera->SetViewport(0, 0, FRAME_BUFFER_WIDTH, FRAME_BUFFER_HEIGHT, 0.0f, 1.0f);
 		m_pCamera->SetScissorRect(0, 0, FRAME_BUFFER_WIDTH, FRAME_BUFFER_HEIGHT);
 		break;

@@ -4,7 +4,7 @@
 
 CNumber::CNumber() 
 {
-	m_nNumTex = GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player_ui11_number", OBJ_UI)->m_nNumTex;
+	m_nNumTex = GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player_ui11_speed_number_o", OBJ_UI)->m_nNumTex;
 }
 
 CNumber::CNumber(int nIndex, ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList, ID3D12RootSignature* pd3dGraphicsRootSignature, float fWidth, float fHeight, float fDepth) : CPlane()
@@ -20,7 +20,7 @@ CNumber::CNumber(int nIndex, ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList
 	bstr_t folderPath = "UI/Number";
 	m_nNumTex = GET_MANAGER<LoadTextureManager>()->LoadTextureFromFolder(pd3dDevice, pd3dCommandList, folderPath, m_ppUITexture);
 
-	cout << m_nNumTex << endl;
+	//cout << m_nNumTex << endl;
 	UINT ncbElementBytes = ((sizeof(CB_GAMEOBJECT_INFO) + 255) & ~255);
 
 	m_pUIShader = new CUIShader();
@@ -62,38 +62,13 @@ void CNumber::Animate(float fTimeElapsed)
 			}
 		}
 	}*/
-	//TextureAnimate();
+
+	TextureAnimate();
 }
 
-void CNumber::TextureAnimate(int nPlayerSpeed, CGameObject* ppGameOBJs[])
+void CNumber::TextureAnimate()
 {
-	vector<int> v;
 
-	while (nPlayerSpeed != 0)
-	{
-		v.emplace_back(nPlayerSpeed % 10);
-
-		nPlayerSpeed /= 10;
-	}
-
-	if (v.size() > 0)
-		ppGameOBJs[10]->m_pUIMaterial->m_ppTextures[0] = ppGameOBJs[10]->m_ppUITexture[v[0]];
-	if (v.size() > 1)
-		ppGameOBJs[11]->m_pUIMaterial->m_ppTextures[0] = ppGameOBJs[11]->m_ppUITexture[v[1]];
-	if (v.size() > 2)
-	{
-		ppGameOBJs[12]->m_pUIMaterial->m_ppTextures[0] = ppGameOBJs[12]->m_ppUITexture[v[2]];
-		ppGameOBJs[13]->m_pUIMaterial->m_ppTextures[0] = ppGameOBJs[13]->m_ppUITexture[0];
-	}
-	if (v.size() > 3)
-		ppGameOBJs[13]->m_pUIMaterial->m_ppTextures[0] = ppGameOBJs[13]->m_ppUITexture[v[3]];
-
-	v.clear();
-}
-
-void CNumber::CountNumber() 
-{
-	
 }
 
 void CNumber::Render(ID3D12GraphicsCommandList* pd3dCommandList, CCamera* pCamera)

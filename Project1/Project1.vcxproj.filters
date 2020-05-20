@@ -354,6 +354,12 @@
     <ClInclude Include="COrientedBoxCollider.h">
       <Filter>GameObject\ColisionObject\OrientedBoxCollider</Filter>
     </ClInclude>
+    <ClInclude Include="CMinimap.h">
+      <Filter>GameObject\Plane\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="AnimateMenuTitle.h">
+      <Filter>GameObject\Plane\UI</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="DDSTextureLoader12.cpp">
@@ -511,6 +517,12 @@
     </ClCompile>
     <ClCompile Include="COrientedBoxCollider.cpp">
       <Filter>GameObject\ColisionObject\OrientedBoxCollider</Filter>
+    </ClCompile>
+    <ClCompile Include="CMinimap.cpp">
+      <Filter>GameObject\Plane\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="AnimateMenuTitle.cpp">
+      <Filter>GameObject\Plane\UI</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

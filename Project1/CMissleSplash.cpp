@@ -16,7 +16,7 @@ CMissleSplash::CMissleSplash(int nIndex, ID3D12Device* pd3dDevice, ID3D12Graphic
 	bstr_t folderPath = "Effect/Splash/MissleSplash";
 	m_nNumTex = GET_MANAGER<LoadTextureManager>()->LoadTextureFromFolder(pd3dDevice, pd3dCommandList, folderPath, m_pEffectTexture);
 
-	cout << m_nNumTex;
+	//cout << m_nNumTex;
 	m_EffectShader = new CMissleFogShader();
 	m_EffectShader->CreateShader(pd3dDevice, pd3dCommandList, pd3dGraphicsRootSignature);
 	for (int i = 0; i < m_nNumTex; i++) CTestScene::CreateShaderResourceViews(pd3dDevice, m_pEffectTexture[i], 15, false);

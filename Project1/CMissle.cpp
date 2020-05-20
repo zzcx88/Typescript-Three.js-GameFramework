@@ -88,7 +88,7 @@ void CMissle::CollisionActivate(CGameObject* collideTarget)
 	pMissleSplash->SetMaterial(0, pMissleSplash->m_pEffectMaterial);
 	pMissleSplash->SetPosition(m_xmf4x4World._41, m_xmf4x4World._42, m_xmf4x4World._43);
 	GET_MANAGER<ObjectManager>()->AddObject(L"MissleSplashInstance", pMissleSplash, OBJ_EFFECT);
-	//GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player_ui29_score_number", OBJ_UI)->m_nPlayerScore += 50;
+	GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player_ui29_score_number", OBJ_UI)->m_nPlayerScore += 50;
 
 	m_isDead = true;
 }

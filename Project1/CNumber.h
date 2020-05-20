@@ -17,12 +17,9 @@ public:
 	float m_fFadeFrequence = 0.1f;
 
 	int m_nTextureIndex = 0;
-	int nCount = 0;
-	int m_iDigits = 0;
 
 	virtual void Animate(float fTimeElapsed);
-	void TextureAnimate(int nPlayerSpeed, CGameObject* ppGameOBJs[]);
-	void CountNumber();
+	void TextureAnimate();
 	void Render(ID3D12GraphicsCommandList* pd3dCommandList, CCamera* pCamera);
 
 };
