@@ -72,7 +72,7 @@ void CTestScene::BuildDefaultLightsAndMaterials()
 	m_pLights[2].m_xmf4Ambient = XMFLOAT4(0.3f, 0.3f, 0.3f, 1.0f);
 	m_pLights[2].m_xmf4Diffuse = XMFLOAT4(0.7f, 0.7f, 0.7f, 1.0f);
 	m_pLights[2].m_xmf4Specular = XMFLOAT4(0.4f, 0.4f, 0.4f, 0.0f);
-	m_pLights[2].m_xmf3Direction = XMFLOAT3(0.02f, -0.05f, -0.15f);
+	m_pLights[2].m_xmf3Direction = XMFLOAT3(0.02f, -0.5f, -0.15f);
 	m_pLights[3].m_bEnable = true;
 	m_pLights[3].m_nType = SPOT_LIGHT;
 	m_pLights[3].m_fRange = 600.0f;
@@ -257,10 +257,13 @@ void CTestScene::BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandLis
 
 	m_ObjManager->AddObject(L"player_ui33_crosshair", m_ppGameObjects[32], OBJ_UI);
 
-	/*XMFLOAT3 xmf3Scale(8.0f, 2.0f, 8.0f);
+	XMFLOAT3 xmf3Scale(8.0f, 2.0f, 8.0f);
 	XMFLOAT4 xmf4Color(0.0f, 0.3f, 0.0f, 0.0f);
-	m_pTerrain = new CHeightMapTerrain(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, _T("Terrain/HeightMap.raw"), 257, 257, xmf3Scale, xmf4Color);
-	m_ObjManager->AddObject(L"terrain", m_pTerrain, OBJ_MAP);*/
+	m_pTerrain = new CHeightMapTerrain(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, _T("Terrain/Stage1.raw"), 513, 513, xmf3Scale, xmf4Color);
+	m_pTerrain->SetScale(10,10,10);
+	m_pTerrain->SetPosition(-24000,-1500,-3200);
+	//m_pTerrain->Rotate(0, 90, 0);
+	m_ObjManager->AddObject(L"terrain", m_pTerrain, OBJ_MAP);
 
 	/*m_nHierarchicalGameObjects = 0;
 	m_ppHierarchicalGameObjects = new CGameObject * [m_nHierarchicalGameObjects];
@@ -295,7 +298,7 @@ void CTestScene::BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandLis
 	m_ObjManager->AddObject(L"Sphere", m_ppHierarchicalGameObjects[4], OBJ_TEST);*/
 
 	/*CLoadedModelInfo* p052C = CGameObject::LoadGeometryAndAnimationFromFile(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, "Model/052C.bin", NULL, MODEL_STD);*/
-	
+
 	CBullet* pBullet = new CBullet(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature);
 	pBullet->SetPosition(0, 0, 0);
 	m_ObjManager->AddObject(L"bulletRef", pBullet, OBJ_ALLYBULLET);
@@ -440,7 +443,7 @@ void CTestScene::BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandLis
 
 	CCloud* pCloud[8];
 
-	for(int i = 0; i < 50; ++i)
+	/*for(int i = 0; i < 50; ++i)
 	{
 		std::default_random_engine dre(time(NULL) * i * 151636);
 		std::uniform_real_distribution<float>fXPos(-64000.f, 64000.f);
@@ -459,7 +462,7 @@ void CTestScene::BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandLis
 			pCloud[j]->SetMaterial(0, pCloud[j]->m_pCloudMaterial);
 			m_ObjManager->AddObject(L"cloud", pCloud[j], OBJ_ALPHAMAP);
 		}
-	}
+	}*/
 
 	CMissleSplash* pMissleSplashRef = new CMissleSplash(0, pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, 400.f, 400.f, 0.f);
 	m_ObjManager->AddObject(L"MissleSplashRef", pMissleSplashRef, OBJ_EFFECT);
@@ -541,6 +544,14 @@ void CTestScene::AnimateObjects(float fTimeElapsed)
 {
 	m_fElapsedTime += fTimeElapsed;
 
+	KeyManager* keyManager = GET_MANAGER<KeyManager>();
+	if (true == keyManager->GetKeyState(STATE_DOWN, VK_G))
+	{
+		if(m_bStoped == false)
+			m_bStoped = true;
+		else
+			m_bStoped = false;
+	}
 	/*if (m_ObjManager->GetObjFromTag(L"SphereCollider", OBJ_ENEMY)->SphereCollider->m_BoundingSphere.Center.z != 0)
 
 	{
@@ -761,6 +772,11 @@ void CTestScene::AnimateObjects(float fTimeElapsed)
 	vScore.clear();
 
 	m_ObjManager->Update(fTimeElapsed);
+
+	/*m_ObjManager->GetObjFromTag(L"test", OBJ_TEST)->SetPosition(XMFLOAT3(m_pPlayer->GetPosition()));
+	m_ObjManager->GetObjFromTag(L"test", OBJ_TEST)->Rotate(0, 0, 1);
+	m_ObjManager->GetObjFromTag(L"test1", OBJ_TEST)->SetPosition(m_pPlayer->GetPosition().x, m_pPlayer->GetPosition().y, m_pPlayer->GetPosition().z + 2);
+	m_ObjManager->GetObjFromTag(L"test1", OBJ_TEST)->Rotate(0, 0, -1);*/
 
 	
 	XMFLOAT4X4 xmf4x4Identity = Matrix4x4::Identity();

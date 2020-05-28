@@ -22,6 +22,12 @@ cbuffer cbGameObjectInfo : register(b2)
 	uint					gnTexturesMask : packoffset(c8);
 };
 
+cbuffer cbBlandAmount : register(b3)
+{
+	float gfBlendAmount;
+	bool gbEffectedObj;
+}
+
 #include "Light.hlsl"
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //
@@ -73,6 +79,7 @@ VS_STANDARD_OUTPUT VSStandard(VS_STANDARD_INPUT input)
 	output.tangentW = mul(input.tangent, (float3x3)gmtxGameObject);
 	output.bitangentW = mul(input.bitangent, (float3x3)gmtxGameObject);
 	output.position = mul(mul(float4(output.positionW, 1.0f), gmtxView), gmtxProjection);
+
 	output.uv = input.uv;
 
 	return(output);
@@ -103,8 +110,16 @@ float4 PSStandard(VS_STANDARD_OUTPUT input) : SV_TARGET
 	{
 		normalW = normalize(input.normalW);
 	}
-	float4 cIllumination = Lighting(input.positionW, normalW);
-	return(lerp(cColor, cIllumination, 0.5f));
+	if (gbEffectedObj)
+	{
+		cColor.a = gfBlendAmount;
+		return cColor;
+	}
+	else
+	{
+		float4 cIllumination = Lighting(input.positionW, normalW);
+		return(lerp(cColor, cIllumination, 0.5f));
+	}
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

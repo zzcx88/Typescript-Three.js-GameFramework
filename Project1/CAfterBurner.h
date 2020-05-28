@@ -35,7 +35,6 @@ public:
 
 	virtual void Animate(float fTimeElapsed);
 	void TextureAnimate();
-	void SetLookAt(XMFLOAT3& xmfTarget);
 	void Render(ID3D12GraphicsCommandList* pd3dCommandList, CCamera* pCamera);
 };
 

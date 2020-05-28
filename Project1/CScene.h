@@ -39,6 +39,8 @@ public:
 	CCamera* m_pCamera = NULL;
 	ObjectManager* m_ObjManager = nullptr;
 
+	bool m_bStoped = false;
+
 	int mClientWidth = 800;
 	int mClientHeight = 600;
 

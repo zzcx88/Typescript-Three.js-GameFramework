@@ -12,6 +12,7 @@ public:
 
 public:
 	SCENESTATE GetCurrentSceneState() { return m_CurrentScene; }
+	bool GetSceneStoped() { return m_Scene->m_bStoped; }
 	ID3D12RootSignature* GetGraphicsRootSignature() { return m_Scene->GetGraphicsRootSignature(); }
 	ID3D12RootSignature* GetComputeRootSignature() { return m_Scene->GetComputeRootSignature(); }
 	ID3D12DescriptorHeap* GetCbvSrvDescriptorHeap() { return m_Scene->GetCbvSrvDescriptorHeap(); }

@@ -566,5 +566,8 @@
     <FxCompile Include="MotionBlur.hlsl">
       <Filter>HLSL</Filter>
     </FxCompile>
+    <FxCompile Include="Normal.hlsl">
+      <Filter>HLSL</Filter>
+    </FxCompile>
   </ItemGroup>
 </Project>

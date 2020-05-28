@@ -78,8 +78,8 @@ void CUI::MoveMinimapPoint(XMFLOAT3& xmfPlayer, CGameObject* pGameOBJ)
 	fx = getx + (200.f / 10000.f) *xmfPlayer.x;
 	fy = gety + (200.f / 10000.f) * xmfPlayer.z;
 
-	cout << "-------------" << endl;
-	cout << fx << ", " <<fy << endl;
+	/*cout << "-------------" << endl;
+	cout << fx << ", " <<fy << endl;*/
 
 	pGameOBJ->SetPosition(fx, fy, 0.f);
 }

@@ -147,6 +147,11 @@ void CCamera::UpdateShaderVariables(ID3D12GraphicsCommandList* pd3dCommandList)
 	::memcpy(&m_pcbMappedCamera->m_xmf4x4OrthogonalProjection, &xmf4x4OrthogonalProjection, sizeof(XMFLOAT4X4));
 	
 	::memcpy(&m_pcbMappedCamera->m_xmf3Position, &m_xmf3Position, sizeof(XMFLOAT3));
+	//if (GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player", OBJ_PLAYER) != NULL)
+	//{
+	m_fTestFloat = 0.5f;
+	::memcpy(&m_pcbMappedCamera->m_fTestFloat, &m_fTestFloat, sizeof(float));
+	//}
 
 	D3D12_GPU_VIRTUAL_ADDRESS d3dGpuVirtualAddress = m_pd3dcbCamera->GetGPUVirtualAddress();
 	pd3dCommandList->SetGraphicsRootConstantBufferView(0, d3dGpuVirtualAddress);

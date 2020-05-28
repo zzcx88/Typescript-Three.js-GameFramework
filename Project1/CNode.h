@@ -116,5 +116,6 @@ public:
 public:
 	virtual bool Invoke(CGameObject* pObj) override
 	{
+	//	pObj->
 	}
 };

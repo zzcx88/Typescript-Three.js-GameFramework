@@ -167,6 +167,14 @@ public:
 	// Score
 	int m_nScore = 0;
 
+	CGameObject* m_pRight_AfterBurnerEX;
+	CGameObject* m_pRight_AfterBurnerIN;
+	CGameObject* m_pLeft_AfterBurnerEX;
+	CGameObject* m_pLeft_AfterBurnerIN;
+
+	CLoadedModelInfo* m_pAfterBurnerEXModel;
+	CLoadedModelInfo* m_pAfterBurnerINModel;
+
 	CGameObject* m_pLeft_AfterBurner[10];
 	CGameObject* m_pRight_AfterBurner[10];
 

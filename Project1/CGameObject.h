@@ -103,6 +103,7 @@ public:
 	static CShader* m_pAceSahder;
 	static CShader* m_pSkinnedAnimationShader;
 	static CShader* m_pColliderShader;
+	static CShader* m_pAfterBurnerShader;
 
 	static void CMaterial::PrepareShaders(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList, ID3D12RootSignature* pd3dGraphicsRootSignature);
 
@@ -110,6 +111,7 @@ public:
 	void SetAceModelShader() { CMaterial::SetShader(m_pAceSahder); }
 	void SetSkinnedAnimationShader() { CMaterial::SetShader(m_pSkinnedAnimationShader); }
 	void SetColliderShader() { CMaterial::SetShader(m_pColliderShader); }
+	void SetAfterBurnerShader() { CMaterial::SetShader(m_pAfterBurnerShader); }
 
 	CShader* GetShader() { return m_pAceSahder; }
 };
@@ -127,6 +129,7 @@ class CMissleFogShader;
 class CUIShader;
 class CWaterShader;
 class CBulletShader;
+class CPlaneShader;
 class CPlaneMesh;
 class CUI;
 class CLockOnUI;
@@ -174,6 +177,7 @@ public:
 	CPlaneMesh* m_pPlaneMesh;
 	CTexture* m_pEffectTexture[50];
 	CMissleFogShader* m_EffectShader;
+	CPlaneShader* m_PlaneShader;
 	CAfterBurner* m_pAfterBurner = NULL;
 ///////////////////////////////////////////
 	CPlaneMesh* m_pUIPlaneMesh;
@@ -226,6 +230,9 @@ public:
 
 	bool			m_bGameOver = false;
 
+	float m_fBurnerBlendAmount;
+	bool m_bEffectedObj = false;
+
 	void SetMesh(CMesh* pMesh);
 	//void SetMesh(int nIndex, CMesh* pMesh);
 	void SetShader(CShader* pShader);
@@ -271,6 +278,7 @@ public:
 	void SetPosition(float x, float y, float z);
 	void SetPosition(XMFLOAT3 xmf3Position);
 	void SetScale(float x, float y, float z);
+	void SetPlaneScale(float fScaleAmount);
 
 	void Move(DWORD nDirection, float fDistance, bool bVelocity = false);
 	void Move(const XMFLOAT3& xmf3Shift, bool bVelocity = false);

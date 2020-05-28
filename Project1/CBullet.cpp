@@ -44,6 +44,7 @@ void CBullet::Animate(float fTimeElapsed)
 {
 	if (!m_bRefference)
 	{
+		m_fBurnerBlendAmount = 1;
 		m_xmf3Position.x = m_xmf4x4ToParent._41;
 		m_xmf3Position.y = m_xmf4x4ToParent._42;
 		m_xmf3Position.z = m_xmf4x4ToParent._43;

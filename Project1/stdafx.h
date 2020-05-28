@@ -61,8 +61,8 @@ using namespace DirectX::PackedVector;
 using Microsoft::WRL::ComPtr;
 //1536x864
 //1920x1080
-#define FRAME_BUFFER_WIDTH		1536
-#define FRAME_BUFFER_HEIGHT		864
+#define FRAME_BUFFER_WIDTH		1920
+#define FRAME_BUFFER_HEIGHT		1080
 
 //#define _WITH_CB_GAMEOBJECT_32BIT_CONSTANTS
 //#define _WITH_CB_GAMEOBJECT_ROOT_DESCRIPTOR
@@ -77,7 +77,7 @@ using Microsoft::WRL::ComPtr;
 #pragma comment(lib, "comsuppw.lib" )
 #pragma comment(lib, "comsuppwd.lib" )
 /*#pragma comment(lib, "DirectXTex.lib") */
-
+#pragma enable_d3d12_debug_symbols
 // TODO: 프로그램에 필요한 추가 헤더는 여기에서 참조합니다.
 
 extern UINT gnCbvSrvDescriptorIncrementSize;

@@ -37,6 +37,7 @@ VS_TEXTURED_OUTPUT VSTextured(VS_TEXTURED_INPUT input)
 float4 PSTextured(VS_TEXTURED_OUTPUT input, uint primitiveID : SV_PrimitiveID) : SV_TARGET
 {
 	float4 cColor = gtxtTexture.Sample(gssWrap, input.uv);
-
+	clip(cColor.a - 0.1f);
+	cColor.a = gfBlendAmount;
 	return(cColor);
 }
