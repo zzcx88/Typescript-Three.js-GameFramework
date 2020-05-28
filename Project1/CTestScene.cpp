@@ -262,7 +262,7 @@ void CTestScene::BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandLis
 	m_pTerrain->SetScale(10,10,10);
 	m_pTerrain->SetPosition(-24000,-1500,-3200);
 	//m_pTerrain->Rotate(0, 90, 0);
-	m_ObjManager->AddObject(L"terrain", m_pTerrain, OBJ_MAP);
+	m_ObjManager->AddObject(L"terrain", m_pTerrain, OBJ_TEST);
 
 	/*m_nHierarchicalGameObjects = 0;
 	m_ppHierarchicalGameObjects = new CGameObject * [m_nHierarchicalGameObjects];
@@ -385,7 +385,7 @@ void CTestScene::BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandLis
 	m_pWater[7] = new CWater(1, pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, 64000.f, 64000.f, 0.f);
 	m_pWater[7]->SetPosition(-64000.f, 155, -64000.f);
 	m_pWater[7]->Rotate(90, 0, 0);
-	m_ObjManager->AddObject(L"WaterBase", m_pWater[7], OBJ_ALPHAMAP);
+	m_ObjManager->AddObject(L"WaterNormal", m_pWater[7], OBJ_MAP);
 
 	m_pWater[8] = new CWater(0, pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, 64000.f, 64000.f, 0.f);
 	m_pWater[8]->SetPosition(64000.f, 140, 64000.f);
