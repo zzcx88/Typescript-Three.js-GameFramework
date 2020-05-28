@@ -109,6 +109,8 @@ void ObjectManager::Update(const float& TimeDelta)
 
 		// LockOn
 		GET_MANAGER<UIManager>()->MoveLockOnUI(&m_mapObj[OBJ_PLAYER], &m_mapObj[OBJ_ENEMY]);
+
+		GET_MANAGER<UIManager>()->NumberTextureAnimate(&m_mapObj[OBJ_PLAYER], TimeDelta);
 	}
 
 }

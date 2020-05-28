@@ -4,7 +4,8 @@
 
 CNumber::CNumber() 
 {
-	m_nNumTex = GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player_ui11_speed_number_o", OBJ_UI)->m_nNumTex;
+	m_nNumTex = GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player_ui11_speed_number_o", OBJ_SPEED_UI)->m_nNumTex;
+	v.reserve(10);
 }
 
 CNumber::CNumber(int nIndex, ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList, ID3D12RootSignature* pd3dGraphicsRootSignature, float fWidth, float fHeight, float fDepth) : CPlane()
@@ -68,12 +69,20 @@ void CNumber::Animate(float fTimeElapsed)
 
 void CNumber::TextureAnimate()
 {
-
+	if (!m_bRefference)
+	{
+		if (m_fFadeTimeElapsed > m_fFadeFrequence)
+		{
+			m_pUIMaterial->m_ppTextures[0] = m_ppUITexture[num];
+			m_fFadeTimeElapsed = 0.f;
+		}
+	}
 }
 
 void CNumber::Render(ID3D12GraphicsCommandList* pd3dCommandList, CCamera* pCamera)
 {
-
-	CGameObject::Render(pd3dCommandList, pCamera);
+	if(CGameObject::GetIsRender())
+		CGameObject::Render(pd3dCommandList, pCamera);
 	
 }
+

@@ -67,12 +67,8 @@ public:
 	void ReleaseUploadBuffers();
 
 public:
-	vector<int> vSpeed, vAlt, vMSL, vSecond, vMinute, vHour, vScore;
 	float fx, fy = 0.f;
-	
-	float								m_fElapsedTime = 0.0f;
-	int m_nMinute = 0;
-	int m_nHour = 0;
+	float m_fElapsedTime = 0.f;
 
 	int									m_nGameObjects = 0;
 	CGameObject** m_ppGameObjects = NULL;

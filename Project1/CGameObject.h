@@ -141,6 +141,10 @@ class CGameObject
 {
 private:
 	int								m_nReferences = 0;
+	int nPlayerSpeed = 0;
+	int nPlayerMSL = 0;
+
+	bool isRender = false;
 
 public:
 	void AddRef();
@@ -160,8 +164,8 @@ public:
 
 	CMesh* m_pMesh = NULL;
 	//CMesh** m_ppMeshes = NULL;
-	float m_fPlayerSpeed = 0.f;
 	int m_nPlayerScore = 0;
+
 
 	int								m_nObjects = 0;
 	int								m_nMaterials = 0;
@@ -274,6 +278,13 @@ public:
 
 	const bool& GetState() { return m_isDead; }
 	int GetScore() const { return m_nPlayerScore; }
+	int GetPlayerSpeed()const { return nPlayerSpeed; }
+	bool GetIsRender() const { return isRender; }
+	int GetPlayerMSL() const { return nPlayerMSL; }
+
+	void SetIsRender(bool b) { isRender = b; }
+	void SetPlayerSpeed(float speed) { nPlayerSpeed = (int)speed; }
+	void SetPlayerMSL(int MSL) { nPlayerMSL = MSL; }
 
 	void SetPosition(float x, float y, float z);
 	void SetPosition(XMFLOAT3 xmf3Position);

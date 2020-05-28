@@ -113,7 +113,6 @@ void CTestScene::BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandLis
 	float fx =  FRAME_BUFFER_WIDTH / 2;
 	float fy =  FRAME_BUFFER_HEIGHT / 2;
 	
-	FRAME_BUFFER_HEIGHT;
 	m_nGameObjects = 33;
 	m_ppGameObjects = new CGameObject * [m_nGameObjects];
 	m_ppGameObjects[0] = new CUI(0, pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, 200.f, 200.f, 0.f, XMFLOAT2(0.f, 0.f), XMFLOAT2(0.f, 0.f), XMFLOAT2(0.f, 0.f), XMFLOAT2(0.f, 0.f));
@@ -226,8 +225,8 @@ void CTestScene::BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandLis
 	m_ObjManager->AddObject(L"player_ui9_minimap", m_ppGameObjects[8], OBJ_UI);
 	m_ObjManager->AddObject(L"player_ui10_minimap_red", m_ppGameObjects[9], OBJ_MINIMAP_ENEMY);
 
-	m_ObjManager->AddObject(L"player_ui11_speed_number_o", m_ppGameObjects[10], OBJ_UI);
-	m_ObjManager->AddObject(L"player_ui12_speed_number_t", m_ppGameObjects[11], OBJ_UI);
+	m_ObjManager->AddObject(L"player_ui11_speed_number_o", m_ppGameObjects[10], OBJ_SPEED_UI);
+	/*m_ObjManager->AddObject(L"player_ui12_speed_number_t", m_ppGameObjects[11], OBJ_UI);
 	m_ObjManager->AddObject(L"player_ui13_speed_number_h", m_ppGameObjects[12], OBJ_UI);
 	m_ObjManager->AddObject(L"player_ui14_speed_number_th", m_ppGameObjects[13], OBJ_UI);
 
@@ -253,7 +252,7 @@ void CTestScene::BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandLis
 	m_ObjManager->AddObject(L"player_ui29_score_number", m_ppGameObjects[28], OBJ_UI);
 	m_ObjManager->AddObject(L"player_ui30_score_number", m_ppGameObjects[29], OBJ_UI);
 	m_ObjManager->AddObject(L"player_ui31_score_number", m_ppGameObjects[30], OBJ_UI);
-	m_ObjManager->AddObject(L"player_ui32_score_number", m_ppGameObjects[31], OBJ_UI);
+	m_ObjManager->AddObject(L"player_ui32_score_number", m_ppGameObjects[31], OBJ_UI);*/
 
 	m_ObjManager->AddObject(L"player_ui33_crosshair", m_ppGameObjects[32], OBJ_UI);
 
@@ -590,187 +589,172 @@ void CTestScene::AnimateObjects(float fTimeElapsed)
 	//	m_ObjManager->GetObjFromTag(L"SphereCollider5", OBJ_ENEMY)->MoveForward(600 * fTimeElapsed);
 	//}
 
-	if (m_fElapsedTime >= 60.f)
-	{
-		m_fElapsedTime = 0.f;
-		m_nMinute += 1;
-		if (m_nMinute >= 60)
-			m_nHour += 1;
-		if (m_nHour >= 99)
-			m_nHour = 99;
-	}
 
-	int nSpeed = fabs((int)m_pPlayer->GetAircraftSpeed());
-	int nAlt = fabs((int)m_pPlayer->GetPosition().y);
-	int nMSL = m_pPlayer->GetMSLCount();
-	int nSecond = (int)m_fElapsedTime;
-	int nMinute = (int)m_nMinute;
-	int nHour = (int)m_nHour;
-	int nScore = m_ObjManager->GetObjFromTag(L"player_ui29_score_number", OBJ_UI)->GetScore();
+	//while (nSpeed != 0 || nAlt != 0 || nMSL != 0 || nScore != 0 || nSecond != 0 || nMinute != 0 || nHour != 0)
+	//{
+	//	vSpeed.emplace_back(nSpeed % 10);
+	//	vAlt.emplace_back(nAlt % 10);
+	//	vMSL.emplace_back(nMSL % 10);
+	//	vSecond.emplace_back(nSecond % 10);
+	//	vMinute.emplace_back(nMinute % 10);
+	//	vHour.emplace_back(nHour % 10);
+	//	vScore.emplace_back(nScore % 10);
 
-	while (nSpeed != 0 || nAlt != 0 || nMSL != 0 || nScore != 0 || nSecond != 0 || nMinute != 0 || nHour != 0)
-	{
-		vSpeed.emplace_back(nSpeed % 10);
-		vAlt.emplace_back(nAlt % 10);
-		vMSL.emplace_back(nMSL % 10);
-		vSecond.emplace_back(nSecond % 10);
-		vMinute.emplace_back(nMinute % 10);
-		vHour.emplace_back(nHour % 10);
-		vScore.emplace_back(nScore % 10);
+	//	nSpeed /= 10;
+	//	nAlt /= 10;
+	//	nMSL /= 10;
+	//	nSecond /= 10;
+	//	nMinute /= 10;
+	//	nHour /= 10;
+	//	nScore /= 10;
+	//}
 
-		nSpeed /= 10;
-		nAlt /= 10;
-		nMSL /= 10;
-		nSecond /= 10;
-		nMinute /= 10;
-		nHour /= 10;
-		nScore /= 10;
-	}
+	//// SpeedNumb Update
+	//if (vSpeed.size() == 0)
+	//{
+	//	m_ppGameObjects[10]->m_pUIMaterial->m_ppTextures[0] = m_ppGameObjects[10]->m_ppUITexture[0];
+	//}
+	//if (vSpeed.size() > 0)
+	//	m_ppGameObjects[10]->m_pUIMaterial->m_ppTextures[0] = m_ppGameObjects[10]->m_ppUITexture[vSpeed[0]];
+	//if (vSpeed.size() > 1)
+	//	m_ppGameObjects[11]->m_pUIMaterial->m_ppTextures[0] = m_ppGameObjects[11]->m_ppUITexture[vSpeed[1]];
+	//if (vSpeed.size() > 2)
+	//{
+	//	m_ppGameObjects[12]->m_pUIMaterial->m_ppTextures[0] = m_ppGameObjects[12]->m_ppUITexture[vSpeed[2]];
+	//	m_ppGameObjects[13]->m_pUIMaterial->m_ppTextures[0] = m_ppGameObjects[13]->m_ppUITexture[0];
+	//}
+	//if (vSpeed.size() > 3)
+	//	m_ppGameObjects[13]->m_pUIMaterial->m_ppTextures[0] = m_ppGameObjects[13]->m_ppUITexture[vSpeed[3]];
 
-	// SpeedNumb Update
-	if (vSpeed.size() == 0)
-	{
-		m_ppGameObjects[10]->m_pUIMaterial->m_ppTextures[0] = m_ppGameObjects[10]->m_ppUITexture[0];
-	}
-	if (vSpeed.size() > 0)
-		m_ppGameObjects[10]->m_pUIMaterial->m_ppTextures[0] = m_ppGameObjects[10]->m_ppUITexture[vSpeed[0]];
-	if (vSpeed.size() > 1)
-		m_ppGameObjects[11]->m_pUIMaterial->m_ppTextures[0] = m_ppGameObjects[11]->m_ppUITexture[vSpeed[1]];
-	if (vSpeed.size() > 2)
-	{
-		m_ppGameObjects[12]->m_pUIMaterial->m_ppTextures[0] = m_ppGameObjects[12]->m_ppUITexture[vSpeed[2]];
-		m_ppGameObjects[13]->m_pUIMaterial->m_ppTextures[0] = m_ppGameObjects[13]->m_ppUITexture[0];
-	}
-	if (vSpeed.size() > 3)
-		m_ppGameObjects[13]->m_pUIMaterial->m_ppTextures[0] = m_ppGameObjects[13]->m_ppUITexture[vSpeed[3]];
+	//// AltNumb Update
+	//if (vAlt.size() == 0)
+	//{
+	//	m_ppGameObjects[14]->m_pUIMaterial->m_ppTextures[0] = m_ppGameObjects[14]->m_ppUITexture[0];
+	//}
+	//if (vAlt.size() > 0)
+	//{
+	//	m_ppGameObjects[14]->m_pUIMaterial->m_ppTextures[0] = m_ppGameObjects[14]->m_ppUITexture[vAlt[0]];
+	//	m_ppGameObjects[15]->m_pUIMaterial->m_ppTextures[0] = m_ppGameObjects[15]->m_ppUITexture[0];
+	//}
+	//if (vAlt.size() > 1)
+	//{
+	//	m_ppGameObjects[15]->m_pUIMaterial->m_ppTextures[0] = m_ppGameObjects[15]->m_ppUITexture[vAlt[1]];
+	//	m_ppGameObjects[16]->m_pUIMaterial->m_ppTextures[0] = m_ppGameObjects[16]->m_ppUITexture[0];
+	//}
+	//if (vAlt.size() > 2)
+	//{
+	//	m_ppGameObjects[16]->m_pUIMaterial->m_ppTextures[0] = m_ppGameObjects[16]->m_ppUITexture[vAlt[2]];
+	//	m_ppGameObjects[17]->m_pUIMaterial->m_ppTextures[0] = m_ppGameObjects[17]->m_ppUITexture[0];
+	//}
+	//if (vAlt.size() > 3)
+	//{
+	//	m_ppGameObjects[17]->m_pUIMaterial->m_ppTextures[0] = m_ppGameObjects[17]->m_ppUITexture[vAlt[3]];
+	//	m_ppGameObjects[18]->m_pUIMaterial->m_ppTextures[0] = m_ppGameObjects[18]->m_ppUITexture[0];
+	//}
+	//if (vAlt.size() > 4)
+	//{
+	//	m_ppGameObjects[18]->m_pUIMaterial->m_ppTextures[0] = m_ppGameObjects[18]->m_ppUITexture[vAlt[4]];
+	//}
 
-	// AltNumb Update
-	if (vAlt.size() == 0)
-	{
-		m_ppGameObjects[14]->m_pUIMaterial->m_ppTextures[0] = m_ppGameObjects[14]->m_ppUITexture[0];
-	}
-	if (vAlt.size() > 0)
-	{
-		m_ppGameObjects[14]->m_pUIMaterial->m_ppTextures[0] = m_ppGameObjects[14]->m_ppUITexture[vAlt[0]];
-		m_ppGameObjects[15]->m_pUIMaterial->m_ppTextures[0] = m_ppGameObjects[15]->m_ppUITexture[0];
-	}
-	if (vAlt.size() > 1)
-	{
-		m_ppGameObjects[15]->m_pUIMaterial->m_ppTextures[0] = m_ppGameObjects[15]->m_ppUITexture[vAlt[1]];
-		m_ppGameObjects[16]->m_pUIMaterial->m_ppTextures[0] = m_ppGameObjects[16]->m_ppUITexture[0];
-	}
-	if (vAlt.size() > 2)
-	{
-		m_ppGameObjects[16]->m_pUIMaterial->m_ppTextures[0] = m_ppGameObjects[16]->m_ppUITexture[vAlt[2]];
-		m_ppGameObjects[17]->m_pUIMaterial->m_ppTextures[0] = m_ppGameObjects[17]->m_ppUITexture[0];
-	}
-	if (vAlt.size() > 3)
-	{
-		m_ppGameObjects[17]->m_pUIMaterial->m_ppTextures[0] = m_ppGameObjects[17]->m_ppUITexture[vAlt[3]];
-		m_ppGameObjects[18]->m_pUIMaterial->m_ppTextures[0] = m_ppGameObjects[18]->m_ppUITexture[0];
-	}
-	if (vAlt.size() > 4)
-	{
-		m_ppGameObjects[18]->m_pUIMaterial->m_ppTextures[0] = m_ppGameObjects[18]->m_ppUITexture[vAlt[4]];
-	}
+	//// MissileNumb Update
+	//if (vMSL.size() == 0)
+	//{
+	//	m_ppGameObjects[19]->m_pUIMaterial->m_ppTextures[0] = m_ppGameObjects[19]->m_ppUITexture[0];
+	//}
+	//if (vMSL.size() > 0)
+	//{
+	//	m_ppGameObjects[19]->m_pUIMaterial->m_ppTextures[0] = m_ppGameObjects[19]->m_ppUITexture[vMSL[0]];
+	//	m_ppGameObjects[20]->m_pUIMaterial->m_ppTextures[0] = m_ppGameObjects[20]->m_ppUITexture[0];
+	//}
+	//if (vMSL.size() > 1)
+	//{
+	//	m_ppGameObjects[20]->m_pUIMaterial->m_ppTextures[0] = m_ppGameObjects[20]->m_ppUITexture[vMSL[1]];
+	//	m_ppGameObjects[21]->m_pUIMaterial->m_ppTextures[0] = m_ppGameObjects[21]->m_ppUITexture[0];
+	//}
+	//if (vMSL.size() > 2)
+	//{
+	//	m_ppGameObjects[21]->m_pUIMaterial->m_ppTextures[0] = m_ppGameObjects[21]->m_ppUITexture[vMSL[2]];
+	//}
 
-	// MissileNumb Update
-	if (vMSL.size() == 0)
-	{
-		m_ppGameObjects[19]->m_pUIMaterial->m_ppTextures[0] = m_ppGameObjects[19]->m_ppUITexture[0];
-	}
-	if (vMSL.size() > 0)
-	{
-		m_ppGameObjects[19]->m_pUIMaterial->m_ppTextures[0] = m_ppGameObjects[19]->m_ppUITexture[vMSL[0]];
-		m_ppGameObjects[20]->m_pUIMaterial->m_ppTextures[0] = m_ppGameObjects[20]->m_ppUITexture[0];
-	}
-	if (vMSL.size() > 1)
-	{
-		m_ppGameObjects[20]->m_pUIMaterial->m_ppTextures[0] = m_ppGameObjects[20]->m_ppUITexture[vMSL[1]];
-		m_ppGameObjects[21]->m_pUIMaterial->m_ppTextures[0] = m_ppGameObjects[21]->m_ppUITexture[0];
-	}
-	if (vMSL.size() > 2)
-	{
-		m_ppGameObjects[21]->m_pUIMaterial->m_ppTextures[0] = m_ppGameObjects[21]->m_ppUITexture[vMSL[2]];
-	}
+	//// Time(s)Numb Update
+	//if (vSecond.size() == 0)
+	//{
+	//	m_ppGameObjects[22]->m_pUIMaterial->m_ppTextures[0] = m_ppGameObjects[22]->m_ppUITexture[0];
+	//}
+	//if (vSecond.size() > 0)
+	//{
+	//	m_ppGameObjects[22]->m_pUIMaterial->m_ppTextures[0] = m_ppGameObjects[22]->m_ppUITexture[vSecond[0]];
+	//	m_ppGameObjects[23]->m_pUIMaterial->m_ppTextures[0] = m_ppGameObjects[23]->m_ppUITexture[0];
+	//}
+	//if (vSecond.size() > 1)
+	//{
+	//	m_ppGameObjects[23]->m_pUIMaterial->m_ppTextures[0] = m_ppGameObjects[23]->m_ppUITexture[vSecond[1]];
+	//}
 
-	// Time(s)Numb Update
-	if (vSecond.size() == 0)
-	{
-		m_ppGameObjects[22]->m_pUIMaterial->m_ppTextures[0] = m_ppGameObjects[22]->m_ppUITexture[0];
-	}
-	if (vSecond.size() > 0)
-	{
-		m_ppGameObjects[22]->m_pUIMaterial->m_ppTextures[0] = m_ppGameObjects[22]->m_ppUITexture[vSecond[0]];
-		m_ppGameObjects[23]->m_pUIMaterial->m_ppTextures[0] = m_ppGameObjects[23]->m_ppUITexture[0];
-	}
-	if (vSecond.size() > 1)
-	{
-		m_ppGameObjects[23]->m_pUIMaterial->m_ppTextures[0] = m_ppGameObjects[23]->m_ppUITexture[vSecond[1]];
-	}
-
-	// Time(m)Numb Update
-	if (vMinute.size() == 0)
-	{
-		m_ppGameObjects[24]->m_pUIMaterial->m_ppTextures[0] = m_ppGameObjects[24]->m_ppUITexture[0];
-	}
-	if (vMinute.size() > 0)
-	{
-		m_ppGameObjects[24]->m_pUIMaterial->m_ppTextures[0] = m_ppGameObjects[24]->m_ppUITexture[vMinute[0]];
-		m_ppGameObjects[25]->m_pUIMaterial->m_ppTextures[0] = m_ppGameObjects[25]->m_ppUITexture[0];
-	}
-	if (vMinute.size() > 1)
-	{
-		m_ppGameObjects[25]->m_pUIMaterial->m_ppTextures[0] = m_ppGameObjects[25]->m_ppUITexture[vMinute[1]];
-	}
+	//// Time(m)Numb Update
+	//if (vMinute.size() == 0)
+	//{
+	//	m_ppGameObjects[24]->m_pUIMaterial->m_ppTextures[0] = m_ppGameObjects[24]->m_ppUITexture[0];
+	//}
+	//if (vMinute.size() > 0)
+	//{
+	//	m_ppGameObjects[24]->m_pUIMaterial->m_ppTextures[0] = m_ppGameObjects[24]->m_ppUITexture[vMinute[0]];
+	//	m_ppGameObjects[25]->m_pUIMaterial->m_ppTextures[0] = m_ppGameObjects[25]->m_ppUITexture[0];
+	//}
+	//if (vMinute.size() > 1)
+	//{
+	//	m_ppGameObjects[25]->m_pUIMaterial->m_ppTextures[0] = m_ppGameObjects[25]->m_ppUITexture[vMinute[1]];
+	//}
 
 
-	// Time(h)Numb Update
-	if (vHour.size() == 0)
-	{
-		m_ppGameObjects[26]->m_pUIMaterial->m_ppTextures[0] = m_ppGameObjects[26]->m_ppUITexture[0];
-	}
-	if (vHour.size() > 0)
-	{
-		m_ppGameObjects[26]->m_pUIMaterial->m_ppTextures[0] = m_ppGameObjects[26]->m_ppUITexture[vHour[0]];
-		m_ppGameObjects[27]->m_pUIMaterial->m_ppTextures[0] = m_ppGameObjects[27]->m_ppUITexture[0];
-	}
-	if (vHour.size() > 1)
-	{
-		m_ppGameObjects[27]->m_pUIMaterial->m_ppTextures[0] = m_ppGameObjects[27]->m_ppUITexture[vHour[1]];
-	}
+	//// Time(h)Numb Update
+	//if (vHour.size() == 0)
+	//{
+	//	m_ppGameObjects[26]->m_pUIMaterial->m_ppTextures[0] = m_ppGameObjects[26]->m_ppUITexture[0];
+	//}
+	//if (vHour.size() > 0)
+	//{
+	//	m_ppGameObjects[26]->m_pUIMaterial->m_ppTextures[0] = m_ppGameObjects[26]->m_ppUITexture[vHour[0]];
+	//	m_ppGameObjects[27]->m_pUIMaterial->m_ppTextures[0] = m_ppGameObjects[27]->m_ppUITexture[0];
+	//}
+	//if (vHour.size() > 1)
+	//{
+	//	m_ppGameObjects[27]->m_pUIMaterial->m_ppTextures[0] = m_ppGameObjects[27]->m_ppUITexture[vHour[1]];
+	//}
 
-	// ScoreNumb Update
-	if (vScore.size() == 0)
-	{
-		m_ppGameObjects[28]->m_pUIMaterial->m_ppTextures[0] = m_ppGameObjects[28]->m_ppUITexture[0];
-	}
-	if (vScore.size() > 0)
-	{
-		m_ppGameObjects[28]->m_pUIMaterial->m_ppTextures[0] = m_ppGameObjects[28]->m_ppUITexture[vScore[0]];
-		m_ppGameObjects[29]->m_pUIMaterial->m_ppTextures[0] = m_ppGameObjects[29]->m_ppUITexture[0];
-	}
-	if (vScore.size() > 1)
-	{
-		m_ppGameObjects[29]->m_pUIMaterial->m_ppTextures[0] = m_ppGameObjects[29]->m_ppUITexture[vScore[1]];
-		m_ppGameObjects[30]->m_pUIMaterial->m_ppTextures[0] = m_ppGameObjects[30]->m_ppUITexture[0];
-	}
-	if (vScore.size() > 2)
-	{
-		m_ppGameObjects[30]->m_pUIMaterial->m_ppTextures[0] = m_ppGameObjects[30]->m_ppUITexture[vScore[2]];
-		m_ppGameObjects[31]->m_pUIMaterial->m_ppTextures[0] = m_ppGameObjects[31]->m_ppUITexture[0];
-	}
-	if (vScore.size() > 3)
-		m_ppGameObjects[31]->m_pUIMaterial->m_ppTextures[0] = m_ppGameObjects[31]->m_ppUITexture[vScore[3]];
+	//// ScoreNumb Update
+	//if (vScore.size() == 0)
+	//{
+	//	m_ppGameObjects[28]->m_pUIMaterial->m_ppTextures[0] = m_ppGameObjects[28]->m_ppUITexture[0];
+	//}
+	//if (vScore.size() > 0)
+	//{
+	//	m_ppGameObjects[28]->m_pUIMaterial->m_ppTextures[0] = m_ppGameObjects[28]->m_ppUITexture[vScore[0]];
+	//	m_ppGameObjects[29]->m_pUIMaterial->m_ppTextures[0] = m_ppGameObjects[29]->m_ppUITexture[0];
+	//}
+	//if (vScore.size() > 1)
+	//{
+	//	m_ppGameObjects[29]->m_pUIMaterial->m_ppTextures[0] = m_ppGameObjects[29]->m_ppUITexture[vScore[1]];
+	//	m_ppGameObjects[30]->m_pUIMaterial->m_ppTextures[0] = m_ppGameObjects[30]->m_ppUITexture[0];
+	//}
+	//if (vScore.size() > 2)
+	//{
+	//	m_ppGameObjects[30]->m_pUIMaterial->m_ppTextures[0] = m_ppGameObjects[30]->m_ppUITexture[vScore[2]];
+	//	m_ppGameObjects[31]->m_pUIMaterial->m_ppTextures[0] = m_ppGameObjects[31]->m_ppUITexture[0];
+	//}
+	//if (vScore.size() > 3)
+	//	m_ppGameObjects[31]->m_pUIMaterial->m_ppTextures[0] = m_ppGameObjects[31]->m_ppUITexture[vScore[3]];
 
-	vSpeed.clear();
-	vAlt.clear();
-	vMSL.clear();
-	vSecond.clear();
-	vMinute.clear();
-	vHour.clear();
-	vScore.clear();
+	//vSpeed.clear();
+	//vAlt.clear();
+	//vMSL.clear();
+	//vSecond.clear();
+	//vMinute.clear();
+	//vHour.clear();
+	//vScore.clear();
 
+	m_ObjManager->GetObjFromTag(L"player", OBJ_PLAYER)->SetPlayerMSL(m_pPlayer->GetMSLCount());
+	m_ObjManager->GetObjFromTag(L"player", OBJ_PLAYER)->SetPlayerSpeed(m_pPlayer->GetAircraftSpeed());
 	m_ObjManager->Update(fTimeElapsed);
 
 	/*m_ObjManager->GetObjFromTag(L"test", OBJ_TEST)->SetPosition(XMFLOAT3(m_pPlayer->GetPosition()));
