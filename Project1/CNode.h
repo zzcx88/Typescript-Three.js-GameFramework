@@ -90,7 +90,7 @@ public:
 	virtual bool Invoke(CGameObject* pObj) override
 	{
 		if (pObj->m_bAllyCollide == true)
-			return true;
+			return false;
 		XMFLOAT3 xmf3Pos, xmf3PlayerPos, xmf3TargetVector;
 		xmf3Pos = pObj->GetPosition();
 		xmf3PlayerPos = GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player", OBJ_PLAYER)->GetPosition();
@@ -140,7 +140,7 @@ public:
 			pObj->Move(DIR_FORWARD, 230 * GET_MANAGER<CDeviceManager>()->GetGameTimer().GetTimeElapsed(), false);
 			return true;
 		}
-		return true;
+		return false;
 	}
 };
 

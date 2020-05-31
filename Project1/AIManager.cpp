@@ -20,6 +20,7 @@ void AIManager::MakeAction()
 	BT::Selector* selector = new BT::Selector(); // ¼¿·ºÅÍ
 
 	BT::Sequence* seqPatrol = new BT::Sequence(); // Á¤Âû ½ÃÄö½º
+	BT::Sequence* seqException = new BT::Sequence(); //¿¹¿Ü ½ÃÄö½º
 	BT::Sequence* seqAvoidAction = new BT::Sequence(); 
 	BT::Sequence* seqMove = new BT::Sequence();
 
@@ -30,10 +31,11 @@ void AIManager::MakeAction()
 	BT::CNode* BT_MoveException = new MoveException();
 	
 	root->AddChild(selector);
+	selector->AddChild(seqException);
 	selector->AddChild(seqPatrol);
+	seqException->AddChild(BT_MoveException);
 	seqPatrol->AddChild(BT_EnemyNear);
 	seqPatrol->AddChild(BT_MoveToEnemy);
-	seqPatrol->AddChild(BT_MoveException);
 
 	m_mapNode.insert(MAPNODE::value_type(AI_AIRCRAFT, root->GetChildren()));
 }
