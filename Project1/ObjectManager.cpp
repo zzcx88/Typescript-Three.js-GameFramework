@@ -95,12 +95,17 @@ void ObjectManager::Update(const float& TimeDelta)
 	}
 	// Collision
 	GET_MANAGER<CollisionManager>()->CollisionSphere(&m_mapObj[OBJ_ENEMY], &m_mapObj[OBJ_MISSLE]);
+	/*{
+		const auto& iter_begin = m_mapObj[OBJ_MENU].begin();
+		const auto& iter_end = m_mapObj[OBJ_MENU].end();
+
+		for (auto iter = iter_begin; iter != iter_end;)
+		{
+			GET_MANAGER<CollisionManager>()->CollisionSphere((*iter).second, &m_mapObj[OBJ_ENEMY]);
+		}
+	}*/
 	GET_MANAGER<CollisionManager>()->CollisionSphereToOrientedBox(&m_mapObj[OBJ_ENEMY], & m_mapObj[OBJ_ALLYBULLET]);
 	GET_MANAGER<CollisionManager>()->CollisionFloor();
-	/*GET_MANAGER<CollisionManager>()->CollisionRect(&m_mapObj[OBJ_PLAYER], &m_mapObj[OBJ_MONSTER]);
-	GET_MANAGER<CollisionManager>()->CollisionRectEx(&m_mapObj[OBJ_PLAYER], &m_mapObj[OBJ_MONSTER]);
-	GET_MANAGER<CollisionManager>()->CollisionPixelToRect(&m_mapObj[OBJ_BACK], &m_mapObj[OBJ_PLAYER]);
-	GET_MANAGER<CollisionManager>()->CollisionRect(&m_mapObj[OBJ_PLAYER], &m_mapObj[OBJ_PORTAL]);*/
 	
 	if (GET_MANAGER<SceneManager>()->GetCurrentSceneState() == SCENE_TEST)
 	{

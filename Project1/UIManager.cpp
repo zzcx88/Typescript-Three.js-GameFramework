@@ -281,7 +281,7 @@ void UIManager::NumberTextureAnimate(ObjectManager::MAPOBJ* PlyList, const float
 	nHour = n_Hour;
 
 
-	cout << n_Minute << endl;
+	//cout << n_Minute << endl;
 
 	while (speed_number != 0) {
 		speed.emplace_back(speed_number % 10);

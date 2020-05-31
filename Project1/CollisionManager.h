@@ -9,6 +9,7 @@ public:
 
 public:
 	void CollisionSphere(ObjectManager::MAPOBJ* DstList, ObjectManager::MAPOBJ* SrcList);
+	void CollisionSphere(CGameObject* Dst, ObjectManager::MAPOBJ* Src);
 	void CollisionSphereToOrientedBox(ObjectManager::MAPOBJ* DstList, ObjectManager::MAPOBJ* SrcList);
 	void CollisionFloor();
 

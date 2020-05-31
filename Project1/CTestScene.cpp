@@ -339,7 +339,7 @@ void CTestScene::BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandLis
 
 	//Prepare EffectObject
 	//////////////////////////////////////////////////////
-	m_pMissleFog = new CMissleFog(0, pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, 4.f, 4.f, 0.f);
+	m_pMissleFog = new CMissleFog(0, pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, 1.f, 1.f, 0.f);
 	m_pMissleFog->m_bRefference = true;
 	m_ObjManager->AddObject(L"MissleFog", m_pMissleFog, OBJ_EFFECT);
 
@@ -442,7 +442,7 @@ void CTestScene::BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandLis
 
 	CCloud* pCloud[8];
 
-	/*for(int i = 0; i < 50; ++i)
+	for(int i = 0; i < 50; ++i)
 	{
 		std::default_random_engine dre(time(NULL) * i * 151636);
 		std::uniform_real_distribution<float>fXPos(-64000.f, 64000.f);
@@ -461,7 +461,7 @@ void CTestScene::BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandLis
 			pCloud[j]->SetMaterial(0, pCloud[j]->m_pCloudMaterial);
 			m_ObjManager->AddObject(L"cloud", pCloud[j], OBJ_ALPHAMAP);
 		}
-	}*/
+	}
 
 	CMissleSplash* pMissleSplashRef = new CMissleSplash(0, pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, 400.f, 400.f, 0.f);
 	m_ObjManager->AddObject(L"MissleSplashRef", pMissleSplashRef, OBJ_EFFECT);

@@ -438,11 +438,11 @@ void CGameObject::Animate(float fTimeElapsed)
 
 void CGameObject::CollisionActivate(CGameObject* collideTarget)
 {
-	cout << "충돌" << endl;
+	/*cout << "충돌" << endl;
 
 	m_isDead = true;
 	m_pUI->m_isDead = true;
-	m_pLockOnUI->m_isDead = true;
+	m_pLockOnUI->m_isDead = true;*/
 }
 
 void CGameObject::Render(ID3D12GraphicsCommandList* pd3dCommandList, CCamera* pCamera)

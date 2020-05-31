@@ -57,17 +57,21 @@ void CMissle::Animate(float fTimeElapsed)
 	{
 		CMissleFog* pMissleFog;
 		pMissleFog = new CMissleFog();
+		pMissleFog->m_fBurnerBlendAmount = 0.8f;
 		pMissleFog->m_pCamera = m_pCamera;
 		pMissleFog->SetMesh(m_ObjManager->GetObjFromTag(L"MissleFog", OBJ_EFFECT)->m_pPlaneMesh);
 		//머테리얼을 새로 동적할당 할 것이기 때문에 사용할 텍스쳐 갯수만큼 래퍼런스 오브젝트로부터 텍스쳐를 불러온다
-		for(int i = 0; i < 10; ++i)
-			pMissleFog->m_pEffectTexture[i] = m_ObjManager->GetObjFromTag(L"MissleFog", OBJ_EFFECT)->m_pEffectTexture[i];
+		//for(int i = 0; i < 5; ++i)
+		//	pMissleFog->m_pEffectTexture[i] = m_ObjManager->GetObjFromTag(L"MissleFog", OBJ_EFFECT)->m_pEffectTexture[i];
 		//머테리얼을 새로 동적할당 하지 않으면 래퍼런스 오브젝트를 직접 건드리게 되어 애니메이션에 차질이 생긴다.
 		pMissleFog->m_pEffectMaterial = new CMaterial(1);
-		pMissleFog->m_pEffectMaterial->SetTexture(pMissleFog->m_pEffectTexture[0]);
+		std::default_random_engine dre(time(NULL) * fTimeElapsed);
+		std::uniform_int_distribution<int> index(0, 1);
+		pMissleFog->m_pEffectMaterial->SetTexture(m_ObjManager->GetObjFromTag(L"MissleFog", OBJ_EFFECT)->m_pEffectTexture[0]);
 		pMissleFog->m_pEffectMaterial->SetShader(m_ObjManager->GetObjFromTag(L"MissleFog", OBJ_EFFECT)->m_EffectShader);
 		pMissleFog->SetMaterial(0, pMissleFog->m_pEffectMaterial);
 		pMissleFog->SetPosition(m_xmf3Position);
+		pMissleFog->m_bEffectedObj = true;
 		m_ObjManager->AddObject(L"MissleFogInstance", pMissleFog, OBJ_EFFECT);
 
 		m_fAddFogTimeElapsed = 0;

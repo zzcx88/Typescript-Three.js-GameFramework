@@ -229,6 +229,7 @@ public:
 
 	OBJTYPE				m_ObjType = OBJ_END;
 
+	bool			m_bAllyCollide = false;
 	bool			m_isDead = false;
 	bool			m_bAIEnable = false;
 

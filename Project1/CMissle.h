@@ -25,7 +25,7 @@ public:
 	bool FirstFire = true;
 	bool m_bLockOn = false;
 	float m_fDeleteFrequence = 5.0f;
-	float m_fAddFogFrequence = 0.01f;
+	float m_fAddFogFrequence = 0.001f;
 	float m_fAddFogTimeElapsed = 0.f;
 	float m_fDeleteTimeElapsed = 0.f;
 

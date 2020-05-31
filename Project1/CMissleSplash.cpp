@@ -3,6 +3,7 @@
 #include "CTestScene.h"
 CMissleSplash::CMissleSplash()
 {
+	//m_fBurnerBlendAmount = 0.8;
 	m_nNumTex = GET_MANAGER<ObjectManager>()->GetObjFromTag(L"MissleSplashRef", OBJ_EFFECT)->m_nNumTex;
 }
 
@@ -73,7 +74,7 @@ void CMissleSplash::TextureAnimate()
 
 void CMissleSplash::SetLookAt(XMFLOAT3& xmfTarget)
 {
-	XMFLOAT3 xmfUp(0.0f, 1.0f, 0.0f);
+	XMFLOAT3 xmfUp(0.0f, 0.0f, 1.0f);
 	XMFLOAT4X4 mtxLookAt = Matrix4x4::LookAtLH(xmfTarget, m_xmf3Position, xmfUp);
 	m_xmf3Right = XMFLOAT3(mtxLookAt._11, mtxLookAt._21, mtxLookAt._31);
 	m_xmf3Up = XMFLOAT3(mtxLookAt._12, mtxLookAt._22, mtxLookAt._32);
