@@ -302,6 +302,10 @@ void CTestScene::BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandLis
 	pBullet->SetPosition(0, 0, 0);
 	m_ObjManager->AddObject(L"bulletRef", pBullet, OBJ_ALLYBULLET);
 
+	CMissle* pMissleRef = new CMissle(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, &pBullet->GetPosition(), XMFLOAT3(0, 0, 0) , m_ObjManager);
+	pMissleRef->SetPosition(0, 0, 0);
+	m_ObjManager->AddObject(L"missleRef", pMissleRef, OBJ_MISSLE);
+
 	CSuperCobraObject* pSphereCollider;
 	pSphereCollider = new CSuperCobraObject(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature);
 	//pSphereCollider->SetChild(p052C->m_pModelRootObject);

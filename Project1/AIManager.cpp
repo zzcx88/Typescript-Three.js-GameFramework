@@ -29,6 +29,8 @@ void AIManager::MakeAction()
 	BT::CNode* BT_EnemyNear = new IsEnemyNear();
 	BT::CNode* BT_MoveToEnemy = new MoveToEnemy();
 	BT::CNode* BT_MoveException = new MoveException();
+	BT::CNode* BT_LockON = new LockOn();
+	BT::CNode* BT_Attack = new Attack();
 	
 	root->AddChild(selector);
 	selector->AddChild(seqException);
@@ -36,6 +38,8 @@ void AIManager::MakeAction()
 	seqException->AddChild(BT_MoveException);
 	seqPatrol->AddChild(BT_EnemyNear);
 	seqPatrol->AddChild(BT_MoveToEnemy);
+	seqPatrol->AddChild(BT_LockON);
+	seqPatrol->AddChild(BT_Attack);
 
 	m_mapNode.insert(MAPNODE::value_type(AI_AIRCRAFT, root->GetChildren()));
 }

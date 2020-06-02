@@ -70,6 +70,16 @@ void CSuperCobraObject::Animate(float fTimeElapsed)
 		MoveForward(200 * fTimeElapsed);
 	}
 
+	if (m_bAiCanFire == false)
+	{
+		m_fMissleFireElapsed += fTimeElapsed;
+		if (m_fMissleFireElapsed > m_fMissleFireFrequence)
+		{
+			m_bAiCanFire = true;
+			m_fMissleFireElapsed = 0.f;
+		}
+	}
+
 	GET_MANAGER<AIManager>()->DoAction(AI_AIRCRAFT, this);
 }
 
@@ -78,7 +88,7 @@ void CSuperCobraObject::CollisionActivate(CGameObject* collideTarget)
 	if (collideTarget->m_ObjType == OBJ_ENEMY && m_bAllyCollide == false)
 	{
 		m_bAllyCollide = true;
-		SetPosition(XMFLOAT3(GetPosition().x, GetPosition().y+1, GetPosition().z));
+		//SetPosition(XMFLOAT3(GetPosition().x, GetPosition().y+1, GetPosition().z));
 		std::default_random_engine dre(time(NULL) * GetPosition().z);
 		std::uniform_real_distribution<float>fYDegree(-90, 90);
 		std::uniform_real_distribution<float>fXDegree(-90, 90);

@@ -144,14 +144,91 @@ public:
 	}
 };
 
-//기수를 상부로 돌린다.
-
 //적이 내적 범위에 들어오면 적에게 락온 신호를 보낸다.
+class LockOn : public BT::CompositeNode
+{
+public:
+	LockOn() {}
+	virtual ~LockOn() {}
+
+public:
+	virtual bool Invoke(CGameObject* pObj) override
+	{
+		if (pObj->m_bAiLockOn == false)
+		{
+			//pObj->m_b_AiCanFire = false;
+			XMFLOAT3 xmf3TargetVector = Vector3::Subtract(GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player", OBJ_PLAYER)->GetPosition(), pObj->GetPosition());
+			xmf3TargetVector = Vector3::Normalize(xmf3TargetVector);
+			float xmfAxis = Vector3::DotProduct(pObj->GetLook(), xmf3TargetVector);
+			if ((xmfAxis > 0.9f || xmfAxis < -0.9f) && xmfAxis > 0.f)
+			{
+				pObj->m_bAiLockOn = true;
+				/*CMissle* pMissle;
+				XMFLOAT3* temp;
+				temp = GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player", OBJ_PLAYER)->GetPositionForMissle();
+				pMissle = new CMissle(pObj);
+				pMissle->m_xmfTarget = temp;
+				pMissle->m_bLockOn = true;
+				pMissle->SetPosition(pObj->GetPosition());
+				GET_MANAGER<ObjectManager>()->AddObject(L"enemy_missle", pMissle, OBJ_MISSLE);*/
+				return true;
+			}
+		}
+		else
+		{
+			pObj->m_bAiLockOn = false;
+			return false;
+		}
+	}
+};
 
 //미사일, 기총 을 발사한다.
+class Attack : public BT::CompositeNode
+{
+public:
+	Attack() {}
+	virtual ~Attack() {}
+
+public:
+	virtual bool Invoke(CGameObject* pObj) override
+	{
+		if (pObj->m_bAiLockOn == true && pObj->m_bAiCanFire == true)
+		{
+			pObj->m_bAiCanFire = false;
+			/*XMFLOAT3 xmf3TargetVector = Vector3::Subtract(GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player", OBJ_PLAYER)->GetPosition(), pObj->GetPosition());
+			xmf3TargetVector = Vector3::Normalize(xmf3TargetVector);
+			float xmfAxis = Vector3::DotProduct(pObj->GetLook(), xmf3TargetVector);
+			if ((xmfAxis > 0.9f || xmfAxis < -0.9f) && xmfAxis > 0.f)*/
+			{
+				CMissle* pMissle;
+				XMFLOAT3* temp;
+				temp = GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player", OBJ_PLAYER)->GetPositionForMissle();
+				pMissle = new CMissle(pObj);
+				pMissle->m_xmfTarget = temp;
+				pMissle->m_bLockOn = true;
+				pMissle->SetPosition(pObj->GetPosition());
+				GET_MANAGER<ObjectManager>()->AddObject(L"enemy_missle", pMissle, OBJ_MISSLE);
+				return true;
+			}
+		}
+		else
+			return false;
+	}
+};
 
 //회피한다(회전한다)
+class Evade : public BT::CompositeNode
+{
+public:
+	Evade() {}
+	virtual ~Evade() {}
 
+public:
+	virtual bool Invoke(CGameObject* pObj) override
+	{
+		
+	}
+};
 //지정한 위치로 움직인다.
 
 //정지한다(배, 지상 오브젝트에 한함).

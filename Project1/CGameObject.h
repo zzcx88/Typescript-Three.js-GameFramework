@@ -215,6 +215,9 @@ public:
 	CGameObject* m_pChild = NULL;
 	CGameObject* m_pSibling = NULL;
 
+	CLoadedModelInfo* m_pMissleModel;
+	CLoadedModelInfo* m_pMissleModelCol;
+
 	CCamera* m_pCamera = NULL;
 
 	CSphereCollider*			SphereCollider = NULL;
@@ -226,6 +229,9 @@ public:
 
 	bool m_bAiming = false;
 	bool m_bCanFire = false;
+
+	bool m_bAiLockOn = false;
+	bool m_bAiCanFire = false;
 
 	OBJTYPE				m_ObjType = OBJ_END;
 
