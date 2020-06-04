@@ -64,6 +64,7 @@ public:
 public:
 	virtual bool Invoke(CGameObject* pObj) override
 	{
+		//cout << "IsEnemyNear" << endl;
 		XMFLOAT3 xmf3Pos, xmf3PlayerPos, xmf3TargetVector;
 		xmf3Pos = pObj->GetPosition();
 		xmf3PlayerPos = GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player", OBJ_PLAYER)->GetPosition();
@@ -72,11 +73,29 @@ public:
 
 		if (Lenth < 3000)
 		{
-			//cout << Lenth << endl;
+			if (pObj->m_bAiDetected == false)
+				pObj->m_bAiDetected = true;
 			return true;
 		}
 		else
-			return false;
+		{
+			if (pObj->m_bAiDetected == true)
+			{
+				pObj->m_bAiLockOn = false;
+				XMFLOAT3 xmf3Pos, xmf3PlayerPos, xmf3TargetVector;
+				xmf3Pos = pObj->GetPosition();
+				xmf3PlayerPos = GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player", OBJ_PLAYER)->GetPosition();
+
+				float theta = 50.f * GET_MANAGER<CDeviceManager>()->GetGameTimer().GetTimeElapsed();
+				xmf3TargetVector = Vector3::Subtract(xmf3PlayerPos, xmf3Pos);
+				xmf3TargetVector = Vector3::Normalize(xmf3TargetVector);
+				XMFLOAT3 xmfAxis = Vector3::CrossProduct(pObj->m_xmf3Look, xmf3TargetVector);
+				xmfAxis = Vector3::Normalize(xmfAxis);
+				pObj->Move(DIR_FORWARD, 270 * GET_MANAGER<CDeviceManager>()->GetGameTimer().GetTimeElapsed(), false);
+				pObj->RotateFallow(&xmfAxis, theta);
+				return false;
+			}
+		}
 	}
 };
 
@@ -89,21 +108,19 @@ public:
 public:
 	virtual bool Invoke(CGameObject* pObj) override
 	{
-		if (pObj->m_bAllyCollide == true)
+		//cout << "MoveToEnemy" << endl;
+		if (pObj->m_bAllyCollide == true || pObj->m_bAiAfterFire == true)
 			return false;
 		XMFLOAT3 xmf3Pos, xmf3PlayerPos, xmf3TargetVector;
 		xmf3Pos = pObj->GetPosition();
 		xmf3PlayerPos = GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player", OBJ_PLAYER)->GetPosition();
-
-		/*float Lenth = sqrt(xmf3TargetVector.x * xmf3TargetVector.x + xmf3TargetVector.y * xmf3TargetVector.x + xmf3TargetVector.z * xmf3TargetVector.z);
-		cout << Lenth << endl;*/
 
 		float theta = 50.f * GET_MANAGER<CDeviceManager>()->GetGameTimer().GetTimeElapsed();
 		xmf3TargetVector = Vector3::Subtract(xmf3PlayerPos, xmf3Pos);
 		xmf3TargetVector = Vector3::Normalize(xmf3TargetVector);
 		XMFLOAT3 xmfAxis = Vector3::CrossProduct(pObj->m_xmf3Look, xmf3TargetVector);
 		xmfAxis = Vector3::Normalize(xmfAxis);
-		pObj->Move(DIR_FORWARD, 200 * GET_MANAGER<CDeviceManager>()->GetGameTimer().GetTimeElapsed() , false);
+		pObj->Move(DIR_FORWARD, 230 * GET_MANAGER<CDeviceManager>()->GetGameTimer().GetTimeElapsed() , false);
 		pObj->RotateFallow(&xmfAxis, theta);
 		return true;
 	}
@@ -121,6 +138,7 @@ public:
 		//고도가 낮다면 고도를 상승시킨다.
 		if (pObj->GetPosition().y < 1450.f)
 		{
+			//cout << "MoveException" << endl;
 			XMFLOAT3 xmf3Pos, xmf3TargetPos, xmf3PlayerPos, xmf3TargetVector;
 			xmf3Pos = pObj->GetPosition();
 			xmf3PlayerPos = GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player", OBJ_PLAYER)->GetPosition();
@@ -131,8 +149,9 @@ public:
 			xmf3TargetVector = Vector3::Normalize(xmf3TargetVector);
 			XMFLOAT3 xmfAxis = Vector3::CrossProduct(pObj->m_xmf3Look, xmf3TargetVector);
 			xmfAxis = Vector3::Normalize(xmfAxis);
-			pObj->Move(DIR_FORWARD, 200 * GET_MANAGER<CDeviceManager>()->GetGameTimer().GetTimeElapsed(), false);
+			pObj->Move(DIR_FORWARD, 230 * GET_MANAGER<CDeviceManager>()->GetGameTimer().GetTimeElapsed(), false);
 			pObj->RotateFallow(&xmfAxis, theta);
+			return true;
 		}
 		//근처에 아군이 있다면 적당한 방향으로 벗어난다
 		if (pObj->m_bAllyCollide == true)
@@ -156,6 +175,7 @@ public:
 	{
 		if (pObj->m_bAiLockOn == false)
 		{
+			//cout << "LockOn" << endl;
 			//pObj->m_b_AiCanFire = false;
 			XMFLOAT3 xmf3TargetVector = Vector3::Subtract(GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player", OBJ_PLAYER)->GetPosition(), pObj->GetPosition());
 			xmf3TargetVector = Vector3::Normalize(xmf3TargetVector);
@@ -163,14 +183,6 @@ public:
 			if ((xmfAxis > 0.9f || xmfAxis < -0.9f) && xmfAxis > 0.f)
 			{
 				pObj->m_bAiLockOn = true;
-				/*CMissle* pMissle;
-				XMFLOAT3* temp;
-				temp = GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player", OBJ_PLAYER)->GetPositionForMissle();
-				pMissle = new CMissle(pObj);
-				pMissle->m_xmfTarget = temp;
-				pMissle->m_bLockOn = true;
-				pMissle->SetPosition(pObj->GetPosition());
-				GET_MANAGER<ObjectManager>()->AddObject(L"enemy_missle", pMissle, OBJ_MISSLE);*/
 				return true;
 			}
 		}
@@ -194,11 +206,9 @@ public:
 	{
 		if (pObj->m_bAiLockOn == true && pObj->m_bAiCanFire == true)
 		{
+			//cout << "Attack" << endl;
 			pObj->m_bAiCanFire = false;
-			/*XMFLOAT3 xmf3TargetVector = Vector3::Subtract(GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player", OBJ_PLAYER)->GetPosition(), pObj->GetPosition());
-			xmf3TargetVector = Vector3::Normalize(xmf3TargetVector);
-			float xmfAxis = Vector3::DotProduct(pObj->GetLook(), xmf3TargetVector);
-			if ((xmfAxis > 0.9f || xmfAxis < -0.9f) && xmfAxis > 0.f)*/
+			pObj->m_bAiAfterFire = true;
 			{
 				CMissle* pMissle;
 				XMFLOAT3* temp;
@@ -226,9 +236,51 @@ public:
 public:
 	virtual bool Invoke(CGameObject* pObj) override
 	{
-		
+		if (pObj->m_bAiCanFire == false && pObj->m_bAiAfterFire == true)
+		{
+			if (pObj->m_xmf3Ai_EvadeAxis.y == 0)
+			{
+				std::default_random_engine dre(time(NULL) * pObj->GetPosition().z);
+				std::uniform_real_distribution<float>fYDegree(-90, 90);
+				std::uniform_real_distribution<float>fXDegree(-90, 90);
+				std::uniform_real_distribution<float>fZDegree(-90, 90);
+				//cout << fXDegree(dre) << " " << fYDegree(dre) << endl;
+				pObj->m_xmf3Ai_EvadeAxis = XMFLOAT3(fXDegree(dre), fYDegree(dre), fZDegree(dre));
+			}
+			//cout << "Evade" << endl;
+			float theta = 20 * GET_MANAGER<CDeviceManager>()->GetGameTimer().GetTimeElapsed();
+			pObj->Move(DIR_FORWARD, 280 * GET_MANAGER<CDeviceManager>()->GetGameTimer().GetTimeElapsed(), false);
+			pObj->RotateFallow(&pObj->m_xmf3Ai_EvadeAxis, theta);
+			return true;
+		}
+		return true;
 	}
 };
+
 //지정한 위치로 움직인다.
+class MoveToPoint : public BT::CompositeNode
+{
+public:
+	MoveToPoint() {}
+	virtual ~MoveToPoint() {}
+
+public:
+	virtual bool Invoke(CGameObject* pObj) override
+	{
+		if (pObj->m_bAllyCollide == true || pObj->m_bAiAfterFire == true)
+			return false;
+		XMFLOAT3 xmf3Pos, xmf3TagetPos, xmf3TargetVector;
+		xmf3Pos = pObj->GetPosition();
+		xmf3TagetPos = pObj->m_xmf3TargetPos;
+
+		float theta = 50.f * GET_MANAGER<CDeviceManager>()->GetGameTimer().GetTimeElapsed();
+		xmf3TargetVector = Vector3::Subtract(xmf3TagetPos, xmf3Pos);
+		xmf3TargetVector = Vector3::Normalize(xmf3TargetVector);
+		XMFLOAT3 xmfAxis = Vector3::CrossProduct(pObj->m_xmf3Look, xmf3TargetVector);
+		xmfAxis = Vector3::Normalize(xmfAxis);
+		pObj->Move(DIR_FORWARD, 230 * GET_MANAGER<CDeviceManager>()->GetGameTimer().GetTimeElapsed(), false);
+		pObj->RotateFallow(&xmfAxis, theta);
+	}
+};
 
 //정지한다(배, 지상 오브젝트에 한함).

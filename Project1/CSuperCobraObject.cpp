@@ -57,22 +57,27 @@ void CSuperCobraObject::Animate(float fTimeElapsed)
 	if (m_bAllyCollide == true)
 	{
 		m_fMoveFowardElapsed += fTimeElapsed;
-		RotateFallow(&xmf3Axis, 50.f * fTimeElapsed);
+		RotateFallow(&m_xmf3Ai_ColideAxis, 50.f * fTimeElapsed);
 		if (m_fMoveFowardElapsed >= m_fElapsedFrequency)
 		{
 			m_bAllyCollide = false;
 			m_fMoveFowardElapsed = 0.f;
+			m_xmf3Ai_EvadeAxis = XMFLOAT3(0, 0, 0);
 		}
 	}
-	else
+	/*else
 	{
 		Rotate(60 * fTimeElapsed,0,0);
 		MoveForward(200 * fTimeElapsed);
-	}
+	}*/
 
 	if (m_bAiCanFire == false)
 	{
 		m_fMissleFireElapsed += fTimeElapsed;
+		if (m_fMissleFireElapsed > m_fAfterFireFrequence)
+		{
+			m_bAiAfterFire = false;
+		}
 		if (m_fMissleFireElapsed > m_fMissleFireFrequence)
 		{
 			m_bAiCanFire = true;
@@ -93,7 +98,7 @@ void CSuperCobraObject::CollisionActivate(CGameObject* collideTarget)
 		std::uniform_real_distribution<float>fYDegree(-90, 90);
 		std::uniform_real_distribution<float>fXDegree(-90, 90);
 		cout << fXDegree(dre) << " " << fYDegree(dre) << endl;
-		xmf3Axis = XMFLOAT3(fXDegree(dre), fYDegree(dre), fXDegree(dre));
+		m_xmf3Ai_ColideAxis = XMFLOAT3(fXDegree(dre), fYDegree(dre), fXDegree(dre));
 	}
 	else
 	{

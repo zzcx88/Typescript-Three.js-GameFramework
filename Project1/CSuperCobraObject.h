@@ -10,10 +10,9 @@ public:
 	float m_fMoveFowardElapsed = 0.f;
 	float m_fElapsedFrequency = 3.f;
 
-	float m_fMissleFireFrequence = 5.0f;
+	float m_fMissleFireFrequence = 10.0f;
+	float m_fAfterFireFrequence = 4.f;
 	float m_fMissleFireElapsed = 0.f;
-
-	XMFLOAT3 xmf3Axis;
 
 private:
 	CGameObject* m_pMainRotorFrame = NULL;

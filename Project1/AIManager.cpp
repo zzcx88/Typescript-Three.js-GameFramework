@@ -31,11 +31,13 @@ void AIManager::MakeAction()
 	BT::CNode* BT_MoveException = new MoveException();
 	BT::CNode* BT_LockON = new LockOn();
 	BT::CNode* BT_Attack = new Attack();
-	
+	BT::CNode* BT_Evade = new Evade();
+
 	root->AddChild(selector);
 	selector->AddChild(seqException);
 	selector->AddChild(seqPatrol);
 	seqException->AddChild(BT_MoveException);
+	seqPatrol->AddChild(BT_Evade);
 	seqPatrol->AddChild(BT_EnemyNear);
 	seqPatrol->AddChild(BT_MoveToEnemy);
 	seqPatrol->AddChild(BT_LockON);

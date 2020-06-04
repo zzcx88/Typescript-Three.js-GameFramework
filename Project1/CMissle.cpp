@@ -70,6 +70,7 @@ void CMissle::Animate(float fTimeElapsed)
 		if (m_fDeleteTimeElapsed > m_fDeleteFrequence)
 		{
 			m_isDead = true;
+			GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player", OBJ_PLAYER)->m_AiMissleAssert = false;
 		}
 
 		if (m_bLockOn == true)
@@ -80,6 +81,11 @@ void CMissle::Animate(float fTimeElapsed)
 		if (SphereCollider)SphereCollider->SetPosition(GetPosition());
 		if (SphereCollider)SphereCollider->m_xmf4x4ToParent = Matrix4x4::Multiply(XMMatrixScaling(10, 10, 10), m_xmf4x4ToParent);
 		if (SphereCollider)SphereCollider->Animate(fTimeElapsed, GetPosition());
+
+		if (m_xmfTarget == GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player", OBJ_PLAYER)->GetPositionForMissle())
+		{
+			GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player", OBJ_PLAYER)->m_AiMissleAssert = true;
+		}
 
 		if (m_fAddFogTimeElapsed > m_fAddFogFrequence)
 		{
@@ -126,6 +132,7 @@ void CMissle::CollisionActivate(CGameObject* collideTarget)
 		//GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player_ui29_score_number", OBJ_UI)->m_nPlayerScore += 50;
 
 		m_isDead = true;
+		GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player", OBJ_PLAYER)->m_AiMissleAssert = false;
 	}
 }
 

@@ -923,13 +923,9 @@ void CAirplanePlayer::MissleLaunch()
 		}
 
 	}
-	pMissle = new CMissle(m_pd3dDevice, m_pd3dCommandList, m_pd3dGraphicsRootSignature, temp, m_xmf3Position, m_ObjManager);
-	pMissle->m_pCamera = m_pCamera;
-	pMissle->m_xmf3Look = m_xmf3Look;
+	pMissle = new CMissle(this);
+	pMissle->m_xmfTarget = temp;
 	pMissle->m_bLockOn = false;
-	pMissle->m_xmf4x4ToParent = Matrix4x4::Multiply(XMMatrixScaling(1, 1, 1), m_xmf4x4ToParent);
-	pMissle->SetChild(m_pMissleModel->m_pModelRootObject);
-	pMissle->SetScale(10, 10, 10);
 	pMissle->SetPosition(m_pMSL_1->GetPosition());
 	m_ObjManager->AddObject(L"player_missle", pMissle, OBJ_MISSLE);
 	CPlayer::SetMissileCount(--m_nMSL_Count);

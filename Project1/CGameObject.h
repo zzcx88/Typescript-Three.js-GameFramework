@@ -210,6 +210,9 @@ public:
 	XMFLOAT3					m_xmf3Up = XMFLOAT3(0.0f, 1.0f, 0.0f);
 	XMFLOAT3					m_xmf3Look = XMFLOAT3(0.0f, 0.0f, 1.0f);
 	XMFLOAT3					m_xmf3Velocity = XMFLOAT3(0.0f, 0.0f, 0.0f);
+	XMFLOAT3					m_xmf3Ai_EvadeAxis;
+	XMFLOAT3					m_xmf3Ai_ColideAxis;
+	XMFLOAT3					m_xmf3TargetPos = XMFLOAT3(0.0f, 0.0f, 0.0f);
 
 	CGameObject* m_pParent = NULL;
 	CGameObject* m_pChild = NULL;
@@ -232,6 +235,10 @@ public:
 
 	bool m_bAiLockOn = false;
 	bool m_bAiCanFire = false;
+	bool m_bAiAfterFire = false;
+	bool m_bAiDetected = false;
+
+	bool m_AiMissleAssert = false;
 
 	OBJTYPE				m_ObjType = OBJ_END;
 
