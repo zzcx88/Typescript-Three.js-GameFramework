@@ -437,11 +437,18 @@ void CGameObject::Animate(float fTimeElapsed)
 
 	if (this->m_ObjType == OBJ_ENEMY)
 	{
+		CPlayer* pPlayer = (CPlayer*)GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player", OBJ_PLAYER);
 		XMFLOAT3 xmf3Pos, xmf3PlayerPos, xmf3TargetVector;
 		xmf3Pos = GetPosition();
 		xmf3PlayerPos = GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player", OBJ_PLAYER)->GetPosition();
 		xmf3TargetVector = Vector3::Subtract(xmf3Pos, xmf3PlayerPos);
+		XMFLOAT3 xmfAxis = Vector3::CrossProduct(pPlayer->GetLookVector() , xmf3TargetVector);
 		LenthToPlayer = sqrt(xmf3TargetVector.x * xmf3TargetVector.x + xmf3TargetVector.y * xmf3TargetVector.x + xmf3TargetVector.z * xmf3TargetVector.z);
+
+		if (m_bAiming == true)
+		{
+			pPlayer->SetTargetDir(xmfAxis);
+		}
 	}
 }
 

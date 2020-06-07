@@ -5,8 +5,6 @@
 class ObjectManager;
 class CScene
 {
-	bool m_bStoped = false;
-
 public:
 	CScene();
 	virtual ~CScene();

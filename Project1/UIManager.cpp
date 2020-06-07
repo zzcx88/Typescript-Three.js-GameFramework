@@ -77,9 +77,9 @@ void UIManager::MoveMinimapPoint(ObjectManager::MAPOBJ* PlyList, ObjectManager::
 		}
 
 		if (GET_MANAGER<SceneManager>()->GetSceneStoped() == true)
-			Ene.second->m_pUI->SetIsRender(false);
+			if(Ene.second->m_bReffernce == false) Ene.second->m_pUI->SetIsRender(false);
 		else
-			Ene.second->m_pUI->SetIsRender(true);
+				if (Ene.second->m_bReffernce == false) Ene.second->m_pUI->SetIsRender(true);
 
 		if (Ene.second->m_bReffernce == false) Ene.second->m_pUI->MoveMinimapPoint(Ene.second->GetPosition(), Ene.second->m_pUI);
 
@@ -147,9 +147,10 @@ void UIManager::MoveLockOnUI(ObjectManager::MAPOBJ* PlyList, ObjectManager::MAPO
 				});
 		}
 
-		Ene.second->m_pLockOnUI->MoveLockOnUI(Ene.second->GetScreenPosition(), Ene.second->GetPosition(),
+		if (Ene.second->m_bReffernce == false) Ene.second->m_pLockOnUI->MoveLockOnUI(Ene.second->GetScreenPosition(), Ene.second->GetPosition(),
 			PlyList->begin()->second->GetPosition(), PlyList->begin()->second->GetLook(), Ene.second->m_pLockOnUI, PlyList->begin()->second->m_pCamera);
 
+		if (Ene.second->m_bReffernce == false)
 		if (Ene.second->m_pLockOnUI->bDetectable == true)
 		{
 			
@@ -284,7 +285,7 @@ void UIManager::MoveLockOnUI(ObjectManager::MAPOBJ* PlyList, ObjectManager::MAPO
 		}
 
 		if(GET_MANAGER<SceneManager>()->GetSceneStoped() == true)
-			Ene.second->m_pLockOnUI->m_nTextureRender = 1;
+			if (Ene.second->m_bReffernce == false)Ene.second->m_pLockOnUI->m_nTextureRender = 1;
 		if (GET_MANAGER<SceneManager>()->GetSceneStoped() == true)
 		{
 			PlyList->begin()->second->ppNumObjects[24]->SetIsRender(false);
@@ -324,15 +325,11 @@ void UIManager::MoveLockOnUI(ObjectManager::MAPOBJ* PlyList, ObjectManager::MAPO
 					p = GameOBJs.end();
 					break;
 				}
-
 				sort(begin(GameOBJs), end(GameOBJs), [](const CGameObject* a, const CGameObject* b) {
-					return a->LenthToPlayer < b->LenthToPlayer;
-					});
+					return a->LenthToPlayer < b->LenthToPlayer; });
 			}
 		}
 	}
-
-	
 
 	KeyManager* keyManager = GET_MANAGER<KeyManager>();
 	DWORD dwDirection = 0;
@@ -344,7 +341,6 @@ void UIManager::MoveLockOnUI(ObjectManager::MAPOBJ* PlyList, ObjectManager::MAPO
 		if (GameOBJs.size() <= Count)
 			Count = 0;
 	}
-
 }
 
 
@@ -388,7 +384,7 @@ void UIManager::NumberTextureAnimate(ObjectManager::MAPOBJ* PlyList, const float
 			pnum->SetIsRender(false);
 			PlyList->begin()->second->ppNumObjects[i] = pnum;
 
-			//GET_MANAGER<ObjectManager>()->AddObject(L"NumInstance", pnum, OBJ_SPEED_UI);
+			GET_MANAGER<ObjectManager>()->AddObject(L"NumInstance", pnum, OBJ_SPEED_UI);
 
 		}
 	}

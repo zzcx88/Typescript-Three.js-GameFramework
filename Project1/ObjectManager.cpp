@@ -102,12 +102,6 @@ void ObjectManager::Update(const float& TimeDelta)
 	GET_MANAGER<CollisionManager>()->CollisionFloor();
 	if (GET_MANAGER<SceneManager>()->GetCurrentSceneState() == SCENE_TEST)
 	{
-		// Minimap
-		GET_MANAGER<UIManager>()->MoveMinimapPoint(&m_mapObj[OBJ_PLAYER], &m_mapObj[OBJ_ENEMY]);
-
-		// LockOn
-		GET_MANAGER<UIManager>()->MoveLockOnUI(&m_mapObj[OBJ_PLAYER], &m_mapObj[OBJ_ENEMY]);
-
 		GET_MANAGER<UIManager>()->NumberTextureAnimate(&m_mapObj[OBJ_PLAYER], GET_MANAGER<CDeviceManager>()->GetGameTimer().GetTimeElapsed());
 	}
 }

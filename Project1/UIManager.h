@@ -20,6 +20,8 @@ class UIManager : public SingletonBase<UIManager>
 	int nDistance = 0;
 
 	int numObjects = 29;
+
+	bool m_bNotSort = false;
 public:
 	UIManager();
 	virtual ~UIManager();

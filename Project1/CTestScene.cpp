@@ -351,24 +351,6 @@ void CTestScene::CreateStageObject()
 		return;
 	}
 
-	if (m_bCreateShip == false)
-	{
-		m_bCreateShip = true;
-		for (int i = 0; i < 8; ++i)
-		{
-			std::default_random_engine dre(time(NULL) * i * 0.548);
-			std::uniform_real_distribution<float>fXPos(-4000.f, 4000.f);
-			std::uniform_real_distribution<float>fZPos(3200.f, 6400.f);
-
-			C052CDestroyer* p052C;
-			p052C = new C052CDestroyer();
-			p052C->SetPosition(fXPos(dre), 170, fZPos(dre));
-			p052C->Rotate(0, 180, 0);
-			p052C->m_xmf3Look = XMFLOAT3(0, 0, -1);
-			m_ObjManager->AddObject(L"052C", p052C, OBJ_ENEMY);
-		}
-	}
-
 	if (GET_MANAGER<SceneManager>()->m_nWave == GET_MANAGER<SceneManager>()->m_nWaveCnt && GET_MANAGER<SceneManager>()->m_nTgtObject == 0)
 	{
 		for (int i = 0; i < GET_MANAGER<SceneManager>()->m_nWaveCnt + 1; ++i)
@@ -409,6 +391,24 @@ void CTestScene::CreateStageObject()
 			GET_MANAGER<SceneManager>()->m_nTgtObject++;
 		}
 		GET_MANAGER<SceneManager>()->m_nWaveCnt++;
+	}
+
+	if (m_bCreateShip == false)
+	{
+		m_bCreateShip = true;
+		for (int i = 0; i < 8; ++i)
+		{
+			std::default_random_engine dre(time(NULL) * i * GET_MANAGER<CDeviceManager>()->GetGameTimer().GetTimeElapsed());
+			std::uniform_real_distribution<float>fXPos(-4000.f, 4000.f);
+			std::uniform_real_distribution<float>fZPos(3200.f, 6400.f);
+
+			C052CDestroyer* p052C;
+			p052C = new C052CDestroyer();
+			p052C->SetPosition(fXPos(dre), 170, fZPos(dre));
+			p052C->Rotate(0, 180, 0);
+			p052C->m_xmf3Look = XMFLOAT3(0, 0, -1);
+			m_ObjManager->AddObject(L"052C", p052C, OBJ_ENEMY);
+		}
 	}
 
 	if (GET_MANAGER<SceneManager>()->m_nTgtObject == 0)
@@ -498,7 +498,8 @@ void CTestScene::AnimateObjects(float fTimeElapsed)
 	m_ObjManager->GetObjFromTag(L"player", OBJ_PLAYER)->SetPlayerMSL(m_pPlayer->GetMSLCount());
 	m_ObjManager->GetObjFromTag(L"player", OBJ_PLAYER)->SetPlayerSpeed(m_pPlayer->GetAircraftSpeed());
 	m_ObjManager->Update(fTimeElapsed);
-		
+
+	//m_ObjManager->GetObjFromTag(L"uitest", OBJ_UI)->SetScale(0.5, 0.5, 0.5);
 	/*m_ppGameObjects[1]->Rotate(0.f, 0.f, 1.f);
 
 	if (c > 0.f)
