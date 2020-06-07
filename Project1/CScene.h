@@ -21,6 +21,7 @@ public:
 
 	virtual void BuildDefaultLightsAndMaterials() PURE;
 	virtual void BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList) PURE;
+	virtual void CreateStageObject() PURE;
 	virtual void ReleaseObjects() PURE;
 
 	ID3D12RootSignature* CreatePostProcessRootSignature(ID3D12Device* pd3dDevice);

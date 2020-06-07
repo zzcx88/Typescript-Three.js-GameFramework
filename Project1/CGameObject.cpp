@@ -434,12 +434,21 @@ void CGameObject::Animate(float fTimeElapsed)
 
 	m_positionForMissle.x = m_xmf4x4World._41, m_positionForMissle.y = m_xmf4x4World._42, m_positionForMissle.z = m_xmf4x4World._43;
 	m_xmpPosition = (XMFLOAT3*)&m_positionForMissle;
+
+	if (this->m_ObjType == OBJ_ENEMY)
+	{
+		XMFLOAT3 xmf3Pos, xmf3PlayerPos, xmf3TargetVector;
+		xmf3Pos = GetPosition();
+		xmf3PlayerPos = GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player", OBJ_PLAYER)->GetPosition();
+		xmf3TargetVector = Vector3::Subtract(xmf3Pos, xmf3PlayerPos);
+		LenthToPlayer = sqrt(xmf3TargetVector.x * xmf3TargetVector.x + xmf3TargetVector.y * xmf3TargetVector.x + xmf3TargetVector.z * xmf3TargetVector.z);
+	}
 }
 
 void CGameObject::CollisionActivate(CGameObject* collideTarget)
 {
-	/*cout << "충돌" << endl;
-
+	//cout << "충돌" << endl;
+	/*
 	m_isDead = true;
 	m_pUI->m_isDead = true;
 	m_pLockOnUI->m_isDead = true;*/
@@ -447,34 +456,36 @@ void CGameObject::CollisionActivate(CGameObject* collideTarget)
 
 void CGameObject::Render(ID3D12GraphicsCommandList* pd3dCommandList, CCamera* pCamera)
 {
-	
-	if (m_pSkinnedAnimationController) m_pSkinnedAnimationController->UpdateShaderVariables(pd3dCommandList);
-
-	if (m_pMesh)
+	if (m_bDestroyed == false)
 	{
-		UpdateShaderVariable(pd3dCommandList, &m_xmf4x4World);
+		if (m_pSkinnedAnimationController) m_pSkinnedAnimationController->UpdateShaderVariables(pd3dCommandList);
 
-		if (m_nMaterials > 0)
+		if (m_pMesh)
 		{
-			for (int i = 0; i < m_nMaterials; i++)
-			{
-				if (m_ppMaterials[i])
-				{
-					if (m_ppMaterials[i]->m_pShader) m_ppMaterials[i]->m_pShader->Render(pd3dCommandList, pCamera);
-					m_ppMaterials[i]->UpdateShaderVariable(pd3dCommandList);
-				}
-				if (m_bEffectedObj && m_fBurnerBlendAmount <= 0)
-				{
-				}
-				else
-					m_pMesh->Render(pd3dCommandList, i);
+			UpdateShaderVariable(pd3dCommandList, &m_xmf4x4World);
 
+			if (m_nMaterials > 0)
+			{
+				for (int i = 0; i < m_nMaterials; i++)
+				{
+					if (m_ppMaterials[i])
+					{
+						if (m_ppMaterials[i]->m_pShader) m_ppMaterials[i]->m_pShader->Render(pd3dCommandList, pCamera);
+						m_ppMaterials[i]->UpdateShaderVariable(pd3dCommandList);
+					}
+					if (m_bEffectedObj && m_fBurnerBlendAmount <= 0)
+					{
+					}
+					else
+						m_pMesh->Render(pd3dCommandList, i);
+
+				}
 			}
 		}
-	}
 
-	if (m_pSibling) m_pSibling->Render(pd3dCommandList, pCamera);
-	if (m_pChild) m_pChild->Render(pd3dCommandList, pCamera);
+		if (m_pSibling) m_pSibling->Render(pd3dCommandList, pCamera);
+		if (m_pChild) m_pChild->Render(pd3dCommandList, pCamera);
+	}
 }
 
 void CGameObject::CreateShaderVariables(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList)
@@ -487,12 +498,15 @@ void CGameObject::UpdateShaderVariables(ID3D12GraphicsCommandList* pd3dCommandLi
 
 void CGameObject::UpdateShaderVariable(ID3D12GraphicsCommandList* pd3dCommandList, XMFLOAT4X4* pxmf4x4World)
 {
+	
 	XMFLOAT4X4 xmf4x4World;
 	XMStoreFloat4x4(&xmf4x4World, XMMatrixTranspose(XMLoadFloat4x4(pxmf4x4World)));
 	pd3dCommandList->SetGraphicsRoot32BitConstants(1, 16, &xmf4x4World, 0);
 
-	pd3dCommandList->SetGraphicsRoot32BitConstants(16, 1, &m_fBurnerBlendAmount, 0);
-	pd3dCommandList->SetGraphicsRoot32BitConstants(16, 1, &m_bEffectedObj, 1);
+	pd3dCommandList->SetGraphicsRoot32BitConstants(16, 2, &m_fBurnerBlendAmount, 0);
+	pd3dCommandList->SetGraphicsRoot32BitConstants(16, 1, &m_bEffectedObj,2);
+	pd3dCommandList->SetGraphicsRoot32BitConstants(16, 1, &m_bWarning, 3);
+	
 }
 
 void CGameObject::UpdateShaderVariable(ID3D12GraphicsCommandList* pd3dCommandList, CMaterial* pMaterial)

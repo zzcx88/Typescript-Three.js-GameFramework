@@ -28,7 +28,7 @@ public:
 	int m_nTextureIndex = 0;
 
 	bool m_RenderOff = false;
-	bool m_bRefference = false;
+	bool m_bWingFog = false;
 
 public:
 	CMissleFog();

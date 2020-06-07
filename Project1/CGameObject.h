@@ -132,6 +132,7 @@ class CBulletShader;
 class CPlaneShader;
 class CPlaneMesh;
 class CUI;
+class CRedUIShader;
 class CLockOnUI;
 class CAfterBurner;
 class CBoxMesh;
@@ -169,7 +170,9 @@ public:
 
 	int								m_nObjects = 0;
 	int								m_nMaterials = 0;
-
+	
+	float m_fHP = 0;;
+	float LenthToPlayer = 0;
 	UINT m_nNumTex = 0;
 
 	CMaterial** m_ppMaterials = NULL;
@@ -201,6 +204,8 @@ public:
 	CMaterial* m_pBulletMaterial;
 	///////////////////////////////////////////
 	CNumber* ppNumObjects[29];
+	CRedUIShader* m_pRedShader;
+
 
 
 	XMFLOAT4X4						m_xmf4x4ToParent;
@@ -211,10 +216,16 @@ public:
 	XMFLOAT3					m_xmf3Up = XMFLOAT3(0.0f, 1.0f, 0.0f);
 	XMFLOAT3					m_xmf3Look = XMFLOAT3(0.0f, 0.0f, 1.0f);
 	XMFLOAT3					m_xmf3Velocity = XMFLOAT3(0.0f, 0.0f, 0.0f);
+	XMFLOAT3					m_xmf3Ai_EvadeAxis;
+	XMFLOAT3					m_xmf3Ai_ColideAxis;
+	XMFLOAT3					m_xmf3TargetPos = XMFLOAT3(0.0f, 0.0f, 0.0f);
 
 	CGameObject* m_pParent = NULL;
 	CGameObject* m_pChild = NULL;
 	CGameObject* m_pSibling = NULL;
+
+	CLoadedModelInfo* m_pModelInfo;
+	CLoadedModelInfo* m_pMissleModelCol;
 
 	CCamera* m_pCamera = NULL;
 
@@ -225,19 +236,37 @@ public:
 	CLockOnUI*			m_pLockOnUI = NULL;
 	CNumber* number = NULL;
 
+	float m_fDeadElapsed = 0.f;
+	float m_fDeadFrequence = 4.f;
+	bool m_bCreateOnece = false;
+
+	bool m_bReffernce = false;
+
 	bool m_bAiming = false;
 	bool m_bCanFire = false;
+	bool m_bEye_fixation = false;
+
+	bool m_bAiContrail = false;
+	bool m_bAiLockOn = false;
+	bool m_bAiCanFire = false;
+	bool m_bAiAfterFire = false;
+	bool m_bAiDetected = false;
+
+	bool m_AiMissleAssert = false;
 
 	OBJTYPE				m_ObjType = OBJ_END;
 
 	bool			m_bAllyCollide = false;
 	bool			m_isDead = false;
+	bool			m_bDestroyed = false;
+
 	bool			m_bAIEnable = false;
 
 	bool			m_bGameOver = false;
 
 	float m_fBurnerBlendAmount;
 	bool m_bEffectedObj = false;
+	bool m_bWarning = false;
 
 	void SetMesh(CMesh* pMesh);
 	//void SetMesh(int nIndex, CMesh* pMesh);

@@ -9,6 +9,7 @@ class UIManager : public SingletonBase<UIManager>
 	int score_number = 0;
 
 	float fElapsedTime = 60.f;
+
 	int nMsecond = 60.0f;
 	int nSecond = 0;
 	int nMin = 0;

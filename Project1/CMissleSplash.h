@@ -22,10 +22,11 @@ public:
 	float m_fFadeTimeElapsed = 0.f;
 	float m_fFadeFrequence = 0.05f;
 
+	float m_fScale = 1;
+
 	int m_nTextureIndex = 0;
 
 	bool m_RenderOff = false;
-	bool m_bRefference = false;
 
 public:
 	CMissleSplash();

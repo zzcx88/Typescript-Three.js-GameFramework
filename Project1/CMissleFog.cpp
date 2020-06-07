@@ -10,6 +10,7 @@ CMissleFog::CMissleFog()
 
 CMissleFog::CMissleFog(int nIndex, ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList, ID3D12RootSignature* pd3dGraphicsRootSignature, float fWidth, float fHeight, float fDepth) : CPlane()
 {
+	m_bReffernce = true;
 	m_fBurnerBlendAmount = 1;
 	m_pPlaneMesh = new CPlaneMesh(pd3dDevice, pd3dCommandList, fWidth, fHeight, fDepth, XMFLOAT2(0, 0), XMFLOAT2(0, 0), XMFLOAT2(0, 0), XMFLOAT2(0, 0));
 
@@ -24,9 +25,9 @@ CMissleFog::CMissleFog(int nIndex, ID3D12Device* pd3dDevice, ID3D12GraphicsComma
 	m_pEffectTexture[0] = new CTexture(1, RESOURCE_TEXTURE2D, 0);
 	m_pEffectTexture[0]->LoadTextureFromFile(pd3dDevice, pd3dCommandList, L"Effect/MissleSmoke.dds", 0);
 	m_pEffectTexture[1] = new CTexture(1, RESOURCE_TEXTURE2D, 0);
-	m_pEffectTexture[1]->LoadTextureFromFile(pd3dDevice, pd3dCommandList, L"Effect/MissleSmoke1.dds", 0);
-	/*m_pEffectTexture[2] = new CTexture(1, RESOURCE_TEXTURE2D, 0);
-	m_pEffectTexture[2]->LoadTextureFromFile(pd3dDevice, pd3dCommandList, L"Effect/MissleSmoke2.dds", 0);
+	m_pEffectTexture[1]->LoadTextureFromFile(pd3dDevice, pd3dCommandList, L"Effect/CrushSmoke.dds", 0);
+	/*m_ppLockOnUITexture[2] = new CTexture(1, RESOURCE_TEXTURE2D, 0);
+	m_pEffectTexture[2]->LoadTextureFromFile(pd3dDevice, pd3dCommandList, L"Effect/MissleFog2.dds", 0);
 	m_pEffectTexture[3] = new CTexture(1, RESOURCE_TEXTURE2D, 0);
 	m_pEffectTexture[3]->LoadTextureFromFile(pd3dDevice, pd3dCommandList, L"Effect/MissleSmoke3.dds", 0);
 	m_pEffectTexture[4] = new CTexture(1, RESOURCE_TEXTURE2D, 0);
@@ -50,11 +51,12 @@ CMissleFog::CMissleFog(int nIndex, ID3D12Device* pd3dDevice, ID3D12GraphicsComma
 
 	m_EffectShader->CreateConstantBufferViews(pd3dDevice, pd3dCommandList, m_nObjects, m_EffectShader->m_pd3dcbBlendAmount, ncbElementBytes);
 
-	for (int i = 0; i < TEXTURES; i++) CTestScene::CreateShaderResourceViews(pd3dDevice, m_pEffectTexture[i], 15, false);
+	for (int i = 0; i < 2; i++) CTestScene::CreateShaderResourceViews(pd3dDevice, m_pEffectTexture[i], 15, false);
 
 	m_pEffectMaterial = new CMaterial(1);
 	m_pEffectMaterial->SetTexture(m_pEffectTexture[0]);
 	m_pEffectMaterial->SetShader(m_EffectShader);
+
 	SetMaterial(0, m_pEffectMaterial);
 }
 
@@ -73,7 +75,7 @@ void CMissleFog::Animate(float fTimeElapsed)
 	m_fFadeTimeElapsed += fTimeElapsed;
 
 
-	if (!m_bRefference)
+	if (!m_bReffernce)
 	{
 		//if (m_fScaleX < 30)
 		//{
@@ -86,7 +88,17 @@ void CMissleFog::Animate(float fTimeElapsed)
 		//	/*if (m_fTimeElapsed > m_fDeleteFogFrequence)
 		//	TextureAnimate();*/
 		//}
-		SetScale(m_fScaleX += m_fTimeElapsed / 5, m_fScaleY += m_fTimeElapsed / 5, 1);
+		if (m_bWingFog)
+		{
+			if (m_fScaleX > 0.1)
+				SetScale(m_fScaleX -= m_fTimeElapsed / 20, m_fScaleY -= m_fTimeElapsed / 20, 1);
+			else
+				SetScale(0.1,0.1,0);
+		}
+		else
+		{
+			SetScale(m_fScaleX += m_fTimeElapsed / 5, m_fScaleY += m_fTimeElapsed / 5, 1);
+		}
 		TextureAnimate();
 		SetLookAt(m_pCamera->GetPosition());
 	}
@@ -94,10 +106,20 @@ void CMissleFog::Animate(float fTimeElapsed)
 
 void CMissleFog::TextureAnimate()
 {
-	if (m_fBurnerBlendAmount >= 0)
-		m_fBurnerBlendAmount -= 0.001 * m_fTimeElapsed;
+	if (m_bWingFog)
+	{
+		if (m_fBurnerBlendAmount >= 0)
+			m_fBurnerBlendAmount -= 0.001 * m_fTimeElapsed;
+		else
+			m_isDead = true;
+	}
 	else
-		m_isDead = true;
+	{
+		if (m_fBurnerBlendAmount >= 0)
+			m_fBurnerBlendAmount -= 0.001 * m_fTimeElapsed;
+		else
+			m_isDead = true;
+	}
 	////해당 오브젝트가 래퍼런스 오브젝트가 아닐경우에만 애니메이트를 실행
 	//if (!m_bRefference)
 	//{

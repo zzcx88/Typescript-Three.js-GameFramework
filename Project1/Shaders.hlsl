@@ -26,6 +26,7 @@ cbuffer cbBlandAmount : register(b3)
 {
 	float gfBlendAmount;
 	bool gbEffectedObj;
+	bool gbWarning;
 }
 
 #include "Light.hlsl"

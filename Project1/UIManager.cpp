@@ -60,7 +60,7 @@ void UIManager::MoveMinimapPoint(ObjectManager::MAPOBJ* PlyList, ObjectManager::
 	//공중 오브젝트 적은 묶어서 한번에
 	for (auto& Ene : *EneList)
 	{
-		if (Ene.second->m_pUI == NULL)
+		if (Ene.second->m_pUI == NULL && Ene.second->m_bReffernce == false)
 		{
 			CUI* pUI;
 			pUI = new CUI();
@@ -76,12 +76,17 @@ void UIManager::MoveMinimapPoint(ObjectManager::MAPOBJ* PlyList, ObjectManager::
 
 		}
 
-		if (GET_MANAGER<SceneManager>()->GetSceneStoped() == true)
-			Ene.second->m_pUI->SetIsRender(false);
-		else
-			Ene.second->m_pUI->SetIsRender(true);
+		
 
-		Ene.second->m_pUI->MoveMinimapPoint(Ene.second->GetPosition(), Ene.second->m_pUI);
+		if (Ene.second->m_bReffernce == false)
+		{
+			Ene.second->m_pUI->MoveMinimapPoint(Ene.second->GetPosition(), Ene.second->m_pUI);
+			if (GET_MANAGER<SceneManager>()->GetSceneStoped() == true)
+				Ene.second->m_pUI->SetIsRender(false);
+			else
+				Ene.second->m_pUI->SetIsRender(true);
+		}
+
 	}
 
 	//지상 오브젝트 적도 묶어서 한번에
@@ -125,7 +130,7 @@ void UIManager::MoveLockOnUI(ObjectManager::MAPOBJ* PlyList, ObjectManager::MAPO
 
 	for (auto& Ene : *EneList)
 	{
-		if (Ene.second->m_pLockOnUI == NULL)
+		if (Ene.second->m_pLockOnUI == NULL && Ene.second->m_bReffernce == false)
 		{
 			CLockOnUI* pLockOnUI;
 			pLockOnUI = new CLockOnUI();
@@ -146,151 +151,157 @@ void UIManager::MoveLockOnUI(ObjectManager::MAPOBJ* PlyList, ObjectManager::MAPO
 				});
 		}
 
-		Ene.second->m_pLockOnUI->MoveLockOnUI(Ene.second->GetScreenPosition(), Ene.second->GetPosition(),
-			PlyList->begin()->second->GetPosition(), PlyList->begin()->second->GetLook(), Ene.second->m_pLockOnUI, PlyList->begin()->second->m_pCamera);
-
-		if (Ene.second->m_pLockOnUI->bDetectable == true)
+		if (Ene.second->m_bReffernce == false)
 		{
+			//Ene.second->m_pLockOnUI->m_ppMaterials[0]->SetRedShader();
+
+			Ene.second->m_pLockOnUI->MoveLockOnUI(Ene.second->GetScreenPosition(), Ene.second->GetPosition(),
+				PlyList->begin()->second->GetPosition(), PlyList->begin()->second->GetLook(), Ene.second->m_pLockOnUI, PlyList->begin()->second->m_pCamera);
 			
-			if(Ene.second->m_bAiming == true&&Ene.second->GetState() != true)
-			{ 
-				if (Ene.second->m_pLockOnUI->GetCameraAxis() > 0.f)
+		
+			if (Ene.second->m_pLockOnUI->bDetectable == true)
+			{
+
+				if (Ene.second->m_bAiming == true && Ene.second->GetState() != true)
 				{
-					float fx = Ene.second->GetScreenPosition().x - ((float)FRAME_BUFFER_WIDTH / 2.f);
-					float fy = (Ene.second->GetScreenPosition().y - ((float)FRAME_BUFFER_HEIGHT / 2.f)) * -1;
+					if (Ene.second->m_pLockOnUI->GetCameraAxis() > 0.f)
+					{
+						float fx = Ene.second->GetScreenPosition().x - ((float)FRAME_BUFFER_WIDTH / 2.f);
+						float fy = (Ene.second->GetScreenPosition().y - ((float)FRAME_BUFFER_HEIGHT / 2.f)) * -1;
 
-					nDistance = Ene.second->m_pLockOnUI->GetLenth();
-					if (nDistance < 0)
-						nDistance = 1;
-					cout << nDistance <<" 거리" <<endl;
-					while (nDistance != 0) {
-						distance.emplace_back(nDistance % 10);
-						nDistance /= 10;
+						nDistance = Ene.second->m_pLockOnUI->GetLenth();
+						if (nDistance < 0)
+							nDistance = 1;
+						//cout << nDistance << " 거리" << endl;
+						while (nDistance != 0) {
+							distance.emplace_back(nDistance % 10);
+							nDistance /= 10;
+						}
+
+						//cout << distance.size() << endl;
+
+						if (distance.size() >= 0)
+						{
+							PlyList->begin()->second->ppNumObjects[24]->SetIsRender(false);
+							PlyList->begin()->second->ppNumObjects[25]->SetIsRender(false);
+							PlyList->begin()->second->ppNumObjects[26]->SetIsRender(false);
+							PlyList->begin()->second->ppNumObjects[27]->SetIsRender(false);
+							PlyList->begin()->second->ppNumObjects[28]->SetIsRender(true);
+							PlyList->begin()->second->ppNumObjects[28]->SetPosition(fx - 40.f, fy + 20.f, 0.f);
+
+							PlyList->begin()->second->ppNumObjects[28]->m_pUIMaterial->m_ppTextures[0] = GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player_ui11_speed_number_o", OBJ_SPEED_UI)->m_ppUITexture[distance[0]];
+						}
+						if (distance.size() > 1)
+						{
+							PlyList->begin()->second->ppNumObjects[27]->SetIsRender(true);
+							PlyList->begin()->second->ppNumObjects[27]->SetPosition(fx - 32.f, fy + 20.f, 0.f);
+							PlyList->begin()->second->ppNumObjects[28]->SetPosition(fx - 40.f, fy + 20.f, 0.f);
+
+							PlyList->begin()->second->ppNumObjects[28]->m_pUIMaterial->m_ppTextures[0] = GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player_ui11_speed_number_o", OBJ_SPEED_UI)->m_ppUITexture[distance[1]];
+							PlyList->begin()->second->ppNumObjects[27]->m_pUIMaterial->m_ppTextures[0] = GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player_ui11_speed_number_o", OBJ_SPEED_UI)->m_ppUITexture[distance[0]];
+
+						}
+						if (distance.size() > 2)
+						{
+							PlyList->begin()->second->ppNumObjects[26]->SetIsRender(true);
+							PlyList->begin()->second->ppNumObjects[26]->SetPosition(fx - 24.f, fy + 20.f, 0.f);
+							PlyList->begin()->second->ppNumObjects[27]->SetPosition(fx - 32.f, fy + 20.f, 0.f);
+							PlyList->begin()->second->ppNumObjects[28]->SetPosition(fx - 40.f, fy + 20.f, 0.f);
+
+							PlyList->begin()->second->ppNumObjects[28]->m_pUIMaterial->m_ppTextures[0] = GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player_ui11_speed_number_o", OBJ_SPEED_UI)->m_ppUITexture[distance[2]];
+							PlyList->begin()->second->ppNumObjects[27]->m_pUIMaterial->m_ppTextures[0] = GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player_ui11_speed_number_o", OBJ_SPEED_UI)->m_ppUITexture[distance[1]];
+							PlyList->begin()->second->ppNumObjects[26]->m_pUIMaterial->m_ppTextures[0] = GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player_ui11_speed_number_o", OBJ_SPEED_UI)->m_ppUITexture[distance[0]];
+
+						}
+						if (distance.size() > 3)
+						{
+							PlyList->begin()->second->ppNumObjects[25]->SetIsRender(true);
+							PlyList->begin()->second->ppNumObjects[25]->SetPosition(fx - 16.f, fy + 20.f, 0.f);
+							PlyList->begin()->second->ppNumObjects[26]->SetPosition(fx - 24.f, fy + 20.f, 0.f);
+							PlyList->begin()->second->ppNumObjects[27]->SetPosition(fx - 32.f, fy + 20.f, 0.f);
+							PlyList->begin()->second->ppNumObjects[28]->SetPosition(fx - 40.f, fy + 20.f, 0.f);
+							PlyList->begin()->second->ppNumObjects[28]->m_pUIMaterial->m_ppTextures[0] = GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player_ui11_speed_number_o", OBJ_SPEED_UI)->m_ppUITexture[distance[3]];
+							PlyList->begin()->second->ppNumObjects[27]->m_pUIMaterial->m_ppTextures[0] = GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player_ui11_speed_number_o", OBJ_SPEED_UI)->m_ppUITexture[distance[2]];
+							PlyList->begin()->second->ppNumObjects[26]->m_pUIMaterial->m_ppTextures[0] = GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player_ui11_speed_number_o", OBJ_SPEED_UI)->m_ppUITexture[distance[1]];
+							PlyList->begin()->second->ppNumObjects[25]->m_pUIMaterial->m_ppTextures[0] = GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player_ui11_speed_number_o", OBJ_SPEED_UI)->m_ppUITexture[distance[0]];
+
+						}
+						if (distance.size() > 4)
+						{
+							PlyList->begin()->second->ppNumObjects[24]->SetIsRender(true);
+
+							PlyList->begin()->second->ppNumObjects[24]->SetPosition(fx - 8.f, fy + 20.f, 0.f);
+							PlyList->begin()->second->ppNumObjects[25]->SetPosition(fx - 16.f, fy + 20.f, 0.f);
+							PlyList->begin()->second->ppNumObjects[26]->SetPosition(fx - 24.f, fy + 20.f, 0.f);
+							PlyList->begin()->second->ppNumObjects[27]->SetPosition(fx - 32.f, fy + 20.f, 0.f);
+							PlyList->begin()->second->ppNumObjects[28]->SetPosition(fx - 40.f, fy + 20.f, 0.f);
+
+							PlyList->begin()->second->ppNumObjects[28]->m_pUIMaterial->m_ppTextures[0] = GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player_ui11_speed_number_o", OBJ_SPEED_UI)->m_ppUITexture[distance[4]];
+							PlyList->begin()->second->ppNumObjects[27]->m_pUIMaterial->m_ppTextures[0] = GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player_ui11_speed_number_o", OBJ_SPEED_UI)->m_ppUITexture[distance[3]];
+							PlyList->begin()->second->ppNumObjects[26]->m_pUIMaterial->m_ppTextures[0] = GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player_ui11_speed_number_o", OBJ_SPEED_UI)->m_ppUITexture[distance[2]];
+							PlyList->begin()->second->ppNumObjects[25]->m_pUIMaterial->m_ppTextures[0] = GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player_ui11_speed_number_o", OBJ_SPEED_UI)->m_ppUITexture[distance[1]];
+							PlyList->begin()->second->ppNumObjects[24]->m_pUIMaterial->m_ppTextures[0] = GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player_ui11_speed_number_o", OBJ_SPEED_UI)->m_ppUITexture[distance[0]];
+
+
+						}
+
+						distance.clear();
 					}
-
-					cout << distance.size() << endl;
-					
-					if (distance.size() >= 0)
+					else
 					{
 						PlyList->begin()->second->ppNumObjects[24]->SetIsRender(false);
 						PlyList->begin()->second->ppNumObjects[25]->SetIsRender(false);
 						PlyList->begin()->second->ppNumObjects[26]->SetIsRender(false);
 						PlyList->begin()->second->ppNumObjects[27]->SetIsRender(false);
-						PlyList->begin()->second->ppNumObjects[28]->SetIsRender(true);
-						PlyList->begin()->second->ppNumObjects[28]->SetPosition(fx - 40.f, fy + 20.f, 0.f);
-
-						PlyList->begin()->second->ppNumObjects[28]->m_pUIMaterial->m_ppTextures[0] = GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player_ui11_speed_number_o", OBJ_SPEED_UI)->m_ppUITexture[distance[0]];
+						PlyList->begin()->second->ppNumObjects[28]->SetIsRender(false);
 					}
-					if (distance.size() > 1)
+
+					if (Ene.second->m_pLockOnUI->bLockOn == true)
 					{
-						PlyList->begin()->second->ppNumObjects[27]->SetIsRender(true);
-						PlyList->begin()->second->ppNumObjects[27]->SetPosition(fx - 32.f, fy + 20.f, 0.f);
-						PlyList->begin()->second->ppNumObjects[28]->SetPosition(fx - 40.f, fy + 20.f, 0.f);
 
-						PlyList->begin()->second->ppNumObjects[28]->m_pUIMaterial->m_ppTextures[0] = GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player_ui11_speed_number_o", OBJ_SPEED_UI)->m_ppUITexture[distance[1]];
-						PlyList->begin()->second->ppNumObjects[27]->m_pUIMaterial->m_ppTextures[0] = GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player_ui11_speed_number_o", OBJ_SPEED_UI)->m_ppUITexture[distance[0]];
+						Ene.second->m_pLockOnUI->m_nTextureRender = 0;
+						Ene.second->m_pLockOnUI->m_pLockOnUIMaterial->m_ppTextures[0] = GET_MANAGER<ObjectManager>()
+							->GetObjFromTag(L"player_ui8_lockon", OBJ_LOCKONUI)->m_ppLockOnUITexture[1];
 
+						Ene.second->m_bCanFire = true;
 					}
-					if (distance.size() > 2)
+					else
 					{
-						PlyList->begin()->second->ppNumObjects[26]->SetIsRender(true);
-						PlyList->begin()->second->ppNumObjects[26]->SetPosition(fx - 24.f, fy + 20.f, 0.f);
-						PlyList->begin()->second->ppNumObjects[27]->SetPosition(fx - 32.f, fy + 20.f, 0.f);
-						PlyList->begin()->second->ppNumObjects[28]->SetPosition(fx - 40.f, fy + 20.f, 0.f);
 
-						PlyList->begin()->second->ppNumObjects[28]->m_pUIMaterial->m_ppTextures[0] = GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player_ui11_speed_number_o", OBJ_SPEED_UI)->m_ppUITexture[distance[2]];
-						PlyList->begin()->second->ppNumObjects[27]->m_pUIMaterial->m_ppTextures[0] = GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player_ui11_speed_number_o", OBJ_SPEED_UI)->m_ppUITexture[distance[1]];
-						PlyList->begin()->second->ppNumObjects[26]->m_pUIMaterial->m_ppTextures[0] = GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player_ui11_speed_number_o", OBJ_SPEED_UI)->m_ppUITexture[distance[0]];
+						Ene.second->m_pLockOnUI->m_pLockOnUIMaterial->m_ppTextures[0] = GET_MANAGER<ObjectManager>()
+							->GetObjFromTag(L"player_ui8_lockon", OBJ_LOCKONUI)->m_ppLockOnUITexture[0];
+						Ene.second->m_pLockOnUI->TextureAnimate();
 
+						Ene.second->m_bCanFire = false;
 					}
-					if (distance.size() > 3)
-					{
-						PlyList->begin()->second->ppNumObjects[25]->SetIsRender(true);
-						PlyList->begin()->second->ppNumObjects[25]->SetPosition(fx - 16.f, fy + 20.f, 0.f);
-						PlyList->begin()->second->ppNumObjects[26]->SetPosition(fx - 24.f, fy + 20.f, 0.f);
-						PlyList->begin()->second->ppNumObjects[27]->SetPosition(fx - 32.f, fy + 20.f, 0.f);
-						PlyList->begin()->second->ppNumObjects[28]->SetPosition(fx - 40.f, fy + 20.f, 0.f);
-						PlyList->begin()->second->ppNumObjects[28]->m_pUIMaterial->m_ppTextures[0] = GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player_ui11_speed_number_o", OBJ_SPEED_UI)->m_ppUITexture[distance[3]];
-						PlyList->begin()->second->ppNumObjects[27]->m_pUIMaterial->m_ppTextures[0] = GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player_ui11_speed_number_o", OBJ_SPEED_UI)->m_ppUITexture[distance[2]];
-						PlyList->begin()->second->ppNumObjects[26]->m_pUIMaterial->m_ppTextures[0] = GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player_ui11_speed_number_o", OBJ_SPEED_UI)->m_ppUITexture[distance[1]];
-						PlyList->begin()->second->ppNumObjects[25]->m_pUIMaterial->m_ppTextures[0] = GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player_ui11_speed_number_o", OBJ_SPEED_UI)->m_ppUITexture[distance[0]];
-						
-					}
-					if (distance.size() > 4)
-					{
-						PlyList->begin()->second->ppNumObjects[24]->SetIsRender(true);
 
-						PlyList->begin()->second->ppNumObjects[24]->SetPosition(fx - 8.f, fy + 20.f, 0.f);
-						PlyList->begin()->second->ppNumObjects[25]->SetPosition(fx - 16.f, fy + 20.f, 0.f);
-						PlyList->begin()->second->ppNumObjects[26]->SetPosition(fx - 24.f, fy + 20.f, 0.f);
-						PlyList->begin()->second->ppNumObjects[27]->SetPosition(fx - 32.f, fy + 20.f, 0.f);
-						PlyList->begin()->second->ppNumObjects[28]->SetPosition(fx - 40.f, fy + 20.f, 0.f);
-
-						PlyList->begin()->second->ppNumObjects[28]->m_pUIMaterial->m_ppTextures[0] = GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player_ui11_speed_number_o", OBJ_SPEED_UI)->m_ppUITexture[distance[4]];
-						PlyList->begin()->second->ppNumObjects[27]->m_pUIMaterial->m_ppTextures[0] = GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player_ui11_speed_number_o", OBJ_SPEED_UI)->m_ppUITexture[distance[3]];
-						PlyList->begin()->second->ppNumObjects[26]->m_pUIMaterial->m_ppTextures[0] = GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player_ui11_speed_number_o", OBJ_SPEED_UI)->m_ppUITexture[distance[2]];
-						PlyList->begin()->second->ppNumObjects[25]->m_pUIMaterial->m_ppTextures[0] = GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player_ui11_speed_number_o", OBJ_SPEED_UI)->m_ppUITexture[distance[1]];
-						PlyList->begin()->second->ppNumObjects[24]->m_pUIMaterial->m_ppTextures[0] = GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player_ui11_speed_number_o", OBJ_SPEED_UI)->m_ppUITexture[distance[0]];
-
-
-					}
-					
-					distance.clear();
 				}
 				else
 				{
-					PlyList->begin()->second->ppNumObjects[24]->SetIsRender(false);
-					PlyList->begin()->second->ppNumObjects[25]->SetIsRender(false);
-					PlyList->begin()->second->ppNumObjects[26]->SetIsRender(false);
-					PlyList->begin()->second->ppNumObjects[27]->SetIsRender(false);
-					PlyList->begin()->second->ppNumObjects[28]->SetIsRender(false);
-				}
-
-				if (Ene.second->m_pLockOnUI->bLockOn == true)
-				{
-					
 					Ene.second->m_pLockOnUI->m_nTextureRender = 0;
 					Ene.second->m_pLockOnUI->m_pLockOnUIMaterial->m_ppTextures[0] = GET_MANAGER<ObjectManager>()
-						->GetObjFromTag(L"player_ui8_lockon", OBJ_LOCKONUI)->m_ppLockOnUITexture[1];
-
-					Ene.second->m_bCanFire = true;
-				}
-				else
-				{
-					
-					Ene.second->m_pLockOnUI->m_pLockOnUIMaterial->m_ppTextures[0] = GET_MANAGER<ObjectManager>()
 						->GetObjFromTag(L"player_ui8_lockon", OBJ_LOCKONUI)->m_ppLockOnUITexture[0];
-					Ene.second->m_pLockOnUI->TextureAnimate();
-
-					Ene.second->m_bCanFire = false;
 				}
+
 			}
 			else
 			{
-				
-				Ene.second->m_pLockOnUI->m_nTextureRender = 0;
+
+				Ene.second->m_bAiming = false;
 				Ene.second->m_pLockOnUI->m_pLockOnUIMaterial->m_ppTextures[0] = GET_MANAGER<ObjectManager>()
 					->GetObjFromTag(L"player_ui8_lockon", OBJ_LOCKONUI)->m_ppLockOnUITexture[0];
 			}
 
-		}
-		else
-		{
-	
-			Ene.second->m_bAiming = false;
-			Ene.second->m_pLockOnUI->m_pLockOnUIMaterial->m_ppTextures[0] = GET_MANAGER<ObjectManager>()
-				->GetObjFromTag(L"player_ui8_lockon", OBJ_LOCKONUI)->m_ppLockOnUITexture[0];
-		}
-
-		if(GET_MANAGER<SceneManager>()->GetSceneStoped() == true)
-			Ene.second->m_pLockOnUI->m_nTextureRender = 1;
-		if (GET_MANAGER<SceneManager>()->GetSceneStoped() == true)
-		{
-			PlyList->begin()->second->ppNumObjects[24]->SetIsRender(false);
-			PlyList->begin()->second->ppNumObjects[25]->SetIsRender(false);
-			PlyList->begin()->second->ppNumObjects[26]->SetIsRender(false);
-			PlyList->begin()->second->ppNumObjects[27]->SetIsRender(false);
-			PlyList->begin()->second->ppNumObjects[28]->SetIsRender(false);
+			if (GET_MANAGER<SceneManager>()->GetSceneStoped() == true)
+				Ene.second->m_pLockOnUI->m_nTextureRender = 1;
+			if (GET_MANAGER<SceneManager>()->GetSceneStoped() == true)
+			{
+				PlyList->begin()->second->ppNumObjects[24]->SetIsRender(false);
+				PlyList->begin()->second->ppNumObjects[25]->SetIsRender(false);
+				PlyList->begin()->second->ppNumObjects[26]->SetIsRender(false);
+				PlyList->begin()->second->ppNumObjects[27]->SetIsRender(false);
+				PlyList->begin()->second->ppNumObjects[28]->SetIsRender(false);
+			}
 		}
 	}
 
@@ -323,8 +334,9 @@ void UIManager::MoveLockOnUI(ObjectManager::MAPOBJ* PlyList, ObjectManager::MAPO
 					p = GameOBJs.end();
 					break;
 				}
+
 				sort(begin(GameOBJs), end(GameOBJs), [](const CGameObject* a, const CGameObject* b) {
-					return a->m_xmf4x4World._41 < b->m_xmf4x4World._41;
+					return a->LenthToPlayer < b->LenthToPlayer;
 					});
 			}
 		}
@@ -343,8 +355,6 @@ void UIManager::MoveLockOnUI(ObjectManager::MAPOBJ* PlyList, ObjectManager::MAPO
 			Count = 0;
 	}
 
-
-	//GameOBJs.clear();
 }
 
 
@@ -364,11 +374,11 @@ void UIManager::NumberTextureAnimate(ObjectManager::MAPOBJ* PlyList, const float
 			pnum->m_pUIMaterial->SetShader(GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player_ui11_speed_number_o", OBJ_SPEED_UI)->m_pUIShader);
 			pnum->SetMaterial(0, pnum->m_pUIMaterial);
 			if (i < 4)
-				pnum->SetPosition(GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player_ui4_speed", OBJ_UI)->GetPosition().x - 25.f + 12.f * i,
-					GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player_ui4_speed", OBJ_UI)->GetPosition().y - 5.f, 0.f);
+				pnum->SetPosition(GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player_ui4_speed", OBJ_UI)->GetPosition().x - 18.f + 12.f * i,
+					GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player_ui4_speed", OBJ_UI)->GetPosition().y+ 2.2f, 0.f);
 			if (4 <= i && i < 9)
-				pnum->SetPosition(GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player_ui5_alt", OBJ_UI)->GetPosition().x - 40.f + 12.f * (i - 3),
-					GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player_ui5_alt", OBJ_UI)->GetPosition().y - 5.f, 0.f);
+				pnum->SetPosition(GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player_ui5_alt", OBJ_UI)->GetPosition().x - 45.f + 12.f * (i - 3),
+					GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player_ui5_alt", OBJ_UI)->GetPosition().y+ 2.2f, 0.f);
 			if (9 <= i && i < 12)
 				pnum->SetPosition(GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player_ui2_weapon", OBJ_UI)->GetPosition().x + 11.f * (i - 8),
 					GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player_ui2_weapon", OBJ_UI)->GetPosition().y + 30.f, 0.f);
@@ -388,7 +398,7 @@ void UIManager::NumberTextureAnimate(ObjectManager::MAPOBJ* PlyList, const float
 			pnum->SetIsRender(false);
 			PlyList->begin()->second->ppNumObjects[i] = pnum;
 
-			//GET_MANAGER<ObjectManager>()->AddObject(L"NumInstance", pnum, OBJ_SPEED_UI);
+			GET_MANAGER<ObjectManager>()->AddObject(L"NumInstance", pnum, OBJ_SPEED_UI);
 
 		}
 	}
@@ -422,9 +432,6 @@ void UIManager::NumberTextureAnimate(ObjectManager::MAPOBJ* PlyList, const float
 		nMsecond = (int)fElapsedTime;
 		nSecond = n_second;
 		nMin = n_minute;
-
-
-		//cout << n_Minute << endl;
 
 		while (speed_number != 0) {
 			speed.push_back(speed_number % 10);

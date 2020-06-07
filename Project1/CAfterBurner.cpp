@@ -12,6 +12,7 @@ CAfterBurner::CAfterBurner()
 
 CAfterBurner::CAfterBurner(int nIndex, ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList, ID3D12RootSignature* pd3dGraphicsRootSignature, float fWidth, float fHeight, float fDepth)
 {
+	m_bReffernce = true;
 	m_pPlaneMesh = new CPlaneMesh(pd3dDevice, pd3dCommandList, fWidth, fHeight, fDepth, XMFLOAT2(0, 0), XMFLOAT2(0, 0), XMFLOAT2(0, 0), XMFLOAT2(0, 0));
 
 	SetMesh(m_pPlaneMesh);
@@ -59,7 +60,7 @@ CAfterBurner::~CAfterBurner()
 
 void CAfterBurner::Animate(float fTimeElapsed)
 {
-	if (!m_bRefference)
+	if (!m_bReffernce)
 	{
 		//m_fBurnerBlendAmount = 0.3f;
 		/*m_xmf3Position.x = m_xmf4x4ToParent._41;
@@ -72,7 +73,7 @@ void CAfterBurner::Animate(float fTimeElapsed)
 void CAfterBurner::TextureAnimate()
 {
 	//해당 오브젝트가 래퍼런스 오브젝트가 아닐경우에만 애니메이트를 실행
-	if (!m_bRefference)
+	if (!m_bReffernce)
 	{
 		//m_fFadeFrequence : 텍스쳐 교체주기, 얼마만큼의 주기에 변경 시킬지 원하는 값을 셋팅하면 됨
 		if (m_fFadeTimeElapsed > m_fFadeFrequence)

@@ -333,7 +333,6 @@ void CDeviceManager::BuildScene()
 {
 	m_pd3dCommandList->Reset(m_pd3dCommandAllocator, NULL);
 
-
 	m_pSceneManager->ChangeSceneState(SCENE_MENU, m_pd3dDevice, m_pd3dCommandList);
 	CTerrainPlayer* pPlayer = new CTerrainPlayer(m_pd3dDevice, m_pd3dCommandList, m_pSceneManager->GetGraphicsRootSignature(), NULL);
 	pPlayer->SetGameOver(true);
@@ -428,6 +427,7 @@ void CDeviceManager::SceneChangeInput()
 {
 	KeyManager* keyManager = GET_MANAGER<KeyManager>();
 	DWORD dwDirection = 0;
+
 	if (true == keyManager->GetKeyState(STATE_PUSH, VK_G))
 	{
 		m_ArrowSwitch = 0;
@@ -513,7 +513,6 @@ void CDeviceManager::SceneChangeInput()
 		if (m_SceneSwitch == SCENE_MENU)
 		{
 			m_pd3dCommandList->Reset(m_pd3dCommandAllocator, NULL);
-			
 
 			m_SceneSwitch = SCENE_TEST;
 			m_pSceneManager->ChangeSceneState(SCENE_TEST, m_pd3dDevice, m_pd3dCommandList);
@@ -564,7 +563,6 @@ void CDeviceManager::SceneChangeInput()
 	else if (true == keyManager->GetKeyState(STATE_PUSH, VK_BACK))
 	{
 		m_pd3dCommandList->Reset(m_pd3dCommandAllocator, NULL);
-
 		m_SceneSwitch = SCENE_MENU;
 		m_pSceneManager->ChangeSceneState(SCENE_MENU, m_pd3dDevice, m_pd3dCommandList);
 		CTerrainPlayer* pPlayer = new CTerrainPlayer(m_pd3dDevice, m_pd3dCommandList, m_pSceneManager->GetGraphicsRootSignature(), NULL);

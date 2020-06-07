@@ -35,7 +35,14 @@ float4 PSTextured(VS_TEXTURED_OUTPUT input, uint primitiveID : SV_PrimitiveID) :
 {
 	float4 cColor = gtxtTexture.Sample(gssWrap, input.uv);
 	clip(cColor.a - 0.03f);
-	
 
+	if (gbWarning == true)
+	{
+		cColor.r += 0.9f;
+		cColor.g = 0.2f;
+		cColor.b = 0.2f;
+
+	}
+	
 	return(cColor);
 }

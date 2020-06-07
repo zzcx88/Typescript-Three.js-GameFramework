@@ -175,6 +175,24 @@
     <Filter Include="GameObject\ColisionObject\OrientedBoxCollider">
       <UniqueIdentifier>{dbea42f5-1d19-4fe2-a67b-e79fff6a301c}</UniqueIdentifier>
     </Filter>
+    <Filter Include="GameObject\Aircraft">
+      <UniqueIdentifier>{7dcd802d-7fde-4c4c-b0fb-2723cd2d014e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GameObject\Aircraft\Mig21">
+      <UniqueIdentifier>{e46ebd65-360b-4acb-a652-fd1abb19c671}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GameObject\Aircraft\TU160">
+      <UniqueIdentifier>{711a29a8-e9d1-4aef-8ca9-a694f299eb08}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GameObject\BattleShip">
+      <UniqueIdentifier>{a373585d-e813-4c48-bb4c-c7a51a30faa1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GameObject\BattleShip\052C">
+      <UniqueIdentifier>{a59793c4-97ba-4534-aa9d-35d5fa3352b4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GameObject\Plane\Effect\CrushSmoke">
+      <UniqueIdentifier>{d91e9e62-a119-4bfb-b13e-f2e87be3350b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="targetver.h">
@@ -360,6 +378,21 @@
     <ClInclude Include="AnimateMenuTitle.h">
       <Filter>GameObject\Plane\UI</Filter>
     </ClInclude>
+    <ClInclude Include="CMig21.h">
+      <Filter>GameObject\Aircraft\Mig21</Filter>
+    </ClInclude>
+    <ClInclude Include="CTU160.h">
+      <Filter>GameObject\Aircraft\TU160</Filter>
+    </ClInclude>
+    <ClInclude Include="C052CDestroyer.h">
+      <Filter>GameObject\BattleShip\052C</Filter>
+    </ClInclude>
+    <ClInclude Include="CCrushSmoke.h">
+      <Filter>GameObject\Plane\Effect\CrushSmoke</Filter>
+    </ClInclude>
+    <ClInclude Include="RedUI.h">
+      <Filter>GameObject\Plane\UI</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="DDSTextureLoader12.cpp">
@@ -524,6 +557,21 @@
     <ClCompile Include="AnimateMenuTitle.cpp">
       <Filter>GameObject\Plane\UI</Filter>
     </ClCompile>
+    <ClCompile Include="CMig21.cpp">
+      <Filter>GameObject\Aircraft\Mig21</Filter>
+    </ClCompile>
+    <ClCompile Include="CTU160.cpp">
+      <Filter>GameObject\Aircraft\TU160</Filter>
+    </ClCompile>
+    <ClCompile Include="C052CDestroyer.cpp">
+      <Filter>GameObject\BattleShip\052C</Filter>
+    </ClCompile>
+    <ClCompile Include="CCrushSmoke.cpp">
+      <Filter>GameObject\Plane\Effect\CrushSmoke</Filter>
+    </ClCompile>
+    <ClCompile Include="RedUI.cpp">
+      <Filter>GameObject\Plane\UI</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Project1.rc">
@@ -567,6 +615,9 @@
       <Filter>HLSL</Filter>
     </FxCompile>
     <FxCompile Include="Normal.hlsl">
+      <Filter>HLSL</Filter>
+    </FxCompile>
+    <FxCompile Include="RedUI.hlsl">
       <Filter>HLSL</Filter>
     </FxCompile>
   </ItemGroup>

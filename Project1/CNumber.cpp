@@ -21,7 +21,7 @@ CNumber::CNumber(int nIndex, ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList
 	bstr_t folderPath = "UI/Number";
 	m_nNumTex = GET_MANAGER<LoadTextureManager>()->LoadTextureFromFolder(pd3dDevice, pd3dCommandList, folderPath, m_ppUITexture);
 
-	cout << m_nNumTex << endl;
+	//cout << m_nNumTex << endl;
 	UINT ncbElementBytes = ((sizeof(CB_GAMEOBJECT_INFO) + 255) & ~255);
 
 	m_pUIShader = new CUIShader();

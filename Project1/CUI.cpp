@@ -3,7 +3,7 @@
 #include "CPlaneMesh.h"
 #include "CTestScene.h"
 
-#define TEXTURES 9
+#define TEXTURES 12
 CUI::CUI()
 {}
 
@@ -36,8 +36,14 @@ CUI::CUI(int nIndex, ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCo
 	m_ppUITexture[7]->LoadTextureFromFile(pd3dDevice, pd3dCommandList, L"UI/CrossHair.dds", 0);
 	m_ppUITexture[8] = new CTexture(1, RESOURCE_TEXTURE2D, 0);
 	m_ppUITexture[8]->LoadTextureFromFile(pd3dDevice, pd3dCommandList, L"UI/Title.dds", 0);
+	m_ppUITexture[9] = new CTexture(1, RESOURCE_TEXTURE2D, 0);
+	m_ppUITexture[9]->LoadTextureFromFile(pd3dDevice, pd3dCommandList, L"UI/Warning.dds", 0);
+	m_ppUITexture[10] = new CTexture(1, RESOURCE_TEXTURE2D, 0);
+	m_ppUITexture[10]->LoadTextureFromFile(pd3dDevice, pd3dCommandList, L"UI/MissileAlert.dds", 0);
+	m_ppUITexture[11] = new CTexture(1, RESOURCE_TEXTURE2D, 0);
+	m_ppUITexture[11]->LoadTextureFromFile(pd3dDevice, pd3dCommandList, L"UI/Destroyed.dds", 0);
 
-
+	
 	UINT ncbElementBytes = ((sizeof(CB_GAMEOBJECT_INFO) + 255) & ~255);
 	
 
@@ -68,8 +74,8 @@ void CUI::MoveMinimapPoint(XMFLOAT3& xmfPlayer, CGameObject* pGameOBJ)
 	float getx = 0.f;
 	float gety = 0.f;
 
-	getx = GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player_ui9_minimap", OBJ_UI)->GetPosition().x;
-	gety = GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player_ui9_minimap", OBJ_UI)->GetPosition().y;
+	getx = GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player_ui9_minimap", OBJ_MINIMAP_UI)->GetPosition().x;
+	gety = GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player_ui9_minimap", OBJ_MINIMAP_UI)->GetPosition().y;
 
 	fx = getx + (200.f / 20500.f) *xmfPlayer.x;
 	fy = gety + (200.f / 20500.f) * xmfPlayer.z;
@@ -83,7 +89,6 @@ void CUI::MoveMinimapPoint(XMFLOAT3& xmfPlayer, CGameObject* pGameOBJ)
 		fy = gety + 200.f;
 	else if(fy <= gety - 200.f)
 		fy = gety - 200.f;
-
 
 	pGameOBJ->SetPosition(fx, fy, 0.f);
 }

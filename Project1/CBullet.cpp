@@ -8,7 +8,12 @@ CBullet::CBullet(XMFLOAT3 xmf3Position)
 {
 	OrientedBoxCollider = new COrientedBoxCollider();
 	m_pBulletMesh = GET_MANAGER<ObjectManager>()->GetObjFromTag(L"bulletRef", OBJ_ALLYBULLET)->m_pBulletMesh;
-	m_pBulletMesh->SetOOBB(XMFLOAT3(0,0,0), XMFLOAT3(20.0f, 20.0f, 20.0f), XMFLOAT4(0.0f, 0.0f, 0.0f, 1.f));
+	//m_pBulletMesh->SetOOBB(XMFLOAT3(0,0,0), XMFLOAT3(1.0f, 1.0f, 1.0f), XMFLOAT4(0.0f, 0.0f, 0.0f, 1.f));
+
+	SphereCollider = new CSphereCollider();
+	SphereCollider->SetSphereCollider(GetPosition(), 5);
+	SphereCollider->SetScale(5, 5, 5);
+
 	SetMesh(m_pBulletMesh);
 }
 
@@ -33,6 +38,10 @@ CBullet::CBullet(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dComman
 	m_pBulletMaterial->SetTexture(m_pBulletTexture);
 	m_pBulletMaterial->SetShader(m_pBulletShader);
 
+	SphereCollider = new CSphereCollider();
+	SphereCollider->SetSphereCollider(GetPosition(), 5);
+	SphereCollider->SetScale(5, 5, 5);
+
 	SetMaterial(0, m_pBulletMaterial);
 }
 
@@ -52,8 +61,12 @@ void CBullet::Animate(float fTimeElapsed)
 		m_fDeleteElapsed += fTimeElapsed;
 		Move(DIR_FORWARD, m_fBulletSpeed * fTimeElapsed);
 		
-		if (OrientedBoxCollider)OrientedBoxCollider->SetPosition(GetPosition());
-		if (OrientedBoxCollider)OrientedBoxCollider->Animate(m_pBulletMesh, &m_xmf4x4World, GetPosition());
+		//if (OrientedBoxCollider)OrientedBoxCollider->SetPosition(GetPosition());
+		//if (OrientedBoxCollider)OrientedBoxCollider->Animate(m_pBulletMesh, &m_xmf4x4World, GetPosition());
+
+		if (SphereCollider)SphereCollider->SetPosition(GetPosition());
+		if (SphereCollider)SphereCollider->m_xmf4x4ToParent = Matrix4x4::Multiply(XMMatrixScaling(5, 5, 5), m_xmf4x4ToParent);
+		if (SphereCollider)SphereCollider->Animate(fTimeElapsed, GetPosition());
 
 		if (m_fDeleteElapsed > m_fDeleteFrequence)
 		{
@@ -64,7 +77,7 @@ void CBullet::Animate(float fTimeElapsed)
 
 void CBullet::CollisionActivate(CGameObject* collideTarget)
 {
-	if (!m_bRefference)
+	if (!m_bRefference && collideTarget->m_bDestroyed == false)
 	{
 		CMissleSplash* pMissleSplash = new CMissleSplash();
 		pMissleSplash = new CMissleSplash();
@@ -77,6 +90,7 @@ void CBullet::CollisionActivate(CGameObject* collideTarget)
 		pMissleSplash->m_pEffectMaterial->SetShader(GET_MANAGER<ObjectManager>()->GetObjFromTag(L"MissleSplashRef", OBJ_EFFECT)->m_EffectShader);
 		pMissleSplash->SetMaterial(0, pMissleSplash->m_pEffectMaterial);
 		pMissleSplash->SetPosition(m_xmf4x4World._41, m_xmf4x4World._42, m_xmf4x4World._43);
+		pMissleSplash->m_fScale = 0.2;
 		GET_MANAGER<ObjectManager>()->AddObject(L"MissleSplashInstance", pMissleSplash, OBJ_EFFECT);
 
 		m_isDead = true;

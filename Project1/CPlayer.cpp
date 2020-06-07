@@ -34,6 +34,18 @@ CPlayer::~CPlayer()
 	if (m_pCamera) delete m_pCamera;
 }
 
+void CPlayer::ReturnEyeFix()
+{
+	m_fFOV = 60;
+	m_pCamera->GenerateProjectionMatrix(1.01f, m_fFarPlaneDistance, ASPECT_RATIO, m_fFOV);
+	m_pCamera->SetLookPlayer();
+	XMFLOAT3 xmf3Shift = XMFLOAT3(0, 0, 0);
+	xmf3Shift = Vector3::Add(xmf3Shift, m_xmf3Up, 0.6);
+	m_pCamera->SetPosition(Vector3::Add(m_xmf3Position, xmf3Shift));
+	xmf3Shift = Vector3::Add(xmf3Shift, m_xmf3Look, -4.1);
+	m_pCamera->SetPosition(Vector3::Add(m_xmf3Position, xmf3Shift));
+}
+
 void CPlayer::CreateShaderVariables(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList)
 {
 	if (m_pCamera) m_pCamera->CreateShaderVariables(pd3dDevice, pd3dCommandList);
@@ -156,14 +168,7 @@ void CPlayer::Update_Input(const float& TimeDelta)
 
 		if (m_bEye_fixation == false)
 		{
-			m_fFOV = 60;
-			m_pCamera->GenerateProjectionMatrix(1.01f, m_fFarPlaneDistance, ASPECT_RATIO, m_fFOV);
-			m_pCamera->SetLookPlayer();
-			XMFLOAT3 xmf3Shift = XMFLOAT3(0, 0, 0);
-			xmf3Shift = Vector3::Add(xmf3Shift, m_xmf3Up, 0.6);
-			m_pCamera->SetPosition(Vector3::Add(m_xmf3Position, xmf3Shift));
-			xmf3Shift = Vector3::Add(xmf3Shift, m_xmf3Look, -4.1);
-			m_pCamera->SetPosition(Vector3::Add(m_xmf3Position, xmf3Shift));
+			ReturnEyeFix();
 		}
 	}
 
@@ -398,9 +403,8 @@ void CPlayer::Update_Input(const float& TimeDelta)
 		{
 			if (Ene.second->m_bAiming == true && Ene.second->GetState() != true)
 			{
-				XMFLOAT3 temp = Ene.second->GetPosition();
-				//auto temp = GET_MANAGER<ObjectManager>()->GetObjFromTag(L"SphereCollider", OBJ_ENEMY)->GetPosition();
-				m_pCamera->SetLookAt(XMFLOAT3(temp));
+				m_xmf3FixTarget = Ene.second->GetPosition();
+				m_pCamera->SetLookAt(XMFLOAT3(m_xmf3FixTarget));
 			}
 		}
 			if (m_fFOV > 40)
@@ -426,7 +430,7 @@ void CPlayer::Update_Input(const float& TimeDelta)
 void CPlayer::Animate(float fTimeElapsed)
 {
 	m_pCamera->m_fTimeElapsed = fTimeElapsed;
-	if (!m_bGameOver)
+	if (m_bGameOver == false)
 	{
 		m_xmf3Velocity = Vector3::Add(m_xmf3Velocity, Vector3::ScalarProduct(m_xmf3Gravity, fTimeElapsed, false));
 		float fLength = sqrtf(m_xmf3Velocity.x * m_xmf3Velocity.x + m_xmf3Velocity.z * m_xmf3Velocity.z);
@@ -459,10 +463,27 @@ void CPlayer::Animate(float fTimeElapsed)
 
 		SetAfterBurnerPosition(fTimeElapsed);
 	}
+	else
+	{
+		m_pCamera->SetPosition(XMFLOAT3(GetPosition().x, m_xmf4x4World._42 + 500, GetPosition().z));
+		m_pCamera->SetLookAt(GetPosition());
+		m_pCamera->RegenerateViewMatrix();
+	}
 	/*if (-1 ==Update_Input(fTimeElapsed))
 	{
 		return -1;
 	}*/
+}
+
+void CPlayer::CollisionActivate(CGameObject* collideTarget)
+{
+	if (collideTarget->m_ObjType == OBJ_ENEBULLET || collideTarget->m_ObjType == OBJ_ENEMISSLE)
+	{
+		//m_pCamera->SetPosition(XMFLOAT3(GetPosition().x, GetPosition().y + 200, GetPosition().z));
+		//wcout << GET_MANAGER<ObjectManager>()->GetTagFromObj(this, OBJ_PLAYER) << endl;
+		cout << "Ãæµ¹!" << endl;
+		//m_bGameOver = true;
+	}
 }
 
 CCamera* CPlayer::OnChangeCamera(DWORD nNewCameraMode, DWORD nCurrentCameraMode)
@@ -523,7 +544,7 @@ void CPlayer::OnPrepareRender()
 
 void CPlayer::Render(ID3D12GraphicsCommandList* pd3dCommandList, CCamera* pCamera)
 {
-	if (!m_bGameOver)
+	if (m_bGameOver == false)
 	{
 		DWORD nCameraMode = (pCamera) ? pCamera->GetMode() : 0x00;
 		if (nCameraMode == THIRD_PERSON_CAMERA) CGameObject::Render(pd3dCommandList, pCamera);
@@ -540,8 +561,8 @@ CAirplanePlayer::CAirplanePlayer(ID3D12Device* pd3dDevice, ID3D12GraphicsCommand
 	SphereCollider->SetScale(100, 100, 100);
 	SphereCollider->SetSphereCollider(GetPosition() , 10.0f);
 
-	m_pMissleModel = CGameObject::LoadGeometryAndAnimationFromFile(pd3dDevice, pd3dCommandList, pd3dGraphicsRootSignature, "Model/Missle.bin", NULL, MODEL_ACE);
-	m_pMissleModelCol = CGameObject::LoadGeometryAndAnimationFromFile(pd3dDevice, pd3dCommandList, pd3dGraphicsRootSignature, "Model/Sphere.bin", NULL, MODEL_COL);
+	//m_pMissleModel = CGameObject::LoadGeometryAndAnimationFromFile(pd3dDevice, pd3dCommandList, pd3dGraphicsRootSignature, "Model/Missle.bin", NULL, MODEL_ACE);
+	//m_pMissleModelCol = CGameObject::LoadGeometryAndAnimationFromFile(pd3dDevice, pd3dCommandList, pd3dGraphicsRootSignature, "Model/Sphere.bin", NULL, MODEL_COL);
 
 	m_nMSL_Count = CPlayer::GetMSLCount();
 
@@ -909,34 +930,44 @@ void CAirplanePlayer::MissleLaunch()
 
 	for (auto& Ene : m_ObjManager->GetObjFromType(OBJ_ENEMY))
 	{
-		if (Ene.second->m_bCanFire == true&&Ene.second->GetState() != true&&m_nMSL_Count !=0)
+		if (Ene.second->m_bCanFire == true && Ene.second->GetState() != true&&m_nMSL_Count !=0 && Ene.second->m_bDestroyed == false)
 		{
 			temp = Ene.second->GetPositionForMissle();
-
-			pMissle = new CMissle(m_pd3dDevice, m_pd3dCommandList, m_pd3dGraphicsRootSignature, m_pMissleModelCol, temp, m_xmf3Position, m_ObjManager);
-			pMissle->m_pCamera = m_pCamera;
-			pMissle->m_xmf3Look = m_xmf3Look;
+			pMissle = new CMissle(this);
+			pMissle->m_xmfTarget = temp;
 			pMissle->m_bLockOn = true;
-			pMissle->m_xmf4x4ToParent = Matrix4x4::Multiply(XMMatrixScaling(1, 1, 1), m_xmf4x4ToParent);
-			pMissle->SetChild(m_pMissleModel->m_pModelRootObject);
-			pMissle->SetScale(10, 10, 10);
-			pMissle->SetPosition(m_pMSL_1->GetPosition());
-			m_ObjManager->AddObject(L"player_missle", pMissle, OBJ_MISSLE);
+			if (m_bMissleCross == false)
+			{
+				m_bMissleCross = true;
+				pMissle->SetPosition(m_pMSL_1->GetPosition());
+			}
+			else
+			{
+				m_bMissleCross = false;
+				pMissle->SetPosition(m_pMSL_2->GetPosition());
+			}
+			pMissle->m_fTheta = 60.f;
+			m_ObjManager->AddObject(L"player_missle", pMissle, OBJ_ALLYMISSLE);
 			
 			CPlayer::SetMissileCount(--m_nMSL_Count);
 			return;
 		}
 
 	}
-	pMissle = new CMissle(m_pd3dDevice, m_pd3dCommandList, m_pd3dGraphicsRootSignature, m_pMissleModelCol, temp, m_xmf3Position, m_ObjManager);
-	pMissle->m_pCamera = m_pCamera;
-	pMissle->m_xmf3Look = m_xmf3Look;
+	pMissle = new CMissle(this);
+	pMissle->m_xmfTarget = temp;
 	pMissle->m_bLockOn = false;
-	pMissle->m_xmf4x4ToParent = Matrix4x4::Multiply(XMMatrixScaling(1, 1, 1), m_xmf4x4ToParent);
-	pMissle->SetChild(m_pMissleModel->m_pModelRootObject);
-	pMissle->SetScale(10, 10, 10);
-	pMissle->SetPosition(m_pMSL_1->GetPosition());
-	m_ObjManager->AddObject(L"player_missle", pMissle, OBJ_MISSLE);
+	if (m_bMissleCross == false)
+	{
+		m_bMissleCross = true;
+		pMissle->SetPosition(m_pMSL_1->GetPosition());
+	}
+	else
+	{
+		m_bMissleCross = false;
+		pMissle->SetPosition(m_pMSL_2->GetPosition());
+	}
+	m_ObjManager->AddObject(L"player_missle", pMissle, OBJ_ALLYMISSLE);
 	CPlayer::SetMissileCount(--m_nMSL_Count);
 
 }
@@ -1080,7 +1111,7 @@ CTerrainPlayer::CTerrainPlayer(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandLi
 {
 	m_pCamera = ChangeCamera(THIRD_PERSON_CAMERA, 0.0f);
 
-	CLoadedModelInfo* pAngrybotModel = CGameObject::LoadGeometryAndAnimationFromFile(pd3dDevice, pd3dCommandList, pd3dGraphicsRootSignature, "Model/Angrybot.bin", NULL, MODEL_ANI);
+	CLoadedModelInfo* pAngrybotModel = CGameObject::LoadGeometryAndAnimationFromFile(pd3dDevice, pd3dCommandList, pd3dGraphicsRootSignature, "Model/water.bin", NULL, MODEL_STD);
 	SetChild(pAngrybotModel->m_pModelRootObject, true);
 	CreateShaderVariables(pd3dDevice, pd3dCommandList);
 

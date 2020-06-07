@@ -5,7 +5,8 @@ class CCamera;
 class CMissle : public CGameObject
 {
 public:
-	CMissle(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList, ID3D12RootSignature* pd3dGraphicsRootSignature, CLoadedModelInfo* pSphereModel, XMFLOAT3* xmfTarget, XMFLOAT3 xmfLunchPosition, ObjectManager* pObjectManage);
+	CMissle(CGameObject* pObj);
+	CMissle(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList, ID3D12RootSignature* pd3dGraphicsRootSignature, XMFLOAT3* xmfTarget, XMFLOAT3 xmfLunchPosition, ObjectManager* pObjectManage);
 	virtual ~CMissle();
 
 public:
@@ -22,12 +23,15 @@ public:
 	XMFLOAT3 m_xmf3TargetVector;
 	CCamera* m_pCamera;
 
+	bool m_bRefference = false;
 	bool FirstFire = true;
 	bool m_bLockOn = false;
 	float m_fDeleteFrequence = 5.0f;
 	float m_fAddFogFrequence = 0.001f;
 	float m_fAddFogTimeElapsed = 0.f;
 	float m_fDeleteTimeElapsed = 0.f;
+
+	float m_fTheta = 50.f;
 
 	ID3D12Device* m_pd3dDevice;
 	ID3D12GraphicsCommandList* m_pd3dCommandList;
