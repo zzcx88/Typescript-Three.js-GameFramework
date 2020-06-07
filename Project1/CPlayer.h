@@ -36,6 +36,7 @@ protected:
 	float m_fGunFireElapsed = 0.0f;
 	float m_fGunFireFrequency = 0.1f;
 
+
 	float m_fTimeLegElapsed = 0.0f;
 
 	bool m_bEye_fixation = false;
@@ -56,7 +57,7 @@ protected:
 
 	// Weapon Count
 	int m_nMSL_Count = 0;
-
+	int m_nScore = 0;
 public:
 	CPlayer();
 	virtual ~CPlayer();
@@ -72,10 +73,13 @@ public:
 	void SetMaxVelocityY(float fMaxVelocity) { m_fMaxVelocityY = fMaxVelocity; }
 	void SetVelocity(const XMFLOAT3& xmf3Velocity) { m_xmf3Velocity = xmf3Velocity; }
 	void SetPosition(const XMFLOAT3& xmf3Position) { Move(XMFLOAT3(xmf3Position.x - m_xmf3Position.x, xmf3Position.y - m_xmf3Position.y, xmf3Position.z - m_xmf3Position.z), false); }
-
+	
 	void SetScale(XMFLOAT3& xmf3Scale) { m_xmf3Scale = xmf3Scale; }
 
-	void SetMissleCount(int nCount) { m_nMSL_Count = nCount; }
+	void SetMissileCount(int nCount) { m_nMSL_Count = nCount; }
+	void SetScore(int nScore) { m_nScore = nScore; }
+	void SetGameOver(bool bGameOver) { m_bGameOver = bGameOver; }
+
 
 	const XMFLOAT3& GetVelocity() const { return(m_xmf3Velocity); }
 	float GetAircraftSpeed() const { return(m_fAircraftSpeed); }
@@ -84,6 +88,8 @@ public:
 	float GetPitch() const { return(m_fPitch); }
 	float GetRoll() const { return(m_fRoll); }
 	int GetMSLCount() const { return(m_nMSL_Count); }
+	int GetScore() const { return(m_nScore); }
+	bool GetGameOver() const { return(m_bGameOver); }
 
 	ObjectManager* m_ObjManager;
 
@@ -157,6 +163,17 @@ public:
 
 	// Weapon Count
 	int m_nMSL_Count = 0;
+
+	// Score
+	int m_nScore = 0;
+
+	CGameObject* m_pRight_AfterBurnerEX;
+	CGameObject* m_pRight_AfterBurnerIN;
+	CGameObject* m_pLeft_AfterBurnerEX;
+	CGameObject* m_pLeft_AfterBurnerIN;
+
+	CLoadedModelInfo* m_pAfterBurnerEXModel;
+	CLoadedModelInfo* m_pAfterBurnerINModel;
 
 	CGameObject* m_pLeft_AfterBurner[10];
 	CGameObject* m_pRight_AfterBurner[10];

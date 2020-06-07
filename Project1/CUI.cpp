@@ -23,7 +23,7 @@ CUI::CUI(int nIndex, ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCo
 	m_ppUITexture[1] = new CTexture(1, RESOURCE_TEXTURE2D, 0);
 	m_ppUITexture[1]->LoadTextureFromFile(pd3dDevice, pd3dCommandList, L"UI/WeaponUI.dds", 0);
 	m_ppUITexture[2] = new CTexture(1, RESOURCE_TEXTURE2D, 0);
-	m_ppUITexture[2]->LoadTextureFromFile(pd3dDevice, pd3dCommandList, L"UI/TimeScoreUI.dds", 0);
+	m_ppUITexture[2]->LoadTextureFromFile(pd3dDevice, pd3dCommandList, L"UI/TimeScoreUI2.dds", 0);
 	m_ppUITexture[3] = new CTexture(1, RESOURCE_TEXTURE2D, 0);
 	m_ppUITexture[3]->LoadTextureFromFile(pd3dDevice, pd3dCommandList, L"UI/SpeedUI.dds", 0);
 	m_ppUITexture[4] = new CTexture(1, RESOURCE_TEXTURE2D, 0);
@@ -33,9 +33,10 @@ CUI::CUI(int nIndex, ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCo
 	m_ppUITexture[6] = new CTexture(1, RESOURCE_TEXTURE2D, 0);
 	m_ppUITexture[6]->LoadTextureFromFile(pd3dDevice, pd3dCommandList, L"UI/MinimapUI.dds", 0);
 	m_ppUITexture[7] = new CTexture(1, RESOURCE_TEXTURE2D, 0);
-	m_ppUITexture[7]->LoadTextureFromFile(pd3dDevice, pd3dCommandList, L"UI/MinimapPoint.dds", 0);
+	m_ppUITexture[7]->LoadTextureFromFile(pd3dDevice, pd3dCommandList, L"UI/CrossHair.dds", 0);
 	m_ppUITexture[8] = new CTexture(1, RESOURCE_TEXTURE2D, 0);
-	m_ppUITexture[8]->LoadTextureFromFile(pd3dDevice, pd3dCommandList, L"UI/MinimapRedPoint.dds", 0);
+	m_ppUITexture[8]->LoadTextureFromFile(pd3dDevice, pd3dCommandList, L"UI/Title.dds", 0);
+
 
 	UINT ncbElementBytes = ((sizeof(CB_GAMEOBJECT_INFO) + 255) & ~255);
 	
@@ -64,20 +65,32 @@ void CUI::MoveMinimapPoint(XMFLOAT3& xmfPlayer, CGameObject* pGameOBJ)
 	float fx = 0.f;
 	float fy = 0.f;
 	
-	float ax = 1.f / 60000.f * 0.54;
-	float ay = 1.f / 60000.f* 0.96;
+	float getx = 0.f;
+	float gety = 0.f;
 
-	fx = (ax*(xmfPlayer.x+30000.f))-1;
-	fy = (ay*(xmfPlayer.z+30000.f))-1;
+	getx = GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player_ui9_minimap", OBJ_UI)->GetPosition().x;
+	gety = GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player_ui9_minimap", OBJ_UI)->GetPosition().y;
 
-	if (fx > -0.1f)
-		fx = -0.1f;
-	else if (fy > -0.1f)
-		fy = -0.1f;
-	else if (fx < -1.f)
-		fx = -1.f;
-	else if (fy < -1.f)
-		fy = -1.f;
+	fx = getx + (200.f / 20500.f) *xmfPlayer.x;
+	fy = gety + (200.f / 20500.f) * xmfPlayer.z;
+
+	if (fx >= getx + 200.f)
+		fx = getx + 200.f;
+	else if (fx <= getx - 200.f)
+		fx = getx - 200.f;
+
+	if (fy >= gety + 200.f)
+		fy = gety + 200.f;
+	else if(fy <= gety - 200.f)
+		fy = gety - 200.f;
+
 
 	pGameOBJ->SetPosition(fx, fy, 0.f);
+}
+
+void CUI::Render(ID3D12GraphicsCommandList* pd3dCommandList, CCamera* pCamera)
+{
+	if (CGameObject::GetIsRender())
+		CGameObject::Render(pd3dCommandList, pCamera);
+
 }

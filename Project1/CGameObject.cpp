@@ -169,6 +169,7 @@ CShader* CMaterial::m_pSkinnedAnimationShader = NULL;
 CShader* CMaterial::m_pStandardShader = NULL;
 CShader* CMaterial::m_pAceSahder = NULL;
 CShader* CMaterial::m_pColliderShader = NULL;
+CShader* CMaterial::m_pAfterBurnerShader = NULL;
 
 void CMaterial::PrepareShaders(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList, ID3D12RootSignature* pd3dGraphicsRootSignature)
 {
@@ -187,6 +188,10 @@ void CMaterial::PrepareShaders(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandLi
 	m_pColliderShader = new CColliderShader();
 	m_pColliderShader->CreateShader(pd3dDevice, pd3dCommandList, pd3dGraphicsRootSignature);
 	m_pColliderShader->CreateShaderVariables(pd3dDevice, pd3dCommandList);
+
+	m_pAfterBurnerShader = new CAfterBurnerShader();
+	m_pAfterBurnerShader->CreateShader(pd3dDevice, pd3dCommandList, pd3dGraphicsRootSignature);
+	m_pAfterBurnerShader->CreateShaderVariables(pd3dDevice, pd3dCommandList);
 }
 
 void CMaterial::UpdateShaderVariable(ID3D12GraphicsCommandList* pd3dCommandList)
@@ -433,15 +438,16 @@ void CGameObject::Animate(float fTimeElapsed)
 
 void CGameObject::CollisionActivate(CGameObject* collideTarget)
 {
-	cout << "충돌" << endl;
+	/*cout << "충돌" << endl;
 
 	m_isDead = true;
 	m_pUI->m_isDead = true;
-	m_pLockOnUI->m_isDead = true;
+	m_pLockOnUI->m_isDead = true;*/
 }
 
 void CGameObject::Render(ID3D12GraphicsCommandList* pd3dCommandList, CCamera* pCamera)
 {
+	
 	if (m_pSkinnedAnimationController) m_pSkinnedAnimationController->UpdateShaderVariables(pd3dCommandList);
 
 	if (m_pMesh)
@@ -457,7 +463,12 @@ void CGameObject::Render(ID3D12GraphicsCommandList* pd3dCommandList, CCamera* pC
 					if (m_ppMaterials[i]->m_pShader) m_ppMaterials[i]->m_pShader->Render(pd3dCommandList, pCamera);
 					m_ppMaterials[i]->UpdateShaderVariable(pd3dCommandList);
 				}
-				m_pMesh->Render(pd3dCommandList, i);
+				if (m_bEffectedObj && m_fBurnerBlendAmount <= 0)
+				{
+				}
+				else
+					m_pMesh->Render(pd3dCommandList, i);
+
 			}
 		}
 	}
@@ -479,6 +490,9 @@ void CGameObject::UpdateShaderVariable(ID3D12GraphicsCommandList* pd3dCommandLis
 	XMFLOAT4X4 xmf4x4World;
 	XMStoreFloat4x4(&xmf4x4World, XMMatrixTranspose(XMLoadFloat4x4(pxmf4x4World)));
 	pd3dCommandList->SetGraphicsRoot32BitConstants(1, 16, &xmf4x4World, 0);
+
+	pd3dCommandList->SetGraphicsRoot32BitConstants(16, 1, &m_fBurnerBlendAmount, 0);
+	pd3dCommandList->SetGraphicsRoot32BitConstants(16, 1, &m_bEffectedObj, 1);
 }
 
 void CGameObject::UpdateShaderVariable(ID3D12GraphicsCommandList* pd3dCommandList, CMaterial* pMaterial)
@@ -540,6 +554,13 @@ void CGameObject::SetScale(float x, float y, float z)
 	m_xmf4x4ToParent = Matrix4x4::Multiply(mtxScale, m_xmf4x4ToParent);
 
 	UpdateTransform(NULL);
+}
+
+void CGameObject::SetPlaneScale(float fScaleAmount)
+{
+	m_xmf4x4ToParent._11 = fScaleAmount;			m_xmf4x4ToParent._12 = m_xmf4x4ToParent._12;		m_xmf4x4ToParent._13 = m_xmf4x4ToParent._13;
+	m_xmf4x4ToParent._21 = m_xmf4x4ToParent._21;		m_xmf4x4ToParent._22 = fScaleAmount;		m_xmf4x4ToParent._23 = m_xmf4x4ToParent._23;
+	m_xmf4x4ToParent._31 = m_xmf4x4ToParent._31;		m_xmf4x4ToParent._32 = m_xmf4x4ToParent._32;	m_xmf4x4ToParent._33 = fScaleAmount;
 }
 
 XMFLOAT3 CGameObject::GetPosition()
@@ -644,6 +665,11 @@ void CGameObject::Rotate(XMFLOAT3* pxmf3Axis, float fAngle)
 
 void CGameObject::RotateFallow(XMFLOAT3* pxmf3Axis, float fAngle)
 {
+	if (pxmf3Axis->x == 0 && pxmf3Axis->y == 0 && pxmf3Axis->z == 0)
+	{
+		MoveUp(0.1f);
+		return;
+	}
 	XMMATRIX xmmtxRotate = XMMatrixRotationAxis(XMLoadFloat3(pxmf3Axis), XMConvertToRadians(fAngle));
 	m_xmf3Look = Vector3::TransformNormal(m_xmf3Look, xmmtxRotate);
 	m_xmf3Up = Vector3::TransformNormal(m_xmf3Up, xmmtxRotate);
@@ -740,6 +766,10 @@ void CGameObject::LoadMaterialsFromFile(ID3D12Device* pd3dDevice, ID3D12Graphics
 						if (modelType == MODEL_ACE)
 						{
 							pMaterial->SetAceModelShader();
+						}
+						else if(modelType == MODEL_EFC)
+						{
+							pMaterial->SetAfterBurnerShader();
 						}
 						else if(modelType == MODEL_COL)
 							pMaterial->SetColliderShader();

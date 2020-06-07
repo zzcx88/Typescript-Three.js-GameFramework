@@ -103,6 +103,7 @@ public:
 	static CShader* m_pAceSahder;
 	static CShader* m_pSkinnedAnimationShader;
 	static CShader* m_pColliderShader;
+	static CShader* m_pAfterBurnerShader;
 
 	static void CMaterial::PrepareShaders(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList, ID3D12RootSignature* pd3dGraphicsRootSignature);
 
@@ -110,6 +111,7 @@ public:
 	void SetAceModelShader() { CMaterial::SetShader(m_pAceSahder); }
 	void SetSkinnedAnimationShader() { CMaterial::SetShader(m_pSkinnedAnimationShader); }
 	void SetColliderShader() { CMaterial::SetShader(m_pColliderShader); }
+	void SetAfterBurnerShader() { CMaterial::SetShader(m_pAfterBurnerShader); }
 
 	CShader* GetShader() { return m_pAceSahder; }
 };
@@ -127,15 +129,22 @@ class CMissleFogShader;
 class CUIShader;
 class CWaterShader;
 class CBulletShader;
+class CPlaneShader;
 class CPlaneMesh;
 class CUI;
 class CLockOnUI;
 class CAfterBurner;
 class CBoxMesh;
+class CMinimapShader;
+class CNumber;
 class CGameObject
 {
 private:
 	int								m_nReferences = 0;
+	int nPlayerSpeed = 0;
+	int nPlayerMSL = 0;
+
+	bool isRender = true;
 
 public:
 	void AddRef();
@@ -155,7 +164,8 @@ public:
 
 	CMesh* m_pMesh = NULL;
 	//CMesh** m_ppMeshes = NULL;
-	float m_fPlayerSpeed = 0.f;
+	int m_nPlayerScore = 0;
+
 
 	int								m_nObjects = 0;
 	int								m_nMaterials = 0;
@@ -171,12 +181,14 @@ public:
 	CPlaneMesh* m_pPlaneMesh;
 	CTexture* m_pEffectTexture[50];
 	CMissleFogShader* m_EffectShader;
+	CPlaneShader* m_PlaneShader;
 	CAfterBurner* m_pAfterBurner = NULL;
 ///////////////////////////////////////////
 	CPlaneMesh* m_pUIPlaneMesh;
 	CUIShader* m_pUIShader;
+	CMinimapShader* m_pMinimapShader;
 	CMaterial* m_pUIMaterial;
-	CTexture* m_ppUITexture[10];
+	CTexture* m_ppUITexture[20];
 	///////////////////////////////////////////
 	CPlaneMesh* m_pLockOnUIPlaneMesh;
 	CUIShader* m_pLockOnUIShader;
@@ -188,6 +200,7 @@ public:
 	CTexture* m_pBulletTexture;
 	CMaterial* m_pBulletMaterial;
 	///////////////////////////////////////////
+	CNumber* ppNumObjects[29];
 
 
 	XMFLOAT4X4						m_xmf4x4ToParent;
@@ -210,15 +223,21 @@ public:
 
 	CUI*						m_pUI = NULL;
 	CLockOnUI*			m_pLockOnUI = NULL;
+	CNumber* number = NULL;
 
 	bool m_bAiming = false;
 	bool m_bCanFire = false;
 
 	OBJTYPE				m_ObjType = OBJ_END;
 
+	bool			m_bAllyCollide = false;
 	bool			m_isDead = false;
 	bool			m_bAIEnable = false;
+
 	bool			m_bGameOver = false;
+
+	float m_fBurnerBlendAmount;
+	bool m_bEffectedObj = false;
 
 	void SetMesh(CMesh* pMesh);
 	//void SetMesh(int nIndex, CMesh* pMesh);
@@ -260,10 +279,19 @@ public:
 	XMFLOAT3 GetRight();
 
 	const bool& GetState() { return m_isDead; }
+	int GetScore() const { return m_nPlayerScore; }
+	int GetPlayerSpeed()const { return nPlayerSpeed; }
+	bool GetIsRender() const { return isRender; }
+	int GetPlayerMSL() const { return nPlayerMSL; }
+
+	void SetIsRender(bool b) { isRender = b; }
+	void SetPlayerSpeed(float speed) { nPlayerSpeed = (int)speed; }
+	void SetPlayerMSL(int MSL) { nPlayerMSL = MSL; }
 
 	void SetPosition(float x, float y, float z);
 	void SetPosition(XMFLOAT3 xmf3Position);
 	void SetScale(float x, float y, float z);
+	void SetPlaneScale(float fScaleAmount);
 
 	void Move(DWORD nDirection, float fDistance, bool bVelocity = false);
 	void Move(const XMFLOAT3& xmf3Shift, bool bVelocity = false);

@@ -332,24 +332,15 @@ void CDeviceManager::ChangeSwapChainState()
 void CDeviceManager::BuildScene()
 {
 	m_pd3dCommandList->Reset(m_pd3dCommandAllocator, NULL);
-	//CAirplanePlayer* pAPlayer = NULL;
 
-	if (m_SceneSwitch == SCENE_TEST)
-	{
-		m_pSceneManager->ChangeSceneState(SCENE_TEST, m_pd3dDevice, m_pd3dCommandList);
-		CAirplanePlayer* pPlayer = new CAirplanePlayer(m_pd3dDevice, m_pd3dCommandList, m_pSceneManager->GetGraphicsRootSignature(), NULL);
-		pPlayer->SetPosition(XMFLOAT3(410, 1000, -9000));
-		pPlayer->SetMissleCount(100);
-		m_pPlayer = pPlayer;
-	}
-	else
-	{
-		m_pSceneManager->ChangeSceneState(SCENE_MENU, m_pd3dDevice, m_pd3dCommandList);
-		CTerrainPlayer* pPlayer = new CTerrainPlayer(m_pd3dDevice, m_pd3dCommandList, m_pSceneManager->GetGraphicsRootSignature(), NULL);
-		m_pPlayer = pPlayer;
-	}
-	
+
+	m_pSceneManager->ChangeSceneState(SCENE_MENU, m_pd3dDevice, m_pd3dCommandList);
+	CTerrainPlayer* pPlayer = new CTerrainPlayer(m_pd3dDevice, m_pd3dCommandList, m_pSceneManager->GetGraphicsRootSignature(), NULL);
+	pPlayer->SetGameOver(true);
+	m_pPlayer = pPlayer;
+
 	m_pCamera = m_pPlayer->GetCamera();
+
 
 	m_pBlur = new CBlur(m_pd3dDevice, m_pd3dCommandList, m_pSceneManager->GetComputeRootSignature());
 	
@@ -368,7 +359,6 @@ void CDeviceManager::BuildScene()
 
 	m_pSceneManager->SetPlayer(m_pPlayer);
 	m_pSceneManager->SetObjManagerInPlayer();
-	
 	
 	if (m_pPlayer) m_pPlayer->ReleaseUploadBuffers();
 	if (m_pSceneManager) m_pSceneManager->ReleaseUploadBuffers();
@@ -421,10 +411,6 @@ void CDeviceManager::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPA
 			else m_BlurSwitch = BLUR_OFF;
 			break;
 		case VK_F5:
-			if (m_SceneSwitch == SCENE_MENU)
-				m_SceneSwitch = SCENE_TEST;
-			else 
-				m_SceneSwitch = SCENE_MENU;
 			break;
 		case VK_F9:
 			ChangeSwapChainState();
@@ -435,6 +421,168 @@ void CDeviceManager::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPA
 		break;
 	default:
 		break;
+	}
+}
+
+void CDeviceManager::SceneChangeInput()
+{
+	KeyManager* keyManager = GET_MANAGER<KeyManager>();
+	DWORD dwDirection = 0;
+	if (true == keyManager->GetKeyState(STATE_PUSH, VK_G))
+	{
+		m_ArrowSwitch = 0;
+		m_pUIarrow->SetPosition(m_pUI->GetPosition().x - 370, 48, 0);
+
+		if (m_SceneSwitch == SCENE_TEST) {
+			if(m_pSceneManager->GetSceneStoped() == false)
+				m_BlurSwitch = BLUR_OFF;
+			else
+				m_BlurSwitch = BLUR_ON;
+
+		}
+	}
+	if (true == keyManager->GetKeyState(STATE_PUSH, VK_UP))
+	{
+		if (m_SceneSwitch == SCENE_TEST) {
+			if (m_pSceneManager->GetSceneStoped() == true)
+			{
+				m_ArrowSwitch = 0;
+				m_pUIarrow->SetPosition(m_pUI->GetPosition().x -370, 48, 0);
+			}
+		}
+	}
+	if (true == keyManager->GetKeyState(STATE_PUSH, VK_DOWN))
+	{
+		if (m_SceneSwitch == SCENE_TEST) {
+			if (m_pSceneManager->GetSceneStoped() == true)
+			{
+				m_ArrowSwitch = 1;
+				m_pUIarrow->SetPosition(m_pUI->GetPosition().x -370, 5, 0);
+			}
+		}
+	}
+	if (m_SceneSwitch == SCENE_TEST) {
+		if (m_pSceneManager->GetSceneStoped() == true)
+		{
+			switch (m_ArrowSwitch)
+			{
+			case 0:
+				if (true == keyManager->GetKeyState(STATE_PUSH, VK_RETURN))
+				{
+					GET_MANAGER<SceneManager>()->SetStoped(false);
+					for (auto p = GET_MANAGER<ObjectManager>()->GetObjFromType(OBJ_UI).begin(); p != GET_MANAGER<ObjectManager>()->GetObjFromType(OBJ_UI).end(); ++p)
+					{
+						(*p).second->SetIsRender(true);
+					}
+				}
+				break;
+			case 1:
+				if (true == keyManager->GetKeyState(STATE_PUSH, VK_RETURN))
+				{
+					m_pd3dCommandList->Reset(m_pd3dCommandAllocator, NULL);
+
+					m_SceneSwitch = SCENE_MENU;
+					m_pSceneManager->ChangeSceneState(SCENE_MENU, m_pd3dDevice, m_pd3dCommandList);
+					CTerrainPlayer* pPlayer = new CTerrainPlayer(m_pd3dDevice, m_pd3dCommandList, m_pSceneManager->GetGraphicsRootSignature(), NULL);
+					pPlayer->SetGameOver(true);
+					m_pPlayer = pPlayer;
+
+					m_pCamera = m_pPlayer->GetCamera();
+					m_pd3dCommandList->Close();
+					ID3D12CommandList* ppd3dCommandLists[] = { m_pd3dCommandList };
+					m_pd3dCommandQueue->ExecuteCommandLists(1, ppd3dCommandLists);
+
+					WaitForGpuComplete();
+					m_pSceneManager->SetPlayer(m_pPlayer);
+					m_pSceneManager->SetObjManagerInPlayer();
+
+					if (m_pPlayer) m_pPlayer->ReleaseUploadBuffers();
+					if (m_pSceneManager) m_pSceneManager->ReleaseUploadBuffers();
+					m_GameTimer.Reset();
+				}
+				break;
+
+			default:
+				break;
+			}
+		
+		}
+	}
+	if (true == keyManager->GetKeyState(STATE_PUSH, VK_SPACE))
+	{
+		if (m_SceneSwitch == SCENE_MENU)
+		{
+			m_pd3dCommandList->Reset(m_pd3dCommandAllocator, NULL);
+			
+
+			m_SceneSwitch = SCENE_TEST;
+			m_pSceneManager->ChangeSceneState(SCENE_TEST, m_pd3dDevice, m_pd3dCommandList);
+			CMinimap* pUI = new CMinimap(1, m_pd3dDevice, m_pd3dCommandList, m_pSceneManager->GetGraphicsRootSignature(), 800.f, 400.f, 0.f, XMFLOAT2(0.f, 0.f), XMFLOAT2(0.f, 0.f), XMFLOAT2(0.f, 0.f), XMFLOAT2(0.f, 0.f));
+			pUI->SetPosition(0.f, 0.f, 0.f);
+			pUI->SetIsRender(false);
+			m_pUI = pUI;
+
+			CMinimap* pUIarrow = new CMinimap(5, m_pd3dDevice, m_pd3dCommandList, m_pSceneManager->GetGraphicsRootSignature(), 35.f, 35.f, 0.f, XMFLOAT2(0.f, 0.f), XMFLOAT2(0.f, 0.f), XMFLOAT2(0.f, 0.f), XMFLOAT2(0.f, 0.f));
+			pUIarrow->SetPosition(m_pUI->GetPosition().x - 370, 48, 0);
+			pUIarrow->SetIsRender(false);
+			m_pUIarrow = pUIarrow;
+
+			CAirplanePlayer* pPlayer = new CAirplanePlayer(m_pd3dDevice, m_pd3dCommandList, m_pSceneManager->GetGraphicsRootSignature(), NULL);
+			pPlayer->SetGameOver(false);
+			pPlayer->SetPosition(XMFLOAT3(0, 1000, 0));
+			pPlayer->SetMissileCount(100);
+			m_pPlayer = pPlayer;
+
+			m_pCamera = m_pPlayer->GetCamera();
+
+			m_pBlur = new CBlur(m_pd3dDevice, m_pd3dCommandList, m_pSceneManager->GetComputeRootSignature());
+
+			m_pBlurFilter = new CBlurFilter(m_pd3dDevice, FRAME_BUFFER_WIDTH, FRAME_BUFFER_HEIGHT, DXGI_FORMAT_R8G8B8A8_UNORM);
+
+			m_pBlurFilter->BuildDescriptors(
+				CD3DX12_CPU_DESCRIPTOR_HANDLE(m_pSceneManager->GetCbvSrvDescriptorHeap()->GetCPUDescriptorHandleForHeapStart(), 11, 32),
+				CD3DX12_GPU_DESCRIPTOR_HANDLE(m_pSceneManager->GetCbvSrvDescriptorHeap()->GetGPUDescriptorHandleForHeapStart(), 11, 32),
+				32);
+
+			m_pd3dCommandList->Close();
+			ID3D12CommandList* ppd3dCommandLists[] = { m_pd3dCommandList };
+			m_pd3dCommandQueue->ExecuteCommandLists(1, ppd3dCommandLists);
+
+			WaitForGpuComplete();
+
+			m_pSceneManager->SetPlayer(m_pPlayer);
+			m_pSceneManager->SetObjManagerInPlayer();
+
+			if (m_pUI) m_pUI->ReleaseUploadBuffers();
+			if (m_pUIarrow) m_pUI->ReleaseUploadBuffers();
+
+			if (m_pPlayer) m_pPlayer->ReleaseUploadBuffers();
+			if (m_pSceneManager) m_pSceneManager->ReleaseUploadBuffers();
+			m_GameTimer.Reset();
+		}
+	}
+	else if (true == keyManager->GetKeyState(STATE_PUSH, VK_BACK))
+	{
+		m_pd3dCommandList->Reset(m_pd3dCommandAllocator, NULL);
+
+		m_SceneSwitch = SCENE_MENU;
+		m_pSceneManager->ChangeSceneState(SCENE_MENU, m_pd3dDevice, m_pd3dCommandList);
+		CTerrainPlayer* pPlayer = new CTerrainPlayer(m_pd3dDevice, m_pd3dCommandList, m_pSceneManager->GetGraphicsRootSignature(), NULL);
+		pPlayer->SetGameOver(true);
+		m_pPlayer = pPlayer;
+
+		m_pCamera = m_pPlayer->GetCamera();
+		m_pd3dCommandList->Close();
+		ID3D12CommandList* ppd3dCommandLists[] = { m_pd3dCommandList };
+		m_pd3dCommandQueue->ExecuteCommandLists(1, ppd3dCommandLists);
+
+		WaitForGpuComplete();
+		m_pSceneManager->SetPlayer(m_pPlayer);
+		m_pSceneManager->SetObjManagerInPlayer();
+
+		if (m_pPlayer) m_pPlayer->ReleaseUploadBuffers();
+		if (m_pSceneManager) m_pSceneManager->ReleaseUploadBuffers();
+		m_GameTimer.Reset();
 	}
 }
 
@@ -541,7 +689,7 @@ void CDeviceManager::FrameAdvance()
 	D3D12_CPU_DESCRIPTOR_HANDLE d3dRtvCPUDescriptorHandle = m_pd3dRtvDescriptorHeap->GetCPUDescriptorHandleForHeapStart();
 	d3dRtvCPUDescriptorHandle.ptr += (m_nSwapChainBufferIndex * m_nRtvDescriptorIncrementSize);
 
-	float pfClearColor[4] = { 0.0f, 0.125f, 0.3f, 1.0f };
+	float pfClearColor[4] = { 0.525f, 0.75f, 1.f, 1.0f };
 	m_pd3dCommandList->ClearRenderTargetView(d3dRtvCPUDescriptorHandle, pfClearColor/*Colors::Azure*/, 0, NULL);
 
 	D3D12_CPU_DESCRIPTOR_HANDLE d3dDsvCPUDescriptorHandle = m_pd3dDsvDescriptorHeap->GetCPUDescriptorHandleForHeapStart();
@@ -556,7 +704,8 @@ void CDeviceManager::FrameAdvance()
 	//if (m_pPlayer) m_pPlayer->Render(m_pd3dCommandList, m_pCamera);
 	//if(m_pPlayer->SphereCollider)m_pPlayer->SphereCollider->Render(m_pd3dCommandList, m_pCamera);
 
-	if (m_BlurSwitch == BLUR_ON)
+
+	if (m_BlurSwitch == BLUR_ON&&m_pSceneManager->GetSceneStoped()==false)
 	{
 		if (m_pPlayer->GetPitchWingsRotateDegree() != 0)
 		{
@@ -609,6 +758,49 @@ void CDeviceManager::FrameAdvance()
 		m_pd3dCommandList->ResourceBarrier(1, &d3dResourceBarrier);
 	}
 
+	if (m_BlurSwitch == BLUR_ON && m_pSceneManager->GetSceneStoped() == true)
+	{
+		if (m_pPlayer)
+			m_pBlurFilter->Execute(m_pd3dCommandList, m_pSceneManager->GetComputeRootSignature(),
+				m_pBlur->m_pHBlurPipelineState, m_pBlur->m_pVBlurPipelineState, CurrentBackBuffer(), 2.5);
+
+		// Prepare to copy blurred output to the back buffer. 후면 버퍼에 블러처리한 텍스쳐를 복사할 수 있도록 상태 전이
+		d3dResourceBarrier.Transition.pResource = CurrentBackBuffer();
+		d3dResourceBarrier.Transition.StateBefore = D3D12_RESOURCE_STATE_COPY_SOURCE;
+		d3dResourceBarrier.Transition.StateAfter = D3D12_RESOURCE_STATE_COPY_DEST;
+		d3dResourceBarrier.Transition.Subresource = D3D12_RESOURCE_BARRIER_ALL_SUBRESOURCES;
+		m_pd3dCommandList->ResourceBarrier(1, &d3dResourceBarrier);
+
+		m_pd3dCommandList->CopyResource(CurrentBackBuffer(), m_pBlurFilter->Output());
+
+		// Transition to PRESENT state. 그리기 상태로 전이
+		d3dResourceBarrier.Transition.pResource = CurrentBackBuffer();
+		d3dResourceBarrier.Transition.StateBefore = D3D12_RESOURCE_STATE_COPY_DEST;
+		d3dResourceBarrier.Transition.StateAfter = D3D12_RESOURCE_STATE_PRESENT;
+		d3dResourceBarrier.Transition.Subresource = D3D12_RESOURCE_BARRIER_ALL_SUBRESOURCES;
+		m_pd3dCommandList->ResourceBarrier(1, &d3dResourceBarrier);
+	}
+	else if (m_BlurSwitch == BLUR_OFF && m_pSceneManager->GetSceneStoped() == false)
+	{
+		d3dResourceBarrier.Transition.StateBefore = D3D12_RESOURCE_STATE_RENDER_TARGET;
+		d3dResourceBarrier.Transition.StateAfter = D3D12_RESOURCE_STATE_PRESENT;
+		d3dResourceBarrier.Transition.Subresource = D3D12_RESOURCE_BARRIER_ALL_SUBRESOURCES;
+		m_pd3dCommandList->ResourceBarrier(1, &d3dResourceBarrier);
+	}
+
+	if (m_SceneSwitch == SCENE_TEST&&m_pSceneManager->GetSceneStoped() == true)
+	{
+		m_pUIarrow->SetIsRender(true);
+		m_pUIarrow->Render(m_pd3dCommandList, m_pCamera);
+		m_pUI->SetIsRender(true);
+		m_pUI->Render(m_pd3dCommandList, m_pCamera);
+	}
+	else if(m_SceneSwitch == SCENE_TEST && m_pSceneManager->GetSceneStoped() == false)
+	{
+		m_pUIarrow->SetIsRender(false);
+		m_pUI->SetIsRender(false);
+	}
+
 	hResult = m_pd3dCommandList->Close();
 
 	ID3D12CommandList* ppd3dCommandLists[] = { m_pd3dCommandList };
@@ -618,7 +810,14 @@ void CDeviceManager::FrameAdvance()
 
 	m_pdxgiSwapChain->Present(0, 0);
 
+	m_xmf3prePosition = m_pPlayer->GetPosition();
+
 	MoveToNextFrame();
+
+	m_xmf3postPosition = m_pPlayer->GetPosition();
+
+	m_xmf3TargetVector = Vector3::Subtract(m_xmf3postPosition, m_xmf3prePosition);
+	m_xmf3TargetVector = Vector3::Normalize(m_xmf3TargetVector);
 
 	m_GameTimer.GetFrameRate(m_pszFrameRate + 12, 37);
 	size_t nLength = _tcslen(m_pszFrameRate);

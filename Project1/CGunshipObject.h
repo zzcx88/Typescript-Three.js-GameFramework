@@ -8,8 +8,8 @@ public:
 	virtual ~CGunshipObject();
 
 private:
-	CGameObject* m_pMainRotorFrame = NULL;
-	CGameObject* m_pTailRotorFrame = NULL;
+	/*CGameObject* m_pMainRotorFrame = NULL;
+	CGameObject* m_pTailRotorFrame = NULL;*/
 
 public:
 	virtual void OnPrepareAnimate();

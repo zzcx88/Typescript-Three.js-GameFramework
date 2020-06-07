@@ -46,20 +46,45 @@ void ObjectManager::AddObject(const TCHAR* tag, CGameObject* Obj, OBJTYPE ObjTyp
 void ObjectManager::Update(const float& TimeDelta)
 {
 	// Update
-	for (auto i = 0; i < OBJ_END; ++i)
+	if (GET_MANAGER<SceneManager>()->GetSceneStoped() != true)
 	{
-		const auto& iter_begin = m_mapObj[i].begin();
-		const auto& iter_end = m_mapObj[i].end();
+		for (auto i = 0; i < OBJ_MENU; ++i)
+		{
+			const auto& iter_begin = m_mapObj[i].begin();
+			const auto& iter_end = m_mapObj[i].end();
+
+			for (auto iter = iter_begin; iter != iter_end;)
+			{
+				// 죽은 상태라면 컨테이너에서 삭제한다.
+				if (true == (*iter).second->GetState())
+				{
+					//(*iter).second->Release();
+					delete (*iter).second;
+					(*iter).second = nullptr;
+					iter = m_mapObj[i].erase(iter);
+				}
+				else
+				{
+					(*iter).second->Animate(TimeDelta);
+					++iter;
+				}
+			}
+		}
+	}
+	else
+	{
+		const auto& iter_begin = m_mapObj[OBJ_MENU].begin();
+		const auto& iter_end = m_mapObj[OBJ_MENU].end();
 
 		for (auto iter = iter_begin; iter != iter_end;)
 		{
 			// 죽은 상태라면 컨테이너에서 삭제한다.
 			if (true == (*iter).second->GetState())
 			{
-				(*iter).second->Release();
-				//delete (*iter).second;
+				//(*iter).second->Release();
+				delete (*iter).second;
 				(*iter).second = nullptr;
-				iter = m_mapObj[i].erase(iter);
+				iter = m_mapObj[OBJ_MENU].erase(iter);
 			}
 			else
 			{
@@ -68,21 +93,31 @@ void ObjectManager::Update(const float& TimeDelta)
 			}
 		}
 	}
-
 	// Collision
 	GET_MANAGER<CollisionManager>()->CollisionSphere(&m_mapObj[OBJ_ENEMY], &m_mapObj[OBJ_MISSLE]);
+	/*{
+		const auto& iter_begin = m_mapObj[OBJ_MENU].begin();
+		const auto& iter_end = m_mapObj[OBJ_MENU].end();
+
+		for (auto iter = iter_begin; iter != iter_end;)
+		{
+			GET_MANAGER<CollisionManager>()->CollisionSphere((*iter).second, &m_mapObj[OBJ_ENEMY]);
+		}
+	}*/
 	GET_MANAGER<CollisionManager>()->CollisionSphereToOrientedBox(&m_mapObj[OBJ_ENEMY], & m_mapObj[OBJ_ALLYBULLET]);
 	GET_MANAGER<CollisionManager>()->CollisionFloor();
-	/*GET_MANAGER<CollisionManager>()->CollisionRect(&m_mapObj[OBJ_PLAYER], &m_mapObj[OBJ_MONSTER]);
-	GET_MANAGER<CollisionManager>()->CollisionRectEx(&m_mapObj[OBJ_PLAYER], &m_mapObj[OBJ_MONSTER]);
-	GET_MANAGER<CollisionManager>()->CollisionPixelToRect(&m_mapObj[OBJ_BACK], &m_mapObj[OBJ_PLAYER]);
-	GET_MANAGER<CollisionManager>()->CollisionRect(&m_mapObj[OBJ_PLAYER], &m_mapObj[OBJ_PORTAL]);*/
 	
-	// Minimap
-	GET_MANAGER<UIManager>()->MoveMinimapPoint(&m_mapObj[OBJ_PLAYER], &m_mapObj[OBJ_ENEMY]);
+	if (GET_MANAGER<SceneManager>()->GetCurrentSceneState() == SCENE_TEST)
+	{
+		// Minimap
+		GET_MANAGER<UIManager>()->MoveMinimapPoint(&m_mapObj[OBJ_PLAYER], &m_mapObj[OBJ_ENEMY]);
+
+		// LockOn
+		//GET_MANAGER<UIManager>()->MoveLockOnUI(&m_mapObj[OBJ_PLAYER], &m_mapObj[OBJ_ENEMY]);
+		
+		//GET_MANAGER<UIManager>()->NumberTextureAnimate(&m_mapObj[OBJ_PLAYER], TimeDelta);
 	
-	// LockOn
-	GET_MANAGER<UIManager>()->MoveLockOnUI(&m_mapObj[OBJ_PLAYER], &m_mapObj[OBJ_ENEMY]);
+	}
 
 }
 
@@ -127,11 +162,10 @@ void ObjectManager::ReleaseAll()
 				{
 					delete obj.second;
 					obj.second = nullptr;
-
 				}  
 				else 
 				{
-					obj.second->Release();
+					//obj.second->Release();
 					delete obj.second;
 					obj.second = nullptr;
 				}

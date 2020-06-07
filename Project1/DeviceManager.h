@@ -2,6 +2,7 @@
 #include "Timer.h"
 #include "CScene.h"
 #include "CPlayer.h"
+#include "CMinimap.h"
 #include "CCamera.h"
 #include "CBlur.h"
 #include "SceneManager.h"
@@ -35,6 +36,7 @@ public:
 	void BuildScene();
 	void OnProcessingMouseMessage(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam);
 	void OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam);
+	void SceneChangeInput();
 	LRESULT CALLBACK OnProcessingWindowMessage(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam);
 	void ProcessInput();
 	void AnimateObjects();
@@ -95,6 +97,9 @@ private:
 
 	CGameTimer					m_GameTimer;
 	//CScene* m_pScene = NULL;
+	CMinimap* m_pUI = NULL;
+	CMinimap* m_pUIarrow = NULL;
+
 	CPlayer* m_pPlayer = NULL;
 	CBlur* m_pBlur = NULL;
 	CBlurFilter* m_pBlurFilter = NULL;
@@ -106,9 +111,15 @@ private:
 	char m_videoCardDescription[128];
 
 	int m_BlurSwitch = 0;
+	int m_ArrowSwitch = 0;
+	int m_SceneSwitch = SCENE_MENU;
+
+	XMFLOAT3 m_xmf3prePosition = XMFLOAT3(0,0,0);
+	XMFLOAT3 m_xmf3postPosition = XMFLOAT3(0, 0, 0);
+	XMFLOAT3 m_xmf3TargetVector = XMFLOAT3(0, 0, 0);
+
 	float m_fBlurAmount = 0.f;
 	float m_fBlurControl = 0.f;
 
-	int m_SceneSwitch = SCENE_TEST;
 };
 

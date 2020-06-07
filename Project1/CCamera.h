@@ -7,6 +7,7 @@ struct VS_CB_CAMERA_INFO
 	XMFLOAT4X4						m_xmf4x4Projection;
 	XMFLOAT4X4						m_xmf4x4OrthogonalProjection;
 	XMFLOAT3							m_xmf3Position;
+	float							m_fTestFloat;
 };
 
 class CPlayer;
@@ -19,6 +20,7 @@ protected:
 	XMFLOAT3						m_xmf3Up;
 	XMFLOAT3						m_xmf3Look;
 
+	float							m_fTestFloat;
 	float           				m_fPitch;
 	float           				m_fRoll;
 	float           				m_fYaw;

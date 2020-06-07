@@ -2,6 +2,7 @@
 #include "CBullet.h"
 #include "CBoxMesh.h"
 #include "CTestScene.h"
+#include "CMissleSplash.h"
 
 CBullet::CBullet(XMFLOAT3 xmf3Position)
 {
@@ -43,6 +44,7 @@ void CBullet::Animate(float fTimeElapsed)
 {
 	if (!m_bRefference)
 	{
+		m_fBurnerBlendAmount = 1;
 		m_xmf3Position.x = m_xmf4x4ToParent._41;
 		m_xmf3Position.y = m_xmf4x4ToParent._42;
 		m_xmf3Position.z = m_xmf4x4ToParent._43;
@@ -64,6 +66,19 @@ void CBullet::CollisionActivate(CGameObject* collideTarget)
 {
 	if (!m_bRefference)
 	{
+		CMissleSplash* pMissleSplash = new CMissleSplash();
+		pMissleSplash = new CMissleSplash();
+		pMissleSplash->m_pPlaneMesh = GET_MANAGER<ObjectManager>()->GetObjFromTag(L"MissleSplashRef", OBJ_EFFECT)->m_pPlaneMesh;
+		pMissleSplash->SetMesh(pMissleSplash->m_pPlaneMesh);
+		for (int i = 0; i < GET_MANAGER<ObjectManager>()->GetObjFromTag(L"MissleSplashRef", OBJ_EFFECT)->m_nNumTex; ++i)
+			pMissleSplash->m_pEffectTexture[i] = GET_MANAGER<ObjectManager>()->GetObjFromTag(L"MissleSplashRef", OBJ_EFFECT)->m_pEffectTexture[i];
+		pMissleSplash->m_pEffectMaterial = new CMaterial(1);
+		pMissleSplash->m_pEffectMaterial->SetTexture(pMissleSplash->m_pEffectTexture[0]);
+		pMissleSplash->m_pEffectMaterial->SetShader(GET_MANAGER<ObjectManager>()->GetObjFromTag(L"MissleSplashRef", OBJ_EFFECT)->m_EffectShader);
+		pMissleSplash->SetMaterial(0, pMissleSplash->m_pEffectMaterial);
+		pMissleSplash->SetPosition(m_xmf4x4World._41, m_xmf4x4World._42, m_xmf4x4World._43);
+		GET_MANAGER<ObjectManager>()->AddObject(L"MissleSplashInstance", pMissleSplash, OBJ_EFFECT);
+
 		m_isDead = true;
 	}
 }

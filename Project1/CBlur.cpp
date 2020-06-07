@@ -17,15 +17,9 @@ CBlur::CBlur(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandLis
 	pBlurHShader->CreateShaderVariables(pd3dDevice, pd3dCommandList);
 	pBlurVShader->CreateShaderVariables(pd3dDevice, pd3dCommandList);
 	
-	//m_pBlurFilter = new CBlurFilter();
 	m_pHBlurPipelineState = pBlurHShader->GetHorzPipelineState();
 	m_pVBlurPipelineState = pBlurVShader->GetVertPipelineState();
 
-	//CTestScene::CreateShaderResourceViews(pd3dDevice, pBlurTexture0, 11, false);
-	//CTestScene::CreateUnorderedAccessViews(pd3dDevice, pBlurTexture0, 11, false);
-
-	//CTestScene::CreateShaderResourceViews(pd3dDevice, pBlurTexture1, 11, false);
-	//CTestScene::CreateUnorderedAccessViews(pd3dDevice, pBlurTexture1, 11, false);
 }
 
 CBlur::~CBlur()

@@ -38,6 +38,8 @@ float4 PSTextured(VS_TEXTURED_OUTPUT input, uint primitiveID : SV_PrimitiveID) :
 {
 	float4 cColor = gtxtTexture.Sample(gssWrap, input.uv);
 	//AlphaToCoverageEnable 을 FALSE로 하였음으로 배경값을 직접 지워준다. 즉 알파값이 0.1 이하인 픽셀을 클리핑 한다.
-	clip(cColor.a - 0.1f);
+	clip(cColor.a - 0.2f);
+	if(gbEffectedObj)
+		cColor.a = gfBlendAmount;
 	return(cColor);
 }

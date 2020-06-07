@@ -53,15 +53,49 @@ void CSuperCobraObject::Animate(float fTimeElapsed)
 	if (SphereCollider)SphereCollider->m_xmf4x4ToParent = Matrix4x4::Multiply(XMMatrixScaling(5, 5, 5), m_xmf4x4ToParent);
 	if (SphereCollider)SphereCollider->Animate(fTimeElapsed, GetPosition());
 
+	GET_MANAGER<CollisionManager>()->CollisionSphere(this, &GET_MANAGER<ObjectManager>()->GetObjFromType(OBJ_ENEMY));
+	if (m_bAllyCollide == true)
+	{
+		m_fMoveFowardElapsed += fTimeElapsed;
+		RotateFallow(&xmf3Axis, 50.f * fTimeElapsed);
+		if (m_fMoveFowardElapsed >= m_fElapsedFrequency)
+		{
+			m_bAllyCollide = false;
+			m_fMoveFowardElapsed = 0.f;
+		}
+	}
+	else
+	{
+		Rotate(60 * fTimeElapsed,0,0);
+		MoveForward(200 * fTimeElapsed);
+	}
+
 	GET_MANAGER<AIManager>()->DoAction(AI_AIRCRAFT, this);
 }
 
 void CSuperCobraObject::CollisionActivate(CGameObject* collideTarget)
 {
-	cout << "충돌!" << endl;
-	m_isDead = true;
-	m_pUI->m_isDead = true;
-	m_pLockOnUI->m_isDead = true;
+	if (collideTarget->m_ObjType == OBJ_ENEMY && m_bAllyCollide == false)
+	{
+		m_bAllyCollide = true;
+		SetPosition(XMFLOAT3(GetPosition().x, GetPosition().y+1, GetPosition().z));
+		std::default_random_engine dre(time(NULL) * GetPosition().z);
+		std::uniform_real_distribution<float>fYDegree(-90, 90);
+		std::uniform_real_distribution<float>fXDegree(-90, 90);
+		cout << fXDegree(dre) << " " << fYDegree(dre) << endl;
+		xmf3Axis = XMFLOAT3(fXDegree(dre), fYDegree(dre), fXDegree(dre));
+	}
+	else
+	{
+		if (collideTarget->m_ObjType == OBJ_ALLYBULLET || collideTarget->m_ObjType == OBJ_MISSLE)
+		{
+			wcout << GET_MANAGER<ObjectManager>()->GetTagFromObj(this, OBJ_ENEMY) << endl;
+			cout << "충돌!" << endl;
+			m_isDead = true;
+			m_pUI->m_isDead = true;
+			m_pLockOnUI->m_isDead = true;
+		}
+	}
 }
 
 void CSuperCobraObject::Render(ID3D12GraphicsCommandList* pd3dCommandList, CCamera* pCamera)

@@ -192,9 +192,6 @@
     <ClInclude Include="SingletonBase.h">
       <Filter>SingletonBase</Filter>
     </ClInclude>
-    <ClInclude Include="DeviceManager.h">
-      <Filter>Manager\DeviceManager</Filter>
-    </ClInclude>
     <ClInclude Include="SceneManager.h">
       <Filter>Manager\SceneManager</Filter>
     </ClInclude>
@@ -348,11 +345,20 @@
     <ClInclude Include="CMenuScene.h">
       <Filter>Scene\MenuScene</Filter>
     </ClInclude>
+    <ClInclude Include="DeviceManager.h">
+      <Filter>Manager\DeviceManager</Filter>
+    </ClInclude>
     <ClInclude Include="CSphereCollider.h">
       <Filter>GameObject\ColisionObject\SphereCollider</Filter>
     </ClInclude>
     <ClInclude Include="COrientedBoxCollider.h">
       <Filter>GameObject\ColisionObject\OrientedBoxCollider</Filter>
+    </ClInclude>
+    <ClInclude Include="CMinimap.h">
+      <Filter>GameObject\Plane\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="AnimateMenuTitle.h">
+      <Filter>GameObject\Plane\UI</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -512,6 +518,12 @@
     <ClCompile Include="COrientedBoxCollider.cpp">
       <Filter>GameObject\ColisionObject\OrientedBoxCollider</Filter>
     </ClCompile>
+    <ClCompile Include="CMinimap.cpp">
+      <Filter>GameObject\Plane\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="AnimateMenuTitle.cpp">
+      <Filter>GameObject\Plane\UI</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Project1.rc">
@@ -549,6 +561,12 @@
       <Filter>HLSL</Filter>
     </FxCompile>
     <FxCompile Include="Clouds.hlsl">
+      <Filter>HLSL</Filter>
+    </FxCompile>
+    <FxCompile Include="MotionBlur.hlsl">
+      <Filter>HLSL</Filter>
+    </FxCompile>
+    <FxCompile Include="Normal.hlsl">
       <Filter>HLSL</Filter>
     </FxCompile>
   </ItemGroup>

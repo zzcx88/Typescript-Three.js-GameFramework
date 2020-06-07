@@ -160,6 +160,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
     case WM_KEYDOWN:
     case WM_KEYUP:
         pDeviceManager->OnProcessingWindowMessage(hWnd, message, wParam, lParam);
+        pDeviceManager->SceneChangeInput();
         break;
     case WM_COMMAND:
         wmId = LOWORD(wParam);

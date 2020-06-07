@@ -44,8 +44,8 @@ void CMissle::Animate(float fTimeElapsed)
 		m_isDead = true;
 	}
 
-	//if(m_bLockOn == true)
-  	SetLookAt(fTimeElapsed);
+	if(m_bLockOn == true)
+  		SetLookAt(fTimeElapsed);
 
  	Move(DIR_FORWARD, 1500.0f * fTimeElapsed, false);
 	CGameObject::Animate(fTimeElapsed);
@@ -57,17 +57,21 @@ void CMissle::Animate(float fTimeElapsed)
 	{
 		CMissleFog* pMissleFog;
 		pMissleFog = new CMissleFog();
+		pMissleFog->m_fBurnerBlendAmount = 0.8f;
 		pMissleFog->m_pCamera = m_pCamera;
 		pMissleFog->SetMesh(m_ObjManager->GetObjFromTag(L"MissleFog", OBJ_EFFECT)->m_pPlaneMesh);
 		//머테리얼을 새로 동적할당 할 것이기 때문에 사용할 텍스쳐 갯수만큼 래퍼런스 오브젝트로부터 텍스쳐를 불러온다
-		for(int i = 0; i < 10; ++i)
-			pMissleFog->m_pEffectTexture[i] = m_ObjManager->GetObjFromTag(L"MissleFog", OBJ_EFFECT)->m_pEffectTexture[i];
+		//for(int i = 0; i < 5; ++i)
+		//	pMissleFog->m_pEffectTexture[i] = m_ObjManager->GetObjFromTag(L"MissleFog", OBJ_EFFECT)->m_pEffectTexture[i];
 		//머테리얼을 새로 동적할당 하지 않으면 래퍼런스 오브젝트를 직접 건드리게 되어 애니메이션에 차질이 생긴다.
 		pMissleFog->m_pEffectMaterial = new CMaterial(1);
-		pMissleFog->m_pEffectMaterial->SetTexture(pMissleFog->m_pEffectTexture[0]);
+		std::default_random_engine dre(time(NULL) * fTimeElapsed);
+		std::uniform_int_distribution<int> index(0, 1);
+		pMissleFog->m_pEffectMaterial->SetTexture(m_ObjManager->GetObjFromTag(L"MissleFog", OBJ_EFFECT)->m_pEffectTexture[0]);
 		pMissleFog->m_pEffectMaterial->SetShader(m_ObjManager->GetObjFromTag(L"MissleFog", OBJ_EFFECT)->m_EffectShader);
 		pMissleFog->SetMaterial(0, pMissleFog->m_pEffectMaterial);
 		pMissleFog->SetPosition(m_xmf3Position);
+		pMissleFog->m_bEffectedObj = true;
 		m_ObjManager->AddObject(L"MissleFogInstance", pMissleFog, OBJ_EFFECT);
 
 		m_fAddFogTimeElapsed = 0;
@@ -88,6 +92,7 @@ void CMissle::CollisionActivate(CGameObject* collideTarget)
 	pMissleSplash->SetMaterial(0, pMissleSplash->m_pEffectMaterial);
 	pMissleSplash->SetPosition(m_xmf4x4World._41, m_xmf4x4World._42, m_xmf4x4World._43);
 	GET_MANAGER<ObjectManager>()->AddObject(L"MissleSplashInstance", pMissleSplash, OBJ_EFFECT);
+	//GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player_ui29_score_number", OBJ_UI)->m_nPlayerScore += 50;
 
 	m_isDead = true;
 }
@@ -123,6 +128,20 @@ void CMissle::Move(const XMFLOAT3& xmf3Shift, bool bUpdateVelocity)
 
 void CMissle::Rotate(XMFLOAT3* pxmf3Axis, float fAngle)
 {
+	/*if (pxmf3Axis->x == 0 && pxmf3Axis->y == 0 && pxmf3Axis->z == 0)
+	{
+		cout << "zero" << endl;
+		return;
+	}
+
+	XMMATRIX xmmtxRotate = XMMatrixRotationAxis(XMLoadFloat3(pxmf3Axis), XMConvertToRadians(fAngle));
+	m_xmf3Look = Vector3::TransformNormal(m_xmf3Look, xmmtxRotate);
+	m_xmf3Up = Vector3::TransformNormal(m_xmf3Up, xmmtxRotate);
+
+	m_xmf3Look = Vector3::Normalize(m_xmf3Look);
+	m_xmf3Right = Vector3::CrossProduct(m_xmf3Up, m_xmf3Look, true);
+	m_xmf3Up = Vector3::CrossProduct(m_xmf3Look, m_xmf3Right, true);*/
+
 	if (pxmf3Axis->x == 0 && pxmf3Axis->y == 0 && pxmf3Axis->z == 0)
 	{
 		cout << "zero" << endl;
@@ -140,6 +159,7 @@ void CMissle::Rotate(XMFLOAT3* pxmf3Axis, float fAngle)
 	m_xmf4x4ToParent._21 = m_xmf3Up.x * 10;
 	m_xmf4x4ToParent._22 = m_xmf3Up.y * 10;
 	m_xmf4x4ToParent._23 = m_xmf3Up.z * 10;
+
 
 	m_xmf3Look = Vector3::Normalize(m_xmf3Look);
 	m_xmf3Right = Vector3::CrossProduct(m_xmf3Up, m_xmf3Look, true);

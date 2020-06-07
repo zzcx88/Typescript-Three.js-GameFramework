@@ -33,6 +33,23 @@ void CollisionManager::CollisionSphere(ObjectManager::MAPOBJ* DstList, ObjectMan
 	}
 }
 
+void CollisionManager::CollisionSphere(CGameObject* Dst, ObjectManager::MAPOBJ* SrcList)
+{
+	for (auto& Src : *SrcList)
+	{
+		if (Dst->SphereCollider->m_BoundingSphere.Center.z != 0)
+		{
+			if (Dst->SphereCollider->m_BoundingSphere.Intersects(Src.second->SphereCollider->m_BoundingSphere))
+			{
+				if (Src.second == Dst)
+					return;
+				Src.second->CollisionActivate(Dst);
+				Dst->CollisionActivate(Src.second);
+			}
+		}
+	}
+}
+
 void CollisionManager::CollisionSphereToOrientedBox(ObjectManager::MAPOBJ* DstList, ObjectManager::MAPOBJ* SrcList)
 {
 	for (auto& Dst : *DstList)

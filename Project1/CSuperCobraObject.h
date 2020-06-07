@@ -7,6 +7,11 @@ public:
 	CSuperCobraObject(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList, ID3D12RootSignature* pd3dGraphicsRootSignature);
 	virtual ~CSuperCobraObject();
 
+	float m_fMoveFowardElapsed = 0.f;
+	float m_fElapsedFrequency = 3.f;
+
+	XMFLOAT3 xmf3Axis;
+
 private:
 	CGameObject* m_pMainRotorFrame = NULL;
 	CGameObject* m_pTailRotorFrame = NULL;

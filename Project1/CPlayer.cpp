@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "CHeightMapTerrain.h"
 #include "CAfterBurner.h"
+#include "CGunshipObject.h"
 #include "CPlayer.h"
 
 CPlayer::CPlayer()
@@ -159,9 +160,9 @@ void CPlayer::Update_Input(const float& TimeDelta)
 			m_pCamera->GenerateProjectionMatrix(1.01f, m_fFarPlaneDistance, ASPECT_RATIO, m_fFOV);
 			m_pCamera->SetLookPlayer();
 			XMFLOAT3 xmf3Shift = XMFLOAT3(0, 0, 0);
-			xmf3Shift = Vector3::Add(xmf3Shift, m_xmf3Up, 1);
+			xmf3Shift = Vector3::Add(xmf3Shift, m_xmf3Up, 0.6);
 			m_pCamera->SetPosition(Vector3::Add(m_xmf3Position, xmf3Shift));
-			xmf3Shift = Vector3::Add(xmf3Shift, m_xmf3Look, -5);
+			xmf3Shift = Vector3::Add(xmf3Shift, m_xmf3Look, -4.1);
 			m_pCamera->SetPosition(Vector3::Add(m_xmf3Position, xmf3Shift));
 		}
 	}
@@ -185,9 +186,9 @@ void CPlayer::Update_Input(const float& TimeDelta)
 			m_pCamera->GenerateProjectionMatrix(1.01f, m_fFarPlaneDistance, ASPECT_RATIO, m_fFOV);
 			m_pCamera->SetLookPlayer();
 			XMFLOAT3 xmf3Shift = XMFLOAT3(0, 0, 0);
-			xmf3Shift = Vector3::Add(xmf3Shift, m_xmf3Up, 1);
+			xmf3Shift = Vector3::Add(xmf3Shift, m_xmf3Up, 0.6);
 			m_pCamera->SetPosition(Vector3::Add(m_xmf3Position, xmf3Shift));
-			xmf3Shift = Vector3::Add(xmf3Shift, m_xmf3Look, -5);
+			xmf3Shift = Vector3::Add(xmf3Shift, m_xmf3Look, -4.1);
 			m_pCamera->SetPosition(Vector3::Add(m_xmf3Position, xmf3Shift));
 		}
 		dwDirection |= VK_LCONTROL;
@@ -391,7 +392,7 @@ void CPlayer::Update_Input(const float& TimeDelta)
 
 	if (m_bEye_fixation == true)
 	{
-		m_pCamera->SetPosition(XMFLOAT3(GetPosition().x - m_pCamera->GetLookVector().x * 7, GetPosition().y + 1 - m_pCamera->GetLookVector().y * 7,
+		m_pCamera->SetPosition(XMFLOAT3(GetPosition().x - m_pCamera->GetLookVector().x * 7, GetPosition().y + 1.3 - m_pCamera->GetLookVector().y * 7,
 			GetPosition().z - m_pCamera->GetLookVector().z * 7));
 		for (auto& Ene : m_ObjManager->GetObjFromType(OBJ_ENEMY))
 		{
@@ -447,7 +448,6 @@ void CPlayer::Animate(float fTimeElapsed)
 		if (nCurrentCameraMode == THIRD_PERSON_CAMERA) m_pCamera->Update(m_xmf3Position, fTimeElapsed);
 		if (m_pCameraUpdatedContext) OnCameraUpdateCallback(fTimeElapsed);
 		if (nCurrentCameraMode == THIRD_PERSON_CAMERA) m_pCamera->SetLookAt(m_xmf3Position);
-		//m_pCamera->Update(m_xmf3Position, fTimeElapsed);
 		m_pCamera->RegenerateViewMatrix();
 
 		fLength = Vector3::Length(m_xmf3Velocity);
@@ -545,7 +545,10 @@ CAirplanePlayer::CAirplanePlayer(ID3D12Device* pd3dDevice, ID3D12GraphicsCommand
 
 	m_nMSL_Count = CPlayer::GetMSLCount();
 
-	CLoadedModelInfo* pModel = CGameObject::LoadGeometryAndAnimationFromFile(pd3dDevice, pd3dCommandList, pd3dGraphicsRootSignature, "Model/F-4E_Phantom_II.bin", NULL, MODEL_ACE);
+	m_pAfterBurnerEXModel = CGameObject::LoadGeometryAndAnimationFromFile(pd3dDevice, pd3dCommandList, pd3dGraphicsRootSignature, "Model/AfterBurnerEX.bin", NULL, MODEL_EFC);
+	m_pAfterBurnerINModel = CGameObject::LoadGeometryAndAnimationFromFile(pd3dDevice, pd3dCommandList, pd3dGraphicsRootSignature, "Model/AfterBurnerIN.bin", NULL, MODEL_EFC);
+
+	CLoadedModelInfo* pModel = CGameObject::LoadGeometryAndAnimationFromFile(pd3dDevice, pd3dCommandList, pd3dGraphicsRootSignature, "Model/F-4E_Phantom_II_test.bin", NULL, MODEL_ACE);
 	SetChild(pModel->m_pModelRootObject);
 
 	m_fRollPerformance = 100.0f;
@@ -610,40 +613,62 @@ void CAirplanePlayer::OnPrepareAnimate()
 	m_pRight_AfterBurner[8] = FindFrame("Right_AfterBuner_8");
 	m_pRight_AfterBurner[9] = FindFrame("Right_AfterBuner_9");
 
-	for (int i = 0; i < 10; ++i)
-	{
-		CAfterBurner* pBurner;
-		pBurner = new CAfterBurner();
-		pBurner->SetMesh((CMesh*)GET_MANAGER<ObjectManager>()->GetObjFromTag(L"AfterBurner", OBJ_EFFECT)->m_pPlaneMesh);
-		pBurner->m_pCamera = m_pCamera;
-		for (int i = 0; i < 10; ++i)
-			pBurner->m_pEffectTexture[i] = GET_MANAGER<ObjectManager>()->GetObjFromTag(L"AfterBurner", OBJ_EFFECT)->m_pEffectTexture[i];
-		pBurner->m_pEffectMaterial = new CMaterial(1);
-		pBurner->m_pEffectMaterial->SetTexture(pBurner->m_pEffectTexture[i]);
-		pBurner->m_pEffectMaterial->SetShader(GET_MANAGER<ObjectManager>()->GetObjFromTag(L"AfterBurner", OBJ_EFFECT)->m_EffectShader);
-		pBurner->SetMaterial(0, pBurner->m_pEffectMaterial);
-		m_pLeft_AfterBurner[i]->m_pAfterBurner = pBurner;
-		GET_MANAGER<ObjectManager>()->AddObject(L"AfterBurnerInstance", m_pLeft_AfterBurner[i]->m_pAfterBurner, OBJ_EFFECT);
-	}
+	m_pRight_AfterBurnerEX = FindFrame("Right_AfterBurnerEX");
+	m_pRight_AfterBurnerIN = FindFrame("Right_AfterBurnerIN");
+	m_pLeft_AfterBurnerEX = FindFrame("Left_AfterBurnerEX");
+	m_pLeft_AfterBurnerIN = FindFrame("Left_AfterBurnerIN");
 
-	for (int i = 0; i < 10; ++i)
-	{
-		CAfterBurner* pBurner;
-		pBurner = new CAfterBurner();
-		pBurner->SetMesh((CMesh*)GET_MANAGER<ObjectManager>()->GetObjFromTag(L"AfterBurner", OBJ_EFFECT)->m_pPlaneMesh);
-		pBurner->m_pCamera = m_pCamera;
-		for (int i = 0; i < 10; ++i)
-			pBurner->m_pEffectTexture[i] = GET_MANAGER<ObjectManager>()->GetObjFromTag(L"AfterBurner", OBJ_EFFECT)->m_pEffectTexture[i];
-		pBurner->m_pEffectMaterial = new CMaterial(1);
-		pBurner->m_pEffectMaterial->SetTexture(pBurner->m_pEffectTexture[i]);
-		pBurner->m_pEffectMaterial->SetShader(GET_MANAGER<ObjectManager>()->GetObjFromTag(L"AfterBurner", OBJ_EFFECT)->m_EffectShader);
-		pBurner->SetMaterial(0, pBurner->m_pEffectMaterial);
-		m_pRight_AfterBurner[i]->m_pAfterBurner = pBurner;
-		GET_MANAGER<ObjectManager>()->AddObject(L"AfterBurnerInstance", m_pRight_AfterBurner[i]->m_pAfterBurner, OBJ_EFFECT);
-	}
+	m_pRight_AfterBurnerEX->m_bEffectedObj = true;
+	m_pRight_AfterBurnerEX->m_fBurnerBlendAmount = 0.5f;
+	m_pRight_AfterBurnerEX->m_ppMaterials[0]->SetAfterBurnerShader();
 
+	m_pRight_AfterBurnerIN->m_bEffectedObj = true;
+	m_pRight_AfterBurnerIN->m_fBurnerBlendAmount = 0.5f;
+	m_pRight_AfterBurnerIN->m_ppMaterials[0]->SetAfterBurnerShader();
+
+	m_pLeft_AfterBurnerEX->m_bEffectedObj = true;
+	m_pLeft_AfterBurnerEX->m_fBurnerBlendAmount = 0.5f;
+	m_pLeft_AfterBurnerEX->m_ppMaterials[0]->SetAfterBurnerShader();
+
+	m_pLeft_AfterBurnerIN->m_bEffectedObj = true;
+	m_pLeft_AfterBurnerIN->m_fBurnerBlendAmount = 0.5f;
+	m_pLeft_AfterBurnerIN->m_ppMaterials[0]->SetAfterBurnerShader();
+
+		for (int i = 0; i < 10; ++i)
+		{
+			CAfterBurner* pBurner;
+			pBurner = new CAfterBurner();
+			pBurner->SetMesh((CMesh*)GET_MANAGER<ObjectManager>()->GetObjFromTag(L"AfterBurner", OBJ_EFFECT)->m_pPlaneMesh);
+			pBurner->m_pCamera = m_pCamera;
+			for (int i = 0; i < 10; ++i)
+				pBurner->m_pEffectTexture[i] = GET_MANAGER<ObjectManager>()->GetObjFromTag(L"AfterBurner", OBJ_EFFECT)->m_pEffectTexture[i];
+			pBurner->m_pEffectMaterial = new CMaterial(1);
+			pBurner->m_pEffectMaterial->SetTexture(pBurner->m_pEffectTexture[i]);
+			pBurner->m_pEffectMaterial->SetShader(GET_MANAGER<ObjectManager>()->GetObjFromTag(L"AfterBurner", OBJ_EFFECT)->m_PlaneShader);
+			pBurner->SetMaterial(0, pBurner->m_pEffectMaterial);
+			m_pLeft_AfterBurner[i]->m_pAfterBurner = pBurner;
+			m_pLeft_AfterBurner[i]->SetScale(0.095f, 0.095f, 1);
+			GET_MANAGER<ObjectManager>()->AddObject(L"AfterBurnerInstance", m_pLeft_AfterBurner[i]->m_pAfterBurner, OBJ_BURNER);
+		}
+
+		for (int i = 0; i < 10; ++i)
+		{
+			CAfterBurner* pBurner;
+			pBurner = new CAfterBurner();
+			pBurner->SetMesh((CMesh*)GET_MANAGER<ObjectManager>()->GetObjFromTag(L"AfterBurner", OBJ_EFFECT)->m_pPlaneMesh);
+			pBurner->m_pCamera = m_pCamera;
+			for (int i = 0; i < 10; ++i)
+				pBurner->m_pEffectTexture[i] = GET_MANAGER<ObjectManager>()->GetObjFromTag(L"AfterBurner", OBJ_EFFECT)->m_pEffectTexture[i];
+			pBurner->m_pEffectMaterial = new CMaterial(1);
+			pBurner->m_pEffectMaterial->SetTexture(pBurner->m_pEffectTexture[i]);
+			pBurner->m_pEffectMaterial->SetShader(GET_MANAGER<ObjectManager>()->GetObjFromTag(L"AfterBurner", OBJ_EFFECT)->m_PlaneShader);
+			pBurner->SetMaterial(0, pBurner->m_pEffectMaterial);
+			m_pRight_AfterBurner[i]->m_pAfterBurner = pBurner;
+			m_pRight_AfterBurner[i]->SetScale(0.095f, 0.095f,1);
+			GET_MANAGER<ObjectManager>()->AddObject(L"AfterBurnerInstance", m_pRight_AfterBurner[i]->m_pAfterBurner, OBJ_BURNER);
+		}
+	}
 	//m_xmMSL_1 = m_pMSL_1->m_xmf4x4World;
-}
 
 void CPlayer::WingAnimate(float fTimeElapsed, DWORD Direction)
 {
@@ -878,28 +903,42 @@ void CAirplanePlayer::YawWingReturn(float fTimeElapsed)
 void CAirplanePlayer::MissleLaunch()
 {
 	CMissle* pMissle;
+	XMFLOAT3* temp = NULL;
 	m_nMSL_Count = CPlayer::GetMSLCount();
-	cout << m_nMSL_Count << endl;
+	//cout << m_nMSL_Count << endl;
 
 	for (auto& Ene : m_ObjManager->GetObjFromType(OBJ_ENEMY))
 	{
 		if (Ene.second->m_bCanFire == true&&Ene.second->GetState() != true&&m_nMSL_Count !=0)
 		{
-			XMFLOAT3* temp = Ene.second->GetPositionForMissle();
+			temp = Ene.second->GetPositionForMissle();
+
 			pMissle = new CMissle(m_pd3dDevice, m_pd3dCommandList, m_pd3dGraphicsRootSignature, m_pMissleModelCol, temp, m_xmf3Position, m_ObjManager);
 			pMissle->m_pCamera = m_pCamera;
 			pMissle->m_xmf3Look = m_xmf3Look;
-			pMissle->m_xmf4x4ToParent = Matrix4x4::Multiply(XMMatrixScaling(10, 10, 10), m_xmf4x4ToParent);
+			pMissle->m_bLockOn = true;
+			pMissle->m_xmf4x4ToParent = Matrix4x4::Multiply(XMMatrixScaling(1, 1, 1), m_xmf4x4ToParent);
 			pMissle->SetChild(m_pMissleModel->m_pModelRootObject);
 			pMissle->SetScale(10, 10, 10);
 			pMissle->SetPosition(m_pMSL_1->GetPosition());
 			m_ObjManager->AddObject(L"player_missle", pMissle, OBJ_MISSLE);
 			
-			CPlayer::SetMissleCount(--m_nMSL_Count);
-			break;
+			CPlayer::SetMissileCount(--m_nMSL_Count);
+			return;
 		}
 
 	}
+	pMissle = new CMissle(m_pd3dDevice, m_pd3dCommandList, m_pd3dGraphicsRootSignature, m_pMissleModelCol, temp, m_xmf3Position, m_ObjManager);
+	pMissle->m_pCamera = m_pCamera;
+	pMissle->m_xmf3Look = m_xmf3Look;
+	pMissle->m_bLockOn = false;
+	pMissle->m_xmf4x4ToParent = Matrix4x4::Multiply(XMMatrixScaling(1, 1, 1), m_xmf4x4ToParent);
+	pMissle->SetChild(m_pMissleModel->m_pModelRootObject);
+	pMissle->SetScale(10, 10, 10);
+	pMissle->SetPosition(m_pMSL_1->GetPosition());
+	m_ObjManager->AddObject(L"player_missle", pMissle, OBJ_MISSLE);
+	CPlayer::SetMissileCount(--m_nMSL_Count);
+
 }
 
 void CAirplanePlayer::GunFire(float fTimeElapsed)
@@ -951,13 +990,26 @@ void CAirplanePlayer::SetAfterBurnerPosition(float fTimeElapsed)
 	{
 		if (m_pLeft_AfterBurner[i])
 		{
-			if (m_fBurnerElapsed / 100 < 1)
+			if (m_fBurnerElapsed / 150 <= 0.7f)
 			{
-				m_pLeft_AfterBurner[i]->m_pAfterBurner->SetScale(m_fBurnerElapsed / 100, m_fBurnerElapsed / 100, 0);
-				m_pRight_AfterBurner[i]->m_pAfterBurner->SetScale(m_fBurnerElapsed / 100, m_fBurnerElapsed / 100, 0);
+				m_pLeft_AfterBurner[i]->m_pAfterBurner->m_fBurnerBlendAmount = m_fBurnerElapsed / 150;
+				m_pRight_AfterBurner[i]->m_pAfterBurner->m_fBurnerBlendAmount = m_fBurnerElapsed / 150;
 			}
-			m_pLeft_AfterBurner[i]->m_pAfterBurner->SetPosition(m_pLeft_AfterBurner[i]->GetPosition());
-			m_pRight_AfterBurner[i]->m_pAfterBurner->SetPosition(m_pRight_AfterBurner[i]->GetPosition());
+			if (m_fBurnerElapsed / 150 <= 0.4f)
+			{
+				m_pLeft_AfterBurnerEX->m_fBurnerBlendAmount = m_fBurnerElapsed / 150;
+				m_pLeft_AfterBurnerIN->m_fBurnerBlendAmount = m_fBurnerElapsed / 150;
+				m_pRight_AfterBurnerEX->m_fBurnerBlendAmount = m_fBurnerElapsed / 150;
+				m_pRight_AfterBurnerIN->m_fBurnerBlendAmount = m_fBurnerElapsed / 150;
+			}
+
+			m_pLeft_AfterBurner[i]->m_pAfterBurner->UpdateTransform(&m_pLeft_AfterBurner[i]->m_xmf4x4World);
+			m_pRight_AfterBurner[i]->m_pAfterBurner->UpdateTransform(&m_pRight_AfterBurner[i]->m_xmf4x4World);
+			if (m_fBurnerElapsed / 100 < 0.8)
+			{
+				m_pLeft_AfterBurner[i]->m_pAfterBurner->SetPlaneScale(m_fBurnerElapsed / 100);
+				m_pRight_AfterBurner[i]->m_pAfterBurner->SetPlaneScale(m_fBurnerElapsed / 100);
+			}
 		}
 	}
 }
@@ -993,9 +1045,9 @@ CCamera* CAirplanePlayer::ChangeCamera(DWORD nNewCameraMode, float fTimeElapsed)
 		SetMaxVelocityY(1000.0f);
 		m_pCamera = OnChangeCamera(SPACESHIP_CAMERA, nCurrentCameraMode);
 		m_pCamera->SetTimeLag(0.0f);
-		m_pCamera->SetOffset(XMFLOAT3(0.0f, 1.0f, -5.0f));
+		m_pCamera->SetOffset(XMFLOAT3(0.0f, 0.6f, -4.1f));
 		m_pCamera->GenerateProjectionMatrix(1.01f, m_fFarPlaneDistance, ASPECT_RATIO, 60.0f);
-		m_pCamera->OrthogonalProjectionMatrix(1.01f, 5000.0f, FRAME_BUFFER_WIDTH, FRAME_BUFFER_HEIGHT);
+		m_pCamera->OrthogonalProjectionMatrix(-5000.f, m_fFarPlaneDistance, FRAME_BUFFER_WIDTH, FRAME_BUFFER_HEIGHT);
 		m_pCamera->SetViewport(0, 0, FRAME_BUFFER_WIDTH, FRAME_BUFFER_HEIGHT, 0.0f, 1.0f);
 		m_pCamera->SetScissorRect(0, 0, FRAME_BUFFER_WIDTH, FRAME_BUFFER_HEIGHT);
 		break;

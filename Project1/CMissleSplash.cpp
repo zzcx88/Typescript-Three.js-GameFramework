@@ -3,6 +3,7 @@
 #include "CTestScene.h"
 CMissleSplash::CMissleSplash()
 {
+	//m_fBurnerBlendAmount = 0.8;
 	m_nNumTex = GET_MANAGER<ObjectManager>()->GetObjFromTag(L"MissleSplashRef", OBJ_EFFECT)->m_nNumTex;
 }
 
@@ -16,7 +17,7 @@ CMissleSplash::CMissleSplash(int nIndex, ID3D12Device* pd3dDevice, ID3D12Graphic
 	bstr_t folderPath = "Effect/Splash/MissleSplash";
 	m_nNumTex = GET_MANAGER<LoadTextureManager>()->LoadTextureFromFolder(pd3dDevice, pd3dCommandList, folderPath, m_pEffectTexture);
 
-	cout << m_nNumTex;
+	//cout << m_nNumTex;
 	m_EffectShader = new CMissleFogShader();
 	m_EffectShader->CreateShader(pd3dDevice, pd3dCommandList, pd3dGraphicsRootSignature);
 	for (int i = 0; i < m_nNumTex; i++) CTestScene::CreateShaderResourceViews(pd3dDevice, m_pEffectTexture[i], 15, false);
@@ -73,7 +74,7 @@ void CMissleSplash::TextureAnimate()
 
 void CMissleSplash::SetLookAt(XMFLOAT3& xmfTarget)
 {
-	XMFLOAT3 xmfUp(0.0f, 1.0f, 0.0f);
+	XMFLOAT3 xmfUp(0.0f, 0.0f, 1.0f);
 	XMFLOAT4X4 mtxLookAt = Matrix4x4::LookAtLH(xmfTarget, m_xmf3Position, xmfUp);
 	m_xmf3Right = XMFLOAT3(mtxLookAt._11, mtxLookAt._21, mtxLookAt._31);
 	m_xmf3Up = XMFLOAT3(mtxLookAt._12, mtxLookAt._22, mtxLookAt._32);

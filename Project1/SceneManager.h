@@ -12,15 +12,20 @@ public:
 
 public:
 	SCENESTATE GetCurrentSceneState() { return m_CurrentScene; }
+	bool GetSceneStoped() { return m_Scene->GetStoped(); }
 	ID3D12RootSignature* GetGraphicsRootSignature() { return m_Scene->GetGraphicsRootSignature(); }
 	ID3D12RootSignature* GetComputeRootSignature() { return m_Scene->GetComputeRootSignature(); }
 	ID3D12DescriptorHeap* GetCbvSrvDescriptorHeap() { return m_Scene->GetCbvSrvDescriptorHeap(); }
 
 public:
+	bool SwapSceneState(SCENESTATE SceneState);
 	bool ChangeSceneState(SCENESTATE SceneState, ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList);
 	void SetSceneObjManager();
 	void SetPlayer(CPlayer* pPlayer) { m_Scene->m_pPlayer = pPlayer; }
 	void SetObjManagerInPlayer();
+	void SceneStoped();
+	void SetStoped(bool);
+	bool GetStoped();
 
 public:
 	int Update(const float& TimeDelta);
@@ -32,6 +37,9 @@ public:
 
 private:
 	CScene* m_Scene = nullptr;
+	CScene* tScene = nullptr;
+	CScene* mScene = nullptr;
+
 	SCENESTATE m_CurrentScene = SCENE_END;
 };
 
