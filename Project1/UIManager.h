@@ -9,30 +9,34 @@ class UIManager : public SingletonBase<UIManager>
 	int score_number = 0;
 
 	float fElapsedTime = 60.f;
-	int nSecond = 60.0f;
-	int nMinute = 0;
-	int nHour = 0;
 
-	int n_Minute = 29;
-	int n_Hour = 15;
+	int nMsecond = 60.0f;
+	int nSecond = 0;
+	int nMin = 0;
 
-	int numObjects = 0;
-	CGameObject** ppNumObjects = NULL;
+	int n_second = 29;
+	int n_minute = 15;
 
+	int nDistance = 0;
+
+	int numObjects = 29;
 public:
 	UIManager();
 	virtual ~UIManager();
+	//CGameObject** ppNumObjects = NULL;
 
 	CCamera* m_pCamera = NULL;
 
 	vector<CGameObject*> GameOBJs;
-	vector<int> speed, alt, missile, timeS, timeM, timeH, score{};
+	vector<int> speed, alt, missile, timeMS, timeS, timeM, score, distance{};
 
 public:
 	void MoveMinimapPoint(ObjectManager::MAPOBJ* PlyList, ObjectManager::MAPOBJ* EneList);
 	void MoveLockOnUI(ObjectManager::MAPOBJ* PlyList, ObjectManager::MAPOBJ* EneList);
 	void SetCamera(CCamera* pCamera) { m_pCamera = pCamera; }
 	void NumberTextureAnimate(ObjectManager::MAPOBJ* PlyList, const float& TimeDelta);
+	void ReleaseUI();
+	void BuildNumberUI();
 
 	CGameObject* m_fMin = NULL;
 	int Count = 0;

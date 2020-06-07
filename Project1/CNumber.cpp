@@ -64,7 +64,7 @@ void CNumber::Animate(float fTimeElapsed)
 		}
 	}*/
 
-	TextureAnimate();
+	//TextureAnimate();
 }
 
 void CNumber::TextureAnimate()

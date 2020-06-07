@@ -3,7 +3,7 @@
 #include "CPlaneMesh.h"
 #include "CTestScene.h"
 
-#define TEXTURES 1
+#define TEXTURES 6
 CMinimap::CMinimap()
 {}
 
@@ -21,7 +21,17 @@ CMinimap::CMinimap(int nIndex, ID3D12Device* pd3dDevice, ID3D12GraphicsCommandLi
 
 	m_ppUITexture[0] = new CTexture(1, RESOURCE_TEXTURE2D, 0);
 	m_ppUITexture[0]->LoadTextureFromFile(pd3dDevice, pd3dCommandList, L"UI/MinimapUI.dds", 0);
-	
+	m_ppUITexture[1] = new CTexture(1, RESOURCE_TEXTURE2D, 0);
+	m_ppUITexture[1]->LoadTextureFromFile(pd3dDevice, pd3dCommandList, L"UI/PauseMenu.dds", 0);
+	m_ppUITexture[2] = new CTexture(1, RESOURCE_TEXTURE2D, 0);
+	m_ppUITexture[2]->LoadTextureFromFile(pd3dDevice, pd3dCommandList, L"UI/TimeScoreUI2.dds", 0);
+	m_ppUITexture[3] = new CTexture(1, RESOURCE_TEXTURE2D, 0);
+	m_ppUITexture[3]->LoadTextureFromFile(pd3dDevice, pd3dCommandList, L"UI/MinimapPoint.dds", 0);
+	m_ppUITexture[4] = new CTexture(1, RESOURCE_TEXTURE2D, 0);
+	m_ppUITexture[4]->LoadTextureFromFile(pd3dDevice, pd3dCommandList, L"UI/MinimapRedPoint.dds", 0);
+	m_ppUITexture[5] = new CTexture(1, RESOURCE_TEXTURE2D, 0);
+	m_ppUITexture[5]->LoadTextureFromFile(pd3dDevice, pd3dCommandList, L"UI/Menuarrow.dds", 0);
+
 
 
 	UINT ncbElementBytes = ((sizeof(CB_GAMEOBJECT_INFO) + 255) & ~255);
@@ -43,4 +53,10 @@ CMinimap::CMinimap(int nIndex, ID3D12Device* pd3dDevice, ID3D12GraphicsCommandLi
 
 CMinimap::~CMinimap()
 {
+}
+
+void CMinimap::Render(ID3D12GraphicsCommandList* pd3dCommandList, CCamera* pCamera) {
+	if (CGameObject::GetIsRender())
+		CGameObject::Render(pd3dCommandList, pCamera);
+
 }

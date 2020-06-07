@@ -51,7 +51,7 @@ void CLockOnUI::MoveLockOnUI(XMFLOAT2 screen, XMFLOAT3& xmfTarget, XMFLOAT3& xmf
 	xmf3TargetVector = Vector3::Normalize(xmf3TargetVector);
 
 	float xmfAxis = Vector3::DotProduct(xmfPlayerLook, xmf3TargetVector);
-	float xmfCameraAxis = Vector3::DotProduct(pCamera->GetLookVector(), xmf3TargetVector);
+	xmfCameraAxis = Vector3::DotProduct(pCamera->GetLookVector(), xmf3TargetVector);
 	
 	//fx = ((1.f / ((float)FRAME_BUFFER_WIDTH / 2.f)) * screen.x) - 1;
 	//fy = (((1.f / ((float)FRAME_BUFFER_HEIGHT / 2.f)) * screen.y) - 1) * -1;
@@ -63,7 +63,7 @@ void CLockOnUI::MoveLockOnUI(XMFLOAT2 screen, XMFLOAT3& xmfTarget, XMFLOAT3& xmf
 	m_fLenth = sqrt(xmf3TargetVector2.x * xmf3TargetVector2.x + xmf3TargetVector2.y * xmf3TargetVector2.x + xmf3TargetVector2.z * xmf3TargetVector2.z);
 	
 	if (screen.x < 0 || screen.y < 0 || screen.x >FRAME_BUFFER_WIDTH || screen.y >FRAME_BUFFER_HEIGHT || xmfCameraAxis < 0.f)
-		pGameUIOBJ->SetPosition(-2000.f, -2000.f, -1.f);
+		pGameUIOBJ->SetPosition(-20000.f, -20000.f, -1.f);
 	else {
 		if (m_fLenth < 30000 )
 		{

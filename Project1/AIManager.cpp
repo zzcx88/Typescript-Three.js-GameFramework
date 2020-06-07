@@ -51,7 +51,6 @@ void AIManager::MakeAction(AITYPE aiType)
 	{
 		BT::Sequence* root = new BT::Sequence(); // 루트 노드(시퀀스 노드로 생성)
 		BT::CNode* BT_MoveFoward = new MoveFoward();
-
 		root->AddChild(BT_MoveFoward);
 		m_mapNode.insert(MAPNODE::value_type(AI_BOMBER, root->GetChildren()));
 	}

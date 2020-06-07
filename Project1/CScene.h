@@ -5,6 +5,8 @@
 class ObjectManager;
 class CScene
 {
+	bool m_bStoped = false;
+
 public:
 	CScene();
 	virtual ~CScene();
@@ -44,6 +46,9 @@ public:
 
 	int mClientWidth = 800;
 	int mClientHeight = 600;
+
+	bool GetStoped()const { return m_bStoped; }
+	void SetStoped(bool b) { m_bStoped = b; }
 
 protected:
 	ID3D12RootSignature* m_pd3dGraphicsRootSignature = NULL;

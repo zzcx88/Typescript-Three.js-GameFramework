@@ -116,35 +116,34 @@ void CTestScene::BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandLis
 	float fx =  FRAME_BUFFER_WIDTH / 2;
 	float fy =  FRAME_BUFFER_HEIGHT / 2;
 	
-	m_nGameObjects = 33;
+	m_nGameObjects = 12;
 	m_ppGameObjects = new CGameObject * [m_nGameObjects];
-
 	m_ppGameObjects[0] = new CUI(0, pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, 200.f, 200.f, 0.f, XMFLOAT2(0.f, 0.f), XMFLOAT2(0.f, 0.f), XMFLOAT2(0.f, 0.f), XMFLOAT2(0.f, 0.f));
 	m_ppGameObjects[0]->SetPosition(fx * 0.8, fy * 0.8, 0.f);
 
 	// weapon
-	m_ppGameObjects[1] = new CUI(1, pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature,  150.f, 150.f, 0.f, XMFLOAT2(0.f, 0.f), XMFLOAT2(0.f, 0.f), XMFLOAT2(0.f, 0.f), XMFLOAT2(0.f, 0.f));
+	m_ppGameObjects[1] = new CUI(1, pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature,  160.f, 160.f, 0.f, XMFLOAT2(0.f, 0.f), XMFLOAT2(0.f, 0.f), XMFLOAT2(0.f, 0.f), XMFLOAT2(0.f, 0.f));
 	m_ppGameObjects[1]->SetPosition(fx*0.8, -fy*0.7, 0.f);
 
 	// time score
-	m_ppGameObjects[2] = new CUI(2, pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, 100.f, 100.f, 0.f, XMFLOAT2(0.f, 0.f), XMFLOAT2(0.f, 0.f), XMFLOAT2(0.f, 0.f), XMFLOAT2(0.f, 0.f));
-	m_ppGameObjects[2]->SetPosition(fx*-0.9f, fy*0.8f, 0.f);
+	m_ppGameObjects[2] = new CUI(2, pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, 160.f, 160.f, 0.f, XMFLOAT2(0.f, 0.f), XMFLOAT2(0.f, 0.f), XMFLOAT2(0.f, 0.f), XMFLOAT2(0.f, 0.f));
+	m_ppGameObjects[2]->SetPosition(fx*-0.85f, fy*0.8f, 0.f);
 
 	// speed
-	m_ppGameObjects[3] = new CUI(3, pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, 400.f, 400.f, 0.f, XMFLOAT2(0.f, 0.f), XMFLOAT2(0.f, 0.f), XMFLOAT2(0.f, 0.f), XMFLOAT2(0.f, 0.0f));
+	m_ppGameObjects[3] = new CUI(3, pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, 120.f, 120.f, 0.f, XMFLOAT2(0.f, 0.f), XMFLOAT2(0.f, 0.f), XMFLOAT2(0.f, 0.f), XMFLOAT2(0.f, 0.0f));
 	m_ppGameObjects[3]->SetPosition(fx*-0.35f, fy*0.01f, 0.f);
 
 	// alt
-	m_ppGameObjects[4] = new CUI(4, pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, 400.f, 400.f, 0.f, XMFLOAT2(0.f, 0.f), XMFLOAT2(0.f, 0.f), XMFLOAT2(0.f, 0.f), XMFLOAT2(0.f, 0.0f));
+	m_ppGameObjects[4] = new CUI(4, pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, 120.f, 120.f, 0.f, XMFLOAT2(0.f, 0.f), XMFLOAT2(0.f, 0.f), XMFLOAT2(0.f, 0.f), XMFLOAT2(0.f, 0.0f));
 	m_ppGameObjects[4]->SetPosition(fx*0.35f, fy*0.01f, 0.f);
 
 	m_ppGameObjects[5] = new CUI(5, pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, 100.f, 100.f, 0.f, XMFLOAT2(0.81f, -0.305f), XMFLOAT2(0.81f, -0.305f), XMFLOAT2(0.81f, -0.305f), XMFLOAT2(0.81f, -0.305f));
 	
 	// minimap point
-	m_ppGameObjects[6] = new CUI(7, pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, 10.f, 10.f, 0.f, XMFLOAT2(-0.f, -0.f), XMFLOAT2(0.f, 0.f), XMFLOAT2(0.f, 0.f), XMFLOAT2(0.f, 0.f));
+	m_ppGameObjects[6] = new CMinimap(3, pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, 10.f, 10.f, 0.f, XMFLOAT2(-0.f, -0.f), XMFLOAT2(0.f, 0.f), XMFLOAT2(0.f, 0.f), XMFLOAT2(0.f, 0.f));
 	m_ppGameObjects[6]->SetPosition(fx * -2.f, fy * -2.f, 0.f);
 
-	m_ppGameObjects[7] = new CLockOnUI(0, pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, 200.f, 200.f, 0.f, XMFLOAT2(-0.f, -0.f), XMFLOAT2(0.f, 0.f), XMFLOAT2(0.f, 0.f), XMFLOAT2(0.f, 0.f));
+	m_ppGameObjects[7] = new CLockOnUI(0, pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, 250.f, 250.f, 0.f, XMFLOAT2(-0.f, -0.f), XMFLOAT2(0.f, 0.f), XMFLOAT2(0.f, 0.f), XMFLOAT2(0.f, 0.f));
 	m_ppGameObjects[7]->SetPosition(fx * -2.f, fy * -2.f, 0.f);
 
 	// minimap
@@ -152,71 +151,16 @@ void CTestScene::BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandLis
 	m_ppGameObjects[8]->SetPosition(fx *-0.7f, fy * -0.5f,0.f);
 
 	// minimap red point
-	m_ppGameObjects[9] = new CUI(8, pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, 10.f, 10.f, 0.f, XMFLOAT2(-0.f, -0.f), XMFLOAT2(0.f, 0.f), XMFLOAT2(0.f, 0.f), XMFLOAT2(0.f, 0.f));
+	m_ppGameObjects[9] = new CMinimap(4, pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, 10.f, 10.f, 0.f, XMFLOAT2(-0.f, -0.f), XMFLOAT2(0.f, 0.f), XMFLOAT2(0.f, 0.f), XMFLOAT2(0.f, 0.f));
 	m_ppGameObjects[9]->SetPosition(fx * -2.f, fy * -2.f, 0.f);
 
-	float scaleX = 35.f;
-	float scaleY = 35.f;
+	float scaleX = 28.f;
+	float scaleY = 28.f;
 	float offsetY = 5.f;
 	// Speed
 	m_ppGameObjects[10] = new CNumber(0, pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, scaleX, scaleY, 0.f);
-	m_ppGameObjects[10]->SetPosition(m_ppGameObjects[3]->GetPosition().x  +11.f, m_ppGameObjects[3]->GetPosition().y -offsetY, 0.f);
-	m_ppGameObjects[11] = new CNumber(0, pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, scaleX, scaleY, 0.f);
-	m_ppGameObjects[11]->SetPosition(m_ppGameObjects[3]->GetPosition().x - 01.f, m_ppGameObjects[3]->GetPosition().y - offsetY, 0.f);
-	m_ppGameObjects[12] = new CNumber(0, pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, scaleX, scaleY, 0.f);
-	m_ppGameObjects[12]->SetPosition(m_ppGameObjects[3]->GetPosition().x - 13.f, m_ppGameObjects[3]->GetPosition().y - offsetY, 0.f);
-	m_ppGameObjects[13] = new CNumber(0, pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, scaleX, scaleY, 0.f);
-	m_ppGameObjects[13]->SetPosition(m_ppGameObjects[3]->GetPosition().x - 25.f, m_ppGameObjects[3]->GetPosition().y - offsetY, 0.f);
-
-
-	// Alt
-	m_ppGameObjects[14] = new CNumber(0, pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, scaleX, scaleY, 0.f);
-	m_ppGameObjects[14]->SetPosition(m_ppGameObjects[4]->GetPosition().x +30.f, m_ppGameObjects[4]->GetPosition().y - offsetY, 0.f);
-	m_ppGameObjects[15] = new CNumber(0, pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, scaleX, scaleY, 0.f);
-	m_ppGameObjects[15]->SetPosition(m_ppGameObjects[4]->GetPosition().x + 18.f, m_ppGameObjects[4]->GetPosition().y - offsetY, 0.f);
-	m_ppGameObjects[16] = new CNumber(0, pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, scaleX, scaleY, 0.f);
-	m_ppGameObjects[16]->SetPosition(m_ppGameObjects[4]->GetPosition().x + 6.f, m_ppGameObjects[4]->GetPosition().y - offsetY, 0.f);
-	m_ppGameObjects[17] = new CNumber(0, pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, scaleX, scaleY, 0.f);
-	m_ppGameObjects[17]->SetPosition(m_ppGameObjects[4]->GetPosition().x - 6.f, m_ppGameObjects[4]->GetPosition().y - offsetY, 0.f);
-	m_ppGameObjects[18] = new CNumber(0, pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, scaleX, scaleY, 0.f);
-	m_ppGameObjects[18]->SetPosition(m_ppGameObjects[4]->GetPosition().x - 18.f, m_ppGameObjects[4]->GetPosition().y - offsetY, 0.f);
-
-	float missileTimeOffsetY = 30.f;
-	// Missile
-	m_ppGameObjects[19] = new CNumber(0, pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, scaleX, scaleY, 0.f);
-	m_ppGameObjects[19]->SetPosition(m_ppGameObjects[1]->GetPosition().x+66.f, m_ppGameObjects[1]->GetPosition().y+ missileTimeOffsetY, 0.f);
-	m_ppGameObjects[20] = new CNumber(0, pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, scaleX, scaleY, 0.f);
-	m_ppGameObjects[20]->SetPosition(m_ppGameObjects[1]->GetPosition().x+54.f, m_ppGameObjects[1]->GetPosition().y+ missileTimeOffsetY, 0.f);
-	m_ppGameObjects[21] = new CNumber(0, pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, scaleX, scaleY, 0.f);
-	m_ppGameObjects[21]->SetPosition(m_ppGameObjects[1]->GetPosition().x+42.f, m_ppGameObjects[1]->GetPosition().y+ missileTimeOffsetY, 0.f);
-
-	// Time s, m, h
-	m_ppGameObjects[22] = new CNumber(0, pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, scaleX, scaleY, 0.f);
-	m_ppGameObjects[22]->SetPosition(m_ppGameObjects[2]->GetPosition().x + 140.f, m_ppGameObjects[2]->GetPosition().y + missileTimeOffsetY, 0.f);
-	m_ppGameObjects[23] = new CNumber(0, pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, scaleX, scaleY, 0.f);
-	m_ppGameObjects[23]->SetPosition(m_ppGameObjects[2]->GetPosition().x + 128.f, m_ppGameObjects[2]->GetPosition().y + missileTimeOffsetY, 0.f);
-	
-	m_ppGameObjects[24] = new CNumber(0, pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, scaleX, scaleY, 0.f);
-	m_ppGameObjects[24]->SetPosition(m_ppGameObjects[2]->GetPosition().x + 104.f, m_ppGameObjects[2]->GetPosition().y + missileTimeOffsetY, 0.f);
-	m_ppGameObjects[25] = new CNumber(0, pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, scaleX, scaleY, 0.f);
-	m_ppGameObjects[25]->SetPosition(m_ppGameObjects[2]->GetPosition().x + 92.f, m_ppGameObjects[2]->GetPosition().y + missileTimeOffsetY, 0.f);
-	
-	m_ppGameObjects[26] = new CNumber(0, pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, scaleX, scaleY, 0.f);
-	m_ppGameObjects[26]->SetPosition(m_ppGameObjects[2]->GetPosition().x +68.f, m_ppGameObjects[2]->GetPosition().y + missileTimeOffsetY, 0.f);
-	m_ppGameObjects[27] = new CNumber(0, pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, scaleX, scaleY, 0.f);
-	m_ppGameObjects[27]->SetPosition(m_ppGameObjects[2]->GetPosition().x + 56.f, m_ppGameObjects[2]->GetPosition().y + missileTimeOffsetY, 0.f);
-
-	// Score
-	m_ppGameObjects[28] = new CNumber(0, pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, scaleX, scaleY, 0.f);
-	m_ppGameObjects[28]->SetPosition(m_ppGameObjects[2]->GetPosition().x + 92.f, m_ppGameObjects[2]->GetPosition().y, 0.f);
-	m_ppGameObjects[29] = new CNumber(0, pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, scaleX, scaleY, 0.f);
-	m_ppGameObjects[29]->SetPosition(m_ppGameObjects[2]->GetPosition().x + 80.f, m_ppGameObjects[2]->GetPosition().y, 0.f);
-	m_ppGameObjects[30] = new CNumber(0, pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, scaleX, scaleY, 0.f);
-	m_ppGameObjects[30]->SetPosition(m_ppGameObjects[2]->GetPosition().x + 68.f, m_ppGameObjects[2]->GetPosition().y, 0.f);
-	m_ppGameObjects[31] = new CNumber(0, pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, scaleX, scaleY, 0.f);
-	m_ppGameObjects[31]->SetPosition(m_ppGameObjects[2]->GetPosition().x + 56.f, m_ppGameObjects[2]->GetPosition().y, 0.f);
-
-	m_ppGameObjects[32] = new CUI(9, pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, 100.f, 100.f, 0.f, XMFLOAT2(-0.f, -0.f), XMFLOAT2(-0.f, -0.f), XMFLOAT2(-0.f, -0.f), XMFLOAT2(-0.f, -0.f));
+	m_ppGameObjects[10]->SetIsRender(false);
+	m_ppGameObjects[11] = new CUI(7, pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, 100.f, 100.f, 0.f, XMFLOAT2(-0.f, -0.f), XMFLOAT2(-0.f, -0.f), XMFLOAT2(-0.f, -0.f), XMFLOAT2(-0.f, -0.f));
 
 	m_ObjManager->AddObject(L"player_ui1_testui", m_ppGameObjects[0], OBJ_UI);
 	m_ObjManager->AddObject(L"player_ui2_weapon", m_ppGameObjects[1], OBJ_UI);
@@ -228,46 +172,17 @@ void CTestScene::BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandLis
 	m_ObjManager->AddObject(L"player_ui8_lockon", m_ppGameObjects[7], OBJ_LOCKONUI);
 	m_ObjManager->AddObject(L"player_ui9_minimap", m_ppGameObjects[8], OBJ_UI);
 	m_ObjManager->AddObject(L"player_ui10_minimap_red", m_ppGameObjects[9], OBJ_MINIMAP_ENEMY);
-
 	m_ObjManager->AddObject(L"player_ui11_speed_number_o", m_ppGameObjects[10], OBJ_SPEED_UI);
-	/*m_ObjManager->AddObject(L"player_ui12_speed_number_t", m_ppGameObjects[11], OBJ_UI);
-	m_ObjManager->AddObject(L"player_ui13_speed_number_h", m_ppGameObjects[12], OBJ_UI);
-	m_ObjManager->AddObject(L"player_ui14_speed_number_th", m_ppGameObjects[13], OBJ_UI);
-
-	m_ObjManager->AddObject(L"player_ui15_alt_number_m", m_ppGameObjects[14], OBJ_UI);
-	m_ObjManager->AddObject(L"player_ui16_alt_number_th", m_ppGameObjects[15], OBJ_UI);
-	m_ObjManager->AddObject(L"player_ui17_alt_number_h", m_ppGameObjects[16], OBJ_UI);
-	m_ObjManager->AddObject(L"player_ui18_alt_number_t", m_ppGameObjects[17], OBJ_UI);
-	m_ObjManager->AddObject(L"player_ui19_alt_number_o", m_ppGameObjects[18], OBJ_UI);
-
-	m_ObjManager->AddObject(L"player_ui20_missle_number", m_ppGameObjects[19], OBJ_UI);
-	m_ObjManager->AddObject(L"player_ui21_missle_number", m_ppGameObjects[20], OBJ_UI);
-	m_ObjManager->AddObject(L"player_ui22_missle_number", m_ppGameObjects[21], OBJ_UI);
-
-	m_ObjManager->AddObject(L"player_ui23_stime_number", m_ppGameObjects[22], OBJ_UI);
-	m_ObjManager->AddObject(L"player_ui24_stime_number", m_ppGameObjects[23], OBJ_UI);
-
-	m_ObjManager->AddObject(L"player_ui25_mtime_number", m_ppGameObjects[24], OBJ_UI);
-	m_ObjManager->AddObject(L"player_ui26_mtime_number", m_ppGameObjects[25], OBJ_UI);
-
-	m_ObjManager->AddObject(L"player_ui27_htime_number", m_ppGameObjects[26], OBJ_UI);
-	m_ObjManager->AddObject(L"player_ui28_htime_number", m_ppGameObjects[27], OBJ_UI);
-
-	m_ObjManager->AddObject(L"player_ui29_score_number", m_ppGameObjects[28], OBJ_UI);
-	m_ObjManager->AddObject(L"player_ui30_score_number", m_ppGameObjects[29], OBJ_UI);
-	m_ObjManager->AddObject(L"player_ui31_score_number", m_ppGameObjects[30], OBJ_UI);
-	m_ObjManager->AddObject(L"player_ui32_score_number", m_ppGameObjects[31], OBJ_UI);*/
-
-	m_ObjManager->AddObject(L"player_ui33_crosshair", m_ppGameObjects[32], OBJ_UI);
+	m_ObjManager->AddObject(L"player_ui12_crosshair", m_ppGameObjects[11], OBJ_UI);
 
 	XMFLOAT3 xmf3Scale(8.0f, 2.0f, 8.0f);
 	XMFLOAT4 xmf4Color(0.0f, 0.3f, 0.0f, 0.0f);
 	m_pTerrain = new CHeightMapTerrain(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, _T("Terrain/Stage1.raw"), 513, 513, xmf3Scale, xmf4Color);
 	m_pTerrain->SetScale(10,10,10);
-	m_pTerrain->SetPosition(-24000,-1500,-3200);
+
+	m_pTerrain->SetPosition(-20500,-1500,-20500);
 	//m_pTerrain->Rotate(0, 90, 0);
 	m_ObjManager->AddObject(L"terrain", m_pTerrain, OBJ_TEST);
-
 
 	CBullet* pBullet = new CBullet(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature);
 	pBullet->SetPosition(0, 0, 0);
@@ -576,21 +491,24 @@ void CTestScene::AnimateObjects(float fTimeElapsed)
 {
 	m_fElapsedTime += fTimeElapsed;
 
-	KeyManager* keyManager = GET_MANAGER<KeyManager>();
-	if (true == keyManager->GetKeyState(STATE_DOWN, VK_G))
-	{
-		if (m_bStoped == false)
-		{
-			m_bStoped = true;
-		}
-		else
-			m_bStoped = false;
-	}
+	GET_MANAGER<SceneManager>()->SceneStoped();
+
 	CreateStageObject();
 
 	m_ObjManager->GetObjFromTag(L"player", OBJ_PLAYER)->SetPlayerMSL(m_pPlayer->GetMSLCount());
 	m_ObjManager->GetObjFromTag(L"player", OBJ_PLAYER)->SetPlayerSpeed(m_pPlayer->GetAircraftSpeed());
 	m_ObjManager->Update(fTimeElapsed);
+		
+	/*m_ppGameObjects[1]->Rotate(0.f, 0.f, 1.f);
+
+	if (c > 0.f)
+	{
+		cout << XMConvertToDegrees(acos(z)) << endl;
+	}
+	else
+	{
+		cout <<360 - XMConvertToDegrees(acos(z)) << endl;
+	}*/
 	
 	XMFLOAT4X4 xmf4x4Identity = Matrix4x4::Identity();
 	XMFLOAT3 xmf3IdentityLookat = Vector3::Normalize(XMFLOAT3(xmf4x4Identity._31, xmf4x4Identity._32, xmf4x4Identity._33));
@@ -603,7 +521,7 @@ void CTestScene::AnimateObjects(float fTimeElapsed)
 
 void CTestScene::Render(ID3D12GraphicsCommandList* pd3dCommandList, CCamera* pCamera, ID3D12Resource* pCurrentBackBuffer)
 {
-
+	
 	if (m_pd3dGraphicsRootSignature) pd3dCommandList->SetGraphicsRootSignature(m_pd3dGraphicsRootSignature);
 	if (m_pd3dComputeRootSignature) pd3dCommandList->SetComputeRootSignature(m_pd3dComputeRootSignature);
 
@@ -616,16 +534,6 @@ void CTestScene::Render(ID3D12GraphicsCommandList* pd3dCommandList, CCamera* pCa
 
 	D3D12_GPU_VIRTUAL_ADDRESS d3dcbLightsGpuVirtualAddress = m_pd3dcbLights->GetGPUVirtualAddress();
 	pd3dCommandList->SetGraphicsRootConstantBufferView(2, d3dcbLightsGpuVirtualAddress); //Lights
-
-	/*m_pLockOn->Render(GetScreenPos(XMFLOAT3(m_ObjManager->GetObjFromTag(L"SphereCollider", OBJ_ENEMY)->GetPosition().x, m_ObjManager->GetObjFromTag(L"SphereCollider", OBJ_ENEMY)->GetPosition().y, m_ObjManager->GetObjFromTag(L"SphereCollider", OBJ_ENEMY)->GetPosition().z), pCamera),
-		m_ObjManager->GetObjFromTag(L"SphereCollider", OBJ_ENEMY)->GetPosition(),
-		m_pPlayer->GetPosition(), m_pPlayer->GetLookVector(),
-		m_ppGameObjects[7]);*/
-
-	//m_pUI->MoveMinimapPoint(m_pPlayer->GetPosition(), m_ppGameObjects[6]);
-	//m_pUI->MoveMinimapPoint(m_ObjManager->GetObjFromTag(L"SphereCollider", OBJ_ENEMY)->GetPosition(), m_ppGameObjects[9]);
-
-	//m_ObjManager->MoveMinimapPoint();
 
 	m_ObjManager->Render(pd3dCommandList, pCamera);
 	//m_pSphereCollider->SphereCollider->Render(pd3dCommandList, pCamera);

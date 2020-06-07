@@ -29,10 +29,10 @@ CMissleFog::CMissleFog(int nIndex, ID3D12Device* pd3dDevice, ID3D12GraphicsComma
 	/*m_ppLockOnUITexture[2] = new CTexture(1, RESOURCE_TEXTURE2D, 0);
 	m_pEffectTexture[2]->LoadTextureFromFile(pd3dDevice, pd3dCommandList, L"Effect/MissleFog2.dds", 0);
 	m_pEffectTexture[3] = new CTexture(1, RESOURCE_TEXTURE2D, 0);
-	m_pEffectTexture[3]->LoadTextureFromFile(pd3dDevice, pd3dCommandList, L"Effect/MissleFog3.dds", 0);
+	m_pEffectTexture[3]->LoadTextureFromFile(pd3dDevice, pd3dCommandList, L"Effect/MissleSmoke3.dds", 0);
 	m_pEffectTexture[4] = new CTexture(1, RESOURCE_TEXTURE2D, 0);
-	m_pEffectTexture[4]->LoadTextureFromFile(pd3dDevice, pd3dCommandList, L"Effect/MissleFog4.dds", 0);
-	m_pEffectTexture[5] = new CTexture(1, RESOURCE_TEXTURE2D, 0);
+	m_pEffectTexture[4]->LoadTextureFromFile(pd3dDevice, pd3dCommandList, L"Effect/MissleSmoke4.dds", 0);*/
+	/*m_pEffectTexture[5] = new CTexture(1, RESOURCE_TEXTURE2D, 0);
 	m_pEffectTexture[5]->LoadTextureFromFile(pd3dDevice, pd3dCommandList, L"Effect/MissleFog5.dds", 0);
 	m_pEffectTexture[6] = new CTexture(1, RESOURCE_TEXTURE2D, 0);
 	m_pEffectTexture[6]->LoadTextureFromFile(pd3dDevice, pd3dCommandList, L"Effect/MissleFog6.dds", 0);

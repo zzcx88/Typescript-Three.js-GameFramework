@@ -3,6 +3,8 @@
 
 class CLockOnUI : public CPlane
 {
+	float xmfCameraAxis = 0.f;
+
 public:
 	XMFLOAT3					m_xmf3Position = XMFLOAT3(0.0f, 0.0f, 0.0f);
 	XMFLOAT3					m_xmf3Right = XMFLOAT3(1.0f, 0.0f, 0.0f);
@@ -39,6 +41,7 @@ public:
 	virtual void Animate(float fTimeElapsed);
 	void TextureAnimate();
 	void Render(ID3D12GraphicsCommandList* pd3dCommandList, CCamera* pCamera);
-
+	int GetLenth()const { return (int)m_fLenth; }
+	float GetCameraAxis()const { return xmfCameraAxis; }
 };
 

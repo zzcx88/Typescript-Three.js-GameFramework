@@ -144,7 +144,7 @@ private:
 	int nPlayerSpeed = 0;
 	int nPlayerMSL = 0;
 
-	bool isRender = false;
+	bool isRender = true;
 
 public:
 	void AddRef();
@@ -190,7 +190,7 @@ public:
 	CUIShader* m_pUIShader;
 	CMinimapShader* m_pMinimapShader;
 	CMaterial* m_pUIMaterial;
-	CTexture* m_ppUITexture[12];
+	CTexture* m_ppUITexture[20];
 	///////////////////////////////////////////
 	CPlaneMesh* m_pLockOnUIPlaneMesh;
 	CUIShader* m_pLockOnUIShader;
@@ -202,6 +202,7 @@ public:
 	CTexture* m_pBulletTexture;
 	CMaterial* m_pBulletMaterial;
 	///////////////////////////////////////////
+	CNumber* ppNumObjects[29];
 
 
 	XMFLOAT4X4						m_xmf4x4ToParent;
