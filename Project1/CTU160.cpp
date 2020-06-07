@@ -292,6 +292,7 @@ void CTU160::Render(ID3D12GraphicsCommandList* pd3dCommandList, CCamera* pCamera
 			m_pUI->m_isDead = true;
 			m_pLockOnUI->m_isDead = true;
 		}
-	}
+	}	
+
 	CGameObject::Render(pd3dCommandList, pCamera);
 }

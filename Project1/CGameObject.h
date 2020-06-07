@@ -132,6 +132,7 @@ class CBulletShader;
 class CPlaneShader;
 class CPlaneMesh;
 class CUI;
+class CRedUIShader;
 class CLockOnUI;
 class CAfterBurner;
 class CBoxMesh;
@@ -203,6 +204,8 @@ public:
 	CMaterial* m_pBulletMaterial;
 	///////////////////////////////////////////
 	CNumber* ppNumObjects[29];
+	CRedUIShader* m_pRedShader;
+
 
 
 	XMFLOAT4X4						m_xmf4x4ToParent;
@@ -263,6 +266,7 @@ public:
 
 	float m_fBurnerBlendAmount;
 	bool m_bEffectedObj = false;
+	bool m_bWarning = false;
 
 	void SetMesh(CMesh* pMesh);
 	//void SetMesh(int nIndex, CMesh* pMesh);

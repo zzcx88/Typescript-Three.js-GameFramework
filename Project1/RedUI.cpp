@@ -1,19 +1,19 @@
 #include "stdafx.h"
-#include "CUI.h"
+#include "RedUI.h"
 #include "CPlaneMesh.h"
 #include "CTestScene.h"
 
-#define TEXTURES 12
-CUI::CUI()
+#define TEXTURES 11
+CRedUI::CRedUI()
 {}
 
-CUI::CUI(int nIndex, ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList, ID3D12RootSignature* pd3dGraphicsRootSignature, float fWidth, float fHeight, float fDepth,
+CRedUI::CRedUI(int nIndex, ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList, ID3D12RootSignature* pd3dGraphicsRootSignature, float fWidth, float fHeight, float fDepth,
 	XMFLOAT2 xmf2LeftTop, XMFLOAT2 xmf2LeftBot, XMFLOAT2 xmf2RightBot, XMFLOAT2 xmf2RightTop) : CPlane()
 {
 	m_pUIPlaneMesh = new CPlaneMesh(pd3dDevice, pd3dCommandList, fWidth, fHeight, fDepth, xmf2LeftTop, xmf2LeftBot, xmf2RightBot, xmf2RightTop, 1.0f, 1.0f);
 
 	SetMesh(m_pUIPlaneMesh);
-	
+
 	CreateShaderVariables(pd3dDevice, pd3dCommandList);
 
 	//CTexture* m_ppUITexture[TEXTURES];
@@ -36,48 +36,43 @@ CUI::CUI(int nIndex, ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCo
 	m_ppUITexture[7]->LoadTextureFromFile(pd3dDevice, pd3dCommandList, L"UI/CrossHair.dds", 0);
 	m_ppUITexture[8] = new CTexture(1, RESOURCE_TEXTURE2D, 0);
 	m_ppUITexture[8]->LoadTextureFromFile(pd3dDevice, pd3dCommandList, L"UI/Title.dds", 0);
-	m_ppUITexture[9] = new CTexture(1, RESOURCE_TEXTURE2D, 0);
-	m_ppUITexture[9]->LoadTextureFromFile(pd3dDevice, pd3dCommandList, L"UI/Warning.dds", 0);
-	m_ppUITexture[10] = new CTexture(1, RESOURCE_TEXTURE2D, 0);
-	m_ppUITexture[10]->LoadTextureFromFile(pd3dDevice, pd3dCommandList, L"UI/MissileAlert.dds", 0);
-	m_ppUITexture[11] = new CTexture(1, RESOURCE_TEXTURE2D, 0);
-	m_ppUITexture[11]->LoadTextureFromFile(pd3dDevice, pd3dCommandList, L"UI/Destroyed.dds", 0);
 
-	
+
 	UINT ncbElementBytes = ((sizeof(CB_GAMEOBJECT_INFO) + 255) & ~255);
-	
 
-	m_pUIShader = new CUIShader();
 
-	m_pUIShader->CreateShader(pd3dDevice, pd3dCommandList, pd3dGraphicsRootSignature);
-	m_pUIShader->CreateShaderVariables(pd3dDevice, pd3dCommandList);
+	m_pRedShader = new CRedUIShader();
 
-	m_pUIShader->CreateConstantBufferViews(pd3dDevice, pd3dCommandList, m_nObjects, m_pUIShader->m_pd3dcbGameObjects, ncbElementBytes);
+	m_pRedShader->CreateShader(pd3dDevice, pd3dCommandList, pd3dGraphicsRootSignature);
+	m_pRedShader->CreateShaderVariables(pd3dDevice, pd3dCommandList);
+
+	m_pRedShader->CreateConstantBufferViews(pd3dDevice, pd3dCommandList, m_nObjects, m_pRedShader->m_pd3dcbGameObjects, ncbElementBytes);
+
 
 	for (int i = 0; i < TEXTURES; i++) CTestScene::CreateShaderResourceViews(pd3dDevice, m_ppUITexture[i], 15, false);
 
 	m_pUIMaterial = new CMaterial(1);
 	m_pUIMaterial->SetTexture(m_ppUITexture[nIndex]);
-	m_pUIMaterial->SetShader(m_pUIShader);
+	m_pUIMaterial->SetShader(m_pRedShader);
 	SetMaterial(0, m_pUIMaterial);
 }
 
-CUI::~CUI()
+CRedUI::~CRedUI()
 {
 }
 
-void CUI::MoveMinimapPoint(XMFLOAT3& xmfPlayer, CGameObject* pGameOBJ)
+void CRedUI::MoveMinimapPoint(XMFLOAT3& xmfPlayer, CGameObject* pGameOBJ)
 {
 	float fx = 0.f;
 	float fy = 0.f;
-	
+
 	float getx = 0.f;
 	float gety = 0.f;
 
-	getx = GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player_ui9_minimap", OBJ_MINIMAP_UI)->GetPosition().x;
-	gety = GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player_ui9_minimap", OBJ_MINIMAP_UI)->GetPosition().y;
+	getx = GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player_ui9_minimap", OBJ_UI)->GetPosition().x;
+	gety = GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player_ui9_minimap", OBJ_UI)->GetPosition().y;
 
-	fx = getx + (200.f / 20500.f) *xmfPlayer.x;
+	fx = getx + (200.f / 20500.f) * xmfPlayer.x;
 	fy = gety + (200.f / 20500.f) * xmfPlayer.z;
 
 	if (fx >= getx + 200.f)
@@ -87,13 +82,13 @@ void CUI::MoveMinimapPoint(XMFLOAT3& xmfPlayer, CGameObject* pGameOBJ)
 
 	if (fy >= gety + 200.f)
 		fy = gety + 200.f;
-	else if(fy <= gety - 200.f)
+	else if (fy <= gety - 200.f)
 		fy = gety - 200.f;
 
 	pGameOBJ->SetPosition(fx, fy, 0.f);
 }
 
-void CUI::Render(ID3D12GraphicsCommandList* pd3dCommandList, CCamera* pCamera)
+void CRedUI::Render(ID3D12GraphicsCommandList* pd3dCommandList, CCamera* pCamera)
 {
 	if (CGameObject::GetIsRender())
 		CGameObject::Render(pd3dCommandList, pCamera);

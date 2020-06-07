@@ -155,7 +155,9 @@ void ObjectManager::ReleaseAll()
 				{
 					delete obj.second;
 					obj.second = nullptr;
-				}  
+				}
+				else if (obj.second->m_ObjType == OBJ_SPEED_UI)
+					continue;
 				else 
 				{
 					if(obj.second->m_ObjType == OBJ_ENEMY && obj.second->m_bReffernce || obj.second->m_ObjType == OBJ_PLAYER && GET_MANAGER<SceneManager>()->GetCurrentSceneState() == SCENE_TEST )

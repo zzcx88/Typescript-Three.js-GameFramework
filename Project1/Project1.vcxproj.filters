@@ -390,6 +390,9 @@
     <ClInclude Include="CCrushSmoke.h">
       <Filter>GameObject\Plane\Effect\CrushSmoke</Filter>
     </ClInclude>
+    <ClInclude Include="RedUI.h">
+      <Filter>GameObject\Plane\UI</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="DDSTextureLoader12.cpp">
@@ -566,6 +569,9 @@
     <ClCompile Include="CCrushSmoke.cpp">
       <Filter>GameObject\Plane\Effect\CrushSmoke</Filter>
     </ClCompile>
+    <ClCompile Include="RedUI.cpp">
+      <Filter>GameObject\Plane\UI</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Project1.rc">
@@ -609,6 +615,9 @@
       <Filter>HLSL</Filter>
     </FxCompile>
     <FxCompile Include="Normal.hlsl">
+      <Filter>HLSL</Filter>
+    </FxCompile>
+    <FxCompile Include="RedUI.hlsl">
       <Filter>HLSL</Filter>
     </FxCompile>
   </ItemGroup>

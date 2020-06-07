@@ -131,6 +131,21 @@ void CMissle::CollisionActivate(CGameObject* collideTarget)
 		pMissleSplash->SetPosition(m_xmf4x4World._41, m_xmf4x4World._42, m_xmf4x4World._43);
 		GET_MANAGER<ObjectManager>()->AddObject(L"MissleSplashInstance", pMissleSplash, OBJ_EFFECT);
 		//GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player_ui29_score_number", OBJ_UI)->m_nPlayerScore += 50;
+	
+		int i = 0;
+		while (true)
+		{
+			i += 1;
+			GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player_ui15_destroyed", OBJ_MINIMAP_UI)->SetIsRender(true);
+
+			if (i > 15)
+			{
+				GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player_ui15_destroyed", OBJ_MINIMAP_UI)->SetIsRender(false);
+				i = 0;
+				break;
+			}
+
+		}
 
 		m_isDead = true;
 		GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player", OBJ_PLAYER)->m_AiMissleAssert = false;

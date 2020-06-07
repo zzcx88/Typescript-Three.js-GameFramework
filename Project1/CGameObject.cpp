@@ -454,8 +454,8 @@ void CGameObject::Animate(float fTimeElapsed)
 
 void CGameObject::CollisionActivate(CGameObject* collideTarget)
 {
-	/*cout << "충돌" << endl;
-
+	//cout << "충돌" << endl;
+	/*
 	m_isDead = true;
 	m_pUI->m_isDead = true;
 	m_pLockOnUI->m_isDead = true;*/
@@ -505,12 +505,15 @@ void CGameObject::UpdateShaderVariables(ID3D12GraphicsCommandList* pd3dCommandLi
 
 void CGameObject::UpdateShaderVariable(ID3D12GraphicsCommandList* pd3dCommandList, XMFLOAT4X4* pxmf4x4World)
 {
+	
 	XMFLOAT4X4 xmf4x4World;
 	XMStoreFloat4x4(&xmf4x4World, XMMatrixTranspose(XMLoadFloat4x4(pxmf4x4World)));
 	pd3dCommandList->SetGraphicsRoot32BitConstants(1, 16, &xmf4x4World, 0);
 
-	pd3dCommandList->SetGraphicsRoot32BitConstants(16, 1, &m_fBurnerBlendAmount, 0);
-	pd3dCommandList->SetGraphicsRoot32BitConstants(16, 1, &m_bEffectedObj, 1);
+	pd3dCommandList->SetGraphicsRoot32BitConstants(16, 2, &m_fBurnerBlendAmount, 0);
+	pd3dCommandList->SetGraphicsRoot32BitConstants(16, 1, &m_bEffectedObj,2);
+	pd3dCommandList->SetGraphicsRoot32BitConstants(16, 1, &m_bWarning, 3);
+	
 }
 
 void CGameObject::UpdateShaderVariable(ID3D12GraphicsCommandList* pd3dCommandList, CMaterial* pMaterial)

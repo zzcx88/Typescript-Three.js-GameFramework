@@ -71,6 +71,8 @@ public:
 	float fx, fy = 0.f;
 	float m_fElapsedTime = 0.f;
 	bool m_bCreateShip = false;
+	float elapsedTime = 0;
+
 
 	int									m_nGameObjects = 0;
 	CGameObject** m_ppGameObjects = NULL;
