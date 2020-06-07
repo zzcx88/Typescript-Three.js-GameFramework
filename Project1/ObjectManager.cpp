@@ -94,30 +94,16 @@ void ObjectManager::Update(const float& TimeDelta)
 		}
 	}
 	// Collision
-	GET_MANAGER<CollisionManager>()->CollisionSphere(&m_mapObj[OBJ_ENEMY], &m_mapObj[OBJ_MISSLE]);
-	/*{
-		const auto& iter_begin = m_mapObj[OBJ_MENU].begin();
-		const auto& iter_end = m_mapObj[OBJ_MENU].end();
+	GET_MANAGER<CollisionManager>()->CollisionSphere(&m_mapObj[OBJ_ENEMY], &m_mapObj[OBJ_ALLYMISSLE]);
+	GET_MANAGER<CollisionManager>()->CollisionSphere(&m_mapObj[OBJ_PLAYER], &m_mapObj[OBJ_ENEMISSLE]);
+	GET_MANAGER<CollisionManager>()->CollisionSphere(&m_mapObj[OBJ_ENEMY], &m_mapObj[OBJ_ALLYBULLET]);
 
-		for (auto iter = iter_begin; iter != iter_end;)
-		{
-			GET_MANAGER<CollisionManager>()->CollisionSphere((*iter).second, &m_mapObj[OBJ_ENEMY]);
-		}
-	}*/
-	GET_MANAGER<CollisionManager>()->CollisionSphereToOrientedBox(&m_mapObj[OBJ_ENEMY], & m_mapObj[OBJ_ALLYBULLET]);
+	//GET_MANAGER<CollisionManager>()->CollisionSphereToOrientedBox(&m_mapObj[OBJ_ENEMY], & m_mapObj[OBJ_ALLYBULLET]);
 	GET_MANAGER<CollisionManager>()->CollisionFloor();
-	
 	if (GET_MANAGER<SceneManager>()->GetCurrentSceneState() == SCENE_TEST)
 	{
-		// Minimap
-		GET_MANAGER<UIManager>()->MoveMinimapPoint(&m_mapObj[OBJ_PLAYER], &m_mapObj[OBJ_ENEMY]);
-
-		// LockOn
-		GET_MANAGER<UIManager>()->MoveLockOnUI(&m_mapObj[OBJ_PLAYER], &m_mapObj[OBJ_ENEMY]);
-
-		GET_MANAGER<UIManager>()->NumberTextureAnimate(&m_mapObj[OBJ_PLAYER], TimeDelta);
+		GET_MANAGER<UIManager>()->NumberTextureAnimate(&m_mapObj[OBJ_PLAYER], GET_MANAGER<CDeviceManager>()->GetGameTimer().GetTimeElapsed());
 	}
-
 }
 
 void ObjectManager::Render(ID3D12GraphicsCommandList* pd3dCommandList, CCamera* pCamera)
@@ -132,6 +118,14 @@ void ObjectManager::Render(ID3D12GraphicsCommandList* pd3dCommandList, CCamera* 
 			obj.second->Render(pd3dCommandList, pCamera);
 			obj.second->UpdateTransform(NULL);
 		}
+	}
+	if (GET_MANAGER<SceneManager>()->GetCurrentSceneState() == SCENE_TEST)
+	{
+		// Minimap
+		GET_MANAGER<UIManager>()->MoveMinimapPoint(&m_mapObj[OBJ_PLAYER], &m_mapObj[OBJ_ENEMY]);
+
+		// LockOn
+		GET_MANAGER<UIManager>()->MoveLockOnUI(&m_mapObj[OBJ_PLAYER], &m_mapObj[OBJ_ENEMY]);
 	}
 }
 
@@ -164,8 +158,13 @@ void ObjectManager::ReleaseAll()
 				}  
 				else 
 				{
-					obj.second->Release();
-					obj.second = nullptr;
+					if(obj.second->m_ObjType == OBJ_ENEMY && obj.second->m_bReffernce || obj.second->m_ObjType == OBJ_PLAYER && GET_MANAGER<SceneManager>()->GetCurrentSceneState() == SCENE_TEST )
+						obj.second->Release();
+					else
+					{
+						delete obj.second;
+						obj.second = nullptr;
+					}
 				}
 			}
 		}

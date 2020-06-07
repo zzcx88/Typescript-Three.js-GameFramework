@@ -169,7 +169,9 @@ public:
 
 	int								m_nObjects = 0;
 	int								m_nMaterials = 0;
-
+	
+	float m_fHP = 0;;
+	float LenthToPlayer = 0;
 	UINT m_nNumTex = 0;
 
 	CMaterial** m_ppMaterials = NULL;
@@ -218,7 +220,7 @@ public:
 	CGameObject* m_pChild = NULL;
 	CGameObject* m_pSibling = NULL;
 
-	CLoadedModelInfo* m_pMissleModel;
+	CLoadedModelInfo* m_pModelInfo;
 	CLoadedModelInfo* m_pMissleModelCol;
 
 	CCamera* m_pCamera = NULL;
@@ -230,9 +232,17 @@ public:
 	CLockOnUI*			m_pLockOnUI = NULL;
 	CNumber* number = NULL;
 
+	float m_fDeadElapsed = 0.f;
+	float m_fDeadFrequence = 4.f;
+	bool m_bCreateOnece = false;
+
+	bool m_bReffernce = false;
+
 	bool m_bAiming = false;
 	bool m_bCanFire = false;
+	bool m_bEye_fixation = false;
 
+	bool m_bAiContrail = false;
 	bool m_bAiLockOn = false;
 	bool m_bAiCanFire = false;
 	bool m_bAiAfterFire = false;
@@ -244,6 +254,8 @@ public:
 
 	bool			m_bAllyCollide = false;
 	bool			m_isDead = false;
+	bool			m_bDestroyed = false;
+
 	bool			m_bAIEnable = false;
 
 	bool			m_bGameOver = false;

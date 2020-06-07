@@ -4,7 +4,7 @@
 
 #define TEXTURES    10
 
-class CMissleFog : public CPlane
+class CCrushSmoke : public CPlane
 {
 public:
 	XMFLOAT3					m_xmf3Position = XMFLOAT3(0.0f, 0.0f, 0.0f);
@@ -13,7 +13,7 @@ public:
 	XMFLOAT3					m_xmf3Look = XMFLOAT3(0.0f, 0.0f, 1.0f);
 	XMFLOAT3					m_xmf3Velocity = XMFLOAT3(0.0f, 0.0f, 0.0f);
 
-	CCamera*					m_pCamera;
+	CCamera* m_pCamera;
 	CTexture* pWaterTexture;
 
 	float m_fScaleX = 1, m_fScaleY = 1;
@@ -31,9 +31,9 @@ public:
 	bool m_bWingFog = false;
 
 public:
-	CMissleFog();
-	CMissleFog(int nIndex, ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList, ID3D12RootSignature* pd3dGraphicsRootSignature, float fWidth, float fHeight, float fDepth);
-	virtual ~CMissleFog();
+	CCrushSmoke();
+	CCrushSmoke(int nIndex, ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList, ID3D12RootSignature* pd3dGraphicsRootSignature, float fWidth, float fHeight, float fDepth);
+	virtual ~CCrushSmoke();
 
 
 	virtual void Animate(float fTimeElapsed);

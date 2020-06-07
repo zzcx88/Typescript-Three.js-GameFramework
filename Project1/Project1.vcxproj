@@ -148,11 +148,14 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="AIManager.h" />
+    <ClInclude Include="C052CDestroyer.h" />
     <ClInclude Include="CAfterBurner.h" />
     <ClInclude Include="CBlur.h" />
     <ClInclude Include="CBlurFilter.h" />
     <ClInclude Include="CAngrybotObject.h" />
     <ClInclude Include="CAnimationController.h" />
+    <ClInclude Include="CCrushSmoke.h" />
+    <ClInclude Include="CMig21.h" />
     <ClInclude Include="COrientedBoxCollider.h" />
     <ClInclude Include="CBoxMesh.h" />
     <ClInclude Include="CBullet.h" />
@@ -183,6 +186,7 @@
     <ClInclude Include="CSphereCollider.h" />
     <ClInclude Include="CSuperCobraObject.h" />
     <ClInclude Include="CTestScene.h" />
+    <ClInclude Include="CTU160.h" />
     <ClInclude Include="CUI.h" />
     <ClInclude Include="CVertex.h" />
     <ClInclude Include="CWater.h" />
@@ -211,11 +215,14 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AIManager.cpp" />
+    <ClCompile Include="C052CDestroyer.cpp" />
     <ClCompile Include="CAfterBurner.cpp" />
     <ClCompile Include="CBlur.cpp" />
     <ClCompile Include="CBlurFilter.cpp" />
     <ClCompile Include="CAngrybotObject.cpp" />
     <ClCompile Include="CAnimationController.cpp" />
+    <ClCompile Include="CCrushSmoke.cpp" />
+    <ClCompile Include="CMig21.cpp" />
     <ClCompile Include="COrientedBoxCollider.cpp" />
     <ClCompile Include="CBoxMesh.cpp" />
     <ClCompile Include="CBullet.cpp" />
@@ -245,6 +252,7 @@
     <ClCompile Include="CSphereCollider.cpp" />
     <ClCompile Include="CSuperCobraObject.cpp" />
     <ClCompile Include="CTestScene.cpp" />
+    <ClCompile Include="CTU160.cpp" />
     <ClCompile Include="CVertex.cpp" />
     <ClCompile Include="CWater.cpp" />
     <ClCompile Include="DDSTextureLoader12.cpp" />

@@ -58,6 +58,7 @@ public:
 
 	void BuildDefaultLightsAndMaterials();
 	void BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList);
+	void CreateStageObject();
 	void ReleaseObjects();
 
 	bool ProcessInput(UCHAR* pKeysBuffer);
@@ -69,6 +70,7 @@ public:
 public:
 	float fx, fy = 0.f;
 	float m_fElapsedTime = 0.f;
+	bool m_bCreateShip = false;
 
 	int									m_nGameObjects = 0;
 	CGameObject** m_ppGameObjects = NULL;
@@ -92,10 +94,7 @@ public:
 	int									m_nHierarchicalGameObjects = 0;
 	CGameObject** m_ppHierarchicalGameObjects = NULL;
 
-	CMissleFog* m_pMissleFog;
-	CAfterBurner* m_pAfterBurner;
 	CWater* m_pWater[18];
-	CCloud* m_pCloud;
 
 	CGameTimer					m_GameTimer;
 

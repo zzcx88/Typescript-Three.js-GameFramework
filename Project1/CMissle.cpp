@@ -9,14 +9,14 @@ CMissle::CMissle(CGameObject* pObj)
 	m_bRefference = false;
 
 	m_ObjManager = GET_MANAGER<ObjectManager>();
-	m_pMissleModel = m_ObjManager->GetObjFromTag(L"missleRef", OBJ_MISSLE)->m_pMissleModel;
-	m_pMissleModelCol = m_ObjManager->GetObjFromTag(L"missleRef", OBJ_MISSLE)->m_pMissleModelCol;
+	m_pModelInfo = m_ObjManager->GetObjFromTag(L"missleRef", OBJ_ALLYMISSLE)->m_pModelInfo;
+	CLoadedModelInfo* pMissleModelCol = m_ObjManager->GetObjFromTag(L"missleRef", OBJ_ALLYMISSLE)->m_pMissleModelCol;
 
-	SetChild(m_pMissleModel->m_pModelRootObject);
+	SetChild(m_pModelInfo->m_pModelRootObject);
 
 	m_pCamera = GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player", OBJ_PLAYER)->m_pCamera;
 
-	SphereCollider = new CSphereCollider(m_pMissleModelCol);
+	SphereCollider = new CSphereCollider(pMissleModelCol);
 	SphereCollider->SetSphereCollider(GetPosition(), 5.f);
 
 	m_xmfLunchPosition = pObj->m_xmf3Position;
@@ -29,7 +29,7 @@ CMissle::CMissle(CGameObject* pObj)
 CMissle::CMissle(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList, ID3D12RootSignature* pd3dGraphicsRootSignature, XMFLOAT3* xmfTarget, XMFLOAT3 xmfLunchPosition, ObjectManager* pObjectManager)
 {
 	m_bRefference = true;
-	m_pMissleModel = CGameObject::LoadGeometryAndAnimationFromFile(pd3dDevice, pd3dCommandList, pd3dGraphicsRootSignature, "Model/Missle.bin", NULL, MODEL_ACE);
+	m_pModelInfo = CGameObject::LoadGeometryAndAnimationFromFile(pd3dDevice, pd3dCommandList, pd3dGraphicsRootSignature, "Model/Missle.bin", NULL, MODEL_ACE);
 	m_pMissleModelCol = CGameObject::LoadGeometryAndAnimationFromFile(pd3dDevice, pd3dCommandList, pd3dGraphicsRootSignature, "Model/Sphere.bin", NULL, MODEL_COL);
 
 	m_xmfTarget = xmfTarget;
@@ -115,7 +115,8 @@ void CMissle::Animate(float fTimeElapsed)
 
 void CMissle::CollisionActivate(CGameObject* collideTarget)
 {
-	if (m_bRefference == false)
+	
+	if (m_bRefference == false && collideTarget->m_bDestroyed == false)
 	{
 		CMissleSplash* pMissleSplash = new CMissleSplash();
 		pMissleSplash = new CMissleSplash();
@@ -212,7 +213,7 @@ void CMissle::Rotate(XMFLOAT3* pxmf3Axis, float fAngle)
 
 void CMissle::SetLookAt(float fTimeElapsed)
 {
-	float theta = 50.f * fTimeElapsed;
+	float fTheta = m_fTheta * fTimeElapsed;
 	{
 		XMFLOAT3 xmf3TargetVector = Vector3::Subtract(*m_xmfTarget, m_xmf3Position);
 		xmf3TargetVector = Vector3::Normalize(xmf3TargetVector);
@@ -222,7 +223,7 @@ void CMissle::SetLookAt(float fTimeElapsed)
 		float Lenth = sqrt(xmf3TargetVector.x * xmf3TargetVector.x + xmf3TargetVector.y * xmf3TargetVector.x + xmf3TargetVector.z * xmf3TargetVector.z);
 		XMFLOAT3 LenthXYZ = Vector3::Subtract(*m_xmfTarget, m_xmfLunchPosition);
 		float LenthZ = sqrt(LenthXYZ.z * LenthXYZ.z);
-		Rotate(&xmfAxis, theta);
+		Rotate(&xmfAxis, fTheta);
 		//CGameObject::Rotate(xmfHoming.x * 100 * fTimeElapsed, xmfHoming.y * 100 * fTimeElapsed, 0);
 
 	}

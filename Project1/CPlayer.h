@@ -15,6 +15,8 @@ protected:
 
 	XMFLOAT3					m_xmf3Scale = XMFLOAT3(1.0f, 1.0f, 1.0f);
 
+	XMFLOAT3					m_xmf3FixTarget = XMFLOAT3(0.0f, 0.0f, 0.0f);
+
 	float           			m_fPitch = 0.0f;
 	float           			m_fYaw = 0.0f;
 	float           			m_fRoll = 0.0f;
@@ -39,8 +41,8 @@ protected:
 
 	float m_fTimeLegElapsed = 0.0f;
 
-	bool m_bEye_fixation = false;
 	bool m_bGunFire = false;
+	bool m_bMissleCross = false;
 
 
 	XMFLOAT3					m_xmf3Velocity = XMFLOAT3(0.0f, 0.0f, 0.0f);
@@ -73,7 +75,8 @@ public:
 	void SetMaxVelocityY(float fMaxVelocity) { m_fMaxVelocityY = fMaxVelocity; }
 	void SetVelocity(const XMFLOAT3& xmf3Velocity) { m_xmf3Velocity = xmf3Velocity; }
 	void SetPosition(const XMFLOAT3& xmf3Position) { Move(XMFLOAT3(xmf3Position.x - m_xmf3Position.x, xmf3Position.y - m_xmf3Position.y, xmf3Position.z - m_xmf3Position.z), false); }
-	
+	void ReturnEyeFix();
+
 	void SetScale(XMFLOAT3& xmf3Scale) { m_xmf3Scale = xmf3Scale; }
 
 	void SetMissileCount(int nCount) { m_nMSL_Count = nCount; }
@@ -84,6 +87,7 @@ public:
 	const XMFLOAT3& GetVelocity() const { return(m_xmf3Velocity); }
 	float GetAircraftSpeed() const { return(m_fAircraftSpeed); }
 	float GetPitchWingsRotateDegree() const { return Pitch_WingsRotateDegree; }
+	XMFLOAT3 GetFixTarget() { return XMFLOAT3(m_xmf3FixTarget.x , m_xmf3FixTarget.y, m_xmf3FixTarget.z); }
 	float GetYaw() const { return(m_fYaw); }
 	float GetPitch() const { return(m_fPitch); }
 	float GetRoll() const { return(m_fRoll); }
@@ -117,6 +121,8 @@ public:
 	void Update_Input(const float& TimeDelta);
 	virtual void WingAnimate(float fTimeElapsed, DWORD Direction);
 	virtual void Animate(float fTimeElapsed);
+
+	void CollisionActivate(CGameObject* collideTarget);
 
 	virtual void SetAfterBurnerPosition(float fTimeElapsed) {}
 
@@ -180,9 +186,6 @@ public:
 
 	CGameObject* m_pGunCamera = NULL;
 	CGameObject* m_pCameraPos = NULL;
-
-	CLoadedModelInfo* m_pMissleModel;
-	CLoadedModelInfo* m_pMissleModelCol;
 
 	//WeaponsXMF
 	XMFLOAT4X4 m_xmMSL_1;

@@ -31,6 +31,8 @@ public:
 	float m_fAddFogTimeElapsed = 0.f;
 	float m_fDeleteTimeElapsed = 0.f;
 
+	float m_fTheta = 50.f;
+
 	ID3D12Device* m_pd3dDevice;
 	ID3D12GraphicsCommandList* m_pd3dCommandList;
 	ID3D12RootSignature* m_pd3dGraphicsRootSignature;

@@ -9,7 +9,7 @@ CMissleSplash::CMissleSplash()
 
 CMissleSplash::CMissleSplash(int nIndex, ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList, ID3D12RootSignature* pd3dGraphicsRootSignature, float fWidth, float fHeight, float fDepth)
 {
-	m_bRefference = true;
+	m_bReffernce = true;
 	m_pPlaneMesh = new CPlaneMesh(pd3dDevice, pd3dCommandList, fWidth, fHeight, fDepth, XMFLOAT2(0, 0), XMFLOAT2(0, 0), XMFLOAT2(0, 0), XMFLOAT2(0, 0));
 
 	SetMesh(m_pPlaneMesh);
@@ -46,6 +46,7 @@ void CMissleSplash::Animate(float fTimeElapsed)
 
 	if (GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player", OBJ_PLAYER));
 	{
+		SetScale(m_fScale, m_fScale, 1);
 		SetLookAt(GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player", OBJ_PLAYER)->m_pCamera->GetPosition());
 	}
 }
@@ -53,7 +54,7 @@ void CMissleSplash::Animate(float fTimeElapsed)
 void CMissleSplash::TextureAnimate()
 {
 	//해당 오브젝트가 래퍼런스 오브젝트가 아닐경우에만 애니메이트를 실행
-	if (!m_bRefference)
+	if (!m_bReffernce)
 	{
 		if (m_fFadeTimeElapsed > m_fFadeFrequence)
 		{

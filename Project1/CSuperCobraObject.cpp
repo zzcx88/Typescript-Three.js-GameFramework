@@ -3,9 +3,22 @@
 #include "CUI.h"
 #include "CLockOnUI.h"
 
+CSuperCobraObject::CSuperCobraObject()
+{
+	m_ObjManager = GET_MANAGER<ObjectManager>();
+	m_pModelInfo = m_ObjManager->GetObjFromTag(L"mig21Ref", OBJ_ENEMY)->m_pModelInfo;
+
+	SphereCollider = new CSphereCollider();
+	SphereCollider->SetSphereCollider(GetPosition(), 5.f);
+
+	SetChild(m_pModelInfo->m_pModelRootObject);
+	SetScale(10.f, 10.f, 10.f);
+}
+
 CSuperCobraObject::CSuperCobraObject(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList, ID3D12RootSignature* pd3dGraphicsRootSignature)
 {
-	p052C = CGameObject::LoadGeometryAndAnimationFromFile(pd3dDevice, pd3dCommandList, pd3dGraphicsRootSignature, "Model/F-4E_Phantom_II.bin", NULL, MODEL_ACE);
+	m_bReffernce = true;
+	m_pModelInfo = CGameObject::LoadGeometryAndAnimationFromFile(pd3dDevice, pd3dCommandList, pd3dGraphicsRootSignature, "Model/F-4E_Phantom_II.bin", NULL, MODEL_ACE);
 	SphereCollider = new CSphereCollider(pd3dDevice, pd3dCommandList, pd3dGraphicsRootSignature);
 	SphereCollider->SetScale(10, 10, 10);
 	SphereCollider->SetSphereCollider(GetPosition(), 10.0f);
@@ -14,7 +27,7 @@ CSuperCobraObject::CSuperCobraObject(ID3D12Device* pd3dDevice, ID3D12GraphicsCom
 	m_xmf3Right = GetRight();
 	m_xmf3Up = GetUp();
 
-	SetChild(p052C->m_pModelRootObject);
+	SetChild(m_pModelInfo->m_pModelRootObject);
 
 	OnPrepareAnimate();
 
@@ -102,7 +115,7 @@ void CSuperCobraObject::CollisionActivate(CGameObject* collideTarget)
 	}
 	else
 	{
-		if (collideTarget->m_ObjType == OBJ_ALLYBULLET || collideTarget->m_ObjType == OBJ_MISSLE)
+		if (collideTarget->m_ObjType == OBJ_ALLYBULLET || collideTarget->m_ObjType == OBJ_ALLYMISSLE)
 		{
 			wcout << GET_MANAGER<ObjectManager>()->GetTagFromObj(this, OBJ_ENEMY) << endl;
 			cout << "Ãæµ¹!" << endl;

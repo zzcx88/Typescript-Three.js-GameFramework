@@ -85,7 +85,7 @@ void UIManager::MoveMinimapPoint(ObjectManager::MAPOBJ* PlyList, ObjectManager::
 	//공중 오브젝트 적은 묶어서 한번에
 	for (auto& Ene : *EneList)
 	{
-		if (Ene.second->m_pUI == NULL)
+		if (Ene.second->m_pUI == NULL && Ene.second->m_bReffernce == false)
 		{
 			CUI* pUI;
 			pUI = new CUI();
@@ -99,7 +99,8 @@ void UIManager::MoveMinimapPoint(ObjectManager::MAPOBJ* PlyList, ObjectManager::
 
 			Ene.second->m_pUI = pUI;
 		}
-		Ene.second->m_pUI->MoveMinimapPoint(Ene.second->GetPosition(), Ene.second->m_pUI);
+
+		if(Ene.second->m_bReffernce == false) Ene.second->m_pUI->MoveMinimapPoint(Ene.second->GetPosition(), Ene.second->m_pUI);
 	}
 
 	//지상 오브젝트 적도 묶어서 한번에
@@ -117,7 +118,7 @@ void UIManager::MoveLockOnUI(ObjectManager::MAPOBJ* PlyList, ObjectManager::MAPO
 {
 	for (auto& Ene : *EneList)
 	{
-		if (Ene.second->m_pLockOnUI == NULL)
+		if (Ene.second->m_pLockOnUI == NULL && Ene.second->m_bReffernce == false)
 		{
 			CLockOnUI* pLockOnUI;
 			pLockOnUI = new CLockOnUI();
@@ -136,69 +137,71 @@ void UIManager::MoveLockOnUI(ObjectManager::MAPOBJ* PlyList, ObjectManager::MAPO
 				});
 		}
 
-		Ene.second->m_pLockOnUI->MoveLockOnUI(Ene.second->GetScreenPosition(), Ene.second->GetPosition(),
-			PlyList->begin()->second->GetPosition(), PlyList->begin()->second->GetLook(), Ene.second->m_pLockOnUI, PlyList->begin()->second->m_pCamera);
-
-		if (Ene.second->m_pLockOnUI->bDetectable == true)
+		if (Ene.second->m_pLockOnUI)
 		{
-			
-			//cout << Ene.second->m_pLockOnUI->GetState() << ", " << Ene.second->GetState() << endl;
-			if(Ene.second->m_bAiming == true&&Ene.second->GetState() != true)
-			{ 
-				if (Ene.second->number == NULL)
+			Ene.second->m_pLockOnUI->MoveLockOnUI(Ene.second->GetScreenPosition(), Ene.second->GetPosition(),
+				PlyList->begin()->second->GetPosition(), PlyList->begin()->second->GetLook(), Ene.second->m_pLockOnUI, PlyList->begin()->second->m_pCamera);
+
+			if (Ene.second->m_pLockOnUI->bDetectable == true)
+			{
+
+				//cout << Ene.second->m_pLockOnUI->GetState() << ", " << Ene.second->GetState() << endl;
+				if (Ene.second->m_bAiming == true && Ene.second->GetState() != true)
 				{
-					CNumber* pnum;
-					pnum = new CNumber();
-					pnum->SetMesh((CMesh*)GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player_ui11_speed_number_o", OBJ_SPEED_UI)->m_pUIPlaneMesh);
-					pnum->m_ppUITexture[0] = GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player_ui11_speed_number_o", OBJ_SPEED_UI)->m_ppUITexture[0];
-					pnum->m_pUIMaterial = new CMaterial(1);
-					pnum->m_pUIMaterial->SetTexture(pnum->m_ppUITexture[0]);
-					pnum->m_pUIMaterial->SetShader(GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player_ui11_speed_number_o", OBJ_SPEED_UI)->m_pUIShader);
-					pnum->SetMaterial(0, pnum->m_pUIMaterial);
-					pnum->SetScale(0.6f, 0.6f,0.f);
-					GET_MANAGER<ObjectManager>()->AddObject(L"NumInstance", pnum, OBJ_SPEED_UI);
+					if (Ene.second->number == NULL)
+					{
+						CNumber* pnum;
+						pnum = new CNumber();
+						pnum->SetMesh((CMesh*)GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player_ui11_speed_number_o", OBJ_SPEED_UI)->m_pUIPlaneMesh);
+						pnum->m_ppUITexture[0] = GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player_ui11_speed_number_o", OBJ_SPEED_UI)->m_ppUITexture[0];
+						pnum->m_pUIMaterial = new CMaterial(1);
+						pnum->m_pUIMaterial->SetTexture(pnum->m_ppUITexture[0]);
+						pnum->m_pUIMaterial->SetShader(GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player_ui11_speed_number_o", OBJ_SPEED_UI)->m_pUIShader);
+						pnum->SetMaterial(0, pnum->m_pUIMaterial);
+						pnum->SetScale(0.6f, 0.6f, 0.f);
+						GET_MANAGER<ObjectManager>()->AddObject(L"NumInstance", pnum, OBJ_SPEED_UI);
 
-					Ene.second->number = pnum;
-				}
-				if (Ene.second->m_pLockOnUI->bLockOn == true)
-				{
-					Ene.second->m_pLockOnUI->m_nTextureRender = 0;
-					Ene.second->m_pLockOnUI->m_pLockOnUIMaterial->m_ppTextures[0] = GET_MANAGER<ObjectManager>()
-						->GetObjFromTag(L"player_ui8_lockon", OBJ_LOCKONUI)->m_ppLockOnUITexture[1];
+						Ene.second->number = pnum;
+					}
+					if (Ene.second->m_pLockOnUI->bLockOn == true)
+					{
+						Ene.second->m_pLockOnUI->m_nTextureRender = 0;
+						Ene.second->m_pLockOnUI->m_pLockOnUIMaterial->m_ppTextures[0] = GET_MANAGER<ObjectManager>()
+							->GetObjFromTag(L"player_ui8_lockon", OBJ_LOCKONUI)->m_ppLockOnUITexture[1];
 
-					float fx = Ene.second->GetScreenPosition().x - ((float)FRAME_BUFFER_WIDTH / 2.f);
-					float fy = (Ene.second->GetScreenPosition().y - ((float)FRAME_BUFFER_HEIGHT / 2.f)) * -1;
+						float fx = Ene.second->GetScreenPosition().x - ((float)FRAME_BUFFER_WIDTH / 2.f);
+						float fy = (Ene.second->GetScreenPosition().y - ((float)FRAME_BUFFER_HEIGHT / 2.f)) * -1;
 
-					Ene.second->number->SetPosition(fx-20.f, fy+8.f, 0.f);
+						Ene.second->number->SetPosition(fx - 20.f, fy + 8.f, 0.f);
 
-					Ene.second->m_bCanFire = true;
+						Ene.second->m_bCanFire = true;
+					}
+					else
+					{
+						Ene.second->m_pLockOnUI->m_pLockOnUIMaterial->m_ppTextures[0] = GET_MANAGER<ObjectManager>()
+							->GetObjFromTag(L"player_ui8_lockon", OBJ_LOCKONUI)->m_ppLockOnUITexture[0];
+						Ene.second->m_pLockOnUI->TextureAnimate();
+
+						Ene.second->number->SetPosition(-20000.f, -20000.f, 0.f);
+
+						Ene.second->m_bCanFire = false;
+					}
 				}
 				else
 				{
+					Ene.second->m_pLockOnUI->m_nTextureRender = 0;
 					Ene.second->m_pLockOnUI->m_pLockOnUIMaterial->m_ppTextures[0] = GET_MANAGER<ObjectManager>()
 						->GetObjFromTag(L"player_ui8_lockon", OBJ_LOCKONUI)->m_ppLockOnUITexture[0];
-					Ene.second->m_pLockOnUI->TextureAnimate();
-
-					Ene.second->number->SetPosition(-20000.f, -20000.f, 0.f);
-
-					Ene.second->m_bCanFire = false;
 				}
+
 			}
 			else
 			{
-				Ene.second->m_pLockOnUI->m_nTextureRender = 0;
+				Ene.second->m_bAiming = false;
 				Ene.second->m_pLockOnUI->m_pLockOnUIMaterial->m_ppTextures[0] = GET_MANAGER<ObjectManager>()
 					->GetObjFromTag(L"player_ui8_lockon", OBJ_LOCKONUI)->m_ppLockOnUITexture[0];
 			}
-
 		}
-		else
-		{
-			Ene.second->m_bAiming = false;
-			Ene.second->m_pLockOnUI->m_pLockOnUIMaterial->m_ppTextures[0] = GET_MANAGER<ObjectManager>()
-				->GetObjFromTag(L"player_ui8_lockon", OBJ_LOCKONUI)->m_ppLockOnUITexture[0];
-		}
-
 	}
 
 	for (auto p = GameOBJs.begin(); p != GameOBJs.end(); ++p)
@@ -230,8 +233,9 @@ void UIManager::MoveLockOnUI(ObjectManager::MAPOBJ* PlyList, ObjectManager::MAPO
 					p = GameOBJs.end();
 					break;
 				}
+
 				sort(begin(GameOBJs), end(GameOBJs), [](const CGameObject* a, const CGameObject* b) {
-					return a->m_xmf4x4World._41 < b->m_xmf4x4World._41;
+					return a->LenthToPlayer < b->LenthToPlayer;
 					});
 			}
 		}
@@ -249,7 +253,6 @@ void UIManager::MoveLockOnUI(ObjectManager::MAPOBJ* PlyList, ObjectManager::MAPO
 		if (GameOBJs.size() <= Count)
 			Count = 0;
 	}
-
 
 	//GameOBJs.clear();
 }

@@ -1,14 +1,14 @@
 #include "stdafx.h"
-#include "CMissleFog.h"
+#include "CCrushSmoke.h"
 #include "CPlaneMesh.h"
 #include "CTestScene.h"
 #include "CShaderManager.h"
 
-CMissleFog::CMissleFog()
+CCrushSmoke::CCrushSmoke()
 {
 }
 
-CMissleFog::CMissleFog(int nIndex, ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList, ID3D12RootSignature* pd3dGraphicsRootSignature, float fWidth, float fHeight, float fDepth) : CPlane()
+CCrushSmoke::CCrushSmoke(int nIndex, ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList, ID3D12RootSignature* pd3dGraphicsRootSignature, float fWidth, float fHeight, float fDepth) : CPlane()
 {
 	m_bReffernce = true;
 	m_fBurnerBlendAmount = 1;
@@ -23,9 +23,7 @@ CMissleFog::CMissleFog(int nIndex, ID3D12Device* pd3dDevice, ID3D12GraphicsComma
 
 	//m_pEffectTexture[TEXTURES];
 	m_pEffectTexture[0] = new CTexture(1, RESOURCE_TEXTURE2D, 0);
-	m_pEffectTexture[0]->LoadTextureFromFile(pd3dDevice, pd3dCommandList, L"Effect/MissleSmoke.dds", 0);
-	m_pEffectTexture[1] = new CTexture(1, RESOURCE_TEXTURE2D, 0);
-	m_pEffectTexture[1]->LoadTextureFromFile(pd3dDevice, pd3dCommandList, L"Effect/CrushSmoke.dds", 0);
+	m_pEffectTexture[0]->LoadTextureFromFile(pd3dDevice, pd3dCommandList, L"Effect/CrushSmoke.dds", 0);
 	/*m_ppLockOnUITexture[2] = new CTexture(1, RESOURCE_TEXTURE2D, 0);
 	m_pEffectTexture[2]->LoadTextureFromFile(pd3dDevice, pd3dCommandList, L"Effect/MissleFog2.dds", 0);
 	m_pEffectTexture[3] = new CTexture(1, RESOURCE_TEXTURE2D, 0);
@@ -43,7 +41,7 @@ CMissleFog::CMissleFog(int nIndex, ID3D12Device* pd3dDevice, ID3D12GraphicsComma
 	m_pEffectTexture[9] = new CTexture(1, RESOURCE_TEXTURE2D, 0);
 	m_pEffectTexture[9]->LoadTextureFromFile(pd3dDevice, pd3dCommandList, L"Effect/MissleFog9.dds", 0);*/
 
- 	UINT ncbElementBytes = ((sizeof(CB_GAMEOBJECT_INFO) + 255) & ~255);
+	UINT ncbElementBytes = ((sizeof(CB_GAMEOBJECT_INFO) + 255) & ~255);
 	m_EffectShader = new CMissleFogShader();
 
 	m_EffectShader->CreateShader(pd3dDevice, pd3dCommandList, pd3dGraphicsRootSignature);
@@ -51,7 +49,7 @@ CMissleFog::CMissleFog(int nIndex, ID3D12Device* pd3dDevice, ID3D12GraphicsComma
 
 	m_EffectShader->CreateConstantBufferViews(pd3dDevice, pd3dCommandList, m_nObjects, m_EffectShader->m_pd3dcbBlendAmount, ncbElementBytes);
 
-	for (int i = 0; i < 2; i++) CTestScene::CreateShaderResourceViews(pd3dDevice, m_pEffectTexture[i], 15, false);
+	for (int i = 0; i < 1; i++) CTestScene::CreateShaderResourceViews(pd3dDevice, m_pEffectTexture[i], 15, false);
 
 	m_pEffectMaterial = new CMaterial(1);
 	m_pEffectMaterial->SetTexture(m_pEffectTexture[0]);
@@ -60,11 +58,11 @@ CMissleFog::CMissleFog(int nIndex, ID3D12Device* pd3dDevice, ID3D12GraphicsComma
 	SetMaterial(0, m_pEffectMaterial);
 }
 
-CMissleFog::~CMissleFog()
+CCrushSmoke::~CCrushSmoke()
 {
 }
 
-void CMissleFog::Animate(float fTimeElapsed)
+void CCrushSmoke::Animate(float fTimeElapsed)
 {
 	m_xmf3Position.x = m_xmf4x4ToParent._41;
 	m_xmf3Position.y = m_xmf4x4ToParent._42;
@@ -93,7 +91,7 @@ void CMissleFog::Animate(float fTimeElapsed)
 			if (m_fScaleX > 0.1)
 				SetScale(m_fScaleX -= m_fTimeElapsed / 20, m_fScaleY -= m_fTimeElapsed / 20, 1);
 			else
-				SetScale(0.1,0.1,0);
+				SetScale(0.1, 0.1, 0);
 		}
 		else
 		{
@@ -104,7 +102,7 @@ void CMissleFog::Animate(float fTimeElapsed)
 	}
 }
 
-void CMissleFog::TextureAnimate()
+void CCrushSmoke::TextureAnimate()
 {
 	if (m_bWingFog)
 	{
@@ -144,7 +142,7 @@ void CMissleFog::TextureAnimate()
 	//}
 }
 
-void CMissleFog::SetLookAt(XMFLOAT3& xmfTarget)
+void CCrushSmoke::SetLookAt(XMFLOAT3& xmfTarget)
 {
 	XMFLOAT3 xmfUp(0.0f, 1.0f, 0.0f);
 	XMFLOAT4X4 mtxLookAt = Matrix4x4::LookAtLH(xmfTarget, m_xmf3Position, xmfUp);
@@ -156,7 +154,7 @@ void CMissleFog::SetLookAt(XMFLOAT3& xmfTarget)
 	m_xmf4x4ToParent._31 = m_xmf3Look.x;		m_xmf4x4ToParent._32 = m_xmf3Look.y;	m_xmf4x4ToParent._33 = m_xmf3Look.z;
 }
 
-void CMissleFog::Render(ID3D12GraphicsCommandList* pd3dCommandList, CCamera* pCamera)
+void CCrushSmoke::Render(ID3D12GraphicsCommandList* pd3dCommandList, CCamera* pCamera)
 {
 	if (m_pEffectMaterial->m_ppTextures[0] == pWaterTexture)
 	{

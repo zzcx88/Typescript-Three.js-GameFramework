@@ -22,6 +22,13 @@ public:
 	void SetSceneObjManager();
 	void SetPlayer(CPlayer* pPlayer) { m_Scene->m_pPlayer = pPlayer; }
 	void SetObjManagerInPlayer();
+
+	int m_nWave = 0;
+	int m_nWaveCnt = 0;
+	int m_nTgtObject = 0;
+
+	bool m_bStageClear = false;
+	bool m_bStageFail = false;
 	
 public:
 	int Update(const float& TimeDelta);

@@ -55,6 +55,20 @@ namespace BT
 	};
 }
 
+class MoveFoward : public BT::CompositeNode
+{
+public:
+	MoveFoward() {}
+	virtual ~MoveFoward() {}
+
+public:
+	virtual bool Invoke(CGameObject* pObj) override
+	{
+		pObj->Move(DIR_FORWARD, 270 * GET_MANAGER<CDeviceManager>()->GetGameTimer().GetTimeElapsed(), false);
+		return true;
+	}
+};
+
 class IsEnemyNear : public BT::CompositeNode
 {
 public:
@@ -95,6 +109,8 @@ public:
 				pObj->RotateFallow(&xmfAxis, theta);
 				return false;
 			}
+			pObj->Move(DIR_FORWARD, 270 * GET_MANAGER<CDeviceManager>()->GetGameTimer().GetTimeElapsed(), false);
+			return false;
 		}
 	}
 };
@@ -120,6 +136,7 @@ public:
 		xmf3TargetVector = Vector3::Normalize(xmf3TargetVector);
 		XMFLOAT3 xmfAxis = Vector3::CrossProduct(pObj->m_xmf3Look, xmf3TargetVector);
 		xmfAxis = Vector3::Normalize(xmfAxis);
+		pObj->m_bAiContrail = false;
 		pObj->Move(DIR_FORWARD, 230 * GET_MANAGER<CDeviceManager>()->GetGameTimer().GetTimeElapsed() , false);
 		pObj->RotateFallow(&xmfAxis, theta);
 		return true;
@@ -135,6 +152,7 @@ public:
 public:
 	virtual bool Invoke(CGameObject* pObj) override
 	{
+		pObj->m_bAiContrail = true;
 		//고도가 낮다면 고도를 상승시킨다.
 		if (pObj->GetPosition().y < 1450.f)
 		{
@@ -217,7 +235,7 @@ public:
 				pMissle->m_xmfTarget = temp;
 				pMissle->m_bLockOn = true;
 				pMissle->SetPosition(pObj->GetPosition());
-				GET_MANAGER<ObjectManager>()->AddObject(L"enemy_missle", pMissle, OBJ_MISSLE);
+				GET_MANAGER<ObjectManager>()->AddObject(L"enemy_missle", pMissle, OBJ_ENEMISSLE);
 				return true;
 			}
 		}
@@ -240,6 +258,7 @@ public:
 		{
 			if (pObj->m_xmf3Ai_EvadeAxis.y == 0)
 			{
+				pObj->m_bAiContrail = true;
 				std::default_random_engine dre(time(NULL) * pObj->GetPosition().z);
 				std::uniform_real_distribution<float>fYDegree(-90, 90);
 				std::uniform_real_distribution<float>fXDegree(-90, 90);
@@ -249,7 +268,7 @@ public:
 			}
 			//cout << "Evade" << endl;
 			float theta = 20 * GET_MANAGER<CDeviceManager>()->GetGameTimer().GetTimeElapsed();
-			pObj->Move(DIR_FORWARD, 280 * GET_MANAGER<CDeviceManager>()->GetGameTimer().GetTimeElapsed(), false);
+			pObj->Move(DIR_FORWARD, 200 * GET_MANAGER<CDeviceManager>()->GetGameTimer().GetTimeElapsed(), false);
 			pObj->RotateFallow(&pObj->m_xmf3Ai_EvadeAxis, theta);
 			return true;
 		}
