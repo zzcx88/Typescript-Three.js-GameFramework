@@ -162,6 +162,8 @@ void CMig21::Animate(float fTimeElapsed)
 				CCrushSmoke* pMissleFog;
 				pMissleFog = new CCrushSmoke();
 				pMissleFog->m_fBurnerBlendAmount = 1.f;
+				pMissleFog->m_fScaleX = 5;
+				pMissleFog->m_fScaleY = 5;
 				pMissleFog->m_pCamera = m_ObjManager->GetObjFromTag(L"player", OBJ_PLAYER)->m_pCamera;
 				pMissleFog->SetMesh(m_ObjManager->GetObjFromTag(L"crushsmokeRef", OBJ_EFFECT)->m_pPlaneMesh);
 				pMissleFog->m_pEffectMaterial = new CMaterial(1);
@@ -218,8 +220,6 @@ void CMig21::CollisionActivate(CGameObject* collideTarget)
 				m_bDestroyed = true;
 				m_pUI->m_bDestroyed = true;
 				m_pLockOnUI->m_bDestroyed = true;
-
-				GET_MANAGER<SceneManager>()->m_nTgtObject--;
 			}
 		}
 	}
@@ -254,6 +254,7 @@ void CMig21::Render(ID3D12GraphicsCommandList* pd3dCommandList, CCamera* pCamera
 			m_isDead = true;
 			m_pUI->m_isDead = true;
 			m_pLockOnUI->m_isDead = true;
+			GET_MANAGER<SceneManager>()->m_nTgtObject--;
 		}
 	}
 	CGameObject::Render(pd3dCommandList, pCamera);

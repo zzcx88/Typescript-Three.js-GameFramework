@@ -245,6 +245,7 @@ public:
 	bool m_bAiming = false;
 	bool m_bCanFire = false;
 	bool m_bEye_fixation = false;
+	bool		m_bLockType = false;
 
 	bool m_bAiContrail = false;
 	bool m_bAiLockOn = false;

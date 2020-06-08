@@ -172,6 +172,20 @@ void CPlayer::Update_Input(const float& TimeDelta)
 		}
 	}
 
+	if (true == keyManager->GetKeyState(STATE_DOWN, VK_LSHIFT))
+	{
+		//m_bGameOver = true;
+		dwDirection |= VK_LSHIFT;
+		if (m_bLockType == false)
+		{
+			m_bLockType = true;
+		}
+		else
+		{
+			m_bLockType = false;
+		}
+	}
+
 	if (true == keyManager->GetKeyState(STATE_PUSH, VK_LCONTROL))
 	{
 		if(!m_bEye_fixation)

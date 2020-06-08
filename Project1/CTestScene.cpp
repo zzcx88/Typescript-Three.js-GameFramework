@@ -537,47 +537,48 @@ void CTestScene::AnimateObjects(float fTimeElapsed)
 
 	
 	
-
-	if (m_ObjManager->GetObjFromTag(L"mig21", OBJ_ENEMY)->m_bAiLockOn == true)
+	if (m_ObjManager->GetObjFromTag(L"mig21", OBJ_ENEMY))
 	{
-		m_ppGameObjects[12]->SetIsRender(true);
+		if (m_ObjManager->GetObjFromTag(L"mig21", OBJ_ENEMY)->m_bAiLockOn == true)
+		{
+			m_ppGameObjects[12]->SetIsRender(true);
 
-		if (m_fElapsedTime > 3.0)
+			if (m_fElapsedTime > 3.0)
+			{
+				m_ppGameObjects[12]->SetIsRender(false);
+				m_fElapsedTime = 0.f;
+			}
+		}
+		else
 		{
 			m_ppGameObjects[12]->SetIsRender(false);
-			m_fElapsedTime = 0.f;
 		}
-	}
-	else
-	{
-		m_ppGameObjects[12]->SetIsRender(false);
-	}
 
-	if (m_pPlayer->m_AiMissleAssert == true)
-	{
-		m_ppGameObjects[13]->SetIsRender(true);
-		for (auto& obj : m_ObjManager->GetObjFromType(OBJ_UI))
+		if (m_pPlayer->m_AiMissleAssert == true)
 		{
-			obj.second->m_bWarning = true;
+			m_ppGameObjects[13]->SetIsRender(true);
+			for (auto& obj : m_ObjManager->GetObjFromType(OBJ_UI))
+			{
+				obj.second->m_bWarning = true;
+			}
+			for (auto& obj : m_ObjManager->GetObjFromType(OBJ_SPEED_UI))
+			{
+				obj.second->m_bWarning = true;
+			}
 		}
-		for (auto& obj : m_ObjManager->GetObjFromType(OBJ_SPEED_UI))
+		else
 		{
-			obj.second->m_bWarning = true;
+			m_ppGameObjects[13]->SetIsRender(false);
+			for (auto& obj : m_ObjManager->GetObjFromType(OBJ_UI))
+			{
+				obj.second->m_bWarning = false;
+			}
+			for (auto& obj : m_ObjManager->GetObjFromType(OBJ_SPEED_UI))
+			{
+				obj.second->m_bWarning = false;
+			}
 		}
 	}
-	else
-	{
-		m_ppGameObjects[13]->SetIsRender(false);
-		for (auto& obj : m_ObjManager->GetObjFromType(OBJ_UI))
-		{
-			obj.second->m_bWarning = false;
-		}
-		for (auto& obj : m_ObjManager->GetObjFromType(OBJ_SPEED_UI))
-		{
-			obj.second->m_bWarning = false;
-		}
-	}
-
 
 
 	m_ObjManager->GetObjFromTag(L"player", OBJ_PLAYER)->SetPlayerMSL(m_pPlayer->GetMSLCount());
