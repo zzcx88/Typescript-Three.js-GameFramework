@@ -620,5 +620,8 @@
     <FxCompile Include="RedUI.hlsl">
       <Filter>HLSL</Filter>
     </FxCompile>
+    <FxCompile Include="Refraction.hlsl">
+      <Filter>HLSL</Filter>
+    </FxCompile>
   </ItemGroup>
 </Project>

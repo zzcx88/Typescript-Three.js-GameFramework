@@ -131,7 +131,7 @@ public:
 		xmf3Pos = pObj->GetPosition();
 		xmf3PlayerPos = GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player", OBJ_PLAYER)->GetPosition();
 
-		float theta = 50.f * GET_MANAGER<CDeviceManager>()->GetGameTimer().GetTimeElapsed();
+		float theta = 20.f * GET_MANAGER<CDeviceManager>()->GetGameTimer().GetTimeElapsed();
 		xmf3TargetVector = Vector3::Subtract(xmf3PlayerPos, xmf3Pos);
 		xmf3TargetVector = Vector3::Normalize(xmf3TargetVector);
 		XMFLOAT3 xmfAxis = Vector3::CrossProduct(pObj->m_xmf3Look, xmf3TargetVector);

@@ -6,14 +6,12 @@
 
 CBullet::CBullet(XMFLOAT3 xmf3Position)
 {
-	OrientedBoxCollider = new COrientedBoxCollider();
-	m_pBulletMesh = GET_MANAGER<ObjectManager>()->GetObjFromTag(L"bulletRef", OBJ_ALLYBULLET)->m_pBulletMesh;
+	//OrientedBoxCollider = new COrientedBoxCollider();
 	//m_pBulletMesh->SetOOBB(XMFLOAT3(0,0,0), XMFLOAT3(1.0f, 1.0f, 1.0f), XMFLOAT4(0.0f, 0.0f, 0.0f, 1.f));
-
+	m_pBulletMesh = GET_MANAGER<ObjectManager>()->GetObjFromTag(L"bulletRef", OBJ_ALLYBULLET)->m_pBulletMesh;
 	SphereCollider = new CSphereCollider();
 	SphereCollider->SetSphereCollider(GetPosition(), 5);
 	SphereCollider->SetScale(5, 5, 5);
-
 	SetMesh(m_pBulletMesh);
 }
 
@@ -58,15 +56,18 @@ void CBullet::Animate(float fTimeElapsed)
 		m_xmf3Position.y = m_xmf4x4ToParent._42;
 		m_xmf3Position.z = m_xmf4x4ToParent._43;
 
-		m_fDeleteElapsed += fTimeElapsed;
+		m_fDeleteElapsed += 1 * fTimeElapsed;
 		Move(DIR_FORWARD, m_fBulletSpeed * fTimeElapsed);
 		
 		//if (OrientedBoxCollider)OrientedBoxCollider->SetPosition(GetPosition());
 		//if (OrientedBoxCollider)OrientedBoxCollider->Animate(m_pBulletMesh, &m_xmf4x4World, GetPosition());
 
-		if (SphereCollider)SphereCollider->SetPosition(GetPosition());
-		if (SphereCollider)SphereCollider->m_xmf4x4ToParent = Matrix4x4::Multiply(XMMatrixScaling(5, 5, 5), m_xmf4x4ToParent);
-		if (SphereCollider)SphereCollider->Animate(fTimeElapsed, GetPosition());
+		if (m_ColliedObj == true)
+		{
+			if (SphereCollider)SphereCollider->SetPosition(GetPosition());
+			if (SphereCollider)SphereCollider->m_xmf4x4ToParent = Matrix4x4::Multiply(XMMatrixScaling(5, 5, 5), m_xmf4x4ToParent);
+			if (SphereCollider)SphereCollider->Animate(fTimeElapsed, SphereCollider->GetPosition());
+		}
 
 		if (m_fDeleteElapsed > m_fDeleteFrequence)
 		{
@@ -77,7 +78,7 @@ void CBullet::Animate(float fTimeElapsed)
 
 void CBullet::CollisionActivate(CGameObject* collideTarget)
 {
-	if (!m_bRefference && collideTarget->m_bDestroyed == false)
+	if (!m_bRefference && collideTarget->m_bDestroyed == false && m_ColliedObj == true)
 	{
 		CMissleSplash* pMissleSplash = new CMissleSplash();
 		pMissleSplash = new CMissleSplash();
@@ -115,7 +116,7 @@ void CBullet::Move(const XMFLOAT3& xmf3Shift)
 
 void CBullet::Render(ID3D12GraphicsCommandList* pd3dCommandList, CCamera* pCamera)
 {
-	if (!m_bRefference)
+	if (!m_bRefference && m_ColliedObj == false)
 	{
 		CGameObject::Render(pd3dCommandList, pCamera);
 	}

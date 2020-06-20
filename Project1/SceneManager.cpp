@@ -23,9 +23,6 @@ bool SceneManager::ChangeSceneState(SCENESTATE SceneState, ID3D12Device* pd3dDev
 		Release();
 	}
 
-	if (m_Scene) m_Scene->ReleaseUploadBuffers();
-
-	GET_MANAGER<ObjectManager>()->ReleaseAll();
 	if (SceneState == SCENE_MENU)
 		GET_MANAGER<UIManager>()->ReleaseUI();
 	switch (SceneState)

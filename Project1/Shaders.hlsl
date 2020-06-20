@@ -25,8 +25,8 @@ cbuffer cbGameObjectInfo : register(b2)
 cbuffer cbBlandAmount : register(b3)
 {
 	float gfBlendAmount;
-	bool gbEffectedObj;
-	bool gbWarning;
+	float gbEffectedObj;
+	float gbWarning;
 }
 
 #include "Light.hlsl"

@@ -1000,7 +1000,22 @@ void CAirplanePlayer::GunFire(float fTimeElapsed)
 		pBullet->m_pEffectMaterial->SetShader(m_ObjManager->GetObjFromTag(L"bulletRef", OBJ_ALLYBULLET)->m_pBulletShader);
 		pBullet->SetMaterial(0, pBullet->m_pEffectMaterial);
 		pBullet->SetPosition(XMFLOAT3(m_pGunMuzzle->GetPosition().x - GetLookVector().x * 3, m_pGunMuzzle->GetPosition().y - GetLookVector().y * 3, m_pGunMuzzle->GetPosition().z - GetLookVector().z * 3));
-		m_ObjManager->AddObject(L"player_bullet", pBullet, OBJ_ALLYBULLET);
+		m_ObjManager->AddObject(L"player_bullet", pBullet, OBJ_EFFECT);
+		m_fGunFireElapsed = 0.0f;	
+
+		////구충돌체 별도 생성중
+		CBullet* pColliedBullet;
+		pColliedBullet = new CBullet(XMFLOAT3(m_pGunMuzzle->GetPosition().x - GetLookVector().x * 3, m_pGunMuzzle->GetPosition().y - GetLookVector().y * 3, m_pGunMuzzle->GetPosition().z - GetLookVector().z * 3));
+		pColliedBullet->m_ColliedObj = true;
+		pColliedBullet->m_xmf3Look = m_xmf3Look;
+		pColliedBullet->m_xmf4x4ToParent = m_xmf4x4ToParent;
+		pColliedBullet->m_fBulletSpeed = m_fAircraftSpeed + 1300.f;
+		//pColliedBullet->m_pEffectMaterial = new CMaterial(1);
+		//pColliedBullet->m_pEffectMaterial->SetTexture(m_ObjManager->GetObjFromTag(L"bulletRef", OBJ_ALLYBULLET)->m_pBulletTexture);
+		//pColliedBullet->m_pEffectMaterial->SetShader(m_ObjManager->GetObjFromTag(L"bulletRef", OBJ_ALLYBULLET)->m_pBulletShader);
+		//pColliedBullet->SetMaterial(0, pBullet->m_pEffectMaterial);
+		pColliedBullet->SetPosition(XMFLOAT3(m_pGunMuzzle->GetPosition().x - GetLookVector().x * 3, m_pGunMuzzle->GetPosition().y - GetLookVector().y * 3, m_pGunMuzzle->GetPosition().z - GetLookVector().z * 3));
+		m_ObjManager->AddObject(L"player_bullet_collide", pColliedBullet, OBJ_ALLYBULLET);
 		m_fGunFireElapsed = 0.0f;
 	}
 }

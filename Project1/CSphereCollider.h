@@ -13,5 +13,9 @@ public:
 
 	virtual void Animate(float fTimeElapsed, XMFLOAT3 xmCenter);
 	BoundingSphere m_BoundingSphere;
+
+	float m_fBulletSpeed = 0;
+	bool m_bisBullet = false;
+
 };
 

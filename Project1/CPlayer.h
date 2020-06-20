@@ -36,7 +36,7 @@ protected:
 	float m_fFarPlaneDistance = 100000.0f;
 
 	float m_fGunFireElapsed = 0.0f;
-	float m_fGunFireFrequency = 0.1f;
+	float m_fGunFireFrequency = 0.05f;
 
 
 	float m_fTimeLegElapsed = 0.0f;

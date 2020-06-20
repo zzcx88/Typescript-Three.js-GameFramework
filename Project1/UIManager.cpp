@@ -121,7 +121,7 @@ void UIManager::MoveLockOnUI(ObjectManager::MAPOBJ* PlyList, ObjectManager::MAPO
 			pnum->SetIsRender(false);
 			PlyList->begin()->second->ppNumObjects[i] = pnum;
 
-			//GET_MANAGER<ObjectManager>()->AddObject(L"NumInstance", pnum, OBJ_SPEED_UI);
+			GET_MANAGER<ObjectManager>()->AddObject(L"NumInstance", pnum, OBJ_SPEED_UI);
 
 			
 		}

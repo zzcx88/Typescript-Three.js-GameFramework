@@ -510,9 +510,9 @@ void CGameObject::UpdateShaderVariable(ID3D12GraphicsCommandList* pd3dCommandLis
 	XMStoreFloat4x4(&xmf4x4World, XMMatrixTranspose(XMLoadFloat4x4(pxmf4x4World)));
 	pd3dCommandList->SetGraphicsRoot32BitConstants(1, 16, &xmf4x4World, 0);
 
-	pd3dCommandList->SetGraphicsRoot32BitConstants(16, 2, &m_fBurnerBlendAmount, 0);
-	pd3dCommandList->SetGraphicsRoot32BitConstants(16, 1, &m_bEffectedObj,2);
-	pd3dCommandList->SetGraphicsRoot32BitConstants(16, 1, &m_bWarning, 3);
+	pd3dCommandList->SetGraphicsRoot32BitConstants(16, 1, &m_fBurnerBlendAmount, 0);
+	pd3dCommandList->SetGraphicsRoot32BitConstants(16, 1, &m_bEffectedObj,1);
+	pd3dCommandList->SetGraphicsRoot32BitConstants(16, 1, &m_bWarning, 2);
 	
 }
 

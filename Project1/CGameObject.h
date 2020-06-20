@@ -266,8 +266,8 @@ public:
 	bool			m_bGameOver = false;
 
 	float m_fBurnerBlendAmount;
-	bool m_bEffectedObj = false;
-	bool m_bWarning = false;
+	float m_bEffectedObj = false;
+	float m_bWarning = false;
 
 	void SetMesh(CMesh* pMesh);
 	//void SetMesh(int nIndex, CMesh* pMesh);
