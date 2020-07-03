@@ -30,7 +30,7 @@ protected:
 	float m_fPitchPerformance = 0.0f;
 	float m_fYawPerformance = 0.0f;
 
-	float m_fFOV = 60;
+	
 	float m_fGunFOV = 60;
 	float m_fBurnerElapsed;
 	float m_fFarPlaneDistance = 100000.0f;
@@ -38,8 +38,9 @@ protected:
 	float m_fGunFireElapsed = 0.0f;
 	float m_fGunFireFrequency = 0.05f;
 
-
 	float m_fTimeLegElapsed = 0.0f;
+
+	float m_fPushSpaceElapsed = 0.0f;
 
 	bool m_bGunFire = false;
 	bool m_bMissleCross = false;
@@ -69,6 +70,8 @@ public:
 	XMFLOAT3 GetUpVector() { return(m_xmf3Up); }
 	XMFLOAT3 GetRightVector() { return(m_xmf3Right); }
 
+	virtual float GetFov() { return m_fFOV; }
+
 	void SetFriction(float fFriction) { m_fFriction = fFriction; }
 	void SetGravity(const XMFLOAT3& xmf3Gravity) { m_xmf3Gravity = xmf3Gravity; }
 	void SetMaxVelocityXZ(float fMaxVelocity) { m_fMaxVelocityXZ = fMaxVelocity; }
@@ -83,7 +86,7 @@ public:
 	void SetMissileCount(int nCount) { m_nMSL_Count = nCount; }
 	void SetScore(int nScore) { m_nScore = nScore; }
 	void SetGameOver(bool bGameOver) { m_bGameOver = bGameOver; }
-
+	virtual void SetEngineRefractionPos() {}
 
 	const XMFLOAT3& GetVelocity() const { return(m_xmf3Velocity); }
 	float GetAircraftSpeed() const { return(m_fAircraftSpeed); }
@@ -92,6 +95,8 @@ public:
 	float GetYaw() const { return(m_fYaw); }
 	float GetPitch() const { return(m_fPitch); }
 	float GetRoll() const { return(m_fRoll); }
+	float GetPushSpaceElapsed() { return m_fPushSpaceElapsed; }
+
 	int GetMSLCount() const { return(m_nMSL_Count); }
 	int GetScore() const { return(m_nScore); }
 	bool GetGameOver() const { return(m_bGameOver); }
@@ -190,6 +195,8 @@ public:
 	CGameObject* m_pGunCamera = NULL;
 	CGameObject* m_pCameraPos = NULL;
 
+	CGameObject* m_pEngineRefraction = NULL;
+
 	//WeaponsXMF
 	XMFLOAT4X4 m_xmMSL_1;
 
@@ -214,6 +221,8 @@ private:
 	virtual void GunCameraMove(float fTimeElapsed);
 
 	virtual void SetAfterBurnerPosition(float fTimeElapsed);
+
+	virtual void SetEngineRefractionPos();
 public:
 	virtual CCamera* ChangeCamera(DWORD nNewCameraMode, float fTimeElapsed);
 	virtual void OnPrepareRender();

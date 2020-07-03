@@ -23,6 +23,7 @@ private:
 	UINT							m_nTextureType = RESOURCE_TEXTURE2D;
 
 	int								m_nTextures = 0;
+	
 	ID3D12Resource** m_ppd3dTextures = NULL;
 	ID3D12Resource** m_ppd3dTextureUploadBuffers;
 
@@ -31,6 +32,7 @@ private:
 
 public:
 	SRVROOTARGUMENTINFO* m_pRootArgumentInfos = NULL;
+	ID3D12Resource* m_pRefractionObj;
 
 public:
 	void AddRef() { m_nReferences++; }
@@ -44,7 +46,7 @@ public:
 	void ReleaseShaderVariables();
 
 	void LoadTextureFromFile(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList, wchar_t* pszFileName, UINT nIndex, bool bIsDDSFile = true);
-
+	ID3D12Resource* CreateTexture(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList, UINT nIndex, UINT nResourceType, UINT nWidth, UINT nHeight, UINT nElements, UINT nMipLevels, DXGI_FORMAT dxgiFormat, D3D12_RESOURCE_FLAGS d3dResourceFlags, D3D12_RESOURCE_STATES d3dResourceStates, D3D12_CLEAR_VALUE* pd3dClearValue);
 	int GetTextures() { return(m_nTextures); }
 	ID3D12Resource* GetTexture(int nIndex) { return(m_ppd3dTextures[nIndex]); }
 	UINT GetTextureType() { return(m_nTextureType); }
@@ -130,6 +132,7 @@ class CUIShader;
 class CWaterShader;
 class CBulletShader;
 class CPlaneShader;
+class CRafractionShader;
 class CPlaneMesh;
 class CUI;
 class CRedUIShader;
@@ -205,7 +208,8 @@ public:
 	///////////////////////////////////////////
 	CNumber* ppNumObjects[29];
 	CRedUIShader* m_pRedShader;
-
+	///////////////////////////////////////////
+	CRafractionShader* m_pRafractionShader;
 
 
 	XMFLOAT4X4						m_xmf4x4ToParent;
@@ -255,6 +259,8 @@ public:
 
 	bool m_AiMissleAssert = false;
 
+	bool m_bMissleLockCamera = false;
+
 	OBJTYPE				m_ObjType = OBJ_END;
 
 	bool			m_bAllyCollide = false;
@@ -268,6 +274,8 @@ public:
 	float m_fBurnerBlendAmount;
 	float m_bEffectedObj = false;
 	float m_bWarning = false;
+
+	float m_fFOV = 60;
 
 	void SetMesh(CMesh* pMesh);
 	//void SetMesh(int nIndex, CMesh* pMesh);
@@ -287,6 +295,7 @@ public:
 	virtual void CollisionActivate(CGameObject* collideTarget);
 
 	virtual void OnPrepareRender() { }
+	virtual void OnPreRender(ID3D12Device* pd3dDevice, ID3D12CommandQueue* pd3dCommandQueue, ID3D12Fence* pd3dFence, HANDLE hFenceEvent) {}
 	virtual void Render(ID3D12GraphicsCommandList* pd3dCommandList, CCamera* pCamera = NULL);
 
 	virtual void CreateShaderVariables(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList);
@@ -308,6 +317,8 @@ public:
 	XMFLOAT3 GetUp();
 	XMFLOAT3 GetRight();
 
+	virtual float GetFov() const { return m_fFOV; }
+
 	const bool& GetState() { return m_isDead; }
 	int GetScore() const { return m_nPlayerScore; }
 	int GetPlayerSpeed()const { return nPlayerSpeed; }
@@ -322,6 +333,7 @@ public:
 	void SetPosition(XMFLOAT3 xmf3Position);
 	void SetScale(float x, float y, float z);
 	void SetPlaneScale(float fScaleAmount);
+	virtual void SetLookAt(XMFLOAT3& xmfTarget) {}
 
 	void Move(DWORD nDirection, float fDistance, bool bVelocity = false);
 	void Move(const XMFLOAT3& xmf3Shift, bool bVelocity = false);

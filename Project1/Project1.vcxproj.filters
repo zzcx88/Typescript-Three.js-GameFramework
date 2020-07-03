@@ -193,6 +193,9 @@
     <Filter Include="GameObject\Plane\Effect\CrushSmoke">
       <UniqueIdentifier>{d91e9e62-a119-4bfb-b13e-f2e87be3350b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="GameObject\Plane\Effect\EngineRafraction">
+      <UniqueIdentifier>{505dff19-6b8d-458f-95cb-4b793af4bd4a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="targetver.h">
@@ -393,6 +396,9 @@
     <ClInclude Include="RedUI.h">
       <Filter>GameObject\Plane\UI</Filter>
     </ClInclude>
+    <ClInclude Include="CEngineRafraction.h">
+      <Filter>GameObject\Plane\Effect\EngineRafraction</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="DDSTextureLoader12.cpp">
@@ -572,6 +578,9 @@
     <ClCompile Include="RedUI.cpp">
       <Filter>GameObject\Plane\UI</Filter>
     </ClCompile>
+    <ClCompile Include="CEngineRafraction.cpp">
+      <Filter>GameObject\Plane\Effect\EngineRafraction</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Project1.rc">
@@ -620,7 +629,7 @@
     <FxCompile Include="RedUI.hlsl">
       <Filter>HLSL</Filter>
     </FxCompile>
-    <FxCompile Include="Refraction.hlsl">
+    <FxCompile Include="Refract.hlsl">
       <Filter>HLSL</Filter>
     </FxCompile>
   </ItemGroup>

@@ -119,7 +119,7 @@ void CMenuScene::AnimateObjects(float fTimeElapsed)
 	m_ObjManager->Update(fTimeElapsed);
 }
 
-void CMenuScene::Render(ID3D12GraphicsCommandList* pd3dCommandList, CCamera* pCamera, ID3D12Resource* pCurrentBackBuffer)
+void CMenuScene::Render(ID3D12GraphicsCommandList* pd3dCommandList, CCamera* pCamera, bool bPreRender, ID3D12Resource* pCurrentBackBuffer)
 {
 
 	if (m_pd3dGraphicsRootSignature) pd3dCommandList->SetGraphicsRootSignature(m_pd3dGraphicsRootSignature);

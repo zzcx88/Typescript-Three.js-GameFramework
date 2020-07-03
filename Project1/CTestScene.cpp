@@ -22,6 +22,7 @@
 #include "CBullet.h"
 #include "CMinimap.h"
 #include "RedUI.h"
+#include "CEngineRafraction.h"
 
 ID3D12DescriptorHeap* CTestScene::m_pd3dCbvSrvDescriptorHeap = NULL;
 
@@ -429,25 +430,8 @@ void CTestScene::CreateStageObject()
 			m_ObjManager->AddObject(L"mig21", pMig21_B, OBJ_ENEMY);
 			GET_MANAGER<SceneManager>()->m_nTgtObject++;
 		}
+		cout << GET_MANAGER<SceneManager>()->m_nTgtObject;
 		GET_MANAGER<SceneManager>()->m_nWaveCnt++;
-	}
-
-	if (m_bCreateShip == false)
-	{
-		m_bCreateShip = true;
-		for (int i = 0; i < 8; ++i)
-		{
-			std::default_random_engine dre(time(NULL) * i * GET_MANAGER<CDeviceManager>()->GetGameTimer().GetTimeElapsed());
-			std::uniform_real_distribution<float>fXPos(-4000.f, 4000.f);
-			std::uniform_real_distribution<float>fZPos(3200.f, 6400.f);
-
-			C052CDestroyer* p052C;
-			p052C = new C052CDestroyer();
-			p052C->SetPosition(fXPos(dre), 170, fZPos(dre));
-			p052C->Rotate(0, 180, 0);
-			p052C->m_xmf3Look = XMFLOAT3(0, 0, -1);
-			m_ObjManager->AddObject(L"052C", p052C, OBJ_ENEMY);
-		}
 	}
 
 	if (GET_MANAGER<SceneManager>()->m_nTgtObject == 0)
@@ -604,10 +588,25 @@ void CTestScene::AnimateObjects(float fTimeElapsed)
 	float c = Vector3::DotProduct(m_pPlayer->GetLook(), xmf3IdentityRight);
 }
 
-void CTestScene::Render(ID3D12GraphicsCommandList* pd3dCommandList, CCamera* pCamera, ID3D12Resource* pCurrentBackBuffer)
+void CTestScene::OnPrepareRender(ID3D12GraphicsCommandList* pd3dCommandList)
+{
+	if (m_pd3dGraphicsRootSignature) pd3dCommandList->SetGraphicsRootSignature(m_pd3dGraphicsRootSignature);
+	UpdateShaderVariables(pd3dCommandList);
+
+	D3D12_GPU_VIRTUAL_ADDRESS d3dcbLightsGpuVirtualAddress = m_pd3dcbLights->GetGPUVirtualAddress();
+	pd3dCommandList->SetGraphicsRootConstantBufferView(2, d3dcbLightsGpuVirtualAddress); //Lights
+}
+
+void CTestScene::OnPreRender(ID3D12Device* pd3dDevice, ID3D12CommandQueue* pd3dCommandQueue, ID3D12Fence* pd3dFence, HANDLE hFenceEvent)
+{
+	if(m_ObjManager->GetObjFromTag(L"EngineRefractionObj", OBJ_EFFECT))
+		m_ObjManager->GetObjFromTag(L"EngineRefractionObj", OBJ_EFFECT)->OnPreRender(pd3dDevice, pd3dCommandQueue, pd3dFence, hFenceEvent);
+}
+
+void CTestScene::Render(ID3D12GraphicsCommandList* pd3dCommandList, CCamera* pCamera, bool bPreRender, ID3D12Resource* pCurrentBackBuffer)
 {
 	
-	if (m_pd3dGraphicsRootSignature) pd3dCommandList->SetGraphicsRootSignature(m_pd3dGraphicsRootSignature);
+	//if (m_pd3dGraphicsRootSignature) pd3dCommandList->SetGraphicsRootSignature(m_pd3dGraphicsRootSignature);
 	if (m_pd3dComputeRootSignature) pd3dCommandList->SetComputeRootSignature(m_pd3dComputeRootSignature);
 
 	if (m_pd3dCbvSrvDescriptorHeap) pd3dCommandList->SetDescriptorHeaps(1, &m_pd3dCbvSrvDescriptorHeap);
@@ -617,10 +616,19 @@ void CTestScene::Render(ID3D12GraphicsCommandList* pd3dCommandList, CCamera* pCa
 
 	UpdateShaderVariables(pd3dCommandList);
 
-	D3D12_GPU_VIRTUAL_ADDRESS d3dcbLightsGpuVirtualAddress = m_pd3dcbLights->GetGPUVirtualAddress();
-	pd3dCommandList->SetGraphicsRootConstantBufferView(2, d3dcbLightsGpuVirtualAddress); //Lights
+	//D3D12_GPU_VIRTUAL_ADDRESS d3dcbLightsGpuVirtualAddress = m_pd3dcbLights->GetGPUVirtualAddress();
+	//pd3dCommandList->SetGraphicsRootConstantBufferView(2, d3dcbLightsGpuVirtualAddress); //Lights
 	
-	m_ObjManager->Render(pd3dCommandList, pCamera);
+	m_ObjManager->Render(pd3dCommandList, pCamera, bPreRender);
 	//m_pSphereCollider->SphereCollider->Render(pd3dCommandList, pCamera);
 
+	if (m_bCreateEngineRefraction == true)
+	{
+		m_bCreateEngineRefraction = false;
+		CEngineRafraction* testRafraction;
+		testRafraction = new CEngineRafraction(0, GET_MANAGER<CDeviceManager>()->GetDevice(), pd3dCommandList, m_pd3dGraphicsRootSignature, 1.f, 2.f, 0.f);
+		testRafraction->SetPosition(0, 1000, 2000);
+		//testRafraction->SetScale(400, 400, 400);
+		m_ObjManager->AddObject(L"EngineRefractionObj", testRafraction, OBJ_EFFECT);
+	}
 }

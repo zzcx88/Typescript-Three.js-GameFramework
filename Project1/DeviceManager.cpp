@@ -218,12 +218,12 @@ void CDeviceManager::CreateSwapChain()
 	hResult = m_pdxgiFactory->MakeWindowAssociation(m_hWnd, DXGI_MWA_NO_ALT_ENTER);
 
 #ifndef _WITH_SWAPCHAIN_FULLSCREEN_STATE
-	CreateRenderTargetViews();
+	CreateRenderTargetViews(NULL, false);
 #endif
 }
 
 
-void CDeviceManager::CreateRenderTargetViews()
+void CDeviceManager::CreateRenderTargetViews(ID3D12Resource* pTexture , bool bRefractionTexture)
 {
 	D3D12_CPU_DESCRIPTOR_HANDLE d3dRtvCPUDescriptorHandle = m_pd3dRtvDescriptorHeap->GetCPUDescriptorHandleForHeapStart();
 	for (UINT i = 0; i < m_nSwapChainBuffers; i++)
@@ -326,7 +326,7 @@ void CDeviceManager::ChangeSwapChainState()
 
 	m_nSwapChainBufferIndex = m_pdxgiSwapChain->GetCurrentBackBufferIndex();
 
-	CreateRenderTargetViews();
+	CreateRenderTargetViews(NULL, false);
 }
 
 void CDeviceManager::BuildScene()
@@ -670,6 +670,7 @@ void CDeviceManager::FrameAdvance()
 	//ProcessInput();
 
 	AnimateObjects();
+	m_pSceneManager->OnPreRender(m_pd3dDevice, m_pd3dCommandQueue, m_pd3dFence, m_hFenceEvent);
 
 	HRESULT hResult = m_pd3dCommandAllocator->Reset();
 	hResult = m_pd3dCommandList->Reset(m_pd3dCommandAllocator, NULL);
@@ -697,6 +698,7 @@ void CDeviceManager::FrameAdvance()
 
 	m_pd3dCommandList->SetGraphicsRootSignature(m_pRootSignature);
 
+	GET_MANAGER<SceneManager>()->OnPrepareRender(m_pd3dCommandList);
 	m_pSceneManager->Render(m_pd3dCommandList, m_pCamera);
 
 	//if (m_pPlayer) m_pPlayer->Render(m_pd3dCommandList, m_pCamera);
@@ -812,10 +814,10 @@ void CDeviceManager::FrameAdvance()
 
 	MoveToNextFrame();
 
-	m_xmf3postPosition = m_pPlayer->GetPosition();
+	/*m_xmf3postPosition = m_pPlayer->GetPosition();
 
 	m_xmf3TargetVector = Vector3::Subtract(m_xmf3postPosition, m_xmf3prePosition);
-	m_xmf3TargetVector = Vector3::Normalize(m_xmf3TargetVector);
+	m_xmf3TargetVector = Vector3::Normalize(m_xmf3TargetVector);*/
 
 	m_GameTimer.GetFrameRate(m_pszFrameRate + 12, 37);
 	size_t nLength = _tcslen(m_pszFrameRate);

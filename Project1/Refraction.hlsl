@@ -1,97 +1,45 @@
 ﻿#include "Shaders.hlsl"
-SamplerState SampleType;
-Texture2D colorTexture : register(t0);
-Texture2D normalTexture : register(t1);
-Texture2D refractionTexture : register(t2);
-
-cbuffer GlassBuffer
+cbuffer cbGameObjectInfo : register(b2)
 {
-	float refractionScale;
-	float3 padding;
+	matrix		gmtxWorld : packoffset(c0);
+	uint		gnMaterialID : packoffset(c8);
+	float		blendAmount : packoffset(c12);
+};
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//
+Texture2D gtxtTexture : register(t0);
+
+//SamplerState gWrapSamplerState : register(s2);
+//SamplerState gClampSamplerState : register(s3);
+
+struct VS_TEXTURED_INPUT
+{
+	float3 position : POSITION;
+	float2 uv : TEXCOORD;
 };
 
-
-//////////////
-// TYPEDEFS //
-//////////////
-struct PixelInputType
+struct VS_TEXTURED_OUTPUT
 {
 	float4 position : SV_POSITION;
-	float2 tex : TEXCOORD0;
-	float4 refractionPosition : TEXCOORD1;
+	float2 uv : TEXCOORD;
 };
 
-struct VertexInputType
+VS_TEXTURED_OUTPUT VSTextured(VS_TEXTURED_INPUT input)
 {
-	float4 position : POSITION;
-	float2 tex : TEXCOORD0;
-};
+	VS_TEXTURED_OUTPUT output;
 
+	output.position = mul(mul(mul(float4(input.position, 1.0f), gmtxWorld), gmtxView), gmtxProjection);
+	output.uv = input.uv;
 
-////////////////////////////////////////////////////////////////////////////////
-// Vertex Shader
-////////////////////////////////////////////////////////////////////////////////
-PixelInputType GlassVertexShader(VertexInputType input)
-{
-	PixelInputType output;
-	matrix viewProjectWorld;
-
-
-	// 적절한 행렬 계산을 위해 위치 벡터를 4 단위로 변경합니다.
-	input.position.w = 1.0f;
-
-	// 월드, 뷰 및 투영 행렬에 대한 정점의 위치를 ​​계산합니다.
-	output.position = mul(input.position, worldMatrix);
-	output.position = mul(output.position, viewMatrix);
-	output.position = mul(output.position, projectionMatrix);
-
-	// 픽셀 쉐이더의 텍스처 좌표를 저장한다.
-	output.tex = input.tex;
-
-	// 굴절을위한 뷰 투영 세계 행렬을 만듭니다.
-	viewProjectWorld = mul(viewMatrix, projectionMatrix);
-	viewProjectWorld = mul(worldMatrix, viewProjectWorld);
-
-	// viewProjectWorld 행렬에 대해 입력 위치를 계산합니다.
-	output.refractionPosition = mul(input.position, viewProjectWorld);
-
-	return output;
+	return(output);
 }
 
-////////////////////////////////////////////////////////////////////////////////
-// Pixel Shader
-////////////////////////////////////////////////////////////////////////////////
-float4 GlassPixelShader(PixelInputType input) : SV_TARGET
+float4 PSTextured(VS_TEXTURED_OUTPUT input, uint primitiveID : SV_PrimitiveID) : SV_TARGET
 {
-	float2 refractTexCoord;
-	float4 normalMap;
-	float3 normal;
-	float4 refractionColor;
-	float4 textureColor;
-	float4 color;
-
-
-	// 투영 된 굴절 텍스처 좌표를 계산합니다.
-	refractTexCoord.x = input.refractionPosition.x / input.refractionPosition.w / 2.0f + 0.5f;
-	refractTexCoord.y = -input.refractionPosition.y / input.refractionPosition.w / 2.0f + 0.5f;
-
-	// 노멀 맵 텍스처로부터 법선을 샘플링합니다.
-	normalMap = normalTexture.Sample(SampleType, input.tex);
-
-	// 법선의 범위를 (0,1)에서 (-1, + 1)로 확장합니다.
-	normal = (normalMap.xyz * 2.0f) - 1.0f;
-
-	// 유리를 통해 가벼운 왜곡을 시뮬레이트하기 위해 텍스처 좌표 샘플링 위치를 법선 맵 값으로 다시 배치합니다.
-	refractTexCoord = refractTexCoord + (normal.xy * refractionScale);
-
-	// 교란 된 텍스처 좌표를 사용하여 굴절 텍스처에서 텍스처 픽셀을 샘플링합니다.
-	refractionColor = refractionTexture.Sample(SampleType, refractTexCoord);
-
-	// 유리색 텍스처에서 텍스처 픽셀을 샘플링합니다.
-	//textureColor = colorTexture.Sample(SampleType, input.tex);
-
-	// 최종 색상의 유리 색상과 굴절 값을 균등하게 결합합니다.
-	//color = lerp(refractionColor, textureColor, 0.5f);
-
-	return refractionColor;
+	float4 cColor = gtxtTexture.Sample(gssWrap, input.uv);
+	//AlphaToCoverageEnable 을 FALSE로 하였음으로 배경값을 직접 지워준다. 즉 알파값이 0.1 이하인 픽셀을 클리핑 한다.
+	clip(cColor.a - 0.2f);
+	if (gbEffectedObj)
+		cColor.a = gfBlendAmount;
+	return(cColor);
 }

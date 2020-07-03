@@ -21,11 +21,12 @@ public:
 
 	XMFLOAT3 m_xmfAxis;
 	XMFLOAT3 m_xmf3TargetVector;
-	CCamera* m_pCamera;
 
 	bool m_bRefference = false;
 	bool FirstFire = true;
 	bool m_bLockOn = false;
+	
+
 	float m_fAssertFrequence = 3.0f;
 	float m_fDeleteFrequence = 5.0f;
 	float m_fAddFogFrequence = 0.001f;

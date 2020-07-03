@@ -156,19 +156,42 @@ void CPlayer::Update_Input(const float& TimeDelta)
 	if (true == keyManager->GetKeyState(STATE_DOWN, VK_TAB))
 	{
 		//m_bGameOver = true;
-		dwDirection |= VK_TAB;
-		if(m_bEye_fixation == false)
+		if (GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player_missle", OBJ_ALLYMISSLE))
 		{
-			m_bEye_fixation = true;
+			if (GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player_missle", OBJ_ALLYMISSLE)->m_bMissleLockCamera == false)
+			{
+				dwDirection |= VK_TAB;
+				if (m_bEye_fixation == false)
+				{
+					m_bEye_fixation = true;
+				}
+				else
+				{
+					m_bEye_fixation = false;
+				}
+
+				if (m_bEye_fixation == false)
+				{
+					ReturnEyeFix();
+				}
+			}
 		}
 		else
 		{
-			m_bEye_fixation = false;
-		}
+			dwDirection |= VK_TAB;
+			if (m_bEye_fixation == false)
+			{
+				m_bEye_fixation = true;
+			}
+			else
+			{
+				m_bEye_fixation = false;
+			}
 
-		if (m_bEye_fixation == false)
-		{
-			ReturnEyeFix();
+			if (m_bEye_fixation == false)
+			{
+				ReturnEyeFix();
+			}
 		}
 	}
 
@@ -213,10 +236,39 @@ void CPlayer::Update_Input(const float& TimeDelta)
 		dwDirection |= VK_LCONTROL;
 	}
 
-	if (true == keyManager->GetKeyState(STATE_DOWN, VK_SPACE))
+
+	if (true == keyManager->GetKeyState(STATE_PUSH, VK_SPACE))
 	{
 		dwDirection |= VK_SPACE;
-		MissleLaunch();
+		if (m_fPushSpaceElapsed == 0.0f)
+		{
+			MissleLaunch();
+		}
+		m_fPushSpaceElapsed+= 1* TimeDelta;
+		if (m_fPushSpaceElapsed > 0.3f)
+		{
+			if(GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player_missle", OBJ_ALLYMISSLE))
+				GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player_missle", OBJ_ALLYMISSLE)->m_bMissleLockCamera = true;
+		}
+	}
+
+	if (true == keyManager->GetKeyState(STATE_UP, VK_SPACE))
+	{
+		m_fPushSpaceElapsed = 0.0f;
+		if(GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player_missle", OBJ_ALLYMISSLE))
+			GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player_missle", OBJ_ALLYMISSLE)->m_bMissleLockCamera = false;
+		if (m_bEye_fixation == false && m_bGunFire == false)
+		{
+			if (m_fFOV < 60)
+				m_fFOV = 60;
+			m_pCamera->GenerateProjectionMatrix(1.01f, m_fFarPlaneDistance, ASPECT_RATIO, m_fFOV);
+			m_pCamera->SetLookPlayer();
+			XMFLOAT3 xmf3Shift = XMFLOAT3(0, 0, 0);
+			xmf3Shift = Vector3::Add(xmf3Shift, m_xmf3Up, 0.6);
+			m_pCamera->SetPosition(Vector3::Add(m_xmf3Position, xmf3Shift));
+			xmf3Shift = Vector3::Add(xmf3Shift, m_xmf3Look, -4.1);
+			m_pCamera->SetPosition(Vector3::Add(m_xmf3Position, xmf3Shift));
+		}
 	}
 
 	if (keyManager->GetKeyState(STATE_PUSH, VK_RIGHT) || keyManager->GetKeyState(STATE_PUSH, VK_LEFT))
@@ -473,7 +525,12 @@ void CPlayer::Animate(float fTimeElapsed)
 		if (fDeceleration > fLength) fDeceleration = fLength;
 		m_xmf3Velocity = Vector3::Add(m_xmf3Velocity, Vector3::ScalarProduct(m_xmf3Velocity, -fDeceleration, true));
 
-		Update_Input(fTimeElapsed);
+		if (GET_MANAGER<SceneManager>()->GetCurrentSceneState() != SCENE_MENU && m_nMSL_Count != NULL)
+		{
+			Update_Input(fTimeElapsed);
+		}
+
+		SetEngineRefractionPos();
 
 		SetAfterBurnerPosition(fTimeElapsed);
 	}
@@ -562,7 +619,7 @@ void CPlayer::Render(ID3D12GraphicsCommandList* pd3dCommandList, CCamera* pCamer
 	{
 		DWORD nCameraMode = (pCamera) ? pCamera->GetMode() : 0x00;
 		if (nCameraMode == THIRD_PERSON_CAMERA) CGameObject::Render(pd3dCommandList, pCamera);
-		if (nCameraMode == SPACESHIP_CAMERA) CGameObject::Render(pd3dCommandList, pCamera);
+		/*if (nCameraMode == SPACESHIP_CAMERA)*/ CGameObject::Render(pd3dCommandList, pCamera);
 	}
 }
 
@@ -652,6 +709,9 @@ void CAirplanePlayer::OnPrepareAnimate()
 	m_pRight_AfterBurnerIN = FindFrame("Right_AfterBurnerIN");
 	m_pLeft_AfterBurnerEX = FindFrame("Left_AfterBurnerEX");
 	m_pLeft_AfterBurnerIN = FindFrame("Left_AfterBurnerIN");
+	m_pEngineRefraction = FindFrame("EngineRefraction");
+	
+
 
 	m_pRight_AfterBurnerEX->m_bEffectedObj = true;
 	m_pRight_AfterBurnerEX->m_fBurnerBlendAmount = 0.5f;
@@ -981,6 +1041,7 @@ void CAirplanePlayer::MissleLaunch()
 		m_bMissleCross = false;
 		pMissle->SetPosition(m_pMSL_2->GetPosition());
 	}
+	pMissle->m_pCamera = m_pCamera;
 	m_ObjManager->AddObject(L"player_missle", pMissle, OBJ_ALLYMISSLE);
 	CPlayer::SetMissileCount(--m_nMSL_Count);
 
@@ -1071,6 +1132,17 @@ void CAirplanePlayer::SetAfterBurnerPosition(float fTimeElapsed)
 				m_pRight_AfterBurner[i]->m_pAfterBurner->SetPlaneScale(m_fBurnerElapsed / 100);
 			}
 		}
+	}
+}
+
+void CAirplanePlayer::SetEngineRefractionPos()
+{
+	if (GET_MANAGER<ObjectManager>()->GetObjFromTag(L"EngineRefractionObj", OBJ_EFFECT) && m_pEngineRefraction != NULL)
+	{
+		GET_MANAGER<ObjectManager>()->GetObjFromTag(L"EngineRefractionObj", OBJ_EFFECT)->SetPosition(m_pEngineRefraction->GetPosition());
+		//GET_MANAGER<ObjectManager>()->GetObjFromTag(L"EngineRefractionObj", OBJ_EFFECT)->m_xmf4x4ToParent = m_pEngineRefraction->m_xmf4x4World;
+		//GET_MANAGER<ObjectManager>()->GetObjFromTag(L"EngineRefractionObj", OBJ_EFFECT)->SetScale(0.1, 0.1, 0);
+		//GET_MANAGER<ObjectManager>()->GetObjFromTag(L"EngineRefractionObj", OBJ_EFFECT)->SetPlaneScale(100);
 	}
 }
 

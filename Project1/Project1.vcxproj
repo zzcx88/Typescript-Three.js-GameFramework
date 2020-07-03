@@ -155,6 +155,7 @@
     <ClInclude Include="CAngrybotObject.h" />
     <ClInclude Include="CAnimationController.h" />
     <ClInclude Include="CCrushSmoke.h" />
+    <ClInclude Include="CEngineRafraction.h" />
     <ClInclude Include="CMig21.h" />
     <ClInclude Include="COrientedBoxCollider.h" />
     <ClInclude Include="CBoxMesh.h" />
@@ -223,6 +224,7 @@
     <ClCompile Include="CAngrybotObject.cpp" />
     <ClCompile Include="CAnimationController.cpp" />
     <ClCompile Include="CCrushSmoke.cpp" />
+    <ClCompile Include="CEngineRafraction.cpp" />
     <ClCompile Include="CMig21.cpp" />
     <ClCompile Include="COrientedBoxCollider.cpp" />
     <ClCompile Include="CBoxMesh.cpp" />
@@ -344,11 +346,11 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
     </FxCompile>
-    <FxCompile Include="Refraction.hlsl">
-      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
-      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Vertex</ShaderType>
-      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
-      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Vertex</ShaderType>
+    <FxCompile Include="Refract.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>

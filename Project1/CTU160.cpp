@@ -266,7 +266,7 @@ void CTU160::Render(ID3D12GraphicsCommandList* pd3dCommandList, CCamera* pCamera
 	//if (SphereCollider)SphereCollider->Render(pd3dCommandList, pCamera);
 	if (m_bDestroyed == true)
 	{
-		cout << m_fDeadElapsed << endl;
+		//cout << m_fDeadElapsed << endl;
 		m_fDeadElapsed += 1.f * GET_MANAGER<CDeviceManager>()->GetGameTimer().GetTimeElapsed();
 
 		if (m_fDeadElapsed >= 3 && m_bCreateOnece == false)
@@ -288,10 +288,14 @@ void CTU160::Render(ID3D12GraphicsCommandList* pd3dCommandList, CCamera* pCamera
 
 		if (m_fDeadElapsed >= m_fDeadFrequence)
 		{
-			m_isDead = true;
-			m_pUI->m_isDead = true;
-			m_pLockOnUI->m_isDead = true;
-			GET_MANAGER<SceneManager>()->m_nTgtObject--;
+			if (m_isDead == false)
+			{
+				GET_MANAGER<SceneManager>()->m_nTgtObject--;
+				cout << GET_MANAGER<SceneManager>()->m_nTgtObject << endl;
+				m_isDead = true;
+				m_pUI->m_isDead = true;
+				m_pLockOnUI->m_isDead = true;
+			}
 		}
 	}	
 

@@ -97,7 +97,10 @@ void CMissleFog::Animate(float fTimeElapsed)
 		}
 		else
 		{
-			SetScale(m_fScaleX += m_fTimeElapsed / 5, m_fScaleY += m_fTimeElapsed / 5, 1);
+			if (m_fScaleX < 50)
+				SetScale(m_fScaleX += 1.1 * m_fTimeElapsed , m_fScaleY += 1.1 * m_fTimeElapsed, 1);
+			else
+				SetScale(50, 50, 0);
 		}
 		TextureAnimate();
 		SetLookAt(m_pCamera->GetPosition());

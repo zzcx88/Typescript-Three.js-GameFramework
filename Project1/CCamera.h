@@ -66,6 +66,8 @@ public:
 	void SetViewport(int xTopLeft, int yTopLeft, int nWidth, int nHeight, float fMinZ = 0.0f, float fMaxZ = 1.0f);
 	void SetScissorRect(LONG xLeft, LONG yTop, LONG xRight, LONG yBottom);
 
+	void SetLookVector(XMFLOAT3 xmf3Look);
+
 	virtual void SetViewportsAndScissorRects(ID3D12GraphicsCommandList* pd3dCommandList);
 
 	void SetPlayer(CPlayer* pPlayer) { m_pPlayer = pPlayer; }

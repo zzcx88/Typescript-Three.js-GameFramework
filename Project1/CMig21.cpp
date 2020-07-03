@@ -251,10 +251,14 @@ void CMig21::Render(ID3D12GraphicsCommandList* pd3dCommandList, CCamera* pCamera
 
 		if (m_fDeadElapsed >= m_fDeadFrequence)
 		{
-			m_isDead = true;
-			m_pUI->m_isDead = true;
-			m_pLockOnUI->m_isDead = true;
-			GET_MANAGER<SceneManager>()->m_nTgtObject--;
+			if (m_isDead == false)
+			{
+				GET_MANAGER<SceneManager>()->m_nTgtObject--;
+				cout << GET_MANAGER<SceneManager>()->m_nTgtObject << endl;
+				m_isDead = true;
+				m_pUI->m_isDead = true;
+				m_pLockOnUI->m_isDead = true;
+			}
 		}
 	}
 	CGameObject::Render(pd3dCommandList, pCamera);

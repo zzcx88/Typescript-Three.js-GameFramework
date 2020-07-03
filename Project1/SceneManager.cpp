@@ -85,9 +85,19 @@ int SceneManager::Update(const float& TimeDelta)
 	return 0;
 }
 
-void SceneManager::Render(ID3D12GraphicsCommandList* pd3dCommandList, CCamera* pCamera)
+void SceneManager::OnPrepareRender(ID3D12GraphicsCommandList* pd3dCommandList)
 {
-	m_Scene->Render(pd3dCommandList, pCamera);
+	m_Scene->OnPrepareRender(pd3dCommandList);
+}
+
+void SceneManager::OnPreRender(ID3D12Device* pd3dDevice, ID3D12CommandQueue* pd3dCommandQueue, ID3D12Fence* pd3dFence, HANDLE hFenceEvent)
+{
+	m_Scene->OnPreRender(pd3dDevice, pd3dCommandQueue, pd3dFence, hFenceEvent);
+}
+
+void SceneManager::Render(ID3D12GraphicsCommandList* pd3dCommandList, CCamera* pCamera, bool bPreRender)
+{
+	m_Scene->Render(pd3dCommandList, pCamera, bPreRender);
 }
 
 void SceneManager::ReleaseUploadBuffers()

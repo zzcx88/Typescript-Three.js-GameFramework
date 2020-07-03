@@ -20,13 +20,14 @@ public:
 	void CreateCommandQueueAndList();
 	void CreateRtvAndDsvDescriptorHeaps();
 	void CreateSwapChain();
-	void CreateRenderTargetViews();
+	void CreateRenderTargetViews(ID3D12Resource* pTexture, bool bRefractionTexture);
 	void CreateDepthStencilView();
 	void ChangeSwapChainState();
 
 	void SetBulrSwitch(bool blurOn) { m_BlurSwitch = blurOn; }
 	float GetBlurControl() { return m_fBlurControl; }
 	float GetBlurAmount() { return m_fBlurAmount; }
+	ID3D12Device* GetDevice() { return m_pd3dDevice; }
 	CGameTimer GetGameTimer() { return m_GameTimer; }
 
 	ID3D12Resource *CurrentBackBuffer()const;
