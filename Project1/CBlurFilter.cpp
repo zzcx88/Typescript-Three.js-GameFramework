@@ -70,8 +70,8 @@ void CBlurFilter::Execute(ID3D12GraphicsCommandList* pd3dCommandList,
 
 	pd3dCommandList->SetComputeRootSignature(pd3dRootSignature);
 	
-	pd3dCommandList->SetComputeRoot32BitConstants(17, 1, &blurRadius, 0);
-	pd3dCommandList->SetComputeRoot32BitConstants(17, (UINT)weights.size(), weights.data(), 1);
+	pd3dCommandList->SetComputeRoot32BitConstants(0, 1, &blurRadius, 0);
+	pd3dCommandList->SetComputeRoot32BitConstants(0, (UINT)weights.size(), weights.data(), 1);
 
 	// GPU가 준비가 안된 상태에서 자원 상태 전이시 자원 위험 상황을 피하기 위해서 상태를 설정하고
 	// 응용프로그램이 상태 전이를 D3D에게 보고함으로써 GPU는 자원 위험을 피하는데 조처를 할 수 있다.

@@ -488,7 +488,7 @@ void CGameObject::Render(ID3D12GraphicsCommandList* pd3dCommandList, CCamera* pC
 						if (m_ppMaterials[i]->m_pShader) m_ppMaterials[i]->m_pShader->Render(pd3dCommandList, pCamera);
 						m_ppMaterials[i]->UpdateShaderVariable(pd3dCommandList);
 					}
-					if (m_bEffectedObj && m_fBurnerBlendAmount <= 0)
+					if (m_fEffectedObj == 1.0f && m_fBurnerBlendAmount <= 0)
 					{
 					}
 					else
@@ -513,15 +513,16 @@ void CGameObject::UpdateShaderVariables(ID3D12GraphicsCommandList* pd3dCommandLi
 
 void CGameObject::UpdateShaderVariable(ID3D12GraphicsCommandList* pd3dCommandList, XMFLOAT4X4* pxmf4x4World)
 {
-	
 	XMFLOAT4X4 xmf4x4World;
 	XMStoreFloat4x4(&xmf4x4World, XMMatrixTranspose(XMLoadFloat4x4(pxmf4x4World)));
 	pd3dCommandList->SetGraphicsRoot32BitConstants(1, 16, &xmf4x4World, 0);
-
-	pd3dCommandList->SetGraphicsRoot32BitConstants(16, 1, &m_fBurnerBlendAmount, 0);
-	pd3dCommandList->SetGraphicsRoot32BitConstants(16, 1, &m_bEffectedObj,1);
-	pd3dCommandList->SetGraphicsRoot32BitConstants(16, 1, &m_bWarning, 2);
 	
+	pd3dCommandList->SetGraphicsRoot32BitConstants(16, 1, &m_fBurnerBlendAmount, 0);
+	pd3dCommandList->SetGraphicsRoot32BitConstants(16, 1, &m_fEffectedObj,1);
+	pd3dCommandList->SetGraphicsRoot32BitConstants(16, 1, &m_fWarning, 2);
+
+
+
 }
 
 void CGameObject::UpdateShaderVariable(ID3D12GraphicsCommandList* pd3dCommandList, CMaterial* pMaterial)

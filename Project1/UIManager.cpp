@@ -33,57 +33,55 @@ void UIManager::ReleaseUI() {
 void UIManager::MoveMinimapPoint(ObjectManager::MAPOBJ* PlyList, ObjectManager::MAPOBJ* EneList)
 {
 
-	if (PlyList->begin()->second->m_pUI == NULL)
+	if (PlyList->begin()->second->m_pMUI == NULL)
 	{
-		CUI* pUI;
-		pUI = new CUI();
+		CMinimap* pUI;
+		pUI = new CMinimap();
 		pUI->SetMesh((CMesh*)GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player_ui7_minimap_green", OBJ_MINIMAP_PLAYER)->m_pUIPlaneMesh);
-		pUI->m_ppUITexture[0] = GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player_ui7_minimap_green", OBJ_MINIMAP_PLAYER)->m_ppUITexture[7];
+		pUI->m_ppUITexture[0] = GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player_ui7_minimap_green", OBJ_MINIMAP_PLAYER)->m_ppUITexture[3];
 		pUI->m_pUIMaterial = new CMaterial(1);
 		pUI->m_pUIMaterial->SetTexture(pUI->m_ppUITexture[0]);
 		pUI->m_pUIMaterial->SetShader(GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player_ui7_minimap_green", OBJ_MINIMAP_PLAYER)->m_pUIShader);
 		pUI->SetMaterial(0, pUI->m_pUIMaterial);
-		PlyList->begin()->second->m_pUI = pUI;
+		PlyList->begin()->second->m_pMUI = pUI;
 		GET_MANAGER<ObjectManager>()->AddObject(L"MinimapInstance", pUI, OBJ_MINIMAP_PLAYER);
 	}
 	else
 	{
-	
+		PlyList->begin()->second->m_pMUI->MoveMinimapPoint(PlyList->begin()->second->GetPosition(), PlyList->begin()->second->m_pMUI);
 		if (GET_MANAGER<SceneManager>()->GetSceneStoped() == true)
-			PlyList->begin()->second->m_pUI->SetIsRender(false);
+			PlyList->begin()->second->m_pMUI->SetIsRender(false);
 		else
-			PlyList->begin()->second->m_pUI->SetIsRender(true);
-		
-		PlyList->begin()->second->m_pUI->MoveMinimapPoint(PlyList->begin()->second->GetPosition(), PlyList->begin()->second->m_pUI);
+			PlyList->begin()->second->m_pMUI->SetIsRender(true);
 	}
 
 	//공중 오브젝트 적은 묶어서 한번에
 	for (auto& Ene : *EneList)
 	{
-		if (Ene.second->m_pUI == NULL && Ene.second->m_bReffernce == false)
+		if (Ene.second->m_pMUI == NULL && Ene.second->m_bReffernce == false)
 		{
-			CUI* pUI;
-			pUI = new CUI();
+			CMinimap* pUI;
+			pUI = new CMinimap();
 			pUI->SetMesh((CMesh*)GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player_ui10_minimap_red", OBJ_MINIMAP_ENEMY)->m_pUIPlaneMesh);
-			pUI->m_ppUITexture[0] = GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player_ui10_minimap_red", OBJ_MINIMAP_ENEMY)->m_ppUITexture[8];
+			pUI->m_ppUITexture[0] = GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player_ui10_minimap_red", OBJ_MINIMAP_ENEMY)->m_ppUITexture[4];
 			pUI->m_pUIMaterial = new CMaterial(1);
 			pUI->m_pUIMaterial->SetTexture(pUI->m_ppUITexture[0]);
 			pUI->m_pUIMaterial->SetShader(GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player_ui10_minimap_red", OBJ_MINIMAP_ENEMY)->m_pUIShader);
 			pUI->SetMaterial(0, pUI->m_pUIMaterial);
-			Ene.second->m_pUI = pUI;
+			Ene.second->m_pMUI = pUI;
 
 			GET_MANAGER<ObjectManager>()->AddObject(L"MinimapInstance", pUI, OBJ_MINIMAP_ENEMY);
 
 		}
 
-
 		if (Ene.second->m_bReffernce == false)
 		{
-			Ene.second->m_pUI->MoveMinimapPoint(Ene.second->GetPosition(), Ene.second->m_pUI);
+			Ene.second->m_pMUI->MoveMinimapPoint(Ene.second->GetPosition(), Ene.second->m_pMUI);
+
 			if (GET_MANAGER<SceneManager>()->GetSceneStoped() == true)
-				Ene.second->m_pUI->SetIsRender(false);
+				Ene.second->m_pMUI->SetIsRender(false);
 			else
-				Ene.second->m_pUI->SetIsRender(true);
+				Ene.second->m_pMUI->SetIsRender(true);
 		}
 
 	}
@@ -152,16 +150,14 @@ void UIManager::MoveLockOnUI(ObjectManager::MAPOBJ* PlyList, ObjectManager::MAPO
 
 		if (Ene.second->m_bReffernce == false)
 		{
-			//Ene.second->m_pLockOnUI->m_ppMaterials[0]->SetRedShader();
 
 			Ene.second->m_pLockOnUI->MoveLockOnUI(Ene.second->GetScreenPosition(), Ene.second->GetPosition(),
 				PlyList->begin()->second->GetPosition(), PlyList->begin()->second->GetLook(), Ene.second->m_pLockOnUI, PlyList->begin()->second->m_pCamera);
 			
-		
 			if (Ene.second->m_pLockOnUI->bDetectable == true)
 			{
 
-				if (Ene.second->m_bAiming == true && Ene.second->GetState() != true)
+				if (Ene.second->m_bAiming == true && Ene.second->GetDestroyedState() != true)
 				{
 					if (Ene.second->m_pLockOnUI->GetCameraAxis() > 0.f)
 					{
@@ -171,7 +167,6 @@ void UIManager::MoveLockOnUI(ObjectManager::MAPOBJ* PlyList, ObjectManager::MAPO
 						nDistance = Ene.second->m_pLockOnUI->GetLenth();
 						if (nDistance < 0)
 							nDistance = 1;
-						//cout << nDistance << " 거리" << endl;
 						while (nDistance != 0) {
 							distance.emplace_back(nDistance % 10);
 							nDistance /= 10;
@@ -246,14 +241,7 @@ void UIManager::MoveLockOnUI(ObjectManager::MAPOBJ* PlyList, ObjectManager::MAPO
 
 						distance.clear();
 					}
-					else
-					{
-						PlyList->begin()->second->ppNumObjects[24]->SetIsRender(false);
-						PlyList->begin()->second->ppNumObjects[25]->SetIsRender(false);
-						PlyList->begin()->second->ppNumObjects[26]->SetIsRender(false);
-						PlyList->begin()->second->ppNumObjects[27]->SetIsRender(false);
-						PlyList->begin()->second->ppNumObjects[28]->SetIsRender(false);
-					}
+				
 
 					if (Ene.second->m_pLockOnUI->bLockOn == true)
 					{
@@ -314,7 +302,7 @@ void UIManager::MoveLockOnUI(ObjectManager::MAPOBJ* PlyList, ObjectManager::MAPO
 	{
 		if (*p != NULL)
 		{
-			if ((*p)->GetState() != true)
+			if ((*p)->GetDestroyedState() != true)
 			{
 				if (p == GameOBJs.begin() + Count)
 					(*p)->m_bAiming = true;
@@ -463,7 +451,7 @@ void UIManager::NumberTextureAnimate(ObjectManager::MAPOBJ* PlyList, const float
 			score.push_back(score_number % 10);
 			score_number /= 10;
 		}
-
+		
 		// Font animation(speed)
 		if (speed.size() > 0)
 		{

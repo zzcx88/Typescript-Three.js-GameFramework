@@ -205,6 +205,9 @@
     <Filter Include="GameObject\Plane\Effect\WaterDropRefraction">
       <UniqueIdentifier>{6159be94-ec85-4082-a667-00990a7c28a2}</UniqueIdentifier>
     </Filter>
+    <Filter Include="GameObject\Mesh\NavigatorMesh">
+      <UniqueIdentifier>{987af736-5b04-43b5-8584-b087b4ef62b6}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="targetver.h">
@@ -420,6 +423,12 @@
     <ClInclude Include="CWaterDropRefraction.h">
       <Filter>GameObject\Plane\Effect\WaterDropRefraction</Filter>
     </ClInclude>
+    <ClInclude Include="CNavigator.h">
+      <Filter>GameObject\Plane\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="CNavMesh.h">
+      <Filter>GameObject\Mesh\NavigatorMesh</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="DDSTextureLoader12.cpp">
@@ -607,6 +616,12 @@
     </ClCompile>
     <ClCompile Include="CWaterDropRefraction.cpp">
       <Filter>GameObject\Plane\Effect\WaterDropRefraction</Filter>
+    </ClCompile>
+    <ClCompile Include="CNavigator.cpp">
+      <Filter>GameObject\Plane\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="CNavMesh.cpp">
+      <Filter>GameObject\Mesh\NavigatorMesh</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

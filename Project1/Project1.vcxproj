@@ -169,6 +169,8 @@
     <ClInclude Include="CCrushSmoke.h" />
     <ClInclude Include="CEngineRafraction.h" />
     <ClInclude Include="CMig21.h" />
+    <ClInclude Include="CNavigator.h" />
+    <ClInclude Include="CNavMesh.h" />
     <ClInclude Include="COrientedBoxCollider.h" />
     <ClInclude Include="CBoxMesh.h" />
     <ClInclude Include="CBullet.h" />
@@ -252,6 +254,8 @@
     <ClCompile Include="CCrushSmoke.cpp" />
     <ClCompile Include="CEngineRafraction.cpp" />
     <ClCompile Include="CMig21.cpp" />
+    <ClCompile Include="CNavigator.cpp" />
+    <ClCompile Include="CNavMesh.cpp" />
     <ClCompile Include="COrientedBoxCollider.cpp" />
     <ClCompile Include="CBoxMesh.cpp" />
     <ClCompile Include="CBullet.cpp" />

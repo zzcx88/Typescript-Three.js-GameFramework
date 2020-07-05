@@ -111,5 +111,7 @@ public:
 	bool quadrant4 = false;
 
 	int RotateMode = 0;
+
+
 };
 

@@ -11,6 +11,8 @@ public:
 	virtual ~CUI();
 
 	void MoveMinimapPoint(XMFLOAT3& xmfPlayer, CGameObject* pGameOBJ);
+	void SetLookAt(XMFLOAT3& xmf3LookAt);
+
 	void Render(ID3D12GraphicsCommandList* pd3dCommandList, CCamera* pCamera);
 };
 

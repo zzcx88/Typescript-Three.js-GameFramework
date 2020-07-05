@@ -139,8 +139,10 @@ class CRedUIShader;
 class CLockOnUI;
 class CAfterBurner;
 class CBoxMesh;
+class CMinimap;
 class CMinimapShader;
 class CNumber;
+class CNavMesh;
 class CGameObject
 {
 private:
@@ -206,6 +208,11 @@ public:
 	CTexture* m_pBulletTexture;
 	CMaterial* m_pBulletMaterial;
 	///////////////////////////////////////////
+	CNavMesh* m_pNavMesh;
+	CRedUIShader* m_pNavShader;
+	CTexture* m_pNavTexture[2];
+	CMaterial* m_pNavMaterial;
+	///////////////////////////////////////////
 	CNumber* ppNumObjects[29];
 	CRedUIShader* m_pRedShader;
 	///////////////////////////////////////////
@@ -237,6 +244,8 @@ public:
 	COrientedBoxCollider*	OrientedBoxCollider = NULL;
 
 	CUI*						m_pUI = NULL;
+	CMinimap* m_pMUI = NULL;
+
 	CLockOnUI*			m_pLockOnUI = NULL;
 	CNumber* number = NULL;
 
@@ -320,6 +329,8 @@ public:
 	virtual float GetFov() const { return m_fFOV; }
 
 	const bool& GetState() { return m_isDead; }
+	const bool& GetDestroyedState() { return m_bDestroyed; }
+
 	int GetScore() const { return m_nPlayerScore; }
 	int GetPlayerSpeed()const { return nPlayerSpeed; }
 	bool GetIsRender() const { return isRender; }

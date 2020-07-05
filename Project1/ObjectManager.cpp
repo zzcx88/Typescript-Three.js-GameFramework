@@ -145,7 +145,6 @@ void ObjectManager::Render(ID3D12GraphicsCommandList* pd3dCommandList, CCamera* 
 		}
 	}
 
-
 	if (bPreRender == false)
 	{
 		if (GET_MANAGER<SceneManager>()->GetCurrentSceneState() == SCENE_TEST)

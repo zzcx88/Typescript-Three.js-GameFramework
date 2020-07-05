@@ -116,7 +116,7 @@ void CMissle::Animate(float fTimeElapsed)
 			pMissleFog->m_pEffectMaterial->SetShader(m_ObjManager->GetObjFromTag(L"MissleFog", OBJ_EFFECT)->m_EffectShader);
 			pMissleFog->SetMaterial(0, pMissleFog->m_pEffectMaterial);
 			pMissleFog->SetPosition(m_xmf3Position);
-			pMissleFog->m_bEffectedObj = true;
+			pMissleFog->m_fEffectedObj = 1.0f;
 			m_ObjManager->AddObject(L"MissleFogInstance", pMissleFog, OBJ_EFFECT);
 
 			m_fAddFogTimeElapsed = 0;
@@ -171,11 +171,11 @@ void CMissle::CollisionActivate(CGameObject* collideTarget)
 		while (true)
 		{
 			i += 1;
-			GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player_ui15_destroyed", OBJ_MINIMAP_UI)->SetIsRender(true);
+			GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player_ui15_destroyed", OBJ_FIGHT_UI3)->SetIsRender(true);
 
 			if (i > 15)
 			{
-				GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player_ui15_destroyed", OBJ_MINIMAP_UI)->SetIsRender(false);
+				GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player_ui15_destroyed", OBJ_FIGHT_UI3)->SetIsRender(false);
 				i = 0;
 				break;
 			}
