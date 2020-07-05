@@ -119,7 +119,6 @@ void ObjectManager::Render(ID3D12GraphicsCommandList* pd3dCommandList, CCamera* 
 			obj.second->UpdateTransform(NULL);
 		}
 	}
-
 	if (GET_MANAGER<SceneManager>()->GetCurrentSceneState() == SCENE_TEST)
 	{
 		// Minimap

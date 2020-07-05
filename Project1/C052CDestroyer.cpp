@@ -98,9 +98,8 @@ void C052CDestroyer::CollisionActivate(CGameObject* collideTarget)
 		if (m_fHP <= 0)
 		{
 			m_bDestroyed = true;
-			m_pUI->m_bDestroyed = true;
+			m_pMUI->m_bDestroyed = true;
 			m_pLockOnUI->m_bDestroyed = true;
-
 		}
 	}
 }
@@ -115,7 +114,7 @@ void C052CDestroyer::Render(ID3D12GraphicsCommandList* pd3dCommandList, CCamera*
 		if (m_fDeadElapsed >= m_fDeadFrequence)
 		{
 			m_isDead = true;
-			m_pUI->m_isDead = true;
+			m_pMUI->m_isDead = true;
 			m_pLockOnUI->m_isDead = true;
 
 			if (GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player", OBJ_PLAYER)->m_bEye_fixation == true)

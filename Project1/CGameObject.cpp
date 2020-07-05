@@ -437,11 +437,18 @@ void CGameObject::Animate(float fTimeElapsed)
 
 	if (this->m_ObjType == OBJ_ENEMY)
 	{
+		CPlayer* pPlayer = (CPlayer*)GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player", OBJ_PLAYER);
 		XMFLOAT3 xmf3Pos, xmf3PlayerPos, xmf3TargetVector;
 		xmf3Pos = GetPosition();
 		xmf3PlayerPos = GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player", OBJ_PLAYER)->GetPosition();
 		xmf3TargetVector = Vector3::Subtract(xmf3Pos, xmf3PlayerPos);
+		XMFLOAT3 xmfAxis = Vector3::CrossProduct(pPlayer->GetLookVector() , xmf3TargetVector);
 		LenthToPlayer = sqrt(xmf3TargetVector.x * xmf3TargetVector.x + xmf3TargetVector.y * xmf3TargetVector.x + xmf3TargetVector.z * xmf3TargetVector.z);
+
+		if (m_bAiming == true)
+		{
+			pPlayer->SetTargetDir(xmfAxis);
+		}
 	}
 }
 
@@ -473,7 +480,7 @@ void CGameObject::Render(ID3D12GraphicsCommandList* pd3dCommandList, CCamera* pC
 						if (m_ppMaterials[i]->m_pShader) m_ppMaterials[i]->m_pShader->Render(pd3dCommandList, pCamera);
 						m_ppMaterials[i]->UpdateShaderVariable(pd3dCommandList);
 					}
-					if (m_bEffectedObj && m_fBurnerBlendAmount <= 0)
+					if (m_fEffectedObj == 1.0f && m_fBurnerBlendAmount <= 0)
 					{
 					}
 					else
@@ -498,15 +505,17 @@ void CGameObject::UpdateShaderVariables(ID3D12GraphicsCommandList* pd3dCommandLi
 
 void CGameObject::UpdateShaderVariable(ID3D12GraphicsCommandList* pd3dCommandList, XMFLOAT4X4* pxmf4x4World)
 {
-	
 	XMFLOAT4X4 xmf4x4World;
 	XMStoreFloat4x4(&xmf4x4World, XMMatrixTranspose(XMLoadFloat4x4(pxmf4x4World)));
 	pd3dCommandList->SetGraphicsRoot32BitConstants(1, 16, &xmf4x4World, 0);
-
-	pd3dCommandList->SetGraphicsRoot32BitConstants(16, 2, &m_fBurnerBlendAmount, 0);
-	pd3dCommandList->SetGraphicsRoot32BitConstants(16, 1, &m_bEffectedObj,2);
-	pd3dCommandList->SetGraphicsRoot32BitConstants(16, 1, &m_bWarning, 3);
 	
+
+	pd3dCommandList->SetGraphicsRoot32BitConstants(16, 1, &m_fBurnerBlendAmount, 0);
+	pd3dCommandList->SetGraphicsRoot32BitConstants(16, 1, &m_fEffectedObj,1);
+	pd3dCommandList->SetGraphicsRoot32BitConstants(16, 1, &m_fWarning, 2);
+
+
+
 }
 
 void CGameObject::UpdateShaderVariable(ID3D12GraphicsCommandList* pd3dCommandList, CMaterial* pMaterial)

@@ -136,8 +136,10 @@ class CRedUIShader;
 class CLockOnUI;
 class CAfterBurner;
 class CBoxMesh;
+class CMinimap;
 class CMinimapShader;
 class CNumber;
+class CNavMesh;
 class CGameObject
 {
 private:
@@ -203,6 +205,11 @@ public:
 	CTexture* m_pBulletTexture;
 	CMaterial* m_pBulletMaterial;
 	///////////////////////////////////////////
+	CNavMesh* m_pNavMesh;
+	CRedUIShader* m_pNavShader;
+	CTexture* m_pNavTexture[2];
+	CMaterial* m_pNavMaterial;
+	///////////////////////////////////////////
 	CNumber* ppNumObjects[29];
 	CRedUIShader* m_pRedShader;
 
@@ -233,6 +240,8 @@ public:
 	COrientedBoxCollider*	OrientedBoxCollider = NULL;
 
 	CUI*						m_pUI = NULL;
+	CMinimap* m_pMUI = NULL;
+
 	CLockOnUI*			m_pLockOnUI = NULL;
 	CNumber* number = NULL;
 
@@ -245,6 +254,7 @@ public:
 	bool m_bAiming = false;
 	bool m_bCanFire = false;
 	bool m_bEye_fixation = false;
+	bool		m_bLockType = false;
 
 	bool m_bAiContrail = false;
 	bool m_bAiLockOn = false;
@@ -265,8 +275,8 @@ public:
 	bool			m_bGameOver = false;
 
 	float m_fBurnerBlendAmount;
-	bool m_bEffectedObj = false;
-	bool m_bWarning = false;
+	float m_fEffectedObj = 0.f;
+	float m_fWarning = 0.f;
 
 	void SetMesh(CMesh* pMesh);
 	//void SetMesh(int nIndex, CMesh* pMesh);
@@ -308,6 +318,8 @@ public:
 	XMFLOAT3 GetRight();
 
 	const bool& GetState() { return m_isDead; }
+	const bool& GetDestroyedState() { return m_bDestroyed; }
+
 	int GetScore() const { return m_nPlayerScore; }
 	int GetPlayerSpeed()const { return nPlayerSpeed; }
 	bool GetIsRender() const { return isRender; }

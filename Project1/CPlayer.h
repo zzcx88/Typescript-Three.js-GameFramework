@@ -75,6 +75,7 @@ public:
 	void SetMaxVelocityY(float fMaxVelocity) { m_fMaxVelocityY = fMaxVelocity; }
 	void SetVelocity(const XMFLOAT3& xmf3Velocity) { m_xmf3Velocity = xmf3Velocity; }
 	void SetPosition(const XMFLOAT3& xmf3Position) { Move(XMFLOAT3(xmf3Position.x - m_xmf3Position.x, xmf3Position.y - m_xmf3Position.y, xmf3Position.z - m_xmf3Position.z), false); }
+	void SetTargetDir(const XMFLOAT3& xmf3TargetDir) { m_xmf3TargetDirection = xmf3TargetDir; }
 	void ReturnEyeFix();
 
 	void SetScale(XMFLOAT3& xmf3Scale) { m_xmf3Scale = xmf3Scale; }
@@ -94,8 +95,10 @@ public:
 	int GetMSLCount() const { return(m_nMSL_Count); }
 	int GetScore() const { return(m_nScore); }
 	bool GetGameOver() const { return(m_bGameOver); }
+	const XMFLOAT3& GetTargetDir() const { return (m_xmf3TargetDirection); }
 
 	ObjectManager* m_ObjManager;
+	XMFLOAT3					m_xmf3TargetDirection = XMFLOAT3(0.0f, 0.0f, 0.0f);
 
 	CCamera* GetCamera() { return(m_pCamera); }
 	void SetCamera(CCamera* pCamera) { m_pCamera = pCamera; }

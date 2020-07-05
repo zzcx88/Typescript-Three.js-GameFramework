@@ -5,8 +5,6 @@
 class ObjectManager;
 class CScene
 {
-	bool m_bStoped = false;
-
 public:
 	CScene();
 	virtual ~CScene();
@@ -41,6 +39,8 @@ public:
 	CPlayer* m_pPlayer = NULL;
 	CCamera* m_pCamera = NULL;
 	ObjectManager* m_ObjManager = nullptr;
+
+	bool m_bStoped = false;
 
 	int mClientWidth = 800;
 	int mClientHeight = 600;

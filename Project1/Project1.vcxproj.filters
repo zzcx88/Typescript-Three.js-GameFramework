@@ -193,6 +193,9 @@
     <Filter Include="GameObject\Plane\Effect\CrushSmoke">
       <UniqueIdentifier>{d91e9e62-a119-4bfb-b13e-f2e87be3350b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="GameObject\Mesh\NavigatorMesh">
+      <UniqueIdentifier>{987af736-5b04-43b5-8584-b087b4ef62b6}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="targetver.h">
@@ -393,6 +396,12 @@
     <ClInclude Include="RedUI.h">
       <Filter>GameObject\Plane\UI</Filter>
     </ClInclude>
+    <ClInclude Include="CNavigator.h">
+      <Filter>GameObject\Plane\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="CNavMesh.h">
+      <Filter>GameObject\Mesh\NavigatorMesh</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="DDSTextureLoader12.cpp">
@@ -571,6 +580,12 @@
     </ClCompile>
     <ClCompile Include="RedUI.cpp">
       <Filter>GameObject\Plane\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="CNavigator.cpp">
+      <Filter>GameObject\Plane\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="CNavMesh.cpp">
+      <Filter>GameObject\Mesh\NavigatorMesh</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

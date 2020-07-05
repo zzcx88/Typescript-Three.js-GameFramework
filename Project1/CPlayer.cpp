@@ -123,6 +123,7 @@ void CPlayer::Rotate(float x, float y, float z)
 	else if (nCurrentCameraMode == SPACESHIP_CAMERA)
 	{
 		m_pCamera->Rotate(x, y, z);
+		GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player_ui16_navigator", OBJ_NAVIGATOR)->Rotate(x, y, z);
 		if (x != 0.0f)
 		{
 			XMMATRIX xmmtxRotate = XMMatrixRotationAxis(XMLoadFloat3(&m_xmf3Right), XMConvertToRadians(x));
@@ -172,6 +173,20 @@ void CPlayer::Update_Input(const float& TimeDelta)
 		}
 	}
 
+	if (true == keyManager->GetKeyState(STATE_DOWN, VK_LSHIFT))
+	{
+		//m_bGameOver = true;
+		dwDirection |= VK_LSHIFT;
+		if (m_bLockType == false)
+		{
+			m_bLockType = true;
+		}
+		else
+		{
+			m_bLockType = false;
+		}
+	}
+
 	if (true == keyManager->GetKeyState(STATE_PUSH, VK_LCONTROL))
 	{
 		if(!m_bEye_fixation)
@@ -213,13 +228,13 @@ void CPlayer::Update_Input(const float& TimeDelta)
 			if (!(true == keyManager->GetKeyState(STATE_PUSH, VK_LEFT)))
 			{
 				dwDirection |= VK_RIGHT;
-				Rotate(0.0f, 0.0f, -Roll_WingsRotateDegree * m_fRollPerformance * TimeDelta);
+				Rotate(0.0f, 0.0f, -Roll_WingsRotateDegree * m_fRollPerformance * TimeDelta*2.f);
 				RightRollAnimation(TimeDelta);
 			}
 			else
 			{
 				if (Roll_WingsRotateDegree != 0)
-					Rotate(0.0f, 0.0f, -Roll_WingsRotateDegree * m_fRollPerformance * TimeDelta);
+					Rotate(0.0f, 0.0f, -Roll_WingsRotateDegree * m_fRollPerformance * TimeDelta * 2.f);
 				RollWingReturn(TimeDelta);
 			}
 		}
@@ -229,7 +244,7 @@ void CPlayer::Update_Input(const float& TimeDelta)
 			if (!(true == keyManager->GetKeyState(STATE_PUSH, VK_RIGHT)))
 			{
 				dwDirection |= VK_LEFT;
-				Rotate(0.0f, 0.0f, -Roll_WingsRotateDegree * m_fRollPerformance * TimeDelta);
+				Rotate(0.0f, 0.0f, -Roll_WingsRotateDegree * m_fRollPerformance * TimeDelta * 2.f);
 				LeftRollAnimation(TimeDelta);
 			}
 		}
@@ -237,7 +252,7 @@ void CPlayer::Update_Input(const float& TimeDelta)
 	else
 	{
 		if (Roll_WingsRotateDegree != 0)
-			Rotate(0.0f, 0.0f, -Roll_WingsRotateDegree * m_fRollPerformance * TimeDelta);
+			Rotate(0.0f, 0.0f, -Roll_WingsRotateDegree * m_fRollPerformance * TimeDelta * 2.f);
 		RollWingReturn(TimeDelta);
 	}
 
@@ -639,19 +654,19 @@ void CAirplanePlayer::OnPrepareAnimate()
 	m_pLeft_AfterBurnerEX = FindFrame("Left_AfterBurnerEX");
 	m_pLeft_AfterBurnerIN = FindFrame("Left_AfterBurnerIN");
 
-	m_pRight_AfterBurnerEX->m_bEffectedObj = true;
+	m_pRight_AfterBurnerEX->m_fEffectedObj = 1.0f;
 	m_pRight_AfterBurnerEX->m_fBurnerBlendAmount = 0.5f;
 	m_pRight_AfterBurnerEX->m_ppMaterials[0]->SetAfterBurnerShader();
 
-	m_pRight_AfterBurnerIN->m_bEffectedObj = true;
+	m_pRight_AfterBurnerIN->m_fEffectedObj = 1.0f;
 	m_pRight_AfterBurnerIN->m_fBurnerBlendAmount = 0.5f;
 	m_pRight_AfterBurnerIN->m_ppMaterials[0]->SetAfterBurnerShader();
 
-	m_pLeft_AfterBurnerEX->m_bEffectedObj = true;
+	m_pLeft_AfterBurnerEX->m_fEffectedObj = 1.0f;
 	m_pLeft_AfterBurnerEX->m_fBurnerBlendAmount = 0.5f;
 	m_pLeft_AfterBurnerEX->m_ppMaterials[0]->SetAfterBurnerShader();
 
-	m_pLeft_AfterBurnerIN->m_bEffectedObj = true;
+	m_pLeft_AfterBurnerIN->m_fEffectedObj = 1.0f;
 	m_pLeft_AfterBurnerIN->m_fBurnerBlendAmount = 0.5f;
 	m_pLeft_AfterBurnerIN->m_ppMaterials[0]->SetAfterBurnerShader();
 

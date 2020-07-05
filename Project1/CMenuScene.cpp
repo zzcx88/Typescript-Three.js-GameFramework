@@ -43,14 +43,18 @@ void CMenuScene::BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandLis
 	//float fx = 1.f / 0.96f;
 	//float fy = 1.f / 0.54f;
 
-	m_nGameObjects = 1;
+	m_nGameObjects = 2;
 	m_ppGameObjects = new CGameObject * [m_nGameObjects];
 	m_ppGameObjects[0] = new CUI(8, pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, 2.f,2.f, 0.f, XMFLOAT2(0.f, 0.f), XMFLOAT2(0.f, 0.f), XMFLOAT2(0.f, 0.f), XMFLOAT2(0.f, 0.f));
-	
-	AnimateMenuTitle* TitleAniamation = new AnimateMenuTitle(0, pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, 2.f, 2.f, 0.f);
-	m_ObjManager->AddObject(L"TitleAnimation", TitleAniamation, OBJ_EFFECT);
+	m_ppGameObjects[0]->SetIsRender(true);
+	m_ppGameObjects[1] = new CUI(12, pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, 2.f, 2.f, 0.f, XMFLOAT2(0.f, 0.f), XMFLOAT2(0.f, 0.f), XMFLOAT2(0.f, 0.f), XMFLOAT2(0.f, 0.f));
+	m_ppGameObjects[1]->SetIsRender(false);
 
-	m_ObjManager->AddObject(L"player_ui1_testui", m_ppGameObjects[0], OBJ_UI);
+	AnimateMenuTitle* TitleAniamation = new AnimateMenuTitle(0, pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, 2.f, 2.f, 0.f);
+	m_ObjManager->AddObject(L"TitleAnimation", TitleAniamation, OBJ_EFFECT2);
+
+	m_ObjManager->AddObject(L"player_ui1_title", m_ppGameObjects[0], OBJ_UI);
+	m_ObjManager->AddObject(L"player_ui2_1stage_loading", m_ppGameObjects[1], OBJ_EFFECT);
 
 	CreateShaderVariables(pd3dDevice, pd3dCommandList);
 }
@@ -116,6 +120,7 @@ void CMenuScene::AnimateObjects(float fTimeElapsed)
 {
 	m_fElapsedTime += fTimeElapsed;
 
+	
 	m_ObjManager->Update(fTimeElapsed);
 }
 

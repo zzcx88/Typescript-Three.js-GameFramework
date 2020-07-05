@@ -25,7 +25,7 @@ VS_TEXTURED_OUTPUT VSTextured(VS_TEXTURED_INPUT input)
 {
 	VS_TEXTURED_OUTPUT output;
 
-	output.position = mul(mul(float4(input.position, 1.f), gmtxWorld), gmtxOrthProjection);
+	output.position = mul(mul(mul(float4(input.position, 1.0f), gmtxWorld), gmtxView), gmtxProjection);
 	output.uv = input.uv;
 
 	return(output);
@@ -36,9 +36,9 @@ float4 PSTextured(VS_TEXTURED_OUTPUT input, uint primitiveID : SV_PrimitiveID) :
 	float4 cColor = gtxtTexture.Sample(gssWrap, input.uv);
 	clip(cColor.a - 0.03f);
 
-	cColor.r += 1.f;
-	cColor.g = 0.f;
-	cColor.b = 0.f;
+	cColor.r += 0.2f;
+	cColor.g +=0.8f;
+	cColor.b += 0.2f;
 
 	return(cColor);
 }

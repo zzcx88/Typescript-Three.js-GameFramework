@@ -82,7 +82,7 @@ void CMig21::Animate(float fTimeElapsed)
 					pMissleFog->m_pEffectMaterial->SetShader(m_ObjManager->GetObjFromTag(L"MissleFog", OBJ_EFFECT)->m_EffectShader);
 					pMissleFog->SetMaterial(0, pMissleFog->m_pEffectMaterial);
 					pMissleFog->SetPosition(m_pLeftWingEdge->GetPosition());
-					pMissleFog->m_bEffectedObj = true;
+					pMissleFog->m_fEffectedObj = 1.0f;
 					pMissleFog->m_bWingFog = true;
 					m_ObjManager->AddObject(L"MissleFogInstance", pMissleFog, OBJ_EFFECT);
 
@@ -104,7 +104,7 @@ void CMig21::Animate(float fTimeElapsed)
 					pMissleFog->m_pEffectMaterial->SetShader(m_ObjManager->GetObjFromTag(L"MissleFog", OBJ_EFFECT)->m_EffectShader);
 					pMissleFog->SetMaterial(0, pMissleFog->m_pEffectMaterial);
 					pMissleFog->SetPosition(m_pRightWingEdge->GetPosition());
-					pMissleFog->m_bEffectedObj = true;
+					pMissleFog->m_fEffectedObj = 1.0f;
 					pMissleFog->m_bWingFog = true;
 					m_ObjManager->AddObject(L"MissleFogInstance", pMissleFog, OBJ_EFFECT);
 				}
@@ -162,6 +162,8 @@ void CMig21::Animate(float fTimeElapsed)
 				CCrushSmoke* pMissleFog;
 				pMissleFog = new CCrushSmoke();
 				pMissleFog->m_fBurnerBlendAmount = 1.f;
+				pMissleFog->m_fScaleX = 5;
+				pMissleFog->m_fScaleY = 5;
 				pMissleFog->m_pCamera = m_ObjManager->GetObjFromTag(L"player", OBJ_PLAYER)->m_pCamera;
 				pMissleFog->SetMesh(m_ObjManager->GetObjFromTag(L"crushsmokeRef", OBJ_EFFECT)->m_pPlaneMesh);
 				pMissleFog->m_pEffectMaterial = new CMaterial(1);
@@ -169,7 +171,7 @@ void CMig21::Animate(float fTimeElapsed)
 				pMissleFog->m_pEffectMaterial->SetShader(m_ObjManager->GetObjFromTag(L"crushsmokeRef", OBJ_EFFECT)->m_EffectShader);
 				pMissleFog->SetMaterial(0, pMissleFog->m_pEffectMaterial);
 				pMissleFog->SetPosition(m_xmf3Position);
-				pMissleFog->m_bEffectedObj = true;
+				pMissleFog->m_fEffectedObj = 1.0f;
 				m_ObjManager->AddObject(L"crushsmoke", pMissleFog, OBJ_EFFECT);
 
 				m_fAddCrushFogTimeElapsed = 0;
@@ -216,10 +218,8 @@ void CMig21::CollisionActivate(CGameObject* collideTarget)
 				m_xmf3FallingPoint = XMFLOAT3(GetPosition().x + fXPos(dre), -200.f, GetPosition().z + fZPos(dre));
 
 				m_bDestroyed = true;
-				m_pUI->m_bDestroyed = true;
+				m_pMUI->m_bDestroyed = true;
 				m_pLockOnUI->m_bDestroyed = true;
-
-				GET_MANAGER<SceneManager>()->m_nTgtObject--;
 			}
 		}
 	}
@@ -252,10 +252,10 @@ void CMig21::Render(ID3D12GraphicsCommandList* pd3dCommandList, CCamera* pCamera
 		if (m_fDeadElapsed >= m_fDeadFrequence)
 		{
 			m_isDead = true;
-			m_pUI->m_isDead = true;
+			m_pMUI->m_isDead = true;
 			m_pLockOnUI->m_isDead = true;
+			GET_MANAGER<SceneManager>()->m_nTgtObject--;
 		}
 	}
-
 	CGameObject::Render(pd3dCommandList, pCamera);
 }

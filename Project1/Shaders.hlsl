@@ -25,8 +25,8 @@ cbuffer cbGameObjectInfo : register(b2)
 cbuffer cbBlandAmount : register(b3)
 {
 	float gfBlendAmount;
-	bool gbEffectedObj;
-	bool gbWarning;
+	float gbEffectedObj;
+	float gbWarning;
 }
 
 #include "Light.hlsl"
@@ -111,7 +111,7 @@ float4 PSStandard(VS_STANDARD_OUTPUT input) : SV_TARGET
 	{
 		normalW = normalize(input.normalW);
 	}
-	if (gbEffectedObj)
+	if (gbEffectedObj == 1.f)
 	{
 		cColor.a = gfBlendAmount;
 		return cColor;

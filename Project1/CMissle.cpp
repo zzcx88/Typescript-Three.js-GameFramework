@@ -67,6 +67,21 @@ void CMissle::Animate(float fTimeElapsed)
 			FirstFire = false;
 		}
 
+		if (m_xmfTarget == GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player", OBJ_PLAYER)->GetPositionForMissle())
+		{
+			GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player", OBJ_PLAYER)->m_AiMissleAssert = true;
+		}
+
+		if (m_fDeleteTimeElapsed > m_fAssertFrequence)
+		{
+			XMFLOAT3 xmf3TargetVector = Vector3::Subtract(GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player", OBJ_PLAYER)->GetPosition(), GetPosition());
+			xmf3TargetVector = Vector3::Normalize(xmf3TargetVector);
+			float xmfAxis = Vector3::DotProduct(GetLook(), xmf3TargetVector);
+			if ((xmfAxis > 0.4f || xmfAxis < -0.4f) && xmfAxis > 0.f)
+			{
+				GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player", OBJ_PLAYER)->m_AiMissleAssert = false;
+			}
+		}
 		if (m_fDeleteTimeElapsed > m_fDeleteFrequence)
 		{
 			m_isDead = true;
@@ -81,11 +96,6 @@ void CMissle::Animate(float fTimeElapsed)
 		if (SphereCollider)SphereCollider->SetPosition(GetPosition());
 		if (SphereCollider)SphereCollider->m_xmf4x4ToParent = Matrix4x4::Multiply(XMMatrixScaling(10, 10, 10), m_xmf4x4ToParent);
 		if (SphereCollider)SphereCollider->Animate(fTimeElapsed, GetPosition());
-
-		if (m_xmfTarget == GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player", OBJ_PLAYER)->GetPositionForMissle())
-		{
-			GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player", OBJ_PLAYER)->m_AiMissleAssert = true;
-		}
 
 		if (m_fAddFogTimeElapsed > m_fAddFogFrequence)
 		{
@@ -105,7 +115,7 @@ void CMissle::Animate(float fTimeElapsed)
 			pMissleFog->m_pEffectMaterial->SetShader(m_ObjManager->GetObjFromTag(L"MissleFog", OBJ_EFFECT)->m_EffectShader);
 			pMissleFog->SetMaterial(0, pMissleFog->m_pEffectMaterial);
 			pMissleFog->SetPosition(m_xmf3Position);
-			pMissleFog->m_bEffectedObj = true;
+			pMissleFog->m_fEffectedObj = 1.0f;
 			m_ObjManager->AddObject(L"MissleFogInstance", pMissleFog, OBJ_EFFECT);
 
 			m_fAddFogTimeElapsed = 0;
@@ -136,11 +146,11 @@ void CMissle::CollisionActivate(CGameObject* collideTarget)
 		while (true)
 		{
 			i += 1;
-			GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player_ui15_destroyed", OBJ_MINIMAP_UI)->SetIsRender(true);
+			GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player_ui15_destroyed", OBJ_FIGHT_UI3)->SetIsRender(true);
 
 			if (i > 15)
 			{
-				GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player_ui15_destroyed", OBJ_MINIMAP_UI)->SetIsRender(false);
+				GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player_ui15_destroyed", OBJ_FIGHT_UI3)->SetIsRender(false);
 				i = 0;
 				break;
 			}
@@ -235,7 +245,7 @@ void CMissle::SetLookAt(float fTimeElapsed)
 		XMFLOAT3 xmfAxis = Vector3::CrossProduct(m_xmf3Look, xmf3TargetVector);
 		xmfAxis = Vector3::Normalize(xmfAxis);
 
-		float Lenth = sqrt(xmf3TargetVector.x * xmf3TargetVector.x + xmf3TargetVector.y * xmf3TargetVector.x + xmf3TargetVector.z * xmf3TargetVector.z);
+		LenthToPlayer = sqrt(xmf3TargetVector.x * xmf3TargetVector.x + xmf3TargetVector.y * xmf3TargetVector.x + xmf3TargetVector.z * xmf3TargetVector.z);
 		XMFLOAT3 LenthXYZ = Vector3::Subtract(*m_xmfTarget, m_xmfLunchPosition);
 		float LenthZ = sqrt(LenthXYZ.z * LenthXYZ.z);
 		Rotate(&xmfAxis, fTheta);

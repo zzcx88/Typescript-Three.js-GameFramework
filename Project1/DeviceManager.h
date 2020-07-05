@@ -120,6 +120,7 @@ private:
 
 	float m_fBlurAmount = 0.f;
 	float m_fBlurControl = 0.f;
+	bool m_bSceneFlag = false;
 
 };
 

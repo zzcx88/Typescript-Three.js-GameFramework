@@ -73,7 +73,6 @@ public:
 	bool m_bCreateShip = false;
 	float elapsedTime = 0;
 
-	bool UImode = false;
 
 	int									m_nGameObjects = 0;
 	CGameObject** m_ppGameObjects = NULL;
@@ -107,5 +106,7 @@ public:
 	bool quadrant4 = false;
 
 	int RotateMode = 0;
+
+
 };
 
