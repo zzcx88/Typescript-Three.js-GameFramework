@@ -202,6 +202,9 @@
     <Filter Include="Manager\SoundManager\FMOD">
       <UniqueIdentifier>{817ffc1c-bf72-4bf5-a67a-4db6a10dbacd}</UniqueIdentifier>
     </Filter>
+    <Filter Include="GameObject\Plane\Effect\WaterDropRefraction">
+      <UniqueIdentifier>{6159be94-ec85-4082-a667-00990a7c28a2}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="targetver.h">
@@ -414,6 +417,9 @@
     <ClInclude Include="FMOD\inc\fmod.hpp">
       <Filter>Manager\SoundManager\FMOD</Filter>
     </ClInclude>
+    <ClInclude Include="CWaterDropRefraction.h">
+      <Filter>GameObject\Plane\Effect\WaterDropRefraction</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="DDSTextureLoader12.cpp">
@@ -598,6 +604,9 @@
     </ClCompile>
     <ClCompile Include="SoundManager.cpp">
       <Filter>Manager\SoundManager</Filter>
+    </ClCompile>
+    <ClCompile Include="CWaterDropRefraction.cpp">
+      <Filter>GameObject\Plane\Effect\WaterDropRefraction</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

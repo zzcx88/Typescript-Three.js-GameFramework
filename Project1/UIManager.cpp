@@ -263,9 +263,16 @@ void UIManager::MoveLockOnUI(ObjectManager::MAPOBJ* PlyList, ObjectManager::MAPO
 							->GetObjFromTag(L"player_ui8_lockon", OBJ_LOCKONUI)->m_ppLockOnUITexture[1];
 
 						Ene.second->m_bCanFire = true;
+						if (m_bLockOnSoundPlayed == false)
+						{
+							GET_MANAGER<SoundManager>()->PlaySound(L"LockOn.mp3", CH_LOCKON, true);
+							m_bLockOnSoundPlayed = true;
+						}
 					}
 					else
 					{
+						GET_MANAGER<SoundManager>()->StopSound(CH_LOCKON);
+						m_bLockOnSoundPlayed = false;
 
 						Ene.second->m_pLockOnUI->m_pLockOnUIMaterial->m_ppTextures[0] = GET_MANAGER<ObjectManager>()
 							->GetObjFromTag(L"player_ui8_lockon", OBJ_LOCKONUI)->m_ppLockOnUITexture[0];

@@ -75,10 +75,14 @@ void CLockOnUI::MoveLockOnUI(XMFLOAT2 screen, XMFLOAT3& xmfTarget, XMFLOAT3& xmf
 		{
 			bDetectable = true;
 
-			if(m_fLenth < 3000 && ((xmfAxis > 0.9f || xmfAxis < -0.9f) && xmfAxis > 0.f))
+			if (m_fLenth < 3000 && ((xmfAxis > 0.9f || xmfAxis < -0.9f) && xmfAxis > 0.f))
+			{
 				bLockOn = true;
+			}
 			else
+			{
 				bLockOn = false;
+			}
 		}
 		else
 		{

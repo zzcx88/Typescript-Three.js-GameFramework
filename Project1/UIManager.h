@@ -22,6 +22,8 @@ class UIManager : public SingletonBase<UIManager>
 	int numObjects = 29;
 
 	bool m_bNotSort = false;
+	bool m_bLockOnSoundPlayed = false;
+
 public:
 	UIManager();
 	virtual ~UIManager();
