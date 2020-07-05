@@ -218,12 +218,12 @@ void CDeviceManager::CreateSwapChain()
 	hResult = m_pdxgiFactory->MakeWindowAssociation(m_hWnd, DXGI_MWA_NO_ALT_ENTER);
 
 #ifndef _WITH_SWAPCHAIN_FULLSCREEN_STATE
-	CreateRenderTargetViews();
+	CreateRenderTargetViews(NULL, false);
 #endif
 }
 
 
-void CDeviceManager::CreateRenderTargetViews()
+void CDeviceManager::CreateRenderTargetViews(ID3D12Resource* pTexture , bool bRefractionTexture)
 {
 	D3D12_CPU_DESCRIPTOR_HANDLE d3dRtvCPUDescriptorHandle = m_pd3dRtvDescriptorHeap->GetCPUDescriptorHandleForHeapStart();
 	for (UINT i = 0; i < m_nSwapChainBuffers; i++)
@@ -326,7 +326,7 @@ void CDeviceManager::ChangeSwapChainState()
 
 	m_nSwapChainBufferIndex = m_pdxgiSwapChain->GetCurrentBackBufferIndex();
 
-	CreateRenderTargetViews();
+	CreateRenderTargetViews(NULL, false);
 }
 
 void CDeviceManager::BuildScene()
@@ -334,7 +334,6 @@ void CDeviceManager::BuildScene()
 	m_pd3dCommandList->Reset(m_pd3dCommandAllocator, NULL);
 
 	m_pSceneManager->ChangeSceneState(SCENE_MENU, m_pd3dDevice, m_pd3dCommandList);
-
 	CTerrainPlayer* pPlayer = new CTerrainPlayer(m_pd3dDevice, m_pd3dCommandList, m_pSceneManager->GetGraphicsRootSignature(), NULL);
 	pPlayer->SetGameOver(true);
 	m_pPlayer = pPlayer;
@@ -428,17 +427,20 @@ void CDeviceManager::SceneChangeInput()
 {
 	KeyManager* keyManager = GET_MANAGER<KeyManager>();
 	DWORD dwDirection = 0;
-
-	if (true == keyManager->GetKeyState(STATE_PUSH, VK_G))
+	if (m_pSceneManager->GetCurrentSceneState() == SCENE_TEST)
 	{
-		if (m_SceneSwitch == SCENE_TEST) {
+		if (true == keyManager->GetKeyState(STATE_PUSH, VK_G))
+		{
 			m_ArrowSwitch = 0;
 			m_pUIarrow->SetPosition(m_pUI->GetPosition().x - 370, 48, 0);
-			if (m_pSceneManager->GetSceneStoped() == false)
-				m_BlurSwitch = BLUR_OFF;
-			else
-				m_BlurSwitch = BLUR_ON;
 
+			if (m_SceneSwitch == SCENE_TEST) {
+				if (m_pSceneManager->GetSceneStoped() == false)
+					m_BlurSwitch = BLUR_OFF;
+				else
+					m_BlurSwitch = BLUR_ON;
+
+			}
 		}
 	}
 	if (true == keyManager->GetKeyState(STATE_PUSH, VK_UP))
@@ -447,7 +449,7 @@ void CDeviceManager::SceneChangeInput()
 			if (m_pSceneManager->GetSceneStoped() == true)
 			{
 				m_ArrowSwitch = 0;
-				m_pUIarrow->SetPosition(m_pUI->GetPosition().x - 370, 48, 0);
+				m_pUIarrow->SetPosition(m_pUI->GetPosition().x -370, 48, 0);
 			}
 		}
 	}
@@ -457,7 +459,7 @@ void CDeviceManager::SceneChangeInput()
 			if (m_pSceneManager->GetSceneStoped() == true)
 			{
 				m_ArrowSwitch = 1;
-				m_pUIarrow->SetPosition(m_pUI->GetPosition().x - 370, 5, 0);
+				m_pUIarrow->SetPosition(m_pUI->GetPosition().x -370, 5, 0);
 			}
 		}
 	}
@@ -469,15 +471,10 @@ void CDeviceManager::SceneChangeInput()
 			case 0:
 				if (true == keyManager->GetKeyState(STATE_PUSH, VK_RETURN))
 				{
-					for (auto i = (int)OBJ_MINIMAP_UI; i <= OBJ_UI; ++i)
+					GET_MANAGER<SceneManager>()->SetStoped(false);
+					for (auto p = GET_MANAGER<ObjectManager>()->GetObjFromType(OBJ_UI).begin(); p != GET_MANAGER<ObjectManager>()->GetObjFromType(OBJ_UI).end(); ++p)
 					{
-						if (i == OBJ_UI || i == OBJ_MINIMAP_UI)
-						{
-							for (auto p = GET_MANAGER<ObjectManager>()->GetObjFromType((OBJTYPE)i).begin(); p != GET_MANAGER<ObjectManager>()->GetObjFromType((OBJTYPE)i).end(); ++p)
-							{
-								(*p).second->SetIsRender(false);
-							}
-						}
+						(*p).second->SetIsRender(true);
 					}
 				}
 				break;
@@ -510,10 +507,9 @@ void CDeviceManager::SceneChangeInput()
 			default:
 				break;
 			}
-
+		
 		}
 	}
-
 	
 	if (true == keyManager->GetKeyState(STATE_PUSH, VK_BACK))
 	{
@@ -542,6 +538,7 @@ void CDeviceManager::SceneChangeInput()
 	{
 		if (m_SceneSwitch == SCENE_MENU)
 		{
+			GET_MANAGER<SoundManager>()->PlaySound(L"PressSpace.mp3", CH_EFFECT);
 			GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player_ui1_title", OBJ_UI)->SetIsRender(false);
 			GET_MANAGER<ObjectManager>()->GetObjFromTag(L"TitleAnimation", OBJ_EFFECT2)->SetIsRender(false);
 
@@ -549,8 +546,6 @@ void CDeviceManager::SceneChangeInput()
 			m_bSceneFlag = true;
 		}
 	}
-
-
 }
 
 LRESULT CALLBACK CDeviceManager::OnProcessingWindowMessage(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam)
@@ -628,7 +623,9 @@ void CDeviceManager::ProcessInput()
 void CDeviceManager::AnimateObjects()
 {
 	float fTimeElapsed = m_GameTimer.GetTimeElapsed();
+	GET_MANAGER<SoundManager>()->UpdateSound();
 	m_pSceneManager->Update(fTimeElapsed);
+	GET_MANAGER<SoundManager>()->UpdateSound();
 	//m_pPlayer->Update(m_GameTimer.GetTimeElapsed());
 }
 
@@ -639,6 +636,7 @@ void CDeviceManager::FrameAdvance()
 	//ProcessInput();
 
 	AnimateObjects();
+	m_pSceneManager->OnPreRender(m_pd3dDevice, m_pd3dCommandQueue, m_pd3dFence, m_hFenceEvent);
 
 	HRESULT hResult = m_pd3dCommandAllocator->Reset();
 	hResult = m_pd3dCommandList->Reset(m_pd3dCommandAllocator, NULL);
@@ -666,6 +664,7 @@ void CDeviceManager::FrameAdvance()
 
 	m_pd3dCommandList->SetGraphicsRootSignature(m_pRootSignature);
 
+	GET_MANAGER<SceneManager>()->OnPrepareRender(m_pd3dCommandList);
 	m_pSceneManager->Render(m_pd3dCommandList, m_pCamera);
 
 	//if (m_pPlayer) m_pPlayer->Render(m_pd3dCommandList, m_pCamera);
@@ -777,14 +776,14 @@ void CDeviceManager::FrameAdvance()
 
 	m_pdxgiSwapChain->Present(0, 0);
 
-	//m_xmf3prePosition = m_pPlayer->GetPosition();
+	m_xmf3prePosition = m_pPlayer->GetPosition();
 
 	MoveToNextFrame();
 
-	//m_xmf3postPosition = m_pPlayer->GetPosition();
+	/*m_xmf3postPosition = m_pPlayer->GetPosition();
 
 	m_xmf3TargetVector = Vector3::Subtract(m_xmf3postPosition, m_xmf3prePosition);
-	m_xmf3TargetVector = Vector3::Normalize(m_xmf3TargetVector);
+	m_xmf3TargetVector = Vector3::Normalize(m_xmf3TargetVector);*/
 
 	m_GameTimer.GetFrameRate(m_pszFrameRate + 12, 37);
 	size_t nLength = _tcslen(m_pszFrameRate);
@@ -792,7 +791,7 @@ void CDeviceManager::FrameAdvance()
 	_stprintf_s(m_pszFrameRate + nLength, 70 - nLength, _T("(%4f, %4f, %4f)"), xmf3Position.x, xmf3Position.y, xmf3Position.z);
 	::SetWindowText(m_hWnd, m_pszFrameRate);
 
-	
+
 	if (m_SceneSwitch == SCENE_MENU && m_bSceneFlag == true)
 	{
 		m_bSceneFlag = false;
@@ -844,7 +843,6 @@ void CDeviceManager::FrameAdvance()
 		if (m_pSceneManager) m_pSceneManager->ReleaseUploadBuffers();
 		m_GameTimer.Reset();
 	}
-	
 }
 
 void CDeviceManager::WaitForGpuComplete()

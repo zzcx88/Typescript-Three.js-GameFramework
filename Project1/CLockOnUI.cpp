@@ -69,18 +69,20 @@ void CLockOnUI::MoveLockOnUI(XMFLOAT2 screen, XMFLOAT3& xmfTarget, XMFLOAT3& xmf
 	m_fLenth = sqrt(xmf3TargetVector2.x * xmf3TargetVector2.x + xmf3TargetVector2.y * xmf3TargetVector2.x + xmf3TargetVector2.z * xmf3TargetVector2.z);
 	
 	if (screen.x < 0 || screen.y < 0 || screen.x >FRAME_BUFFER_WIDTH || screen.y >FRAME_BUFFER_HEIGHT || xmfCameraAxis < 0.f)
-	{
 		pGameUIOBJ->SetPosition(-20000.f, -20000.f, -1.f);
-	}
 	else {
 		if (m_fLenth < 30000 )
 		{
 			bDetectable = true;
 
-			if(m_fLenth < 3000 && ((xmfAxis > 0.9f || xmfAxis < -0.9f) && xmfAxis > 0.f))
+			if (m_fLenth < 3000 && ((xmfAxis > 0.9f || xmfAxis < -0.9f) && xmfAxis > 0.f))
+			{
 				bLockOn = true;
+			}
 			else
+			{
 				bLockOn = false;
+			}
 		}
 		else
 		{

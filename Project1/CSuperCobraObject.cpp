@@ -120,7 +120,7 @@ void CSuperCobraObject::CollisionActivate(CGameObject* collideTarget)
 			wcout << GET_MANAGER<ObjectManager>()->GetTagFromObj(this, OBJ_ENEMY) << endl;
 			cout << "Ãæµ¹!" << endl;
 			m_isDead = true;
-			m_pUI->m_isDead = true;
+			m_pMUI->m_isDead = true;
 			m_pLockOnUI->m_isDead = true;
 		}
 	}

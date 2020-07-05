@@ -123,7 +123,6 @@ void CPlayer::Rotate(float x, float y, float z)
 	else if (nCurrentCameraMode == SPACESHIP_CAMERA)
 	{
 		m_pCamera->Rotate(x, y, z);
-		GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player_ui16_navigator", OBJ_NAVIGATOR)->Rotate(x, y, z);
 		if (x != 0.0f)
 		{
 			XMMATRIX xmmtxRotate = XMMatrixRotationAxis(XMLoadFloat3(&m_xmf3Right), XMConvertToRadians(x));
@@ -157,19 +156,42 @@ void CPlayer::Update_Input(const float& TimeDelta)
 	if (true == keyManager->GetKeyState(STATE_DOWN, VK_TAB))
 	{
 		//m_bGameOver = true;
-		dwDirection |= VK_TAB;
-		if(m_bEye_fixation == false)
+		if (GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player_missle", OBJ_ALLYMISSLE))
 		{
-			m_bEye_fixation = true;
+			if (GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player_missle", OBJ_ALLYMISSLE)->m_bMissleLockCamera == false)
+			{
+				dwDirection |= VK_TAB;
+				if (m_bEye_fixation == false)
+				{
+					m_bEye_fixation = true;
+				}
+				else
+				{
+					m_bEye_fixation = false;
+				}
+
+				if (m_bEye_fixation == false)
+				{
+					ReturnEyeFix();
+				}
+			}
 		}
 		else
 		{
-			m_bEye_fixation = false;
-		}
+			dwDirection |= VK_TAB;
+			if (m_bEye_fixation == false)
+			{
+				m_bEye_fixation = true;
+			}
+			else
+			{
+				m_bEye_fixation = false;
+			}
 
-		if (m_bEye_fixation == false)
-		{
-			ReturnEyeFix();
+			if (m_bEye_fixation == false)
+			{
+				ReturnEyeFix();
+			}
 		}
 	}
 
@@ -189,6 +211,12 @@ void CPlayer::Update_Input(const float& TimeDelta)
 
 	if (true == keyManager->GetKeyState(STATE_PUSH, VK_LCONTROL))
 	{
+		if (m_bGunSoundPlayed == false)
+		{
+			GET_MANAGER<SoundManager>()->PlaySound(L"GunFire.mp3", CH_AIRGUN);
+			GET_MANAGER<SoundManager>()->SetVolume(CH_AIRGUN, 0.3f);
+			m_bGunSoundPlayed = true;
+		}
 		if(!m_bEye_fixation)
 			m_fFOV = 60;
 		m_bGunFire = true;
@@ -199,6 +227,8 @@ void CPlayer::Update_Input(const float& TimeDelta)
 
 	if (true == keyManager->GetKeyState(STATE_UP, VK_LCONTROL))
 	{
+		GET_MANAGER<SoundManager>()->StopSound(CH_AIRGUN);
+		m_bGunSoundPlayed = false;
 		if (m_bGunFire != false && m_bEye_fixation == false)
 		{
 			m_bGunFire = false;
@@ -214,10 +244,41 @@ void CPlayer::Update_Input(const float& TimeDelta)
 		dwDirection |= VK_LCONTROL;
 	}
 
-	if (true == keyManager->GetKeyState(STATE_DOWN, VK_SPACE))
+
+	if (true == keyManager->GetKeyState(STATE_PUSH, VK_SPACE))
 	{
 		dwDirection |= VK_SPACE;
-		MissleLaunch();
+		if (m_fPushSpaceElapsed == 0.0f)
+		{
+			GET_MANAGER<SoundManager>()->PlaySound(L"Missile_launch.mp3", CH_MISSLE);
+			GET_MANAGER<SoundManager>()->SetVolume(CH_MISSLE, 0.2f);
+			MissleLaunch();
+		}
+		m_fPushSpaceElapsed+= 1* TimeDelta;
+		if (m_fPushSpaceElapsed > 0.3f)
+		{
+			if(GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player_missle", OBJ_ALLYMISSLE))
+				GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player_missle", OBJ_ALLYMISSLE)->m_bMissleLockCamera = true;
+		}
+	}
+
+	if (true == keyManager->GetKeyState(STATE_UP, VK_SPACE))
+	{
+		m_fPushSpaceElapsed = 0.0f;
+		if(GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player_missle", OBJ_ALLYMISSLE))
+			GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player_missle", OBJ_ALLYMISSLE)->m_bMissleLockCamera = false;
+		if (m_bEye_fixation == false && m_bGunFire == false)
+		{
+			if (m_fFOV < 60)
+				m_fFOV = 60;
+			m_pCamera->GenerateProjectionMatrix(1.01f, m_fFarPlaneDistance, ASPECT_RATIO, m_fFOV);
+			m_pCamera->SetLookPlayer();
+			XMFLOAT3 xmf3Shift = XMFLOAT3(0, 0, 0);
+			xmf3Shift = Vector3::Add(xmf3Shift, m_xmf3Up, 0.6);
+			m_pCamera->SetPosition(Vector3::Add(m_xmf3Position, xmf3Shift));
+			xmf3Shift = Vector3::Add(xmf3Shift, m_xmf3Look, -4.1);
+			m_pCamera->SetPosition(Vector3::Add(m_xmf3Position, xmf3Shift));
+		}
 	}
 
 	if (keyManager->GetKeyState(STATE_PUSH, VK_RIGHT) || keyManager->GetKeyState(STATE_PUSH, VK_LEFT))
@@ -228,13 +289,13 @@ void CPlayer::Update_Input(const float& TimeDelta)
 			if (!(true == keyManager->GetKeyState(STATE_PUSH, VK_LEFT)))
 			{
 				dwDirection |= VK_RIGHT;
-				Rotate(0.0f, 0.0f, -Roll_WingsRotateDegree * m_fRollPerformance * TimeDelta*2.f);
+				Rotate(0.0f, 0.0f, -Roll_WingsRotateDegree * m_fRollPerformance * TimeDelta);
 				RightRollAnimation(TimeDelta);
 			}
 			else
 			{
 				if (Roll_WingsRotateDegree != 0)
-					Rotate(0.0f, 0.0f, -Roll_WingsRotateDegree * m_fRollPerformance * TimeDelta * 2.f);
+					Rotate(0.0f, 0.0f, -Roll_WingsRotateDegree * m_fRollPerformance * TimeDelta);
 				RollWingReturn(TimeDelta);
 			}
 		}
@@ -244,7 +305,7 @@ void CPlayer::Update_Input(const float& TimeDelta)
 			if (!(true == keyManager->GetKeyState(STATE_PUSH, VK_RIGHT)))
 			{
 				dwDirection |= VK_LEFT;
-				Rotate(0.0f, 0.0f, -Roll_WingsRotateDegree * m_fRollPerformance * TimeDelta * 2.f);
+				Rotate(0.0f, 0.0f, -Roll_WingsRotateDegree * m_fRollPerformance * TimeDelta);
 				LeftRollAnimation(TimeDelta);
 			}
 		}
@@ -252,7 +313,7 @@ void CPlayer::Update_Input(const float& TimeDelta)
 	else
 	{
 		if (Roll_WingsRotateDegree != 0)
-			Rotate(0.0f, 0.0f, -Roll_WingsRotateDegree * m_fRollPerformance * TimeDelta * 2.f);
+			Rotate(0.0f, 0.0f, -Roll_WingsRotateDegree * m_fRollPerformance * TimeDelta);
 		RollWingReturn(TimeDelta);
 	}
 
@@ -474,9 +535,30 @@ void CPlayer::Animate(float fTimeElapsed)
 		if (fDeceleration > fLength) fDeceleration = fLength;
 		m_xmf3Velocity = Vector3::Add(m_xmf3Velocity, Vector3::ScalarProduct(m_xmf3Velocity, -fDeceleration, true));
 
-		Update_Input(fTimeElapsed);
+		if (GET_MANAGER<SceneManager>()->GetCurrentSceneState() != SCENE_MENU && m_nMSL_Count != NULL)
+		{
+			Update_Input(fTimeElapsed);
+		}
+
+		SetEngineRefractionPos();
 
 		SetAfterBurnerPosition(fTimeElapsed);
+
+		SetNaviPosition();
+
+		if (m_AiMissleAssert == true)
+		{
+			if (m_bAssertSoundPlayed == false)
+			{
+				GET_MANAGER<SoundManager>()->PlaySound(L"Missle_Alert.mp3", CH_ALERT, true);
+				m_bAssertSoundPlayed = true;
+			}
+		}
+		else
+		{
+			GET_MANAGER<SoundManager>()->StopSound(CH_ALERT);
+			m_bAssertSoundPlayed = false;
+		}
 	}
 	else
 	{
@@ -563,7 +645,7 @@ void CPlayer::Render(ID3D12GraphicsCommandList* pd3dCommandList, CCamera* pCamer
 	{
 		DWORD nCameraMode = (pCamera) ? pCamera->GetMode() : 0x00;
 		if (nCameraMode == THIRD_PERSON_CAMERA) CGameObject::Render(pd3dCommandList, pCamera);
-		if (nCameraMode == SPACESHIP_CAMERA) CGameObject::Render(pd3dCommandList, pCamera);
+		/*if (nCameraMode == SPACESHIP_CAMERA)*/ CGameObject::Render(pd3dCommandList, pCamera);
 	}
 }
 
@@ -571,6 +653,11 @@ void CPlayer::Render(ID3D12GraphicsCommandList* pd3dCommandList, CCamera* pCamer
 // 
 CAirplanePlayer::CAirplanePlayer(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList, ID3D12RootSignature* pd3dGraphicsRootSignature, void* pContext)
 {
+	GET_MANAGER<SoundManager>()->PlaySound(L"AfterBurner_Base.mp3", CH_BNNRBASE);
+	GET_MANAGER<SoundManager>()->PlaySound(L"AfterBurner_Boost.mp3", CH_BNNRBOST);
+	GET_MANAGER<SoundManager>()->SetVolume(CH_BNNRBOST, 0.0f);
+
+
 	m_pCamera = ChangeCamera(SPACESHIP_CAMERA, 0.0f);
 	SphereCollider = new CSphereCollider(pd3dDevice, pd3dCommandList, pd3dGraphicsRootSignature);
 	SphereCollider->SetScale(100, 100, 100);
@@ -653,20 +740,23 @@ void CAirplanePlayer::OnPrepareAnimate()
 	m_pRight_AfterBurnerIN = FindFrame("Right_AfterBurnerIN");
 	m_pLeft_AfterBurnerEX = FindFrame("Left_AfterBurnerEX");
 	m_pLeft_AfterBurnerIN = FindFrame("Left_AfterBurnerIN");
+	m_pEngineRefraction = FindFrame("EngineRefraction");
+	m_pNaviPos = FindFrame("Nevi_Position");
 
-	m_pRight_AfterBurnerEX->m_fEffectedObj = 1.0f;
+
+	m_pRight_AfterBurnerEX->m_bEffectedObj = true;
 	m_pRight_AfterBurnerEX->m_fBurnerBlendAmount = 0.5f;
 	m_pRight_AfterBurnerEX->m_ppMaterials[0]->SetAfterBurnerShader();
 
-	m_pRight_AfterBurnerIN->m_fEffectedObj = 1.0f;
+	m_pRight_AfterBurnerIN->m_bEffectedObj = true;
 	m_pRight_AfterBurnerIN->m_fBurnerBlendAmount = 0.5f;
 	m_pRight_AfterBurnerIN->m_ppMaterials[0]->SetAfterBurnerShader();
 
-	m_pLeft_AfterBurnerEX->m_fEffectedObj = 1.0f;
+	m_pLeft_AfterBurnerEX->m_bEffectedObj = true;
 	m_pLeft_AfterBurnerEX->m_fBurnerBlendAmount = 0.5f;
 	m_pLeft_AfterBurnerEX->m_ppMaterials[0]->SetAfterBurnerShader();
 
-	m_pLeft_AfterBurnerIN->m_fEffectedObj = 1.0f;
+	m_pLeft_AfterBurnerIN->m_bEffectedObj = true;
 	m_pLeft_AfterBurnerIN->m_fBurnerBlendAmount = 0.5f;
 	m_pLeft_AfterBurnerIN->m_ppMaterials[0]->SetAfterBurnerShader();
 
@@ -982,6 +1072,7 @@ void CAirplanePlayer::MissleLaunch()
 		m_bMissleCross = false;
 		pMissle->SetPosition(m_pMSL_2->GetPosition());
 	}
+	pMissle->m_pCamera = m_pCamera;
 	m_ObjManager->AddObject(L"player_missle", pMissle, OBJ_ALLYMISSLE);
 	CPlayer::SetMissileCount(--m_nMSL_Count);
 
@@ -1001,7 +1092,22 @@ void CAirplanePlayer::GunFire(float fTimeElapsed)
 		pBullet->m_pEffectMaterial->SetShader(m_ObjManager->GetObjFromTag(L"bulletRef", OBJ_ALLYBULLET)->m_pBulletShader);
 		pBullet->SetMaterial(0, pBullet->m_pEffectMaterial);
 		pBullet->SetPosition(XMFLOAT3(m_pGunMuzzle->GetPosition().x - GetLookVector().x * 3, m_pGunMuzzle->GetPosition().y - GetLookVector().y * 3, m_pGunMuzzle->GetPosition().z - GetLookVector().z * 3));
-		m_ObjManager->AddObject(L"player_bullet", pBullet, OBJ_ALLYBULLET);
+		m_ObjManager->AddObject(L"player_bullet", pBullet, OBJ_EFFECT);
+		m_fGunFireElapsed = 0.0f;	
+
+		////구충돌체 별도 생성중
+		CBullet* pColliedBullet;
+		pColliedBullet = new CBullet(XMFLOAT3(m_pGunMuzzle->GetPosition().x - GetLookVector().x * 3, m_pGunMuzzle->GetPosition().y - GetLookVector().y * 3, m_pGunMuzzle->GetPosition().z - GetLookVector().z * 3));
+		pColliedBullet->m_ColliedObj = true;
+		pColliedBullet->m_xmf3Look = m_xmf3Look;
+		pColliedBullet->m_xmf4x4ToParent = m_xmf4x4ToParent;
+		pColliedBullet->m_fBulletSpeed = m_fAircraftSpeed + 1300.f;
+		//pColliedBullet->m_pEffectMaterial = new CMaterial(1);
+		//pColliedBullet->m_pEffectMaterial->SetTexture(m_ObjManager->GetObjFromTag(L"bulletRef", OBJ_ALLYBULLET)->m_pBulletTexture);
+		//pColliedBullet->m_pEffectMaterial->SetShader(m_ObjManager->GetObjFromTag(L"bulletRef", OBJ_ALLYBULLET)->m_pBulletShader);
+		//pColliedBullet->SetMaterial(0, pBullet->m_pEffectMaterial);
+		pColliedBullet->SetPosition(XMFLOAT3(m_pGunMuzzle->GetPosition().x - GetLookVector().x * 3, m_pGunMuzzle->GetPosition().y - GetLookVector().y * 3, m_pGunMuzzle->GetPosition().z - GetLookVector().z * 3));
+		m_ObjManager->AddObject(L"player_bullet_collide", pColliedBullet, OBJ_ALLYBULLET);
 		m_fGunFireElapsed = 0.0f;
 	}
 }
@@ -1032,6 +1138,11 @@ void CAirplanePlayer::GunCameraMove(float fTimeElapsed)
 
 void CAirplanePlayer::SetAfterBurnerPosition(float fTimeElapsed)
 {
+	float volume = m_fBurnerElapsed / 100.f;
+	if (volume > 1.f)
+		volume = 1.f;
+	GET_MANAGER<SoundManager>()->SetVolume(CH_BNNRBOST, volume);
+
 	for (int i = 0; i < 10; ++i)
 	{
 		if (m_pLeft_AfterBurner[i])
@@ -1058,6 +1169,24 @@ void CAirplanePlayer::SetAfterBurnerPosition(float fTimeElapsed)
 			}
 		}
 	}
+}
+
+void CAirplanePlayer::SetEngineRefractionPos()
+{
+	if (GET_MANAGER<ObjectManager>()->GetObjFromTag(L"EngineRefractionObj", OBJ_EFFECT) && m_pEngineRefraction != NULL)
+	{
+		GET_MANAGER<ObjectManager>()->GetObjFromTag(L"EngineRefractionObj", OBJ_EFFECT)->SetPosition(m_pEngineRefraction->GetPosition());
+		//GET_MANAGER<ObjectManager>()->GetObjFromTag(L"EngineRefractionObj", OBJ_EFFECT)->m_xmf4x4ToParent = m_pEngineRefraction->m_xmf4x4World;
+		//GET_MANAGER<ObjectManager>()->GetObjFromTag(L"EngineRefractionObj", OBJ_EFFECT)->SetScale(0.1, 0.1, 0);
+		//GET_MANAGER<ObjectManager>()->GetObjFromTag(L"EngineRefractionObj", OBJ_EFFECT)->SetPlaneScale(100);
+	}
+}
+
+void CAirplanePlayer::SetNaviPosition()
+{
+	if (GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player_ui16_navigator", OBJ_NAVIGATOR) != NULL)
+		if (m_pNaviPos != NULL)
+			GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player_ui16_navigator", OBJ_NAVIGATOR)->SetPosition(m_pNaviPos->GetPosition());
 }
 
 void CAirplanePlayer::OnPrepareRender()

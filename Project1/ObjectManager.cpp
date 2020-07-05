@@ -106,26 +106,56 @@ void ObjectManager::Update(const float& TimeDelta)
 	}
 }
 
-void ObjectManager::Render(ID3D12GraphicsCommandList* pd3dCommandList, CCamera* pCamera)
+void ObjectManager::Render(ID3D12GraphicsCommandList* pd3dCommandList, CCamera* pCamera, bool bPreRender)
 {
-	for (auto i = 0; i < OBJ_END; ++i)
+	if (bPreRender == false)
 	{
-		for (auto& obj : m_mapObj[i])
+		for (auto i = 0; i < OBJ_END; ++i)
 		{
-			if (OBJ_ENEMY)
-				obj.second->SetScreenPos(obj.second->GetPosition(), pCamera);
+			for (auto& obj : m_mapObj[i])
+			{
+				if (OBJ_ENEMY)
+					obj.second->SetScreenPos(obj.second->GetPosition(), pCamera);
 
-			obj.second->Render(pd3dCommandList, pCamera);
-			obj.second->UpdateTransform(NULL);
+				obj.second->Render(pd3dCommandList, pCamera);
+				obj.second->UpdateTransform(NULL);
+			}
 		}
 	}
-	if (GET_MANAGER<SceneManager>()->GetCurrentSceneState() == SCENE_TEST)
+	else
 	{
-		// Minimap
-		GET_MANAGER<UIManager>()->MoveMinimapPoint(&m_mapObj[OBJ_PLAYER], &m_mapObj[OBJ_ENEMY]);
+		for (auto i = 0; i < OBJ_END; ++i)
+		{
+			for (auto& obj : m_mapObj[i])
+			{
+				if (i <= OBJ_TEST)
+				{
+					if (obj.first == L"EngineRefractionObj")
+					{
+					}
+					else
+					{
+						obj.second->Render(pd3dCommandList, pCamera);
+						//if(obj.first != L"MissleFogInstance")
+						if(i != OBJ_EFFECT)
+							obj.second->UpdateTransform(NULL);
+					}
+				}
+			}
+		}
+	}
 
-		// LockOn
-		GET_MANAGER<UIManager>()->MoveLockOnUI(&m_mapObj[OBJ_PLAYER], &m_mapObj[OBJ_ENEMY]);
+
+	if (bPreRender == false)
+	{
+		if (GET_MANAGER<SceneManager>()->GetCurrentSceneState() == SCENE_TEST)
+		{
+			// Minimap
+			GET_MANAGER<UIManager>()->MoveMinimapPoint(&m_mapObj[OBJ_PLAYER], &m_mapObj[OBJ_ENEMY]);
+
+			// LockOn
+			GET_MANAGER<UIManager>()->MoveLockOnUI(&m_mapObj[OBJ_PLAYER], &m_mapObj[OBJ_ENEMY]);
+		}
 	}
 }
 

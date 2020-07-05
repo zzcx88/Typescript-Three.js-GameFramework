@@ -77,6 +77,11 @@ void CCamera::SetScissorRect(LONG xLeft, LONG yTop, LONG xRight, LONG yBottom)
 	m_d3dScissorRect.bottom = yBottom;
 }
 
+void CCamera::SetLookVector(XMFLOAT3 xmf3Look)
+{
+	m_xmf3Look = xmf3Look;
+}
+
 void CCamera::GenerateProjectionMatrix(float fNearPlaneDistance, float fFarPlaneDistance, float fAspectRatio, float fFOVAngle)
 {
 	m_xmf4x4Projection = Matrix4x4::PerspectiveFovLH(XMConvertToRadians(fFOVAngle), fAspectRatio, fNearPlaneDistance, fFarPlaneDistance);

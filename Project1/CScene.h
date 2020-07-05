@@ -32,7 +32,12 @@ public:
 
 	virtual bool ProcessInput(UCHAR* pKeysBuffer) PURE;
 	virtual void AnimateObjects(float fTimeElapsed) PURE;
-	virtual void Render(ID3D12GraphicsCommandList* pd3dCommandList, CCamera* pCamera = NULL, ID3D12Resource* pCurrentBackBuffer = NULL) PURE;
+
+
+	virtual void OnPrepareRender(ID3D12GraphicsCommandList* pd3dCommandList) PURE;
+	virtual void OnPreRender(ID3D12Device* pd3dDevice, ID3D12CommandQueue* pd3dCommandQueue, ID3D12Fence* pd3dFence, HANDLE hFenceEvent) PURE;
+
+	virtual void Render(ID3D12GraphicsCommandList* pd3dCommandList, CCamera* pCamera = NULL, bool bPreRender = false, ID3D12Resource* pCurrentBackBuffer = NULL) PURE;
 
 	virtual void ReleaseUploadBuffers() PURE;
 

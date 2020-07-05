@@ -15,7 +15,8 @@ SceneManager::~SceneManager()
 
 bool SceneManager::ChangeSceneState(SCENESTATE SceneState, ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList)
 {
-	if (m_Scene) m_Scene->ReleaseUploadBuffers();
+	GET_MANAGER<SoundManager>()->StopSound(CH_BGM);
+	//if (m_Scene) m_Scene->ReleaseUploadBuffers();
 	if (m_Scene) m_Scene->ReleaseObjects();
 
 	if (nullptr != m_Scene)
@@ -23,9 +24,6 @@ bool SceneManager::ChangeSceneState(SCENESTATE SceneState, ID3D12Device* pd3dDev
 		Release();
 	}
 
-	if (m_Scene) m_Scene->ReleaseUploadBuffers();
-
-	GET_MANAGER<ObjectManager>()->ReleaseAll();
 	if (SceneState == SCENE_MENU)
 		GET_MANAGER<UIManager>()->ReleaseUI();
 	switch (SceneState)
@@ -88,9 +86,19 @@ int SceneManager::Update(const float& TimeDelta)
 	return 0;
 }
 
-void SceneManager::Render(ID3D12GraphicsCommandList* pd3dCommandList, CCamera* pCamera)
+void SceneManager::OnPrepareRender(ID3D12GraphicsCommandList* pd3dCommandList)
 {
-	m_Scene->Render(pd3dCommandList, pCamera);
+	m_Scene->OnPrepareRender(pd3dCommandList);
+}
+
+void SceneManager::OnPreRender(ID3D12Device* pd3dDevice, ID3D12CommandQueue* pd3dCommandQueue, ID3D12Fence* pd3dFence, HANDLE hFenceEvent)
+{
+	m_Scene->OnPreRender(pd3dDevice, pd3dCommandQueue, pd3dFence, hFenceEvent);
+}
+
+void SceneManager::Render(ID3D12GraphicsCommandList* pd3dCommandList, CCamera* pCamera, bool bPreRender)
+{
+	m_Scene->Render(pd3dCommandList, pCamera, bPreRender);
 }
 
 void SceneManager::ReleaseUploadBuffers()
@@ -116,13 +124,13 @@ bool SceneManager::GetStoped()
 }
 void SceneManager::SceneStoped()
 {
-
 	KeyManager* keyManager = GET_MANAGER<KeyManager>();
 	if (true == keyManager->GetKeyState(STATE_DOWN, VK_G))
 	{
 		if (m_Scene->GetStoped() == false)
 		{
 			m_Scene->SetStoped(true);
+			GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player_ui16_navigator", OBJ_NAVIGATOR)->SetIsRender(false);
 			for (auto i = (int)OBJ_MINIMAP_UI; i <= OBJ_UI; ++i)
 			{
 				if (i == OBJ_UI || i == OBJ_MINIMAP_UI)

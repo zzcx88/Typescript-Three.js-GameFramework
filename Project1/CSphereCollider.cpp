@@ -20,5 +20,11 @@ void CSphereCollider::SetSphereCollider(XMFLOAT3& xmCenter, float fRadius)
 
 void CSphereCollider::Animate(float fTimeElapsed, XMFLOAT3 xmCenter)
 {
-	m_BoundingSphere.Center = xmCenter;
+	if (m_bisBullet)
+	{
+		Move(DIR_FORWARD, m_fBulletSpeed * fTimeElapsed);
+		m_BoundingSphere.Center = GetPosition();
+	}
+	else
+		m_BoundingSphere.Center = xmCenter;
 }

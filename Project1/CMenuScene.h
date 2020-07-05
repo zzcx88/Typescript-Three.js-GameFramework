@@ -26,7 +26,9 @@ public:
 
 	bool ProcessInput(UCHAR* pKeysBuffer);
 	void AnimateObjects(float fTimeElapsed);
-	void Render(ID3D12GraphicsCommandList* pd3dCommandList, CCamera* pCamera = NULL, ID3D12Resource* pCurrentBackBuffer = NULL);
+	virtual void OnPrepareRender(ID3D12GraphicsCommandList* pd3dCommandList) {}
+	virtual void OnPreRender(ID3D12Device* pd3dDevice, ID3D12CommandQueue* pd3dCommandQueue, ID3D12Fence* pd3dFence, HANDLE hFenceEvent) {}
+	void Render(ID3D12GraphicsCommandList* pd3dCommandList, CCamera* pCamera = NULL, bool bPreRender = false, ID3D12Resource* pCurrentBackBuffer = NULL);
 
 	void ReleaseUploadBuffers();
 

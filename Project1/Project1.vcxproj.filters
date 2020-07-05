@@ -193,8 +193,20 @@
     <Filter Include="GameObject\Plane\Effect\CrushSmoke">
       <UniqueIdentifier>{d91e9e62-a119-4bfb-b13e-f2e87be3350b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="GameObject\Plane\Effect\EngineRafraction">
+      <UniqueIdentifier>{505dff19-6b8d-458f-95cb-4b793af4bd4a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Manager\SoundManager">
+      <UniqueIdentifier>{19dc0631-f98a-4f94-8b8d-8a9ecf5d8967}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Manager\SoundManager\FMOD">
+      <UniqueIdentifier>{817ffc1c-bf72-4bf5-a67a-4db6a10dbacd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GameObject\Plane\Effect\WaterDropRefraction">
+      <UniqueIdentifier>{6159be94-ec85-4082-a667-00990a7c28a2}</UniqueIdentifier>
+    </Filter>
     <Filter Include="GameObject\Mesh\NavigatorMesh">
-      <UniqueIdentifier>{987af736-5b04-43b5-8584-b087b4ef62b6}</UniqueIdentifier>
+      <UniqueIdentifier>{0dd0b86f-01d6-4482-8ca0-2ebad21d1a48}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -393,8 +405,20 @@
     <ClInclude Include="CCrushSmoke.h">
       <Filter>GameObject\Plane\Effect\CrushSmoke</Filter>
     </ClInclude>
-    <ClInclude Include="RedUI.h">
-      <Filter>GameObject\Plane\UI</Filter>
+    <ClInclude Include="CEngineRafraction.h">
+      <Filter>GameObject\Plane\Effect\EngineRafraction</Filter>
+    </ClInclude>
+    <ClInclude Include="SoundManager.h">
+      <Filter>Manager\SoundManager</Filter>
+    </ClInclude>
+    <ClInclude Include="FMOD\inc\fmod.h">
+      <Filter>Manager\SoundManager\FMOD</Filter>
+    </ClInclude>
+    <ClInclude Include="FMOD\inc\fmod.hpp">
+      <Filter>Manager\SoundManager\FMOD</Filter>
+    </ClInclude>
+    <ClInclude Include="CWaterDropRefraction.h">
+      <Filter>GameObject\Plane\Effect\WaterDropRefraction</Filter>
     </ClInclude>
     <ClInclude Include="CNavigator.h">
       <Filter>GameObject\Plane\UI</Filter>
@@ -578,8 +602,14 @@
     <ClCompile Include="CCrushSmoke.cpp">
       <Filter>GameObject\Plane\Effect\CrushSmoke</Filter>
     </ClCompile>
-    <ClCompile Include="RedUI.cpp">
-      <Filter>GameObject\Plane\UI</Filter>
+    <ClCompile Include="CEngineRafraction.cpp">
+      <Filter>GameObject\Plane\Effect\EngineRafraction</Filter>
+    </ClCompile>
+    <ClCompile Include="SoundManager.cpp">
+      <Filter>Manager\SoundManager</Filter>
+    </ClCompile>
+    <ClCompile Include="CWaterDropRefraction.cpp">
+      <Filter>GameObject\Plane\Effect\WaterDropRefraction</Filter>
     </ClCompile>
     <ClCompile Include="CNavigator.cpp">
       <Filter>GameObject\Plane\UI</Filter>
@@ -633,6 +663,9 @@
       <Filter>HLSL</Filter>
     </FxCompile>
     <FxCompile Include="RedUI.hlsl">
+      <Filter>HLSL</Filter>
+    </FxCompile>
+    <FxCompile Include="Refract.hlsl">
       <Filter>HLSL</Filter>
     </FxCompile>
   </ItemGroup>

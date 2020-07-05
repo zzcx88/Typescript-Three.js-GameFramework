@@ -7,7 +7,7 @@ class CMinimap : public CPlane
 	float m_fTimeElapsed = 0.f;
 	float m_fFadeTimeElapsed = 0.f;
 	float m_fFadeFrequence = 0.1f;
-	
+
 	XMFLOAT3 prePosition = XMFLOAT3(0, 0, 0);
 	XMFLOAT3 LookAt = XMFLOAT3(0, 0, 0);
 public:
@@ -19,10 +19,7 @@ public:
 	void Rotate(XMFLOAT3* pxmf3Axis, float fAngle);
 	virtual void Animate(float fTimeElapsed);
 	void SetLookAt(float fTimeElapsed);
-	
 
 	void Render(ID3D12GraphicsCommandList* pd3dCommandList, CCamera* pCamera);
-
-
 };
 

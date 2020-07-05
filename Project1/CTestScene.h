@@ -63,7 +63,11 @@ public:
 
 	bool ProcessInput(UCHAR* pKeysBuffer);
 	void AnimateObjects(float fTimeElapsed);
-	void Render(ID3D12GraphicsCommandList* pd3dCommandList, CCamera* pCamera = NULL, ID3D12Resource* pCurrentBackBuffer = NULL);
+
+	void OnPrepareRender(ID3D12GraphicsCommandList* pd3dCommandList);
+	virtual void OnPreRender(ID3D12Device* pd3dDevice, ID3D12CommandQueue* pd3dCommandQueue, ID3D12Fence* pd3dFence, HANDLE hFenceEvent);
+
+	void Render(ID3D12GraphicsCommandList* pd3dCommandList, CCamera* pCamera = NULL, bool bPreRender = false, ID3D12Resource* pCurrentBackBuffer = NULL);
 
 	void ReleaseUploadBuffers();
 
@@ -71,6 +75,7 @@ public:
 	float fx, fy = 0.f;
 	float m_fElapsedTime = 0.f;
 	bool m_bCreateShip = false;
+	bool m_bCreateEngineRefraction = true;
 	float elapsedTime = 0;
 
 
@@ -106,7 +111,5 @@ public:
 	bool quadrant4 = false;
 
 	int RotateMode = 0;
-
-
 };
 

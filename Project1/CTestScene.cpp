@@ -22,6 +22,7 @@
 #include "CBullet.h"
 #include "CMinimap.h"
 #include "RedUI.h"
+#include "CEngineRafraction.h"
 #include "CNavigator.h"
 
 ID3D12DescriptorHeap* CTestScene::m_pd3dCbvSrvDescriptorHeap = NULL;
@@ -143,8 +144,7 @@ void CTestScene::BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandLis
 	
 	// minimap point
 	m_ppGameObjects[6] = new CMinimap(3, pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, 25.f, 25.f, 0.f, XMFLOAT2(-0.f, -0.f), XMFLOAT2(0.f, 0.f), XMFLOAT2(0.f, 0.f), XMFLOAT2(0.f, 0.f));
-	m_ppGameObjects[6]->SetPosition(fx * -20.f, fy * -20.f, 0.f);
-	//m_ppGameObjects[6]->SetIsRender(false);
+	m_ppGameObjects[6]->SetPosition(fx * -2.f, fy * -2.f, 0.f);
 
 	m_ppGameObjects[7] = new CLockOnUI(0, pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, 250.f, 250.f, 0.f, XMFLOAT2(-0.f, -0.f), XMFLOAT2(0.f, 0.f), XMFLOAT2(0.f, 0.f), XMFLOAT2(0.f, 0.f));
 	m_ppGameObjects[7]->SetPosition(fx * -2.f, fy * -2.f, 0.f);
@@ -182,7 +182,6 @@ void CTestScene::BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandLis
 	m_ppGameObjects[14]->SetPosition( fx*0.001f, fy * 0.25f, 0.f);
 
 	m_ppGameObjects[15] = new CNavigator(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature);
-	//m_ppGameObjects[15]->SetPosition(fx * 0.f, fy * 0.f, 0.f);
 
 	m_ObjManager->AddObject(L"player_ui1_testui", m_ppGameObjects[0], OBJ_UI);
 	m_ObjManager->AddObject(L"player_ui2_weapon", m_ppGameObjects[1], OBJ_UI);
@@ -336,6 +335,7 @@ void CTestScene::BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandLis
 	m_pWater[17]->Rotate(90, 0, 0);
 	m_ObjManager->AddObject(L"WaterNormal", m_pWater[17], OBJ_MAP);
 
+
 	CCloud* pCloudRef;
 	pCloudRef = new CCloud(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature);
 
@@ -363,6 +363,7 @@ void CTestScene::BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandLis
 	}
 
 	CreateShaderVariables(pd3dDevice, pd3dCommandList);
+	GET_MANAGER<SoundManager>()->PlayBGM(L"Stage1_BGM.mp3", CH_BGM);
 }
 
 void CTestScene::CreateStageObject()
@@ -433,25 +434,8 @@ void CTestScene::CreateStageObject()
 			m_ObjManager->AddObject(L"mig21", pMig21_B, OBJ_ENEMY);
 			GET_MANAGER<SceneManager>()->m_nTgtObject++;
 		}
+		cout << GET_MANAGER<SceneManager>()->m_nTgtObject;
 		GET_MANAGER<SceneManager>()->m_nWaveCnt++;
-	}
-
-	if (m_bCreateShip == false)
-	{
-		m_bCreateShip = true;
-		for (int i = 0; i < 8; ++i)
-		{
-			std::default_random_engine dre(time(NULL) * i * GET_MANAGER<CDeviceManager>()->GetGameTimer().GetTimeElapsed());
-			std::uniform_real_distribution<float>fXPos(-4000.f, 4000.f);
-			std::uniform_real_distribution<float>fZPos(3200.f, 6400.f);
-
-			C052CDestroyer* p052C;
-			p052C = new C052CDestroyer();
-			p052C->SetPosition(fXPos(dre), 170, fZPos(dre));
-			p052C->Rotate(0, 180, 0);
-			p052C->m_xmf3Look = XMFLOAT3(0, 0, -1);
-			m_ObjManager->AddObject(L"052C", p052C, OBJ_ENEMY);
-		}
 	}
 
 	if (GET_MANAGER<SceneManager>()->m_nTgtObject == 0)
@@ -534,9 +518,11 @@ void CTestScene::AnimateObjects(float fTimeElapsed)
 {
 	m_fElapsedTime += fTimeElapsed;
 	elapsedTime += fTimeElapsed;
+
 	GET_MANAGER<SceneManager>()->SceneStoped();
 
 	CreateStageObject();
+
 	for (auto& obj : m_ObjManager->GetObjFromType(OBJ_ENEMY))
 	{
 		if (obj.second->m_bAiLockOn == true)
@@ -559,11 +545,11 @@ void CTestScene::AnimateObjects(float fTimeElapsed)
 			m_ppGameObjects[13]->SetIsRender(true);
 			for (auto& obj : m_ObjManager->GetObjFromType(OBJ_UI))
 			{
-				obj.second->m_fWarning = 1.f;
+				obj.second->m_bWarning = 1.f;
 			}
 			for (auto& obj : m_ObjManager->GetObjFromType(OBJ_SPEED_UI))
 			{
-				obj.second->m_fWarning = 1.f;
+				obj.second->m_bWarning = 1.f;
 			}
 		}
 		else
@@ -571,25 +557,41 @@ void CTestScene::AnimateObjects(float fTimeElapsed)
 			m_ppGameObjects[13]->SetIsRender(false);
 			for (auto& obj : m_ObjManager->GetObjFromType(OBJ_UI))
 			{
-				obj.second->m_fWarning = 0.f;
+				obj.second->m_bWarning = 0.f;
 			}
 			for (auto& obj : m_ObjManager->GetObjFromType(OBJ_SPEED_UI))
 			{
-				obj.second->m_fWarning = 0.f;
+				obj.second->m_bWarning = 0.f;
 			}
 		}
-		
+
 	}
+
 
 	m_ObjManager->GetObjFromTag(L"player", OBJ_PLAYER)->SetPlayerMSL(m_pPlayer->GetMSLCount());
 	m_ObjManager->GetObjFromTag(L"player", OBJ_PLAYER)->SetPlayerSpeed(m_pPlayer->GetAircraftSpeed());
 	m_ObjManager->Update(fTimeElapsed);
-	
 }
 
-void CTestScene::Render(ID3D12GraphicsCommandList* pd3dCommandList, CCamera* pCamera, ID3D12Resource* pCurrentBackBuffer)
+void CTestScene::OnPrepareRender(ID3D12GraphicsCommandList* pd3dCommandList)
 {
 	if (m_pd3dGraphicsRootSignature) pd3dCommandList->SetGraphicsRootSignature(m_pd3dGraphicsRootSignature);
+	UpdateShaderVariables(pd3dCommandList);
+
+	D3D12_GPU_VIRTUAL_ADDRESS d3dcbLightsGpuVirtualAddress = m_pd3dcbLights->GetGPUVirtualAddress();
+	pd3dCommandList->SetGraphicsRootConstantBufferView(2, d3dcbLightsGpuVirtualAddress); //Lights
+}
+
+void CTestScene::OnPreRender(ID3D12Device* pd3dDevice, ID3D12CommandQueue* pd3dCommandQueue, ID3D12Fence* pd3dFence, HANDLE hFenceEvent)
+{
+	if(m_ObjManager->GetObjFromTag(L"EngineRefractionObj", OBJ_EFFECT))
+		m_ObjManager->GetObjFromTag(L"EngineRefractionObj", OBJ_EFFECT)->OnPreRender(pd3dDevice, pd3dCommandQueue, pd3dFence, hFenceEvent);
+}
+
+void CTestScene::Render(ID3D12GraphicsCommandList* pd3dCommandList, CCamera* pCamera, bool bPreRender, ID3D12Resource* pCurrentBackBuffer)
+{
+	
+	//if (m_pd3dGraphicsRootSignature) pd3dCommandList->SetGraphicsRootSignature(m_pd3dGraphicsRootSignature);
 	if (m_pd3dComputeRootSignature) pd3dCommandList->SetComputeRootSignature(m_pd3dComputeRootSignature);
 
 	if (m_pd3dCbvSrvDescriptorHeap) pd3dCommandList->SetDescriptorHeaps(1, &m_pd3dCbvSrvDescriptorHeap);
@@ -599,10 +601,19 @@ void CTestScene::Render(ID3D12GraphicsCommandList* pd3dCommandList, CCamera* pCa
 
 	UpdateShaderVariables(pd3dCommandList);
 
-	D3D12_GPU_VIRTUAL_ADDRESS d3dcbLightsGpuVirtualAddress = m_pd3dcbLights->GetGPUVirtualAddress();
-	pd3dCommandList->SetGraphicsRootConstantBufferView(2, d3dcbLightsGpuVirtualAddress); //Lights
+	//D3D12_GPU_VIRTUAL_ADDRESS d3dcbLightsGpuVirtualAddress = m_pd3dcbLights->GetGPUVirtualAddress();
+	//pd3dCommandList->SetGraphicsRootConstantBufferView(2, d3dcbLightsGpuVirtualAddress); //Lights
 	
-	m_ObjManager->Render(pd3dCommandList, pCamera);
+	m_ObjManager->Render(pd3dCommandList, pCamera, bPreRender);
 	//m_pSphereCollider->SphereCollider->Render(pd3dCommandList, pCamera);
 
+	if (m_bCreateEngineRefraction == true)
+	{
+		m_bCreateEngineRefraction = false;
+		CEngineRafraction* testRafraction;
+		testRafraction = new CEngineRafraction(0, GET_MANAGER<CDeviceManager>()->GetDevice(), pd3dCommandList, m_pd3dGraphicsRootSignature, 1.f, 2.f, 0.f);
+		testRafraction->SetPosition(0, 1000, 2000);
+		//testRafraction->SetScale(400, 400, 400);
+		m_ObjManager->AddObject(L"EngineRefractionObj", testRafraction, OBJ_EFFECT);
+	}
 }

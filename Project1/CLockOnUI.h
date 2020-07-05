@@ -29,6 +29,7 @@ public:
 	bool bDetectable = false;
 	bool bLockOn = false;
 
+
 	float m_fLenth = 0.f;
 	
 

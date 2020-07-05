@@ -85,7 +85,7 @@ void CTU160::Animate(float fTimeElapsed)
 				pMissleFog->m_pEffectMaterial->SetShader(m_ObjManager->GetObjFromTag(L"MissleFog", OBJ_EFFECT)->m_EffectShader);
 				pMissleFog->SetMaterial(0, pMissleFog->m_pEffectMaterial);
 				pMissleFog->SetPosition(m_pLeftEngine1->GetPosition());
-				pMissleFog->m_fEffectedObj = 1.0f;
+				pMissleFog->m_bEffectedObj = true;
 				pMissleFog->m_bWingFog = true;
 				m_ObjManager->AddObject(L"MissleFogInstance", pMissleFog, OBJ_EFFECT);
 			}
@@ -103,7 +103,7 @@ void CTU160::Animate(float fTimeElapsed)
 				pMissleFog->m_pEffectMaterial->SetShader(m_ObjManager->GetObjFromTag(L"MissleFog", OBJ_EFFECT)->m_EffectShader);
 				pMissleFog->SetMaterial(0, pMissleFog->m_pEffectMaterial);
 				pMissleFog->SetPosition(m_pLeftEngine2->GetPosition());
-				pMissleFog->m_fEffectedObj = 1.0f;
+				pMissleFog->m_bEffectedObj = true;
 				pMissleFog->m_bWingFog = true;
 				m_ObjManager->AddObject(L"MissleFogInstance", pMissleFog, OBJ_EFFECT);
 			}
@@ -121,7 +121,7 @@ void CTU160::Animate(float fTimeElapsed)
 				pMissleFog->m_pEffectMaterial->SetShader(m_ObjManager->GetObjFromTag(L"MissleFog", OBJ_EFFECT)->m_EffectShader);
 				pMissleFog->SetMaterial(0, pMissleFog->m_pEffectMaterial);
 				pMissleFog->SetPosition(m_pRightEngine1->GetPosition());
-				pMissleFog->m_fEffectedObj = 1.0f;
+				pMissleFog->m_bEffectedObj = true;
 				pMissleFog->m_bWingFog = true;
 				m_ObjManager->AddObject(L"MissleFogInstance", pMissleFog, OBJ_EFFECT);
 			}
@@ -139,7 +139,7 @@ void CTU160::Animate(float fTimeElapsed)
 				pMissleFog->m_pEffectMaterial->SetShader(m_ObjManager->GetObjFromTag(L"MissleFog", OBJ_EFFECT)->m_EffectShader);
 				pMissleFog->SetMaterial(0, pMissleFog->m_pEffectMaterial);
 				pMissleFog->SetPosition(m_pRightEngine2->GetPosition());
-				pMissleFog->m_fEffectedObj = 1.0f;
+				pMissleFog->m_bEffectedObj = true;
 				pMissleFog->m_bWingFog = true;
 				m_ObjManager->AddObject(L"MissleFogInstance", pMissleFog, OBJ_EFFECT);
 			}
@@ -207,7 +207,7 @@ void CTU160::Animate(float fTimeElapsed)
 			pMissleFog->m_pEffectMaterial->SetShader(m_ObjManager->GetObjFromTag(L"crushsmokeRef", OBJ_EFFECT)->m_EffectShader);
 			pMissleFog->SetMaterial(0, pMissleFog->m_pEffectMaterial);
 			pMissleFog->SetPosition(m_xmf3Position);
-			pMissleFog->m_fEffectedObj = 1.0f;
+			pMissleFog->m_bEffectedObj = true;
 			m_ObjManager->AddObject(L"crushsmoke", pMissleFog, OBJ_EFFECT);
 
 			m_fAddCrushFogTimeElapsed = 0;
@@ -266,11 +266,13 @@ void CTU160::Render(ID3D12GraphicsCommandList* pd3dCommandList, CCamera* pCamera
 	//if (SphereCollider)SphereCollider->Render(pd3dCommandList, pCamera);
 	if (m_bDestroyed == true)
 	{
-		cout << m_fDeadElapsed << endl;
+		//cout << m_fDeadElapsed << endl;
 		m_fDeadElapsed += 1.f * GET_MANAGER<CDeviceManager>()->GetGameTimer().GetTimeElapsed();
 
 		if (m_fDeadElapsed >= 3 && m_bCreateOnece == false)
 		{
+			GET_MANAGER<SoundManager>()->PlaySound(L"Splash.mp3", CH_SPLASH);
+
 			m_bCreateOnece = true;
 			CMissleSplash* pMissleSplash = new CMissleSplash();
 			pMissleSplash = new CMissleSplash();
@@ -288,10 +290,14 @@ void CTU160::Render(ID3D12GraphicsCommandList* pd3dCommandList, CCamera* pCamera
 
 		if (m_fDeadElapsed >= m_fDeadFrequence)
 		{
-			m_isDead = true;
-			m_pUI->m_isDead = true;
-			m_pLockOnUI->m_isDead = true;
-			GET_MANAGER<SceneManager>()->m_nTgtObject--;
+			if (m_isDead == false)
+			{
+				GET_MANAGER<SceneManager>()->m_nTgtObject--;
+				cout << GET_MANAGER<SceneManager>()->m_nTgtObject << endl;
+				m_isDead = true;
+				m_pMUI->m_isDead = true;
+				m_pLockOnUI->m_isDead = true;
+			}
 		}
 	}	
 

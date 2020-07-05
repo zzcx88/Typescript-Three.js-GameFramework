@@ -89,7 +89,15 @@ void CTexture::LoadTextureFromFile(ID3D12Device* pd3dDevice, ID3D12GraphicsComma
 	if (bIsDDSFile)
 		m_ppd3dTextures[nIndex] = ::CreateTextureResourceFromDDSFile(pd3dDevice, pd3dCommandList, pszFileName, &(m_ppd3dTextureUploadBuffers[nIndex]), D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE);
 	else
+	{
 		m_ppd3dTextures[nIndex] = ::CreateTextureResourceFromWICFile(pd3dDevice, pd3dCommandList, pszFileName, &(m_ppd3dTextureUploadBuffers[nIndex]), D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE);
+	}
+}
+
+ID3D12Resource* CTexture::CreateTexture(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList, UINT nIndex, UINT nResourceType, UINT nWidth, UINT nHeight, UINT nElements, UINT nMipLevels, DXGI_FORMAT dxgiFormat, D3D12_RESOURCE_FLAGS d3dResourceFlags, D3D12_RESOURCE_STATES d3dResourceStates, D3D12_CLEAR_VALUE* pd3dClearValue)
+{
+	m_ppd3dTextures[nIndex] = ::CreateTexture2DResource(pd3dDevice, pd3dCommandList, nWidth, nHeight, nElements, nMipLevels, dxgiFormat, d3dResourceFlags, d3dResourceStates, pd3dClearValue);
+	return(m_ppd3dTextures[nIndex]);
 }
 
 //ReadModelFile
@@ -480,7 +488,7 @@ void CGameObject::Render(ID3D12GraphicsCommandList* pd3dCommandList, CCamera* pC
 						if (m_ppMaterials[i]->m_pShader) m_ppMaterials[i]->m_pShader->Render(pd3dCommandList, pCamera);
 						m_ppMaterials[i]->UpdateShaderVariable(pd3dCommandList);
 					}
-					if (m_fEffectedObj == 1.0f && m_fBurnerBlendAmount <= 0)
+					if (m_bEffectedObj && m_fBurnerBlendAmount <= 0)
 					{
 					}
 					else
@@ -505,17 +513,15 @@ void CGameObject::UpdateShaderVariables(ID3D12GraphicsCommandList* pd3dCommandLi
 
 void CGameObject::UpdateShaderVariable(ID3D12GraphicsCommandList* pd3dCommandList, XMFLOAT4X4* pxmf4x4World)
 {
+	
 	XMFLOAT4X4 xmf4x4World;
 	XMStoreFloat4x4(&xmf4x4World, XMMatrixTranspose(XMLoadFloat4x4(pxmf4x4World)));
 	pd3dCommandList->SetGraphicsRoot32BitConstants(1, 16, &xmf4x4World, 0);
-	
 
 	pd3dCommandList->SetGraphicsRoot32BitConstants(16, 1, &m_fBurnerBlendAmount, 0);
-	pd3dCommandList->SetGraphicsRoot32BitConstants(16, 1, &m_fEffectedObj,1);
-	pd3dCommandList->SetGraphicsRoot32BitConstants(16, 1, &m_fWarning, 2);
-
-
-
+	pd3dCommandList->SetGraphicsRoot32BitConstants(16, 1, &m_bEffectedObj,1);
+	pd3dCommandList->SetGraphicsRoot32BitConstants(16, 1, &m_bWarning, 2);
+	
 }
 
 void CGameObject::UpdateShaderVariable(ID3D12GraphicsCommandList* pd3dCommandList, CMaterial* pMaterial)

@@ -86,6 +86,7 @@ void CMissle::Animate(float fTimeElapsed)
 		{
 			m_isDead = true;
 			GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player", OBJ_PLAYER)->m_AiMissleAssert = false;
+			GET_MANAGER<SoundManager>()->StopSound(CH_EFFECT);
 		}
 
 		if (m_bLockOn == true)
@@ -115,19 +116,43 @@ void CMissle::Animate(float fTimeElapsed)
 			pMissleFog->m_pEffectMaterial->SetShader(m_ObjManager->GetObjFromTag(L"MissleFog", OBJ_EFFECT)->m_EffectShader);
 			pMissleFog->SetMaterial(0, pMissleFog->m_pEffectMaterial);
 			pMissleFog->SetPosition(m_xmf3Position);
-			pMissleFog->m_fEffectedObj = 1.0f;
+			pMissleFog->m_bEffectedObj = true;
 			m_ObjManager->AddObject(L"MissleFogInstance", pMissleFog, OBJ_EFFECT);
 
 			m_fAddFogTimeElapsed = 0;
+		}
+
+		if (GET_MANAGER<ObjectManager>()->GetTagFromObj(this, OBJ_ALLYMISSLE) == L"player_missle" && m_bMissleLockCamera == true)
+		{
+			if (m_bCameraPlayed == false)
+			{
+				GET_MANAGER<SoundManager>()->PlaySound(L"CameraMissle.mp3", CH_EFFECT);
+				m_bCameraPlayed = true;
+			}
+
+			GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player", OBJ_PLAYER)->m_bEye_fixation = false;
+			if (m_xmfTarget != NULL)
+				m_pCamera->SetLookAt(XMFLOAT3(*m_xmfTarget));
+			else
+				m_pCamera->SetLookVector(GetLook());
+			m_pCamera->SetPosition(XMFLOAT3(GetPosition().x - m_pCamera->GetLookVector().x * 100, GetPosition().y + 1.3 - m_pCamera->GetLookVector().y * 100,
+				GetPosition().z - m_pCamera->GetLookVector().z * 100));
+			m_pCamera->GenerateProjectionMatrix(1.01f, 100000.0f, ASPECT_RATIO, 20);
+			m_pCamera->RegenerateViewMatrix();
+		}
+		else
+		{
+			GET_MANAGER<SoundManager>()->StopSound(CH_EFFECT);
 		}
 	}
 }
 
 void CMissle::CollisionActivate(CGameObject* collideTarget)
 {
-	
 	if (m_bRefference == false && collideTarget->m_bDestroyed == false)
 	{
+		GET_MANAGER<SoundManager>()->PlaySound(L"SplashNormal.mp3", CH_SPLASH);
+
 		CMissleSplash* pMissleSplash = new CMissleSplash();
 		pMissleSplash = new CMissleSplash();
 		pMissleSplash->m_pPlaneMesh = GET_MANAGER<ObjectManager>()->GetObjFromTag(L"MissleSplashRef", OBJ_EFFECT)->m_pPlaneMesh;
@@ -156,8 +181,12 @@ void CMissle::CollisionActivate(CGameObject* collideTarget)
 			}
 
 		}
-
+		if (GET_MANAGER<ObjectManager>()->GetTagFromObj(this, OBJ_ALLYMISSLE) == L"player_missle" && m_bMissleLockCamera == true)
+		{
+			GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player", OBJ_PLAYER)->m_bEye_fixation = true;
+		}
 		m_isDead = true;
+		GET_MANAGER<SoundManager>()->StopSound(CH_EFFECT);
 		GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player", OBJ_PLAYER)->m_AiMissleAssert = false;
 	}
 }
@@ -248,148 +277,12 @@ void CMissle::SetLookAt(float fTimeElapsed)
 		LenthToPlayer = sqrt(xmf3TargetVector.x * xmf3TargetVector.x + xmf3TargetVector.y * xmf3TargetVector.x + xmf3TargetVector.z * xmf3TargetVector.z);
 		XMFLOAT3 LenthXYZ = Vector3::Subtract(*m_xmfTarget, m_xmfLunchPosition);
 		float LenthZ = sqrt(LenthXYZ.z * LenthXYZ.z);
+
+		float xmfAxis1 = Vector3::DotProduct(GetLook(), xmf3TargetVector);
 		Rotate(&xmfAxis, fTheta);
-		//CGameObject::Rotate(xmfHoming.x * 100 * fTimeElapsed, xmfHoming.y * 100 * fTimeElapsed, 0);
-
+		//cout << xmfAxis.x << " " << xmfAxis.y << " " << xmfAxis.z << endl;
+		cout << xmfAxis1 << endl;
 	}
-	//else if (m_xmfLunchPosition.z < m_xmfTarget->z)
-	//{
-	//	XMFLOAT3 xmf3TargetVector = Vector3::Subtract(*m_xmfTarget, m_xmfLunchPosition);
-	//	xmf3TargetVector = Vector3::Normalize(xmf3TargetVector);
-	//	XMFLOAT3 xmfAxis = Vector3::CrossProduct(m_xmf3Look, xmf3TargetVector);
-	//	xmfAxis = Vector3::Normalize(xmfAxis);
-	//	XMFLOAT3 xmfHoming;
-	//	xmfHoming.x = xmfAxis.x * theta;
-	//	xmfHoming.y = xmfAxis.y * theta;
-	//	xmfHoming.z = xmfAxis.z * theta;
-	//	float Lenth = sqrt(xmf3TargetVector.x * xmf3TargetVector.x + xmf3TargetVector.y * xmf3TargetVector.x + xmf3TargetVector.z * xmf3TargetVector.z);
-	//	XMFLOAT3 LenthXYZ = Vector3::Subtract(*m_xmfTarget, m_xmfLunchPosition);
-	//	float LenthZ = sqrt(LenthXYZ.z * LenthXYZ.z);
-	//	//Rotate(xmfHoming.x, xmfHoming.y, 0);
-	//	Rotate(&xmfAxis, theta);
-	//	CGameObject::Rotate(xmfHoming.x * 100 * fTimeElapsed, xmfHoming.y * 100 * fTimeElapsed, 0);
-	//}
-
-
-	//if (m_xmfLunchPosition.z > m_xmfTarget->z)
-	//{
-	//	XMFLOAT3 xmf3TargetVector = Vector3::Subtract(*m_xmfTarget, m_xmf3Position);
-	//	xmf3TargetVector = Vector3::Normalize(xmf3TargetVector);
-	//	XMFLOAT3 xmfAxis = Vector3::CrossProduct(m_xmf3Look, xmf3TargetVector);
-	//	xmfAxis = Vector3::Normalize(xmfAxis);
-	//	XMFLOAT3 xmfHoming;
-	//	xmfHoming.x = xmfAxis.x * theta;
-	//	xmfHoming.y = xmfAxis.y * theta;
-	//	xmfHoming.z = xmfAxis.z * theta;
-	//	float Lenth = sqrt(xmf3TargetVector.x * xmf3TargetVector.x + xmf3TargetVector.y * xmf3TargetVector.x + xmf3TargetVector.z * xmf3TargetVector.z);
-	//	XMFLOAT3 LenthXYZ = Vector3::Subtract(*m_xmfTarget, m_xmfLunchPosition);
-	//	float LenthZ = sqrt(LenthXYZ.z * LenthXYZ.z);
-	//	if (LenthZ < 200)
-	//	{
-	//		if (SamePosY == true)
-	//		{
-	//			Rotate(0, xmfHoming.y, 0);
-	//			CGameObject::Rotate(xmfHoming.x * 100 * fTimeElapsed, xmfHoming.y * 100 * fTimeElapsed, 0);
-	//			return;
-	//		}
-	//		if (m_xmf3Position.y < m_xmfTarget->y)
-	//		{
-	//			if (xmfHoming.x < 0)
-	//			{
-	//				xmfHoming.x *= -1;
-	//			}
-	//			Rotate(-xmfHoming.x * 1000 * fTimeElapsed, xmfHoming.y, 0);
-	//			CGameObject::Rotate(xmfHoming.x * 100 * fTimeElapsed, xmfHoming.y * 100 * fTimeElapsed, 0);
-	//		}
-	//		else if (m_xmf3Position.y > m_xmfTarget->y)
-	//		{
-	//			if (xmfHoming.x > 0)
-	//			{
-	//				xmfHoming.x *= -1;
-	//			}
-	//			Rotate(-xmfHoming.x * 1000 * fTimeElapsed, xmfHoming.y, 0);
-	//			CGameObject::Rotate(xmfHoming.x * 100 * fTimeElapsed, xmfHoming.y * 100 * fTimeElapsed, 0);
-	//		}
-	//		if ((m_xmf3Position.y - m_xmfTarget->y < 5 && m_xmfTarget->y - m_xmf3Position.y > -5) && Lenth < 100)
-	//		{
-	//			SamePosY = true;
-	//		}
-	//	}
-	//	else
-	//	{
-	//		Rotate(-xmfHoming.x, xmfHoming.y, 0);
-	//		CGameObject::Rotate(-xmfHoming.x * 100 * fTimeElapsed, xmfHoming.y * 100 * fTimeElapsed, 0);
-	//	}
-	//	std::cout << "X : " << xmf3TargetVector.x <<  " Y :  " << xmf3TargetVector.y << " Z : " << xmf3TargetVector.z << endl;
-	//}
-	//else if (m_xmfLunchPosition.z < m_xmfTarget->z)
-	//{
-	//	XMFLOAT3 xmf3TargetVector = Vector3::Subtract(*m_xmfTarget, m_xmf3Position);
-	//	//xmf3TargetVector = Vector3::Normalize(xmf3TargetVector);
-	//	XMFLOAT3 xmfAxis = Vector3::CrossProduct(m_xmf3Look, xmf3TargetVector, false);
-	//	xmfAxis = Vector3::Normalize(xmfAxis);
-	//	XMFLOAT3 xmfHoming;
-	//	xmfHoming.x = xmfAxis.x * theta;
-	//	xmfHoming.y = xmfAxis.y * theta;
-	//	xmfHoming.z = xmfAxis.z * theta;
-	//	float Lenth = sqrt(xmf3TargetVector.x * xmf3TargetVector.x + xmf3TargetVector.y * xmf3TargetVector.x + xmf3TargetVector.z * xmf3TargetVector.z);
-	//	XMFLOAT3 LenthXYZ = Vector3::Subtract(*m_xmfTarget, m_xmfLunchPosition);
-	//	float LenthZ = sqrt(LenthXYZ.z * LenthXYZ.z);
-	//	if (LenthZ < 200)
-	//	{
-	//		if (SamePosY == true)
-	//		{
-	//			Rotate(0, xmfHoming.y, 0);
-	//			CGameObject::Rotate(xmfHoming.x * 100 * fTimeElapsed, xmfHoming.y * 100 * fTimeElapsed, 0);
-	//			return;
-	//		}
-	//		if(m_xmf3Position.y <  m_xmfTarget->y)
-	//		{
-	//			if (xmfHoming.x < 0)
-	//			{
-	//				xmfHoming.x *= -1;
-	//			}
-	//			Rotate(-xmfHoming.x * 1000 * fTimeElapsed, xmfHoming.y, 0);
-	//			CGameObject::Rotate(xmfHoming.x * 100 * fTimeElapsed, xmfHoming.y * 100 * fTimeElapsed, 0);
-	//		}
-	//		else if (m_xmf3Position.y > m_xmfTarget->y)
-	//		{
-	//			if (xmfHoming.x > 0)
-	//			{
-	//				xmfHoming.x *= -1;
-	//			}
-	//			Rotate(-xmfHoming.x * 1000 * fTimeElapsed, xmfHoming.y, 0);
-	//			CGameObject::Rotate(xmfHoming.x * 100 * fTimeElapsed, xmfHoming.y * 100 * fTimeElapsed, 0);
-	//		}
-	//		if ((m_xmf3Position.y - m_xmfTarget->y < 5 && m_xmfTarget->y - m_xmf3Position.y > -5) && Lenth < 100)
-	//		{
-	//			SamePosY = true;
-	//		}
-	//	}
-	//	else
-	//	{
-	//		Rotate(xmfHoming.x, xmfHoming.y, 0);
-	//		CGameObject::Rotate(xmfHoming.x * 100 * fTimeElapsed, xmfHoming.y * 100 * fTimeElapsed, 0);
-	//	}
-	//}
-
-
-	/*float theta = 10.0f * fTimeElapsed;
-	XMFLOAT3 xmf3TargetVector = Vector3::Subtract(m_xmf3Position, *m_xmfTarget);
-	xmf3TargetVector = Vector3::Normalize(xmf3TargetVector);
-	XMFLOAT3 xmfAxis = Vector3::CrossProduct(xmf3TargetVector, m_xmf3Look);
-	XMFLOAT3 xmfHoming;
-	xmfHoming.x = xmfAxis.x * theta;
-	xmfHoming.y = xmfAxis.y * theta;
-	xmfHoming.z = xmfAxis.z * theta;
-	XMFLOAT3 xmfUp(1.0f, 0.0f, 0.0f);
-	XMFLOAT4X4 mtxLookAt = Matrix4x4::LookAtLH(m_xmf3Position, *m_xmfTarget, xmfUp);
-	m_xmf3Up = XMFLOAT3(mtxLookAt._12, mtxLookAt._22, mtxLookAt._32);
-	m_xmf3Look = XMFLOAT3(mtxLookAt._13, mtxLookAt._23, mtxLookAt._33);
-	Rotate(xmfHoming.x, xmfHoming.y, xmfHoming.z);
-	m_xmf4x4World._11 = xmfHoming.x;			m_xmf4x4World._12 = xmfHoming.y;		m_xmf4x4World._13 = xmfHoming.z;
-	m_xmf4x4World._21 = m_xmf3Up.x;			m_xmf4x4World._22 = m_xmf3Up.y;		m_xmf4x4World._23 = m_xmf3Up.z;
-	m_xmf4x4World._31 = m_xmf3Look.x;		m_xmf4x4World._32 = m_xmf3Look.y;	m_xmf4x4World._33 = m_xmf3Look.z;*/
 }
 
 void CMissle::Render(ID3D12GraphicsCommandList* pd3dCommandList, CCamera* pCamera)

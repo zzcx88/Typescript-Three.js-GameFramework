@@ -35,8 +35,7 @@ CNavigator::~CNavigator()
 
 void CNavigator::Animate(float fTimeElapsed)
 {
-	GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player_ui16_navigator" , OBJ_NAVIGATOR)->SetPosition(GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player", OBJ_PLAYER)->GetPosition().x, GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player", OBJ_PLAYER)->GetPosition().y+1.f, GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player", OBJ_PLAYER)->GetPosition().z );
-
+	GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player_ui16_navigator", OBJ_NAVIGATOR)->SetPosition(GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player", OBJ_PLAYER)->GetPosition().x, GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player", OBJ_PLAYER)->GetPosition().y + 1.f, GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player", OBJ_PLAYER)->GetPosition().z);
 	//cout << GetPosition().x << ", " << GetPosition().y << ", " << GetPosition().z<< endl;
 	for (auto& Ene : GET_MANAGER<ObjectManager>()->GetObjFromType(OBJ_ENEMY))
 	{
@@ -101,11 +100,11 @@ void CNavigator::SetLookAt(XMFLOAT3& xmfTarget)
 	XMFLOAT3 xmf3TargetVector = Vector3::Subtract(xmfTarget, GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player", OBJ_PLAYER)->GetPosition());
 	xmf3TargetVector = Vector3::Normalize(xmf3TargetVector);
 	float xmfAxis = Vector3::DotProduct(GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player", OBJ_PLAYER)->m_pCamera->GetLookVector(), xmf3TargetVector);
-	
+
 	if (xmfAxis < 0.85)
 		SetIsRender(true);
 	else
-		SetIsRender(false);
+		SetIsRender(false);	
 }
 
 void CNavigator::NevSetLookAt(XMFLOAT3& xmf3LookAt)
