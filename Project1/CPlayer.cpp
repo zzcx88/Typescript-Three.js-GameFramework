@@ -559,6 +559,8 @@ void CPlayer::Animate(float fTimeElapsed)
 
 		SetAfterBurnerPosition(fTimeElapsed);
 
+		SetNaviPosition();
+
 		if (m_AiMissleAssert == true)
 		{
 			if (m_bAssertSoundPlayed == false)
@@ -754,22 +756,22 @@ void CAirplanePlayer::OnPrepareAnimate()
 	m_pLeft_AfterBurnerEX = FindFrame("Left_AfterBurnerEX");
 	m_pLeft_AfterBurnerIN = FindFrame("Left_AfterBurnerIN");
 	m_pEngineRefraction = FindFrame("EngineRefraction");
-	
+	m_pNaviPos = FindFrame("Nevi_Position");
 
 
-	m_pRight_AfterBurnerEX->m_fEffectedObj = 1.0f;
+	m_pRight_AfterBurnerEX->m_bEffectedObj = 1.0f;
 	m_pRight_AfterBurnerEX->m_fBurnerBlendAmount = 0.5f;
 	m_pRight_AfterBurnerEX->m_ppMaterials[0]->SetAfterBurnerShader();
 
-	m_pRight_AfterBurnerIN->m_fEffectedObj = 1.0f;
+	m_pRight_AfterBurnerIN->m_bEffectedObj = 1.0f;
 	m_pRight_AfterBurnerIN->m_fBurnerBlendAmount = 0.5f;
 	m_pRight_AfterBurnerIN->m_ppMaterials[0]->SetAfterBurnerShader();
 
-	m_pLeft_AfterBurnerEX->m_fEffectedObj = 1.0f;
+	m_pLeft_AfterBurnerEX->m_bEffectedObj = 1.0f;
 	m_pLeft_AfterBurnerEX->m_fBurnerBlendAmount = 0.5f;
 	m_pLeft_AfterBurnerEX->m_ppMaterials[0]->SetAfterBurnerShader();
 
-	m_pLeft_AfterBurnerIN->m_fEffectedObj = 1.0f;
+	m_pLeft_AfterBurnerIN->m_bEffectedObj = 1.0f;
 	m_pLeft_AfterBurnerIN->m_fBurnerBlendAmount = 0.5f;
 	m_pLeft_AfterBurnerIN->m_ppMaterials[0]->SetAfterBurnerShader();
 
@@ -1193,6 +1195,13 @@ void CAirplanePlayer::SetEngineRefractionPos()
 		//GET_MANAGER<ObjectManager>()->GetObjFromTag(L"EngineRefractionObj", OBJ_EFFECT)->SetScale(0.1, 0.1, 0);
 		//GET_MANAGER<ObjectManager>()->GetObjFromTag(L"EngineRefractionObj", OBJ_EFFECT)->SetPlaneScale(100);
 	}
+}
+
+void CAirplanePlayer::SetNaviPosition()
+{
+	if(GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player_ui16_navigator", OBJ_NAVIGATOR) != NULL)
+		if(m_pNaviPos != NULL)
+			GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player_ui16_navigator", OBJ_NAVIGATOR)->SetPosition(m_pNaviPos->GetPosition());
 }
 
 void CAirplanePlayer::OnPrepareRender()

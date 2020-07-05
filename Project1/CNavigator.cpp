@@ -35,7 +35,7 @@ CNavigator::~CNavigator()
 
 void CNavigator::Animate(float fTimeElapsed)
 {
-	GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player_ui16_navigator" , OBJ_NAVIGATOR)->SetPosition(GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player", OBJ_PLAYER)->GetPosition().x, GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player", OBJ_PLAYER)->GetPosition().y+1.f, GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player", OBJ_PLAYER)->GetPosition().z );
+	
 
 	//cout << GetPosition().x << ", " << GetPosition().y << ", " << GetPosition().z<< endl;
 	for (auto& Ene : GET_MANAGER<ObjectManager>()->GetObjFromType(OBJ_ENEMY))

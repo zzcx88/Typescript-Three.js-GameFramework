@@ -137,6 +137,8 @@ public:
 	virtual void SetAfterBurnerPosition(float fTimeElapsed) {}
 
 	virtual void OnPlayerUpdateCallback(float fTimeElapsed) { }
+
+	virtual void SetNaviPosition() {}
 	void SetPlayerUpdatedContext(LPVOID pContext) { m_pPlayerUpdatedContext = pContext; }
 
 	virtual void OnCameraUpdateCallback(float fTimeElapsed) { }
@@ -201,6 +203,8 @@ public:
 
 	CGameObject* m_pEngineRefraction = NULL;
 
+	CGameObject* m_pNaviPos = NULL;
+
 	//WeaponsXMF
 	XMFLOAT4X4 m_xmMSL_1;
 
@@ -227,6 +231,8 @@ private:
 	virtual void SetAfterBurnerPosition(float fTimeElapsed);
 
 	virtual void SetEngineRefractionPos();
+
+	virtual void SetNaviPosition();
 public:
 	virtual CCamera* ChangeCamera(DWORD nNewCameraMode, float fTimeElapsed);
 	virtual void OnPrepareRender();
