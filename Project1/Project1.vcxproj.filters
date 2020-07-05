@@ -196,6 +196,12 @@
     <Filter Include="GameObject\Plane\Effect\EngineRafraction">
       <UniqueIdentifier>{505dff19-6b8d-458f-95cb-4b793af4bd4a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Manager\SoundManager">
+      <UniqueIdentifier>{19dc0631-f98a-4f94-8b8d-8a9ecf5d8967}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Manager\SoundManager\FMOD">
+      <UniqueIdentifier>{817ffc1c-bf72-4bf5-a67a-4db6a10dbacd}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="targetver.h">
@@ -399,6 +405,15 @@
     <ClInclude Include="CEngineRafraction.h">
       <Filter>GameObject\Plane\Effect\EngineRafraction</Filter>
     </ClInclude>
+    <ClInclude Include="SoundManager.h">
+      <Filter>Manager\SoundManager</Filter>
+    </ClInclude>
+    <ClInclude Include="FMOD\inc\fmod.h">
+      <Filter>Manager\SoundManager\FMOD</Filter>
+    </ClInclude>
+    <ClInclude Include="FMOD\inc\fmod.hpp">
+      <Filter>Manager\SoundManager\FMOD</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="DDSTextureLoader12.cpp">
@@ -580,6 +595,9 @@
     </ClCompile>
     <ClCompile Include="CEngineRafraction.cpp">
       <Filter>GameObject\Plane\Effect\EngineRafraction</Filter>
+    </ClCompile>
+    <ClCompile Include="SoundManager.cpp">
+      <Filter>Manager\SoundManager</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

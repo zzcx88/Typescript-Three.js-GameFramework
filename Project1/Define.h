@@ -77,3 +77,6 @@
 
 //BehaviorTool
 #define BHAVIOR_TOOL_MODE
+
+
+#define SAFE_DELETE_ARRAY(p) {if(p) {delete[] (p); (p)=NULL;}}

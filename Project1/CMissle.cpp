@@ -86,6 +86,7 @@ void CMissle::Animate(float fTimeElapsed)
 		{
 			m_isDead = true;
 			GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player", OBJ_PLAYER)->m_AiMissleAssert = false;
+			GET_MANAGER<SoundManager>()->StopSound(CH_EFFECT);
 		}
 
 		if (m_bLockOn == true)
@@ -123,6 +124,12 @@ void CMissle::Animate(float fTimeElapsed)
 
 		if (GET_MANAGER<ObjectManager>()->GetTagFromObj(this, OBJ_ALLYMISSLE) == L"player_missle" && m_bMissleLockCamera == true)
 		{
+			if (m_bCameraPlayed == false)
+			{
+				GET_MANAGER<SoundManager>()->PlaySound(L"CameraMissle.mp3", CH_EFFECT);
+				m_bCameraPlayed = true;
+			}
+
 			GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player", OBJ_PLAYER)->m_bEye_fixation = false;
 			if (m_xmfTarget != NULL)
 				m_pCamera->SetLookAt(XMFLOAT3(*m_xmfTarget));
@@ -133,14 +140,19 @@ void CMissle::Animate(float fTimeElapsed)
 			m_pCamera->GenerateProjectionMatrix(1.01f, 100000.0f, ASPECT_RATIO, 20);
 			m_pCamera->RegenerateViewMatrix();
 		}
+		else
+		{
+			GET_MANAGER<SoundManager>()->StopSound(CH_EFFECT);
+		}
 	}
 }
 
 void CMissle::CollisionActivate(CGameObject* collideTarget)
 {
-	
 	if (m_bRefference == false && collideTarget->m_bDestroyed == false)
 	{
+		GET_MANAGER<SoundManager>()->PlaySound(L"SplashNormal.mp3", CH_SPLASH);
+
 		CMissleSplash* pMissleSplash = new CMissleSplash();
 		pMissleSplash = new CMissleSplash();
 		pMissleSplash->m_pPlaneMesh = GET_MANAGER<ObjectManager>()->GetObjFromTag(L"MissleSplashRef", OBJ_EFFECT)->m_pPlaneMesh;
@@ -174,6 +186,7 @@ void CMissle::CollisionActivate(CGameObject* collideTarget)
 			GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player", OBJ_PLAYER)->m_bEye_fixation = true;
 		}
 		m_isDead = true;
+		GET_MANAGER<SoundManager>()->StopSound(CH_EFFECT);
 		GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player", OBJ_PLAYER)->m_AiMissleAssert = false;
 	}
 }

@@ -16,6 +16,8 @@ CDeviceManager* pDeviceManager = GET_MANAGER<CDeviceManager>();
 // KeyManager 선언
 KeyManager* pKeyManager = GET_MANAGER<KeyManager>();
 
+SoundManager* pSoundManager = GET_MANAGER<SoundManager>();
+
 // 이 코드 모듈에 포함된 함수의 선언을 전달합니다:
 ATOM                MyRegisterClass(HINSTANCE hInstance);
 BOOL                InitInstance(HINSTANCE, int);

@@ -234,6 +234,8 @@ void CMig21::Render(ID3D12GraphicsCommandList* pd3dCommandList, CCamera* pCamera
 
 		if (m_fDeadElapsed >= 3 &&  m_bCreateOnece == false)
 		{
+			GET_MANAGER<SoundManager>()->PlaySound(L"Splash.mp3", CH_SPLASH);
+
 			m_bCreateOnece = true;
 			CMissleSplash* pMissleSplash = new CMissleSplash();
 			pMissleSplash = new CMissleSplash();

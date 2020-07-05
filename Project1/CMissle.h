@@ -25,7 +25,7 @@ public:
 	bool m_bRefference = false;
 	bool FirstFire = true;
 	bool m_bLockOn = false;
-	
+	bool m_bCameraPlayed = false;
 
 	float m_fAssertFrequence = 3.0f;
 	float m_fDeleteFrequence = 5.0f;

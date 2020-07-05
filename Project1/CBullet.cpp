@@ -80,6 +80,13 @@ void CBullet::CollisionActivate(CGameObject* collideTarget)
 {
 	if (!m_bRefference && collideTarget->m_bDestroyed == false && m_ColliedObj == true)
 	{
+		std::default_random_engine dre(time(NULL));
+		std::uniform_int_distribution<int>Num(0, 1000);
+		if(Num(dre) % 2 == 0)
+			GET_MANAGER<SoundManager>()->PlaySound(L"GunSplash_1.mp3", CH_SPLASH);
+		else
+			GET_MANAGER<SoundManager>()->PlaySound(L"GunSplash_2.mp3", CH_SPLASH);
+
 		CMissleSplash* pMissleSplash = new CMissleSplash();
 		pMissleSplash = new CMissleSplash();
 		pMissleSplash->m_pPlaneMesh = GET_MANAGER<ObjectManager>()->GetObjFromTag(L"MissleSplashRef", OBJ_EFFECT)->m_pPlaneMesh;

@@ -427,18 +427,20 @@ void CDeviceManager::SceneChangeInput()
 {
 	KeyManager* keyManager = GET_MANAGER<KeyManager>();
 	DWORD dwDirection = 0;
-
-	if (true == keyManager->GetKeyState(STATE_PUSH, VK_G))
+	if (m_pSceneManager->GetCurrentSceneState() == SCENE_TEST)
 	{
-		m_ArrowSwitch = 0;
-		m_pUIarrow->SetPosition(m_pUI->GetPosition().x - 370, 48, 0);
+		if (true == keyManager->GetKeyState(STATE_PUSH, VK_G))
+		{
+			m_ArrowSwitch = 0;
+			m_pUIarrow->SetPosition(m_pUI->GetPosition().x - 370, 48, 0);
 
-		if (m_SceneSwitch == SCENE_TEST) {
-			if(m_pSceneManager->GetSceneStoped() == false)
-				m_BlurSwitch = BLUR_OFF;
-			else
-				m_BlurSwitch = BLUR_ON;
+			if (m_SceneSwitch == SCENE_TEST) {
+				if (m_pSceneManager->GetSceneStoped() == false)
+					m_BlurSwitch = BLUR_OFF;
+				else
+					m_BlurSwitch = BLUR_ON;
 
+			}
 		}
 	}
 	if (true == keyManager->GetKeyState(STATE_PUSH, VK_UP))
@@ -512,6 +514,7 @@ void CDeviceManager::SceneChangeInput()
 	{
 		if (m_SceneSwitch == SCENE_MENU)
 		{
+			GET_MANAGER<SoundManager>()->PlaySound(L"PressSpace.mp3", CH_EFFECT);
 			m_pd3dCommandList->Reset(m_pd3dCommandAllocator, NULL);
 
 			m_SceneSwitch = SCENE_TEST;
@@ -659,7 +662,9 @@ void CDeviceManager::ProcessInput()
 void CDeviceManager::AnimateObjects()
 {
 	float fTimeElapsed = m_GameTimer.GetTimeElapsed();
+	GET_MANAGER<SoundManager>()->UpdateSound();
 	m_pSceneManager->Update(fTimeElapsed);
+	GET_MANAGER<SoundManager>()->UpdateSound();
 	//m_pPlayer->Update(m_GameTimer.GetTimeElapsed());
 }
 

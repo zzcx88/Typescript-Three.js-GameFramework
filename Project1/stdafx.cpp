@@ -2,8 +2,7 @@
 
 #include "stdafx.h"
 
-#include "DDSTextureLoader12.h"
-#include "WICTextureLoader12.h"
+
 
 UINT gnCbvSrvDescriptorIncrementSize = 64;
 

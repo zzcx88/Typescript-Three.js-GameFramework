@@ -31,6 +31,7 @@ CMenuScene::~CMenuScene()
 
 void CMenuScene::BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList)
 {
+	GET_MANAGER<SoundManager>()->PlayBGM(L"StartScene.mp3", CH_BGM);
 	m_pd3dGraphicsRootSignature = CreateGraphicsRootSignature(pd3dDevice);
 	m_pd3dComputeRootSignature = CreatePostProcessRootSignature(pd3dDevice);
 

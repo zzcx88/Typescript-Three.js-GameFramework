@@ -211,6 +211,12 @@ void CPlayer::Update_Input(const float& TimeDelta)
 
 	if (true == keyManager->GetKeyState(STATE_PUSH, VK_LCONTROL))
 	{
+		if (m_bGunSoundPlayed == false)
+		{
+			GET_MANAGER<SoundManager>()->PlaySound(L"GunFire.mp3", CH_AIRGUN);
+			GET_MANAGER<SoundManager>()->SetVolume(CH_AIRGUN, 0.3f);
+			m_bGunSoundPlayed = true;
+		}
 		if(!m_bEye_fixation)
 			m_fFOV = 60;
 		m_bGunFire = true;
@@ -221,6 +227,8 @@ void CPlayer::Update_Input(const float& TimeDelta)
 
 	if (true == keyManager->GetKeyState(STATE_UP, VK_LCONTROL))
 	{
+		GET_MANAGER<SoundManager>()->StopSound(CH_AIRGUN);
+		m_bGunSoundPlayed = false;
 		if (m_bGunFire != false && m_bEye_fixation == false)
 		{
 			m_bGunFire = false;
@@ -242,6 +250,8 @@ void CPlayer::Update_Input(const float& TimeDelta)
 		dwDirection |= VK_SPACE;
 		if (m_fPushSpaceElapsed == 0.0f)
 		{
+			GET_MANAGER<SoundManager>()->PlaySound(L"Missile_launch.mp3", CH_MISSLE);
+			GET_MANAGER<SoundManager>()->SetVolume(CH_MISSLE, 0.2f);
 			MissleLaunch();
 		}
 		m_fPushSpaceElapsed+= 1* TimeDelta;
@@ -533,6 +543,20 @@ void CPlayer::Animate(float fTimeElapsed)
 		SetEngineRefractionPos();
 
 		SetAfterBurnerPosition(fTimeElapsed);
+
+		if (m_AiMissleAssert == true)
+		{
+			if (m_bAssertSoundPlayed == false)
+			{
+				GET_MANAGER<SoundManager>()->PlaySound(L"Missle_Alert.mp3", CH_ALERT, true);
+				m_bAssertSoundPlayed = true;
+			}
+		}
+		else
+		{
+			GET_MANAGER<SoundManager>()->StopSound(CH_ALERT);
+			m_bAssertSoundPlayed = false;
+		}
 	}
 	else
 	{
@@ -627,6 +651,11 @@ void CPlayer::Render(ID3D12GraphicsCommandList* pd3dCommandList, CCamera* pCamer
 // 
 CAirplanePlayer::CAirplanePlayer(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList, ID3D12RootSignature* pd3dGraphicsRootSignature, void* pContext)
 {
+	GET_MANAGER<SoundManager>()->PlaySound(L"AfterBurner_Base.mp3", CH_BNNRBASE);
+	GET_MANAGER<SoundManager>()->PlaySound(L"AfterBurner_Boost.mp3", CH_BNNRBOST);
+	GET_MANAGER<SoundManager>()->SetVolume(CH_BNNRBOST, 0.0f);
+
+
 	m_pCamera = ChangeCamera(SPACESHIP_CAMERA, 0.0f);
 	SphereCollider = new CSphereCollider(pd3dDevice, pd3dCommandList, pd3dGraphicsRootSignature);
 	SphereCollider->SetScale(100, 100, 100);
@@ -1107,6 +1136,11 @@ void CAirplanePlayer::GunCameraMove(float fTimeElapsed)
 
 void CAirplanePlayer::SetAfterBurnerPosition(float fTimeElapsed)
 {
+	float volume = m_fBurnerElapsed / 100.f;
+	if (volume > 1.f)
+		volume = 1.f;
+	GET_MANAGER<SoundManager>()->SetVolume(CH_BNNRBOST, volume);
+
 	for (int i = 0; i < 10; ++i)
 	{
 		if (m_pLeft_AfterBurner[i])

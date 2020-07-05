@@ -36,7 +36,7 @@ protected:
 	float m_fFarPlaneDistance = 100000.0f;
 
 	float m_fGunFireElapsed = 0.0f;
-	float m_fGunFireFrequency = 0.05f;
+	float m_fGunFireFrequency = 0.07f;
 
 	float m_fTimeLegElapsed = 0.0f;
 
@@ -45,6 +45,8 @@ protected:
 	bool m_bGunFire = false;
 	bool m_bMissleCross = false;
 
+	bool m_bGunSoundPlayed = false;
+	bool m_bAssertSoundPlayed = false;
 
 	XMFLOAT3					m_xmf3Velocity = XMFLOAT3(0.0f, 0.0f, 0.0f);
 	XMFLOAT3     				m_xmf3Gravity = XMFLOAT3(0.0f, 0.0f, 0.0f);
@@ -180,6 +182,8 @@ public:
 
 	// Score
 	int m_nScore = 0;
+
+	bool m_bBoostSoundOn = false;
 
 	CGameObject* m_pRight_AfterBurnerEX;
 	CGameObject* m_pRight_AfterBurnerIN;

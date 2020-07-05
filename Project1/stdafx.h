@@ -50,6 +50,7 @@ using namespace std;
 #include <Mmsystem.h>
 
 #include "DDSTextureLoader12.h"
+#include "WICTextureLoader12.h"
 #include "SingletonBase.h"
 #include "Enum.h"
 #include "Define.h"
@@ -80,6 +81,7 @@ using Microsoft::WRL::ComPtr;
 
 #pragma comment(lib, "comsuppw.lib" )
 #pragma comment(lib, "comsuppwd.lib" )
+
 /*#pragma comment(lib, "DirectXTex.lib") */
 #pragma enable_d3d12_debug_symbols
 // TODO: 프로그램에 필요한 추가 헤더는 여기에서 참조합니다.
@@ -383,6 +385,7 @@ namespace Plane
 #include "FileManager.h"
 #include "LoadTextureManager.h"
 #include "AIManager.h"
+#include "SoundManager.h"
 
 // 디버깅용 콘솔 창
 #ifdef UNICODE 
