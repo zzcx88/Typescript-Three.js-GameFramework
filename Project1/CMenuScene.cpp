@@ -118,7 +118,7 @@ bool CMenuScene::ProcessInput(UCHAR* pKeysBuffer)
 
 void CMenuScene::AnimateObjects(float fTimeElapsed)
 {
-	m_fElapsedTime += fTimeElapsed;
+	//m_fElapsedTime += fTimeElapsed;
 
 	m_ObjManager->Update(fTimeElapsed);
 }

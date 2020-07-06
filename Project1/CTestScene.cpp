@@ -518,13 +518,23 @@ void CTestScene::AnimateObjects(float fTimeElapsed)
 {
 	m_fElapsedTime += fTimeElapsed;
 	elapsedTime += fTimeElapsed;
-
+	
 	GET_MANAGER<SceneManager>()->SceneStoped();
 
 	CreateStageObject();
 
 	for (auto& obj : m_ObjManager->GetObjFromType(OBJ_ENEMY))
 	{
+		if (obj.second->m_bDestroyed)
+		{
+			m_ppGameObjects[14]->SetIsRender(true);
+			elapsedTime = 0;
+		}
+		else if (elapsedTime > 2)d
+		{
+			m_ppGameObjects[14]->SetIsRender(false);
+		}
+
 		if (obj.second->m_bAiLockOn == true)
 		{
 			m_ppGameObjects[12]->SetIsRender(true);
@@ -566,6 +576,8 @@ void CTestScene::AnimateObjects(float fTimeElapsed)
 		}
 
 	}
+
+	
 
 
 	m_ObjManager->GetObjFromTag(L"player", OBJ_PLAYER)->SetPlayerMSL(m_pPlayer->GetMSLCount());

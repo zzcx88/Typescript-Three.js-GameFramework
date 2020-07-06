@@ -166,21 +166,7 @@ void CMissle::CollisionActivate(CGameObject* collideTarget)
 		pMissleSplash->SetPosition(m_xmf4x4World._41, m_xmf4x4World._42, m_xmf4x4World._43);
 		GET_MANAGER<ObjectManager>()->AddObject(L"MissleSplashInstance", pMissleSplash, OBJ_EFFECT);
 		//GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player_ui29_score_number", OBJ_UI)->m_nPlayerScore += 50;
-	
-		int i = 0;
-		while (true)
-		{
-			i += 1;
-			GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player_ui15_destroyed", OBJ_FIGHT_UI3)->SetIsRender(true);
 
-			if (i > 15)
-			{
-				GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player_ui15_destroyed", OBJ_FIGHT_UI3)->SetIsRender(false);
-				i = 0;
-				break;
-			}
-
-		}
 		if (GET_MANAGER<ObjectManager>()->GetTagFromObj(this, OBJ_ALLYMISSLE) == L"player_missle" && m_bMissleLockCamera == true)
 		{
 			GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player", OBJ_PLAYER)->m_bEye_fixation = true;
@@ -281,7 +267,7 @@ void CMissle::SetLookAt(float fTimeElapsed)
 		float xmfAxis1 = Vector3::DotProduct(GetLook(), xmf3TargetVector);
 		Rotate(&xmfAxis, fTheta);
 		//cout << xmfAxis.x << " " << xmfAxis.y << " " << xmfAxis.z << endl;
-		cout << xmfAxis1 << endl;
+		//cout << xmfAxis1 << endl;
 	}
 }
 
