@@ -472,9 +472,15 @@ void CDeviceManager::SceneChangeInput()
 				if (true == keyManager->GetKeyState(STATE_PUSH, VK_RETURN))
 				{
 					GET_MANAGER<SceneManager>()->SetStoped(false);
-					for (auto p = GET_MANAGER<ObjectManager>()->GetObjFromType(OBJ_UI).begin(); p != GET_MANAGER<ObjectManager>()->GetObjFromType(OBJ_UI).end(); ++p)
+					for (auto i = (int)OBJ_MINIMAP_UI; i <= OBJ_UI; ++i)
 					{
-						(*p).second->SetIsRender(true);
+						if (i == OBJ_UI || i == OBJ_MINIMAP_UI)
+						{
+							for (auto p = GET_MANAGER<ObjectManager>()->GetObjFromType((OBJTYPE)i).begin(); p != GET_MANAGER<ObjectManager>()->GetObjFromType((OBJTYPE)i).end(); ++p)
+							{
+								(*p).second->SetIsRender(true);
+							}
+						}
 					}
 				}
 				break;
