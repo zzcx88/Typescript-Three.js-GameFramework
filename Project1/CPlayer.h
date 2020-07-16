@@ -139,6 +139,7 @@ public:
 	virtual void OnPlayerUpdateCallback(float fTimeElapsed) { }
 
 	virtual void SetNaviPosition() {}
+
 	void SetPlayerUpdatedContext(LPVOID pContext) { m_pPlayerUpdatedContext = pContext; }
 
 	virtual void OnCameraUpdateCallback(float fTimeElapsed) { }

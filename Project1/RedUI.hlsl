@@ -37,7 +37,7 @@ float4 PSTextured(VS_TEXTURED_OUTPUT input, uint primitiveID : SV_PrimitiveID) :
 	clip(cColor.a - 0.03f);
 
 	cColor.r += 0.2f;
-	cColor.g +=0.8f;
+	cColor.g += 0.8f;
 	cColor.b += 0.2f;
 
 	return(cColor);

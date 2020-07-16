@@ -334,7 +334,6 @@ void CDeviceManager::BuildScene()
 	m_pd3dCommandList->Reset(m_pd3dCommandAllocator, NULL);
 
 	m_pSceneManager->ChangeSceneState(SCENE_MENU, m_pd3dDevice, m_pd3dCommandList);
-
 	CTerrainPlayer* pPlayer = new CTerrainPlayer(m_pd3dDevice, m_pd3dCommandList, m_pSceneManager->GetGraphicsRootSignature(), NULL);
 	pPlayer->SetGameOver(true);
 	m_pPlayer = pPlayer;
@@ -428,27 +427,29 @@ void CDeviceManager::SceneChangeInput()
 {
 	KeyManager* keyManager = GET_MANAGER<KeyManager>();
 	DWORD dwDirection = 0;
-
-	if (true == keyManager->GetKeyState(STATE_PUSH, VK_G))
+	if (m_pSceneManager->GetCurrentSceneState() == SCENE_TEST)
 	{
-		if (m_SceneSwitch == SCENE_TEST) {
+		if (true == keyManager->GetKeyState(STATE_PUSH, VK_G))
+		{
 			m_ArrowSwitch = 0;
 			m_pUIarrow->SetPosition(m_pUI->GetPosition().x - 370, 48, 0);
-			if (m_pSceneManager->GetSceneStoped() == false)
-				m_BlurSwitch = BLUR_OFF;
-			else
-				m_BlurSwitch = BLUR_ON;
 
+			if (m_SceneSwitch == SCENE_TEST) {
+				if (m_pSceneManager->GetSceneStoped() == false)
+					m_BlurSwitch = BLUR_OFF;
+				else
+					m_BlurSwitch = BLUR_ON;
+
+			}
 		}
 	}
-
 	if (true == keyManager->GetKeyState(STATE_PUSH, VK_UP))
 	{
 		if (m_SceneSwitch == SCENE_TEST) {
 			if (m_pSceneManager->GetSceneStoped() == true)
 			{
 				m_ArrowSwitch = 0;
-				m_pUIarrow->SetPosition(m_pUI->GetPosition().x - 370, 48, 0);
+				m_pUIarrow->SetPosition(m_pUI->GetPosition().x -370, 48, 0);
 			}
 		}
 	}
@@ -458,7 +459,7 @@ void CDeviceManager::SceneChangeInput()
 			if (m_pSceneManager->GetSceneStoped() == true)
 			{
 				m_ArrowSwitch = 1;
-				m_pUIarrow->SetPosition(m_pUI->GetPosition().x - 370, 5, 0);
+				m_pUIarrow->SetPosition(m_pUI->GetPosition().x -370, 5, 0);
 			}
 		}
 	}
@@ -470,13 +471,14 @@ void CDeviceManager::SceneChangeInput()
 			case 0:
 				if (true == keyManager->GetKeyState(STATE_PUSH, VK_RETURN))
 				{
+					GET_MANAGER<SceneManager>()->SetStoped(false);
 					for (auto i = (int)OBJ_MINIMAP_UI; i <= OBJ_UI; ++i)
 					{
 						if (i == OBJ_UI || i == OBJ_MINIMAP_UI)
 						{
 							for (auto p = GET_MANAGER<ObjectManager>()->GetObjFromType((OBJTYPE)i).begin(); p != GET_MANAGER<ObjectManager>()->GetObjFromType((OBJTYPE)i).end(); ++p)
 							{
-								(*p).second->SetIsRender(false);
+								(*p).second->SetIsRender(true);
 							}
 						}
 					}
@@ -511,11 +513,9 @@ void CDeviceManager::SceneChangeInput()
 			default:
 				break;
 			}
-
-
+		
 		}
 	}
-
 	
 	if (true == keyManager->GetKeyState(STATE_PUSH, VK_BACK))
 	{
@@ -552,8 +552,6 @@ void CDeviceManager::SceneChangeInput()
 			m_bSceneFlag = true;
 		}
 	}
-
-
 }
 
 LRESULT CALLBACK CDeviceManager::OnProcessingWindowMessage(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam)
@@ -639,6 +637,12 @@ void CDeviceManager::AnimateObjects()
 
 void CDeviceManager::FrameAdvance()
 {
+	if (m_bStartGame == true)
+	{
+		m_bStartGame = false;
+		ChangeSwapChainState();
+	}
+
 	m_GameTimer.Tick(FrameRate);
 
 	//ProcessInput();
@@ -784,7 +788,7 @@ void CDeviceManager::FrameAdvance()
 
 	m_pdxgiSwapChain->Present(0, 0);
 
-	//m_xmf3prePosition = m_pPlayer->GetPosition();
+	m_xmf3prePosition = m_pPlayer->GetPosition();
 
 	MoveToNextFrame();
 
@@ -799,7 +803,7 @@ void CDeviceManager::FrameAdvance()
 	_stprintf_s(m_pszFrameRate + nLength, 70 - nLength, _T("(%4f, %4f, %4f)"), xmf3Position.x, xmf3Position.y, xmf3Position.z);
 	::SetWindowText(m_hWnd, m_pszFrameRate);
 
-	
+
 	if (m_SceneSwitch == SCENE_MENU && m_bSceneFlag == true)
 	{
 		m_bSceneFlag = false;
@@ -851,7 +855,6 @@ void CDeviceManager::FrameAdvance()
 		if (m_pSceneManager) m_pSceneManager->ReleaseUploadBuffers();
 		m_GameTimer.Reset();
 	}
-	
 }
 
 void CDeviceManager::WaitForGpuComplete()

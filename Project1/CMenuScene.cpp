@@ -43,10 +43,9 @@ void CMenuScene::BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandLis
 
 	//float fx = 1.f / 0.96f;
 	//float fy = 1.f / 0.54f;
-
 	m_nGameObjects = 2;
 	m_ppGameObjects = new CGameObject * [m_nGameObjects];
-	m_ppGameObjects[0] = new CUI(8, pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, 2.f,2.f, 0.f, XMFLOAT2(0.f, 0.f), XMFLOAT2(0.f, 0.f), XMFLOAT2(0.f, 0.f), XMFLOAT2(0.f, 0.f));
+	m_ppGameObjects[0] = new CUI(8, pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, 2.f, 2.f, 0.f, XMFLOAT2(0.f, 0.f), XMFLOAT2(0.f, 0.f), XMFLOAT2(0.f, 0.f), XMFLOAT2(0.f, 0.f));
 	m_ppGameObjects[0]->SetIsRender(true);
 	m_ppGameObjects[1] = new CUI(12, pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, 2.f, 2.f, 0.f, XMFLOAT2(0.f, 0.f), XMFLOAT2(0.f, 0.f), XMFLOAT2(0.f, 0.f), XMFLOAT2(0.f, 0.f));
 	m_ppGameObjects[1]->SetIsRender(false);
@@ -119,9 +118,8 @@ bool CMenuScene::ProcessInput(UCHAR* pKeysBuffer)
 
 void CMenuScene::AnimateObjects(float fTimeElapsed)
 {
-	m_fElapsedTime += fTimeElapsed;
+	//m_fElapsedTime += fTimeElapsed;
 
-	
 	m_ObjManager->Update(fTimeElapsed);
 }
 

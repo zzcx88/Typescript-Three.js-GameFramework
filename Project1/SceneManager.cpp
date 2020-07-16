@@ -16,7 +16,7 @@ SceneManager::~SceneManager()
 bool SceneManager::ChangeSceneState(SCENESTATE SceneState, ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList)
 {
 	GET_MANAGER<SoundManager>()->StopSound(CH_BGM);
-	if (m_Scene) m_Scene->ReleaseUploadBuffers();
+	//if (m_Scene) m_Scene->ReleaseUploadBuffers();
 	if (m_Scene) m_Scene->ReleaseObjects();
 
 	if (nullptr != m_Scene)
@@ -124,13 +124,13 @@ bool SceneManager::GetStoped()
 }
 void SceneManager::SceneStoped()
 {
-
 	KeyManager* keyManager = GET_MANAGER<KeyManager>();
 	if (true == keyManager->GetKeyState(STATE_DOWN, VK_G))
 	{
 		if (m_Scene->GetStoped() == false)
 		{
 			m_Scene->SetStoped(true);
+			GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player_ui16_navigator", OBJ_NAVIGATOR)->SetIsRender(false);
 			for (auto i = (int)OBJ_MINIMAP_UI; i <= OBJ_UI; ++i)
 			{
 				if (i == OBJ_UI || i == OBJ_MINIMAP_UI)

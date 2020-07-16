@@ -31,7 +31,7 @@ CUI::CUI(int nIndex, ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCo
 	m_ppUITexture[5] = new CTexture(1, RESOURCE_TEXTURE2D, 0);
 	m_ppUITexture[5]->LoadTextureFromFile(pd3dDevice, pd3dCommandList, L"UI/Gunammo.dds", 0);
 	m_ppUITexture[6] = new CTexture(1, RESOURCE_TEXTURE2D, 0);
-	m_ppUITexture[6]->LoadTextureFromFile(pd3dDevice, pd3dCommandList, L"UI/RedLine.dds", 0);
+	m_ppUITexture[6]->LoadTextureFromFile(pd3dDevice, pd3dCommandList, L"UI/MinimapUI.dds", 0);
 	m_ppUITexture[7] = new CTexture(1, RESOURCE_TEXTURE2D, 0);
 	m_ppUITexture[7]->LoadTextureFromFile(pd3dDevice, pd3dCommandList, L"UI/CrossHair.dds", 0);
 	m_ppUITexture[8] = new CTexture(1, RESOURCE_TEXTURE2D, 0);
@@ -44,6 +44,7 @@ CUI::CUI(int nIndex, ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCo
 	m_ppUITexture[11]->LoadTextureFromFile(pd3dDevice, pd3dCommandList, L"UI/Destroyed.dds", 0);
 	m_ppUITexture[12] = new CTexture(1, RESOURCE_TEXTURE2D, 0);
 	m_ppUITexture[12]->LoadTextureFromFile(pd3dDevice, pd3dCommandList, L"UI/1Stage_Loading.dds", 0);
+
 	
 	UINT ncbElementBytes = ((sizeof(CB_GAMEOBJECT_INFO) + 255) & ~255);
 	
@@ -67,13 +68,31 @@ CUI::~CUI()
 {
 }
 
-void CUI::SetLookAt(XMFLOAT3& xmf3LookAt)
+void CUI::MoveMinimapPoint(XMFLOAT3& xmfPlayer, CGameObject* pGameOBJ)
 {
-	XMFLOAT3 xmf3TargetVector = Vector3::Subtract(xmf3LookAt, GetPosition());
-	xmf3TargetVector = Vector3::Normalize(xmf3TargetVector);
-	XMFLOAT3 xmfAxis = Vector3::CrossProduct(m_xmf3Up, xmf3TargetVector);
-	xmfAxis = Vector3::Normalize(xmfAxis);
-	Rotate(&xmfAxis, 2.f);
+	float fx = 0.f;
+	float fy = 0.f;
+	
+	float getx = 0.f;
+	float gety = 0.f;
+
+	getx = GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player_ui9_minimap", OBJ_MINIMAP_UI)->GetPosition().x;
+	gety = GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player_ui9_minimap", OBJ_MINIMAP_UI)->GetPosition().y;
+
+	fx = getx + (200.f / 20500.f) *xmfPlayer.x;
+	fy = gety + (200.f / 20500.f) * xmfPlayer.z;
+
+	if (fx >= getx + 200.f)
+		fx = getx + 200.f;
+	else if (fx <= getx - 200.f)
+		fx = getx - 200.f;
+
+	if (fy >= gety + 200.f)
+		fy = gety + 200.f;
+	else if(fy <= gety - 200.f)
+		fy = gety - 200.f;
+
+	pGameOBJ->SetPosition(fx, fy, 0.f);
 }
 
 void CUI::Render(ID3D12GraphicsCommandList* pd3dCommandList, CCamera* pCamera)

@@ -144,8 +144,7 @@ void CTestScene::BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandLis
 	
 	// minimap point
 	m_ppGameObjects[6] = new CMinimap(3, pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, 25.f, 25.f, 0.f, XMFLOAT2(-0.f, -0.f), XMFLOAT2(0.f, 0.f), XMFLOAT2(0.f, 0.f), XMFLOAT2(0.f, 0.f));
-	m_ppGameObjects[6]->SetPosition(fx * -20.f, fy * -20.f, 0.f);
-	//m_ppGameObjects[6]->SetIsRender(false);
+	m_ppGameObjects[6]->SetPosition(fx * -2.f, fy * -2.f, 0.f);
 
 	m_ppGameObjects[7] = new CLockOnUI(0, pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, 250.f, 250.f, 0.f, XMFLOAT2(-0.f, -0.f), XMFLOAT2(0.f, 0.f), XMFLOAT2(0.f, 0.f), XMFLOAT2(0.f, 0.f));
 	m_ppGameObjects[7]->SetPosition(fx * -2.f, fy * -2.f, 0.f);
@@ -183,7 +182,6 @@ void CTestScene::BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandLis
 	m_ppGameObjects[14]->SetPosition( fx*0.001f, fy * 0.25f, 0.f);
 
 	m_ppGameObjects[15] = new CNavigator(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature);
-	//m_ppGameObjects[15]->SetPosition(fx * 0.f, fy * 0.f, 0.f);
 
 	m_ObjManager->AddObject(L"player_ui1_testui", m_ppGameObjects[0], OBJ_UI);
 	m_ObjManager->AddObject(L"player_ui2_weapon", m_ppGameObjects[1], OBJ_UI);
@@ -337,6 +335,7 @@ void CTestScene::BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandLis
 	m_pWater[17]->Rotate(90, 0, 0);
 	m_ObjManager->AddObject(L"WaterNormal", m_pWater[17], OBJ_MAP);
 
+
 	CCloud* pCloudRef;
 	pCloudRef = new CCloud(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature);
 
@@ -353,7 +352,7 @@ void CTestScene::BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandLis
 		{
 			float fX = fXPos(dre);
 			float fZ = fZPos(dre);
-			pCloud[j] = new CCloud(j, pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, fX, fZ, nInstance(dre), dre);
+			pCloud[j] = new CCloud(j, pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, fX, fZ, /*nInstance(dre)*/500, dre);
 			pCloud[j]->m_pCloudShader = pCloudRef->m_pCloudShader;
 			pCloud[j]->m_pCloudMaterial = new CMaterial(1);
 			pCloud[j]->m_pCloudMaterial->SetShader(pCloudRef->m_pCloudShader);
@@ -439,24 +438,6 @@ void CTestScene::CreateStageObject()
 		GET_MANAGER<SceneManager>()->m_nWaveCnt++;
 	}
 
-	if (m_bCreateShip == false)
-	{
-		m_bCreateShip = true;
-		for (int i = 0; i < 8; ++i)
-		{
-			std::default_random_engine dre(time(NULL) * i * GET_MANAGER<CDeviceManager>()->GetGameTimer().GetTimeElapsed());
-			std::uniform_real_distribution<float>fXPos(-4000.f, 4000.f);
-			std::uniform_real_distribution<float>fZPos(3200.f, 6400.f);
-
-			C052CDestroyer* p052C;
-			p052C = new C052CDestroyer();
-			p052C->SetPosition(fXPos(dre), 170, fZPos(dre));
-			p052C->Rotate(0, 180, 0);
-			p052C->m_xmf3Look = XMFLOAT3(0, 0, -1);
-			m_ObjManager->AddObject(L"052C", p052C, OBJ_ENEMY);
-		}
-	}
-
 	if (GET_MANAGER<SceneManager>()->m_nTgtObject == 0)
 	{
 		GET_MANAGER<SceneManager>()->m_nWave++;
@@ -537,13 +518,24 @@ void CTestScene::AnimateObjects(float fTimeElapsed)
 {
 	m_fElapsedTime += fTimeElapsed;
 	elapsedTime += fTimeElapsed;
+	
 	GET_MANAGER<SceneManager>()->SceneStoped();
 
 	CreateStageObject();
 
-	if (m_ObjManager->GetObjFromTag(L"mig21", OBJ_ENEMY))
+	for (auto& obj : m_ObjManager->GetObjFromType(OBJ_ENEMY))
 	{
-		if (m_ObjManager->GetObjFromTag(L"mig21", OBJ_ENEMY)->m_bAiLockOn == true)
+		if (obj.second->m_bDestroyed)
+		{
+			m_ppGameObjects[14]->SetIsRender(true);
+			elapsedTime = 0;
+		}
+		else if (elapsedTime > 2)
+		{
+			m_ppGameObjects[14]->SetIsRender(false);
+		}
+
+		if (obj.second->m_bAiLockOn == true)
 		{
 			m_ppGameObjects[12]->SetIsRender(true);
 
@@ -563,11 +555,11 @@ void CTestScene::AnimateObjects(float fTimeElapsed)
 			m_ppGameObjects[13]->SetIsRender(true);
 			for (auto& obj : m_ObjManager->GetObjFromType(OBJ_UI))
 			{
-				obj.second->m_bWarning = true;
+				obj.second->m_bWarning = 1.f;
 			}
 			for (auto& obj : m_ObjManager->GetObjFromType(OBJ_SPEED_UI))
 			{
-				obj.second->m_bWarning = true;
+				obj.second->m_bWarning = 1.f;
 			}
 		}
 		else
@@ -575,15 +567,19 @@ void CTestScene::AnimateObjects(float fTimeElapsed)
 			m_ppGameObjects[13]->SetIsRender(false);
 			for (auto& obj : m_ObjManager->GetObjFromType(OBJ_UI))
 			{
-				obj.second->m_bWarning = false;
+				obj.second->m_bWarning = 0.f;
 			}
 			for (auto& obj : m_ObjManager->GetObjFromType(OBJ_SPEED_UI))
 			{
-				obj.second->m_bWarning = false;
+				obj.second->m_bWarning = 0.f;
 			}
 		}
-		
+
 	}
+
+	
+
+
 	m_ObjManager->GetObjFromTag(L"player", OBJ_PLAYER)->SetPlayerMSL(m_pPlayer->GetMSLCount());
 	m_ObjManager->GetObjFromTag(L"player", OBJ_PLAYER)->SetPlayerSpeed(m_pPlayer->GetAircraftSpeed());
 	m_ObjManager->Update(fTimeElapsed);
@@ -621,7 +617,6 @@ void CTestScene::Render(ID3D12GraphicsCommandList* pd3dCommandList, CCamera* pCa
 	//pd3dCommandList->SetGraphicsRootConstantBufferView(2, d3dcbLightsGpuVirtualAddress); //Lights
 	
 	m_ObjManager->Render(pd3dCommandList, pCamera, bPreRender);
-
 	//m_pSphereCollider->SphereCollider->Render(pd3dCommandList, pCamera);
 
 	if (m_bCreateEngineRefraction == true)

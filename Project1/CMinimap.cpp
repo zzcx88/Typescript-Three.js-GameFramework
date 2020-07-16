@@ -10,27 +10,27 @@ CMinimap::CMinimap()
 CMinimap::CMinimap(int nIndex, ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList, ID3D12RootSignature* pd3dGraphicsRootSignature, float fWidth, float fHeight, float fDepth,
 	XMFLOAT2 xmf2LeftTop, XMFLOAT2 xmf2LeftBot, XMFLOAT2 xmf2RightBot, XMFLOAT2 xmf2RightTop) : CPlane()
 {
-	m_pUIPlaneMesh = new CPlaneMesh(pd3dDevice, pd3dCommandList, fWidth, fHeight, fDepth, xmf2LeftTop, xmf2LeftBot, xmf2RightBot, xmf2RightTop, 1.0f, 1.0f);
+	m_pMinimapPlaneMesh = new CPlaneMesh(pd3dDevice, pd3dCommandList, fWidth, fHeight, fDepth, xmf2LeftTop, xmf2LeftBot, xmf2RightBot, xmf2RightTop, 1.0f, 1.0f);
 
-	SetMesh(m_pUIPlaneMesh);
+	SetMesh(m_pMinimapPlaneMesh);
 
 	CreateShaderVariables(pd3dDevice, pd3dCommandList);
 
 	//CTexture* m_ppUITexture[TEXTURES];
 
 
-	m_ppUITexture[0] = new CTexture(1, RESOURCE_TEXTURE2D, 0);
-	m_ppUITexture[0]->LoadTextureFromFile(pd3dDevice, pd3dCommandList, L"UI/MinimapUI.dds", 0);
-	m_ppUITexture[1] = new CTexture(1, RESOURCE_TEXTURE2D, 0);
-	m_ppUITexture[1]->LoadTextureFromFile(pd3dDevice, pd3dCommandList, L"UI/PauseMenu.dds", 0);
-	m_ppUITexture[2] = new CTexture(1, RESOURCE_TEXTURE2D, 0);
-	m_ppUITexture[2]->LoadTextureFromFile(pd3dDevice, pd3dCommandList, L"UI/TimeScoreUI2.dds", 0);
-	m_ppUITexture[3] = new CTexture(1, RESOURCE_TEXTURE2D, 0);
-	m_ppUITexture[3]->LoadTextureFromFile(pd3dDevice, pd3dCommandList, L"UI/MinimapPoint.dds", 0);
-	m_ppUITexture[4] = new CTexture(1, RESOURCE_TEXTURE2D, 0);
-	m_ppUITexture[4]->LoadTextureFromFile(pd3dDevice, pd3dCommandList, L"UI/MinimapRedPoint.dds", 0);
-	m_ppUITexture[5] = new CTexture(1, RESOURCE_TEXTURE2D, 0);
-	m_ppUITexture[5]->LoadTextureFromFile(pd3dDevice, pd3dCommandList, L"UI/Menuarrow.dds", 0);
+	m_ppMinimapTexture[0] = new CTexture(1, RESOURCE_TEXTURE2D, 0);
+	m_ppMinimapTexture[0]->LoadTextureFromFile(pd3dDevice, pd3dCommandList, L"UI/MinimapUI.dds", 0);
+	m_ppMinimapTexture[1] = new CTexture(1, RESOURCE_TEXTURE2D, 0);
+	m_ppMinimapTexture[1]->LoadTextureFromFile(pd3dDevice, pd3dCommandList, L"UI/PauseMenu.dds", 0);
+	m_ppMinimapTexture[2] = new CTexture(1, RESOURCE_TEXTURE2D, 0);
+	m_ppMinimapTexture[2]->LoadTextureFromFile(pd3dDevice, pd3dCommandList, L"UI/TimeScoreUI2.dds", 0);
+	m_ppMinimapTexture[3] = new CTexture(1, RESOURCE_TEXTURE2D, 0);
+	m_ppMinimapTexture[3]->LoadTextureFromFile(pd3dDevice, pd3dCommandList, L"UI/MinimapPoint.dds", 0);
+	m_ppMinimapTexture[4] = new CTexture(1, RESOURCE_TEXTURE2D, 0);
+	m_ppMinimapTexture[4]->LoadTextureFromFile(pd3dDevice, pd3dCommandList, L"UI/MinimapRedPoint.dds", 0);
+	m_ppMinimapTexture[5] = new CTexture(1, RESOURCE_TEXTURE2D, 0);
+	m_ppMinimapTexture[5]->LoadTextureFromFile(pd3dDevice, pd3dCommandList, L"UI/Menuarrow.dds", 0);
 
 
 
@@ -43,12 +43,12 @@ CMinimap::CMinimap(int nIndex, ID3D12Device* pd3dDevice, ID3D12GraphicsCommandLi
 	m_pMinimapShader->CreateShaderVariables(pd3dDevice, pd3dCommandList);
 
 
-	for (int i = 0; i < TEXTURES; i++) CTestScene::CreateShaderResourceViews(pd3dDevice, m_ppUITexture[i], 15, false);
+	for (int i = 0; i < TEXTURES; i++) CTestScene::CreateShaderResourceViews(pd3dDevice, m_ppMinimapTexture[i], 15, false);
 
-	m_pUIMaterial = new CMaterial(1);
-	m_pUIMaterial->SetTexture(m_ppUITexture[nIndex]);
-	m_pUIMaterial->SetShader(m_pMinimapShader);
-	SetMaterial(0, m_pUIMaterial);
+	m_pMinimapMaterial = new CMaterial(1);
+	m_pMinimapMaterial->SetTexture(m_ppMinimapTexture[nIndex]);
+	m_pMinimapMaterial->SetShader(m_pMinimapShader);
+	SetMaterial(0, m_pMinimapMaterial);
 }
 
 CMinimap::~CMinimap()
@@ -57,7 +57,7 @@ CMinimap::~CMinimap()
 
 void CMinimap::Animate(float fTimeElapsed)
 {
-	if (m_fTimeElapsed == 0&&(GET_MANAGER<ObjectManager>()->GetTagFromObj(this, OBJ_MINIMAP_PLAYER) == L"MinimapInstance"
+	if (m_fTimeElapsed == 0 && (GET_MANAGER<ObjectManager>()->GetTagFromObj(this, OBJ_MINIMAP_PLAYER) == L"MinimapInstance"
 		|| GET_MANAGER<ObjectManager>()->GetTagFromObj(this, OBJ_MINIMAP_ENEMY) == L"MinimapInstance"))
 		prePosition = GetPosition();
 
@@ -138,7 +138,7 @@ void CMinimap::Rotate(XMFLOAT3* pxmf3Axis, float fAngle)
 
 	m_xmf4x4ToParent._31 = -m_xmf3Look.x;
 	m_xmf4x4ToParent._32 = -m_xmf3Look.y;
-	m_xmf4x4ToParent._33 =- m_xmf3Look.z;
+	m_xmf4x4ToParent._33 = -m_xmf3Look.z;
 
 	m_xmf4x4ToParent._21 = m_xmf3Up.x;
 	m_xmf4x4ToParent._22 = m_xmf3Up.y;

@@ -37,12 +37,12 @@ void UIManager::MoveMinimapPoint(ObjectManager::MAPOBJ* PlyList, ObjectManager::
 	{
 		CMinimap* pUI;
 		pUI = new CMinimap();
-		pUI->SetMesh((CMesh*)GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player_ui7_minimap_green", OBJ_MINIMAP_PLAYER)->m_pUIPlaneMesh);
-		pUI->m_ppUITexture[0] = GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player_ui7_minimap_green", OBJ_MINIMAP_PLAYER)->m_ppUITexture[3];
-		pUI->m_pUIMaterial = new CMaterial(1);
-		pUI->m_pUIMaterial->SetTexture(pUI->m_ppUITexture[0]);
-		pUI->m_pUIMaterial->SetShader(GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player_ui7_minimap_green", OBJ_MINIMAP_PLAYER)->m_pUIShader);
-		pUI->SetMaterial(0, pUI->m_pUIMaterial);
+		pUI->SetMesh((CMesh*)GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player_ui7_minimap_green", OBJ_MINIMAP_PLAYER)->m_pMinimapPlaneMesh);
+		pUI->m_ppMinimapTexture[0] = GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player_ui7_minimap_green", OBJ_MINIMAP_PLAYER)->m_ppMinimapTexture[3];
+		pUI->m_pMinimapMaterial = new CMaterial(1);
+		pUI->m_pMinimapMaterial->SetTexture(pUI->m_ppMinimapTexture[0]);
+		pUI->m_pMinimapMaterial->SetShader(GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player_ui7_minimap_green", OBJ_MINIMAP_PLAYER)->m_pMinimapShader);
+		pUI->SetMaterial(0, pUI->m_pMinimapMaterial);
 		PlyList->begin()->second->m_pMUI = pUI;
 		GET_MANAGER<ObjectManager>()->AddObject(L"MinimapInstance", pUI, OBJ_MINIMAP_PLAYER);
 	}
@@ -62,12 +62,12 @@ void UIManager::MoveMinimapPoint(ObjectManager::MAPOBJ* PlyList, ObjectManager::
 		{
 			CMinimap* pUI;
 			pUI = new CMinimap();
-			pUI->SetMesh((CMesh*)GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player_ui10_minimap_red", OBJ_MINIMAP_ENEMY)->m_pUIPlaneMesh);
-			pUI->m_ppUITexture[0] = GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player_ui10_minimap_red", OBJ_MINIMAP_ENEMY)->m_ppUITexture[4];
-			pUI->m_pUIMaterial = new CMaterial(1);
-			pUI->m_pUIMaterial->SetTexture(pUI->m_ppUITexture[0]);
-			pUI->m_pUIMaterial->SetShader(GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player_ui10_minimap_red", OBJ_MINIMAP_ENEMY)->m_pUIShader);
-			pUI->SetMaterial(0, pUI->m_pUIMaterial);
+			pUI->SetMesh((CMesh*)GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player_ui10_minimap_red", OBJ_MINIMAP_ENEMY)->m_pMinimapPlaneMesh);
+			pUI->m_ppMinimapTexture[0] = GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player_ui10_minimap_red", OBJ_MINIMAP_ENEMY)->m_ppMinimapTexture[4];
+			pUI->m_pMinimapMaterial = new CMaterial(1);
+			pUI->m_pMinimapMaterial->SetTexture(pUI->m_ppMinimapTexture[0]);
+			pUI->m_pMinimapMaterial->SetShader(GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player_ui10_minimap_red", OBJ_MINIMAP_ENEMY)->m_pMinimapShader);
+			pUI->SetMaterial(0, pUI->m_pMinimapMaterial);
 			Ene.second->m_pMUI = pUI;
 
 			GET_MANAGER<ObjectManager>()->AddObject(L"MinimapInstance", pUI, OBJ_MINIMAP_ENEMY);
@@ -150,14 +150,16 @@ void UIManager::MoveLockOnUI(ObjectManager::MAPOBJ* PlyList, ObjectManager::MAPO
 
 		if (Ene.second->m_bReffernce == false)
 		{
+			//Ene.second->m_pLockOnUI->m_ppMaterials[0]->SetRedShader();
 
 			Ene.second->m_pLockOnUI->MoveLockOnUI(Ene.second->GetScreenPosition(), Ene.second->GetPosition(),
 				PlyList->begin()->second->GetPosition(), PlyList->begin()->second->GetLook(), Ene.second->m_pLockOnUI, PlyList->begin()->second->m_pCamera);
 			
+		
 			if (Ene.second->m_pLockOnUI->bDetectable == true)
 			{
 
-				if (Ene.second->m_bAiming == true && Ene.second->GetDestroyedState() != true)
+				if (Ene.second->m_bAiming == true && Ene.second->GetState() != true)
 				{
 					if (Ene.second->m_pLockOnUI->GetCameraAxis() > 0.f)
 					{
@@ -167,6 +169,7 @@ void UIManager::MoveLockOnUI(ObjectManager::MAPOBJ* PlyList, ObjectManager::MAPO
 						nDistance = Ene.second->m_pLockOnUI->GetLenth();
 						if (nDistance < 0)
 							nDistance = 1;
+						//cout << nDistance << " °Å¸®" << endl;
 						while (nDistance != 0) {
 							distance.emplace_back(nDistance % 10);
 							nDistance /= 10;
@@ -241,7 +244,14 @@ void UIManager::MoveLockOnUI(ObjectManager::MAPOBJ* PlyList, ObjectManager::MAPO
 
 						distance.clear();
 					}
-				
+					else
+					{
+						PlyList->begin()->second->ppNumObjects[24]->SetIsRender(false);
+						PlyList->begin()->second->ppNumObjects[25]->SetIsRender(false);
+						PlyList->begin()->second->ppNumObjects[26]->SetIsRender(false);
+						PlyList->begin()->second->ppNumObjects[27]->SetIsRender(false);
+						PlyList->begin()->second->ppNumObjects[28]->SetIsRender(false);
+					}
 
 					if (Ene.second->m_pLockOnUI->bLockOn == true)
 					{
@@ -302,7 +312,7 @@ void UIManager::MoveLockOnUI(ObjectManager::MAPOBJ* PlyList, ObjectManager::MAPO
 	{
 		if (*p != NULL)
 		{
-			if ((*p)->GetDestroyedState() != true)
+			if ((*p)->GetState() != true)
 			{
 				if (p == GameOBJs.begin() + Count)
 					(*p)->m_bAiming = true;
@@ -451,7 +461,7 @@ void UIManager::NumberTextureAnimate(ObjectManager::MAPOBJ* PlyList, const float
 			score.push_back(score_number % 10);
 			score_number /= 10;
 		}
-		
+
 		// Font animation(speed)
 		if (speed.size() > 0)
 		{

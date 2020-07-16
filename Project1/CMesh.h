@@ -3,11 +3,17 @@
 class CMesh
 {
 public:
+	BoundingBox						m_xmAABB;
 	BoundingOrientedBox			m_xmOOBB;
 
 	void SetOOBB(XMFLOAT3& xmCenter, XMFLOAT3& xmExtents, XMFLOAT4& xmOrientation)
 	{
 		m_xmOOBB = BoundingOrientedBox(xmCenter, xmExtents, xmOrientation);
+	}
+
+	void SetAABB(XMFLOAT3& xmCenter, XMFLOAT3& xmExtents)
+	{
+		m_xmAABB = BoundingBox(xmCenter, xmExtents);
 	}
 public:
 	CMesh() {}

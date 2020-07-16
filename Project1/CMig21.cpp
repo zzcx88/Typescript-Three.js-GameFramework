@@ -82,7 +82,7 @@ void CMig21::Animate(float fTimeElapsed)
 					pMissleFog->m_pEffectMaterial->SetShader(m_ObjManager->GetObjFromTag(L"MissleFog", OBJ_EFFECT)->m_EffectShader);
 					pMissleFog->SetMaterial(0, pMissleFog->m_pEffectMaterial);
 					pMissleFog->SetPosition(m_pLeftWingEdge->GetPosition());
-					pMissleFog->m_bEffectedObj = 1.0f;
+					pMissleFog->m_bEffectedObj = true;
 					pMissleFog->m_bWingFog = true;
 					m_ObjManager->AddObject(L"MissleFogInstance", pMissleFog, OBJ_EFFECT);
 
@@ -104,7 +104,7 @@ void CMig21::Animate(float fTimeElapsed)
 					pMissleFog->m_pEffectMaterial->SetShader(m_ObjManager->GetObjFromTag(L"MissleFog", OBJ_EFFECT)->m_EffectShader);
 					pMissleFog->SetMaterial(0, pMissleFog->m_pEffectMaterial);
 					pMissleFog->SetPosition(m_pRightWingEdge->GetPosition());
-					pMissleFog->m_bEffectedObj = 1.0f;
+					pMissleFog->m_bEffectedObj = true;
 					pMissleFog->m_bWingFog = true;
 					m_ObjManager->AddObject(L"MissleFogInstance", pMissleFog, OBJ_EFFECT);
 				}
@@ -171,7 +171,7 @@ void CMig21::Animate(float fTimeElapsed)
 				pMissleFog->m_pEffectMaterial->SetShader(m_ObjManager->GetObjFromTag(L"crushsmokeRef", OBJ_EFFECT)->m_EffectShader);
 				pMissleFog->SetMaterial(0, pMissleFog->m_pEffectMaterial);
 				pMissleFog->SetPosition(m_xmf3Position);
-				pMissleFog->m_bEffectedObj = 1.0f;
+				pMissleFog->m_bEffectedObj = true;
 				m_ObjManager->AddObject(L"crushsmoke", pMissleFog, OBJ_EFFECT);
 
 				m_fAddCrushFogTimeElapsed = 0;
@@ -261,7 +261,6 @@ void CMig21::Render(ID3D12GraphicsCommandList* pd3dCommandList, CCamera* pCamera
 				m_pMUI->m_isDead = true;
 				m_pLockOnUI->m_isDead = true;
 			}
-
 		}
 	}
 	CGameObject::Render(pd3dCommandList, pCamera);

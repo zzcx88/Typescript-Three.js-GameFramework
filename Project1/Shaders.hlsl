@@ -111,7 +111,7 @@ float4 PSStandard(VS_STANDARD_OUTPUT input) : SV_TARGET
 	{
 		normalW = normalize(input.normalW);
 	}
-	if (gbEffectedObj == 1.f)
+	if (gbEffectedObj)
 	{
 		cColor.a = gfBlendAmount;
 		return cColor;

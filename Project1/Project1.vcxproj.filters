@@ -206,7 +206,7 @@
       <UniqueIdentifier>{6159be94-ec85-4082-a667-00990a7c28a2}</UniqueIdentifier>
     </Filter>
     <Filter Include="GameObject\Mesh\NavigatorMesh">
-      <UniqueIdentifier>{987af736-5b04-43b5-8584-b087b4ef62b6}</UniqueIdentifier>
+      <UniqueIdentifier>{0dd0b86f-01d6-4482-8ca0-2ebad21d1a48}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -405,9 +405,6 @@
     <ClInclude Include="CCrushSmoke.h">
       <Filter>GameObject\Plane\Effect\CrushSmoke</Filter>
     </ClInclude>
-    <ClInclude Include="RedUI.h">
-      <Filter>GameObject\Plane\UI</Filter>
-    </ClInclude>
     <ClInclude Include="CEngineRafraction.h">
       <Filter>GameObject\Plane\Effect\EngineRafraction</Filter>
     </ClInclude>
@@ -604,9 +601,6 @@
     </ClCompile>
     <ClCompile Include="CCrushSmoke.cpp">
       <Filter>GameObject\Plane\Effect\CrushSmoke</Filter>
-    </ClCompile>
-    <ClCompile Include="RedUI.cpp">
-      <Filter>GameObject\Plane\UI</Filter>
     </ClCompile>
     <ClCompile Include="CEngineRafraction.cpp">
       <Filter>GameObject\Plane\Effect\EngineRafraction</Filter>

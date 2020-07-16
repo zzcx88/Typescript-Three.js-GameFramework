@@ -123,5 +123,7 @@ private:
 	float m_fBlurControl = 0.f;
 	bool m_bSceneFlag = false;
 
+	bool m_bStartGame = true;
+
 };
 

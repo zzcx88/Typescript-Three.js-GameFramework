@@ -137,7 +137,7 @@ void ObjectManager::Render(ID3D12GraphicsCommandList* pd3dCommandList, CCamera* 
 					{
 						obj.second->Render(pd3dCommandList, pCamera);
 						//if(obj.first != L"MissleFogInstance")
-						if (i != OBJ_EFFECT)
+						if(i != OBJ_EFFECT)
 							obj.second->UpdateTransform(NULL);
 					}
 				}
@@ -188,9 +188,9 @@ void ObjectManager::ReleaseAll()
 				}
 				else if (obj.second->m_ObjType == OBJ_SPEED_UI)
 					continue;
-				else
+				else 
 				{
-					if (obj.second->m_ObjType == OBJ_ENEMY && obj.second->m_bReffernce || obj.second->m_ObjType == OBJ_PLAYER && GET_MANAGER<SceneManager>()->GetCurrentSceneState() == SCENE_TEST)
+					if(obj.second->m_ObjType == OBJ_ENEMY && obj.second->m_bReffernce || obj.second->m_ObjType == OBJ_PLAYER && GET_MANAGER<SceneManager>()->GetCurrentSceneState() == SCENE_TEST )
 						obj.second->Release();
 					else
 					{
