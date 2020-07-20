@@ -58,8 +58,10 @@ void ObjectManager::Update(const float& TimeDelta)
 				// 죽은 상태라면 컨테이너에서 삭제한다.
 				if (true == (*iter).second->GetState())
 				{
-					//(*iter).second->Release();
-					delete (*iter).second;
+					if((*iter).second->m_pModelInfo == NULL)
+						(*iter).second->Release();
+					else
+						delete (*iter).second;
 					(*iter).second = nullptr;
 					iter = m_mapObj[i].erase(iter);
 				}
@@ -138,7 +140,8 @@ void ObjectManager::Render(ID3D12GraphicsCommandList* pd3dCommandList, CCamera* 
 						obj.second->Render(pd3dCommandList, pCamera);
 						//if(obj.first != L"MissleFogInstance")
 						if(i != OBJ_EFFECT)
-							obj.second->UpdateTransform(NULL);
+							if(i != OBJ_ALPHAMAP)
+								obj.second->UpdateTransform(NULL);
 					}
 				}
 			}
@@ -190,8 +193,12 @@ void ObjectManager::ReleaseAll()
 					continue;
 				else 
 				{
-					if(obj.second->m_ObjType == OBJ_ENEMY && obj.second->m_bReffernce || obj.second->m_ObjType == OBJ_PLAYER && GET_MANAGER<SceneManager>()->GetCurrentSceneState() == SCENE_TEST )
-						obj.second->Release();
+					if (obj.second->m_ObjType == OBJ_ENEMY && obj.second->m_bReffernce || obj.second->m_ObjType == OBJ_PLAYER && GET_MANAGER<SceneManager>()->GetCurrentSceneState() == SCENE_TEST)
+						//obj.second->Release();
+					{
+						delete obj.second;
+						obj.second = nullptr;
+					}
 					else
 					{
 						delete obj.second;

@@ -637,12 +637,6 @@ void CDeviceManager::AnimateObjects()
 
 void CDeviceManager::FrameAdvance()
 {
-	if (m_bStartGame == true)
-	{
-		m_bStartGame = false;
-		ChangeSwapChainState();
-	}
-
 	m_GameTimer.Tick(FrameRate);
 
 	//ProcessInput();
@@ -854,6 +848,11 @@ void CDeviceManager::FrameAdvance()
 		if (m_pPlayer) m_pPlayer->ReleaseUploadBuffers();
 		if (m_pSceneManager) m_pSceneManager->ReleaseUploadBuffers();
 		m_GameTimer.Reset();
+	}
+	if (m_bStartGame == true)
+	{
+		m_bStartGame = false;
+		ChangeSwapChainState();
 	}
 }
 

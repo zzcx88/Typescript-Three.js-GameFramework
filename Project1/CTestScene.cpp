@@ -358,6 +358,7 @@ void CTestScene::BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandLis
 			pCloud[j]->m_pCloudMaterial->SetShader(pCloudRef->m_pCloudShader);
 			pCloud[j]->m_pCloudMaterial->SetTexture(pCloudRef->m_pCloudTexture[j]);
 			pCloud[j]->SetMaterial(0, pCloud[j]->m_pCloudMaterial);
+			pCloud[j]->SetPosition(fX,5500 ,fZ);
 			m_ObjManager->AddObject(L"cloud", pCloud[j], OBJ_ALPHAMAP);
 		}
 	}

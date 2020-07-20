@@ -15,8 +15,8 @@ SceneManager::~SceneManager()
 
 bool SceneManager::ChangeSceneState(SCENESTATE SceneState, ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList)
 {
-	GET_MANAGER<SoundManager>()->StopSound(CH_BGM);
-	//if (m_Scene) m_Scene->ReleaseUploadBuffers();
+	GET_MANAGER<SoundManager>()->StopAll();
+	if (m_Scene) m_Scene->ReleaseUploadBuffers();
 	if (m_Scene) m_Scene->ReleaseObjects();
 
 	if (nullptr != m_Scene)

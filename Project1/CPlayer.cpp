@@ -259,6 +259,7 @@ void CPlayer::Update_Input(const float& TimeDelta)
 		{
 			if(GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player_missle", OBJ_ALLYMISSLE))
 				GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player_missle", OBJ_ALLYMISSLE)->m_bMissleLockCamera = true;
+			m_bMissleLockCamera = true;
 		}
 	}
 
@@ -267,6 +268,7 @@ void CPlayer::Update_Input(const float& TimeDelta)
 		m_fPushSpaceElapsed = 0.0f;
 		if(GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player_missle", OBJ_ALLYMISSLE))
 			GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player_missle", OBJ_ALLYMISSLE)->m_bMissleLockCamera = false;
+		m_bMissleLockCamera = false;
 		if (m_bEye_fixation == false && m_bGunFire == false)
 		{
 			if (m_fFOV < 60)
@@ -964,7 +966,7 @@ void CAirplanePlayer::RollWingReturn(float fTimeElapsed)
 void CAirplanePlayer::PitchWingReturn(float fTimeElapsed)
 {
 	//pitch
-	if (Pitch_WingsRotateDegree < 0)
+	if (Pitch_WingsRotateDegree <= 0)
 	{
 		XMMATRIX xmmtxRotate = XMMatrixRotationX(XMConvertToRadians(-Pitch_WingsRotateDegree * 50.0f) * fTimeElapsed);
 		if (m_pLeft_Pitch_Wing)m_pLeft_Pitch_Wing->m_xmf4x4ToParent = Matrix4x4::Multiply(xmmtxRotate, m_pLeft_Pitch_Wing->m_xmf4x4ToParent);
@@ -980,7 +982,7 @@ void CAirplanePlayer::PitchWingReturn(float fTimeElapsed)
 			m_pLeft_Pitch_Wing->m_xmf4x4ToParent._22 = 0;
 		}
 	}
-	if (Pitch_WingsRotateDegree > 0)
+	if (Pitch_WingsRotateDegree >= 0)
 	{
 		XMMATRIX xmmtxRotate = XMMatrixRotationX(XMConvertToRadians(-Pitch_WingsRotateDegree * 50.0f) * fTimeElapsed);
 		if (m_pLeft_Pitch_Wing)m_pLeft_Pitch_Wing->m_xmf4x4ToParent = Matrix4x4::Multiply(xmmtxRotate, m_pLeft_Pitch_Wing->m_xmf4x4ToParent);
@@ -989,7 +991,7 @@ void CAirplanePlayer::PitchWingReturn(float fTimeElapsed)
 		if (m_pRight_Pitch_Wing)m_pRight_Pitch_Wing->m_xmf4x4ToParent = Matrix4x4::Multiply(xmmtxRotate1, m_pRight_Pitch_Wing->m_xmf4x4ToParent);
 
 		Pitch_WingsRotateDegree -= fTimeElapsed;
-		if (Pitch_WingsRotateDegree < 0)
+		if (Pitch_WingsRotateDegree <= 0)
 		{
 			Pitch_WingsRotateDegree = 0;
 			m_pRight_Pitch_Wing->m_xmf4x4ToParent._22 = 0;

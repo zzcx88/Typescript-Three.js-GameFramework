@@ -59,15 +59,15 @@ void CTU160::Animate(float fTimeElapsed)
 	if (GetPosition().z <= 10000.f)
 		GET_MANAGER<SceneManager>()->m_bStageFail = true;
 
-	if (m_pLeftEngine1 == NULL)
+	/*if (m_pLeftEngine1 == NULL)
 	{
 		OnPrepareAnimate();
-	}
+	}*/
 	m_fAddFogTimeElapsed += fTimeElapsed;
 	m_xmf3Position.x = m_xmf4x4ToParent._41;
 	m_xmf3Position.y = m_xmf4x4ToParent._42;
 	m_xmf3Position.z = m_xmf4x4ToParent._43;
-	if (m_bAiContrail == true)
+	/*if (m_bAiContrail == true)
 	{
 		if (m_fAddFogTimeElapsed > m_fAddFogFrequence)
 		{
@@ -145,7 +145,7 @@ void CTU160::Animate(float fTimeElapsed)
 			}
 			m_fAddFogTimeElapsed = 0;
 		}
-	}
+	}*/
 
 	CGameObject::Animate(fTimeElapsed);
 	if (SphereCollider)SphereCollider->SetPosition(GetPosition());
