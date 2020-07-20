@@ -18,7 +18,7 @@ CCloud::CCloud(int nIndex, ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* 
 	std::uniform_real_distribution<float>size(1, 2);
 	float sizeTotal = size(dre);
 	m_pPlaneMesh = new CPlaneMesh(pd3dDevice, pd3dCommandList, 1024 * sizeTotal, 768 * sizeTotal, 1, XMFLOAT2(0, 0), XMFLOAT2(0, 0), XMFLOAT2(0, 0), XMFLOAT2(0, 0));
-	m_pPlaneMesh->SetAABB(XMFLOAT3(fXPos, 5500, fZPos), XMFLOAT3(3000, 600, 3000));
+	m_pPlaneMesh->SetAABB(XMFLOAT3(fXPos, 5500, fZPos), XMFLOAT3(4000, 600, 4000));
 	SetMesh(m_pPlaneMesh);
 
 	for (int i = 0; i < m_nInstance; ++i)

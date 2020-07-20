@@ -544,7 +544,6 @@ void CDeviceManager::SceneChangeInput()
 	{
 		if (m_SceneSwitch == SCENE_MENU)
 		{
-			GET_MANAGER<SoundManager>()->PlaySound(L"PressSpace.mp3", CH_EFFECT);
 			GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player_ui1_title", OBJ_UI)->SetIsRender(false);
 			GET_MANAGER<ObjectManager>()->GetObjFromTag(L"TitleAnimation", OBJ_EFFECT2)->SetIsRender(false);
 

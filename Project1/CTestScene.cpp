@@ -362,7 +362,6 @@ void CTestScene::BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandLis
 			m_ObjManager->AddObject(L"cloud", pCloud[j], OBJ_ALPHAMAP);
 		}
 	}
-
 	CreateShaderVariables(pd3dDevice, pd3dCommandList);
 	GET_MANAGER<SoundManager>()->PlayBGM(L"Stage1_BGM.mp3", CH_BGM);
 }

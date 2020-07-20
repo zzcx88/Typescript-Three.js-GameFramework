@@ -30,6 +30,7 @@ bool SceneManager::ChangeSceneState(SCENESTATE SceneState, ID3D12Device* pd3dDev
 	{
 	case SCENE_TEST:
 		m_Scene = new CTestScene;
+		GET_MANAGER<SoundManager>()->PlaySound(L"PressSpace.mp3", CH_EFFECT);
 		break;
 	case SCENE_MENU:
 		m_Scene = new CMenuScene;
