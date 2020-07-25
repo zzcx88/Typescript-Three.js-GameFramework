@@ -11,7 +11,10 @@ public:
 	float m_fMoveFowardElapsed = 0.f;
 	float m_fElapsedFrequency = 3.f;
 
-	float m_fMissleFireFrequence = 10.0f;
+	float m_fMissleFireFrequence = 15.0f;
+	float m_fAfterFireFrequence = 4.f;
+
+	float m_fMissleFireElapsed = 0.f;
 
 	ObjectManager* m_ObjManager;
 

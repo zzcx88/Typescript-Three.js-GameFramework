@@ -380,10 +380,10 @@ void CTestScene::CreateStageObject()
 	if (m_bCreateShip == false)
 	{
 		m_bCreateShip = true;
-		for (int i = 0; i < 8; ++i)
+		for (int i = 0; i < 5; ++i)
 		{
 			std::default_random_engine dre(time(NULL) * i * 0.548);
-			std::uniform_real_distribution<float>fXPos(-4000.f, 4000.f);
+			std::uniform_real_distribution<float>fXPos(-7000.f, 7000.f);
 			std::uniform_real_distribution<float>fZPos(3200.f, 6400.f);
 
 			C052CDestroyer* p052C;

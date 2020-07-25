@@ -36,8 +36,6 @@ CPlayer::~CPlayer()
 
 void CPlayer::ReturnEyeFix()
 {
-	m_fFOV = 60;
-	m_pCamera->GenerateProjectionMatrix(1.01f, m_fFarPlaneDistance, ASPECT_RATIO, m_fFOV);
 	m_pCamera->SetLookPlayer();
 	XMFLOAT3 xmf3Shift = XMFLOAT3(0, 0, 0);
 	xmf3Shift = Vector3::Add(xmf3Shift, m_xmf3Up, 0.6);
@@ -142,7 +140,6 @@ void CPlayer::Rotate(float x, float y, float z)
 			m_xmf3Right = Vector3::TransformNormal(m_xmf3Right, xmmtxRotate);
 		}
 	}
-
 	m_xmf3Look = Vector3::Normalize(m_xmf3Look);
 	m_xmf3Right = Vector3::CrossProduct(m_xmf3Up, m_xmf3Look, true);
 	m_xmf3Up = Vector3::CrossProduct(m_xmf3Look, m_xmf3Right, true);
@@ -169,11 +166,6 @@ void CPlayer::Update_Input(const float& TimeDelta)
 				{
 					m_bEye_fixation = false;
 				}
-
-				if (m_bEye_fixation == false)
-				{
-					ReturnEyeFix();
-				}
 			}
 		}
 		else
@@ -186,11 +178,6 @@ void CPlayer::Update_Input(const float& TimeDelta)
 			else
 			{
 				m_bEye_fixation = false;
-			}
-
-			if (m_bEye_fixation == false)
-			{
-				ReturnEyeFix();
 			}
 		}
 	}
@@ -234,12 +221,6 @@ void CPlayer::Update_Input(const float& TimeDelta)
 			m_bGunFire = false;
 			m_fGunFOV = 60.f;
 			m_pCamera->GenerateProjectionMatrix(1.01f, m_fFarPlaneDistance, ASPECT_RATIO, m_fFOV);
-			m_pCamera->SetLookPlayer();
-			XMFLOAT3 xmf3Shift = XMFLOAT3(0, 0, 0);
-			xmf3Shift = Vector3::Add(xmf3Shift, m_xmf3Up, 0.6);
-			m_pCamera->SetPosition(Vector3::Add(m_xmf3Position, xmf3Shift));
-			xmf3Shift = Vector3::Add(xmf3Shift, m_xmf3Look, -4.1);
-			m_pCamera->SetPosition(Vector3::Add(m_xmf3Position, xmf3Shift));
 		}
 		dwDirection |= VK_LCONTROL;
 	}
@@ -274,12 +255,6 @@ void CPlayer::Update_Input(const float& TimeDelta)
 			if (m_fFOV < 60)
 				m_fFOV = 60;
 			m_pCamera->GenerateProjectionMatrix(1.01f, m_fFarPlaneDistance, ASPECT_RATIO, m_fFOV);
-			m_pCamera->SetLookPlayer();
-			XMFLOAT3 xmf3Shift = XMFLOAT3(0, 0, 0);
-			xmf3Shift = Vector3::Add(xmf3Shift, m_xmf3Up, 0.6);
-			m_pCamera->SetPosition(Vector3::Add(m_xmf3Position, xmf3Shift));
-			xmf3Shift = Vector3::Add(xmf3Shift, m_xmf3Look, -4.1);
-			m_pCamera->SetPosition(Vector3::Add(m_xmf3Position, xmf3Shift));
 		}
 	}
 
@@ -485,11 +460,21 @@ void CPlayer::Update_Input(const float& TimeDelta)
 				m_pCamera->SetLookAt(XMFLOAT3(m_xmf3FixTarget));
 			}
 		}
-			if (m_fFOV > 40)
+			if (m_fFOV > 25)
 			{
 				m_pCamera->GenerateProjectionMatrix(1.01f, m_fFarPlaneDistance, ASPECT_RATIO, m_fFOV);
-				m_fFOV -= 30 * TimeDelta;
+				m_fFOV -= 80 * TimeDelta;
 			}
+	}
+	if (m_bEye_fixation == false && m_fFOV < 60)
+	{
+		m_pCamera->GenerateProjectionMatrix(1.01f, m_fFarPlaneDistance, ASPECT_RATIO, m_fFOV);
+		m_fFOV += 30 * TimeDelta;
+	}
+
+	if (m_bEye_fixation == false && m_bGunFire == false && m_bMissleLockCamera == false)
+	{
+		m_pCamera->SetLookPlayer();
 	}
 
 	if (m_fAircraftSpeed > 700)
@@ -524,11 +509,11 @@ void CPlayer::Animate(float fTimeElapsed)
 
 		Move(m_xmf3Velocity, false);
 
-		if (m_pPlayerUpdatedContext) OnPlayerUpdateCallback(fTimeElapsed);
+		//if (m_pPlayerUpdatedContext) OnPlayerUpdateCallback(fTimeElapsed);
 
 		DWORD nCurrentCameraMode = m_pCamera->GetMode();
 		if (nCurrentCameraMode == THIRD_PERSON_CAMERA) m_pCamera->Update(m_xmf3Position, fTimeElapsed);
-		if (m_pCameraUpdatedContext) OnCameraUpdateCallback(fTimeElapsed);
+		//if (m_pCameraUpdatedContext) OnCameraUpdateCallback(fTimeElapsed);
 		if (nCurrentCameraMode == THIRD_PERSON_CAMERA) m_pCamera->SetLookAt(m_xmf3Position);
 		m_pCamera->RegenerateViewMatrix();
 

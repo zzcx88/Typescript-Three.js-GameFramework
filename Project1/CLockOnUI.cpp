@@ -64,9 +64,9 @@ void CLockOnUI::MoveLockOnUI(XMFLOAT2 screen, XMFLOAT3& xmfTarget, XMFLOAT3& xmf
 	fx = screen.x - ((float)FRAME_BUFFER_WIDTH / 2.f);
 	fy =( screen.y - ((float)FRAME_BUFFER_HEIGHT / 2.f))*-1;
 
-	XMFLOAT3 xmf3TargetVector2 = Vector3::Subtract(xmfTarget, xmfPlayer);
+	//XMFLOAT3 xmf3TargetVector2 = Vector3::Subtract(xmfTarget, xmfPlayer);
 
-	m_fLenth = sqrt(xmf3TargetVector2.x * xmf3TargetVector2.x + xmf3TargetVector2.y * xmf3TargetVector2.x + xmf3TargetVector2.z * xmf3TargetVector2.z);
+	//m_fLenth = sqrt(xmf3TargetVector2.x * xmf3TargetVector2.x + xmf3TargetVector2.y * xmf3TargetVector2.x + xmf3TargetVector2.z * xmf3TargetVector2.z);
 	
 	if (screen.x < 0 || screen.y < 0 || screen.x >FRAME_BUFFER_WIDTH || screen.y >FRAME_BUFFER_HEIGHT || xmfCameraAxis < 0.f)
 		pGameUIOBJ->SetPosition(-20000.f, -20000.f, -1.f);

@@ -145,6 +145,7 @@ void CMig21::Animate(float fTimeElapsed)
 		if (m_bReffernce == false && m_bDestroyed == false)
 		{
 			GET_MANAGER<AIManager>()->DoAction(AI_ESCORT, this);
+			UpdateTransform(NULL);
 		}
 
 		if (m_bDestroyed == true)

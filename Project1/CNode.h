@@ -64,8 +64,19 @@ public:
 public:
 	virtual bool Invoke(CGameObject* pObj) override
 	{
-		pObj->Move(DIR_FORWARD, 270 * GET_MANAGER<CDeviceManager>()->GetGameTimer().GetTimeElapsed(), false);
-		return true;
+		if (pObj->m_AiType == AI_BOMBER)
+		{
+			pObj->Move(DIR_FORWARD, 270 * GET_MANAGER<CDeviceManager>()->GetGameTimer().GetTimeElapsed(), false);
+			return true;
+		}
+		else if (pObj->m_AiType == AI_SHIP)
+		{
+			if (pObj->m_bAiDetected == false)
+			{
+				pObj->Move(DIR_FORWARD, 30 * GET_MANAGER<CDeviceManager>()->GetGameTimer().GetTimeElapsed(), false);
+			}
+			return true;
+		}
 	}
 };
 
@@ -73,44 +84,69 @@ class IsEnemyNear : public BT::CompositeNode
 {
 public:
 	IsEnemyNear() {}
-	virtual ~IsEnemyNear(){}
+	virtual ~IsEnemyNear() {}
 
 public:
 	virtual bool Invoke(CGameObject* pObj) override
 	{
 		//cout << "IsEnemyNear" << endl;
-		XMFLOAT3 xmf3Pos, xmf3PlayerPos, xmf3TargetVector;
-		xmf3Pos = pObj->GetPosition();
-		xmf3PlayerPos = GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player", OBJ_PLAYER)->GetPosition();
-		xmf3TargetVector = Vector3::Subtract(xmf3Pos, xmf3PlayerPos);
-		float Lenth = sqrt(xmf3TargetVector.x * xmf3TargetVector.x + xmf3TargetVector.y * xmf3TargetVector.x + xmf3TargetVector.z * xmf3TargetVector.z);
+		if (pObj->m_AiType == AI_ESCORT)
+		{
+			XMFLOAT3 xmf3Pos, xmf3PlayerPos, xmf3TargetVector;
+			xmf3Pos = pObj->GetPosition();
+			xmf3PlayerPos = GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player", OBJ_PLAYER)->GetPosition();
+			xmf3TargetVector = Vector3::Subtract(xmf3Pos, xmf3PlayerPos);
+			float Lenth = Vector3::Length(xmf3TargetVector);
 
-		if (Lenth < 3000)
-		{
-			if (pObj->m_bAiDetected == false)
-				pObj->m_bAiDetected = true;
-			return true;
-		}
-		else
-		{
-			if (pObj->m_bAiDetected == true)
+			if (Lenth < 3000)
 			{
-				pObj->m_bAiLockOn = false;
-				XMFLOAT3 xmf3Pos, xmf3PlayerPos, xmf3TargetVector;
-				xmf3Pos = pObj->GetPosition();
-				xmf3PlayerPos = GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player", OBJ_PLAYER)->GetPosition();
+				if (pObj->m_bAiDetected == false)
+					pObj->m_bAiDetected = true;
+				return true;
+			}
+			else
+			{
+				if (pObj->m_bAiDetected == true)
+				{
+					pObj->m_bAiLockOn = false;
+					XMFLOAT3 xmf3Pos, xmf3PlayerPos, xmf3TargetVector;
+					xmf3Pos = pObj->GetPosition();
+					xmf3PlayerPos = GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player", OBJ_PLAYER)->GetPosition();
 
-				float theta = 50.f * GET_MANAGER<CDeviceManager>()->GetGameTimer().GetTimeElapsed();
-				xmf3TargetVector = Vector3::Subtract(xmf3PlayerPos, xmf3Pos);
-				xmf3TargetVector = Vector3::Normalize(xmf3TargetVector);
-				XMFLOAT3 xmfAxis = Vector3::CrossProduct(pObj->m_xmf3Look, xmf3TargetVector);
-				xmfAxis = Vector3::Normalize(xmfAxis);
+					float theta = 50.f * GET_MANAGER<CDeviceManager>()->GetGameTimer().GetTimeElapsed();
+					xmf3TargetVector = Vector3::Subtract(xmf3PlayerPos, xmf3Pos);
+					xmf3TargetVector = Vector3::Normalize(xmf3TargetVector);
+					XMFLOAT3 xmfAxis = Vector3::CrossProduct(pObj->m_xmf3Look, xmf3TargetVector);
+					xmfAxis = Vector3::Normalize(xmfAxis);
+					pObj->Move(DIR_FORWARD, 270 * GET_MANAGER<CDeviceManager>()->GetGameTimer().GetTimeElapsed(), false);
+					pObj->RotateFallow(&xmfAxis, theta);
+					return false;
+				}
 				pObj->Move(DIR_FORWARD, 270 * GET_MANAGER<CDeviceManager>()->GetGameTimer().GetTimeElapsed(), false);
-				pObj->RotateFallow(&xmfAxis, theta);
 				return false;
 			}
-			pObj->Move(DIR_FORWARD, 270 * GET_MANAGER<CDeviceManager>()->GetGameTimer().GetTimeElapsed(), false);
-			return false;
+		}
+		else if (pObj->m_AiType == AI_SHIP)
+		{
+			XMFLOAT3 xmf3Pos, xmf3PlayerPos, xmf3TargetVector;
+			xmf3Pos = pObj->GetPosition();
+			xmf3PlayerPos = GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player", OBJ_PLAYER)->GetPosition();
+			xmf3TargetVector = Vector3::Subtract(xmf3Pos, xmf3PlayerPos);
+			float Lenth = Vector3::Length(xmf3TargetVector);
+
+			if (Lenth < 5000)
+			{
+				if (pObj->m_bAiDetected == false)
+				{
+					pObj->m_bAiDetected = true;
+				}
+				return true;
+			}
+			else
+			{
+				pObj->m_bAiDetected = false;
+				return false;
+			}
 		}
 	}
 };
@@ -137,7 +173,7 @@ public:
 		XMFLOAT3 xmfAxis = Vector3::CrossProduct(pObj->m_xmf3Look, xmf3TargetVector);
 		xmfAxis = Vector3::Normalize(xmfAxis);
 		pObj->m_bAiContrail = false;
-		pObj->Move(DIR_FORWARD, 230 * GET_MANAGER<CDeviceManager>()->GetGameTimer().GetTimeElapsed() , false);
+		pObj->Move(DIR_FORWARD, 230 * GET_MANAGER<CDeviceManager>()->GetGameTimer().GetTimeElapsed(), false);
 		pObj->RotateFallow(&xmfAxis, theta);
 		return true;
 	}
@@ -160,7 +196,7 @@ public:
 			XMFLOAT3 xmf3Pos, xmf3TargetPos, xmf3PlayerPos, xmf3TargetVector;
 			xmf3Pos = pObj->GetPosition();
 			xmf3PlayerPos = GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player", OBJ_PLAYER)->GetPosition();
-			xmf3TargetPos = XMFLOAT3(xmf3PlayerPos.x,1800, xmf3PlayerPos.z);
+			xmf3TargetPos = XMFLOAT3(xmf3PlayerPos.x, 1800, xmf3PlayerPos.z);
 
 			float theta = 50.f * GET_MANAGER<CDeviceManager>()->GetGameTimer().GetTimeElapsed();
 			xmf3TargetVector = Vector3::Subtract(xmf3TargetPos, xmf3Pos);
@@ -222,12 +258,13 @@ public:
 public:
 	virtual bool Invoke(CGameObject* pObj) override
 	{
-		if (pObj->m_bAiLockOn == true && pObj->m_bAiCanFire == true)
+		if (pObj->m_AiType == AI_ESCORT)
 		{
-			//cout << "Attack" << endl;
-			pObj->m_bAiCanFire = false;
-			pObj->m_bAiAfterFire = true;
+			if (pObj->m_bAiLockOn == true && pObj->m_bAiCanFire == true)
 			{
+				//cout << "Attack" << endl;
+				pObj->m_bAiCanFire = false;
+				pObj->m_bAiAfterFire = true;
 				CMissle* pMissle;
 				XMFLOAT3* temp;
 				temp = GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player", OBJ_PLAYER)->GetPositionForMissle();
@@ -235,6 +272,26 @@ public:
 				pMissle->m_xmfTarget = temp;
 				pMissle->m_bLockOn = true;
 				pMissle->SetPosition(pObj->GetPosition());
+				GET_MANAGER<ObjectManager>()->AddObject(L"enemy_missle", pMissle, OBJ_ENEMISSLE);
+				return true;
+			}
+		}
+		else if (pObj->m_AiType == AI_SHIP)
+		{
+			if (pObj->m_bAiDetected == true && pObj->m_bAiCanFire == true)
+			{
+				pObj->m_bAiCanFire = false;
+				pObj->m_bAiAfterFire = true;
+				CMissle* pMissle;
+				XMFLOAT3* temp;
+				temp = GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player", OBJ_PLAYER)->GetPositionForMissle();
+				pMissle = new CMissle(pObj);
+				pMissle->m_xmfTarget = temp;
+				pMissle->m_bLockOn = true;
+				pMissle->SetPosition(pObj->GetPosition());
+				pMissle->m_xmf3Look = XMFLOAT3(0, 1, 0);
+				pMissle->m_bLaunchFromShip = true;
+				pMissle->m_fDeleteFrequence = 8;
 				GET_MANAGER<ObjectManager>()->AddObject(L"enemy_missle", pMissle, OBJ_ENEMISSLE);
 				return true;
 			}
@@ -303,3 +360,16 @@ public:
 };
 
 //정지한다(배, 지상 오브젝트에 한함).
+class Stop : public BT::CompositeNode
+{
+public:
+	Stop() {}
+	virtual ~Stop() {}
+
+public:
+	virtual bool Invoke(CGameObject* pObj) override
+	{
+		pObj->Move(DIR_FORWARD, 0 * GET_MANAGER<CDeviceManager>()->GetGameTimer().GetTimeElapsed(), false);
+		return true;
+	}
+};

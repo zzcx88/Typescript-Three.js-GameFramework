@@ -81,7 +81,8 @@ void CCloud::Animate(float fTimeElapsed)
 	xmf3PlayerPos = GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player", OBJ_PLAYER)->GetPosition();
 	xmf3TargetVector = Vector3::Subtract(xmf3Pos, xmf3PlayerPos);
 	XMFLOAT3 xmfAxis = Vector3::CrossProduct(pPlayer->GetLookVector(), xmf3TargetVector);
-	LenthToPlayer = sqrt(xmf3TargetVector.x * xmf3TargetVector.x + xmf3TargetVector.y * xmf3TargetVector.x + xmf3TargetVector.z * xmf3TargetVector.z);
+	LenthToPlayer = Vector3::Length(xmf3TargetVector);
+	//LenthToPlayer = sqrt(xmf3TargetVector.x * xmf3TargetVector.x + xmf3TargetVector.y * xmf3TargetVector.x + xmf3TargetVector.z * xmf3TargetVector.z);
 	//cout << LenthToPlayer << endl;
 }
 
