@@ -36,7 +36,7 @@ CPlayer::~CPlayer()
 
 void CPlayer::ReturnEyeFix()
 {
-	m_pCamera->SetLookPlayer();
+	m_pCamera->SetLookPlayer(false);
 	XMFLOAT3 xmf3Shift = XMFLOAT3(0, 0, 0);
 	xmf3Shift = Vector3::Add(xmf3Shift, m_xmf3Up, 0.6);
 	m_pCamera->SetPosition(Vector3::Add(m_xmf3Position, xmf3Shift));
@@ -165,6 +165,11 @@ void CPlayer::Update_Input(const float& TimeDelta)
 				else
 				{
 					m_bEye_fixation = false;
+					if (m_bGunFire == true)
+					{
+						m_fGunFOV = 60;
+						ReturnEyeFix();
+					}
 				}
 			}
 		}
@@ -178,6 +183,11 @@ void CPlayer::Update_Input(const float& TimeDelta)
 			else
 			{
 				m_bEye_fixation = false;
+				if (m_bGunFire == true)
+				{
+					m_fGunFOV = 60;
+					ReturnEyeFix();
+				}
 			}
 		}
 	}

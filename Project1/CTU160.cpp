@@ -182,7 +182,7 @@ void CTU160::Animate(float fTimeElapsed)
 	if (m_bReffernce == false && m_bDestroyed == false)
 	{
 		GET_MANAGER<AIManager>()->DoAction(AI_BOMBER, this);
-		UpdateTransform();
+		UpdateTransform(NULL);
 	}
 
 	if (m_bDestroyed == true)
