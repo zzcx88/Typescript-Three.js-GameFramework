@@ -161,9 +161,5 @@ void CMissleFog::SetLookAt(XMFLOAT3& xmfTarget)
 
 void CMissleFog::Render(ID3D12GraphicsCommandList* pd3dCommandList, CCamera* pCamera)
 {
-	if (m_pEffectMaterial->m_ppTextures[0] == pWaterTexture)
-	{
-		return;
-	}
 	CGameObject::Render(pd3dCommandList, pCamera);
 }

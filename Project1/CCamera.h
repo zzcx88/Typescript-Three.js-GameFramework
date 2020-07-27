@@ -122,6 +122,8 @@ public:
 	bool IsInFrustum(BoundingOrientedBox& xmBoundingBox);
 	//바운딩 박스(AABB, 월드 좌표계)가 절두체에 포함되는 가를 검사한다.
 	bool IsInFrustum(BoundingBox& xmBoundingBox);
+
+	bool IsInFrustum(BoundingSphere& xmBoundingSphere);
 };
 
 class CSpaceShipCamera : public CCamera

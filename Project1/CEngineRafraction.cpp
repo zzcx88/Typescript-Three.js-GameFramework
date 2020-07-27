@@ -151,7 +151,8 @@ void CEngineRafraction::OnPreRender(ID3D12Device* pd3dDevice, ID3D12CommandQueue
 	m_pCamera->GenerateProjectionMatrix(1.01f, 100000.0f, ASPECT_RATIO, GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player", OBJ_PLAYER)->GetFov());*/
 	
 	if (GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player", OBJ_PLAYER)->m_bEye_fixation == false && 
-		GET_MANAGER<CDeviceManager>()->GetBlurAmount() <= 0.5f)
+		GET_MANAGER<CDeviceManager>()->GetBlurAmount() <= 0.5f &&
+		GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player", OBJ_PLAYER)->m_bMissleLockCamera == false)
 	{
 		m_pd3dCommandAllocator->Reset();
 		m_pd3dCommandList->Reset(m_pd3dCommandAllocator, NULL);

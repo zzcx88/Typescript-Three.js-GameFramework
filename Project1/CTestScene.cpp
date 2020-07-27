@@ -423,7 +423,7 @@ void CTestScene::CreateStageObject()
 			pMig21_A->SetPosition(pTu160->GetPosition().x + 200, pTu160->GetPosition().y, pTu160->GetPosition().z + 150);
 			pMig21_A->Rotate(0, 180, 0);
 			pMig21_A->m_xmf3Look = XMFLOAT3(0, 0, -1);
-			m_ObjManager->AddObject(L"mig21", pMig21_A, OBJ_ENEMY);
+			m_ObjManager->AddObject(L"mig21A", pMig21_A, OBJ_ENEMY);
 			GET_MANAGER<SceneManager>()->m_nTgtObject++;
 
 			CMig21* pMig21_B;
@@ -431,7 +431,7 @@ void CTestScene::CreateStageObject()
 			pMig21_B->SetPosition(pTu160->GetPosition().x - 200, pTu160->GetPosition().y, pTu160->GetPosition().z + 150);
 			pMig21_B->Rotate(0, 180, 0);
 			pMig21_B->m_xmf3Look = XMFLOAT3(0, 0, -1);
-			m_ObjManager->AddObject(L"mig21", pMig21_B, OBJ_ENEMY);
+			m_ObjManager->AddObject(L"mig21B", pMig21_B, OBJ_ENEMY);
 			GET_MANAGER<SceneManager>()->m_nTgtObject++;
 		}
 		cout << GET_MANAGER<SceneManager>()->m_nTgtObject;

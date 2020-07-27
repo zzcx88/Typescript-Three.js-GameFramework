@@ -483,3 +483,8 @@ bool CCamera::IsInFrustum(BoundingBox& xmBoundingBox)
 {
 	return(m_xmFrustum.Intersects(xmBoundingBox));
 }
+
+bool CCamera::IsInFrustum(BoundingSphere& xmBoundingSphere)
+{
+	return(m_xmFrustum.Intersects(xmBoundingSphere));
+}
