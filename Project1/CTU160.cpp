@@ -152,7 +152,7 @@ void CTU160::Animate(float fTimeElapsed)
 	if (SphereCollider)SphereCollider->m_xmf4x4ToParent = Matrix4x4::Multiply(XMMatrixScaling(110, 110, 110), m_xmf4x4ToParent);
 	if (SphereCollider)SphereCollider->Animate(fTimeElapsed, GetPosition());
 
-	GET_MANAGER<CollisionManager>()->CollisionSphere(this, &GET_MANAGER<ObjectManager>()->GetObjFromType(OBJ_ENEMY));
+	/*GET_MANAGER<CollisionManager>()->CollisionSphere(this, &GET_MANAGER<ObjectManager>()->GetObjFromType(OBJ_ENEMY));
 	if (m_bAllyCollide == true)
 	{
 		m_fMoveFowardElapsed += fTimeElapsed;
@@ -163,7 +163,7 @@ void CTU160::Animate(float fTimeElapsed)
 			m_fMoveFowardElapsed = 0.f;
 			m_xmf3Ai_EvadeAxis = XMFLOAT3(0, 0, 0);
 		}
-	}
+	}*/
 
 	if (m_bAiCanFire == false)
 	{

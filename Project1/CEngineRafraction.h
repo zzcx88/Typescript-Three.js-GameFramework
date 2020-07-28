@@ -13,6 +13,8 @@ public:
 
 	CCamera* m_pCamera = NULL;
 	CTexture* pWaterTexture = NULL;
+	CPlaneMesh* m_pPlaneMeshDrop;
+
 
 	float m_fScaleX = 1, m_fScaleY = 1;
 	float m_fTimeElapsed = 0.f;
@@ -24,6 +26,7 @@ public:
 	int m_nTextureIndex = 0;
 
 	bool m_RenderOff = false;
+	bool m_bWaterDrop = false;
 
 	UINT						m_nRtvDescriptorIncrementSize = 0;
 

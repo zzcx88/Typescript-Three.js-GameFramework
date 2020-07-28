@@ -59,7 +59,7 @@ void CTestScene::BuildDefaultLightsAndMaterials()
 	m_pLights[0].m_xmf4Ambient = XMFLOAT4(0.2f, 0.2f, 0.2f, 1.0f);
 	m_pLights[0].m_xmf4Diffuse = XMFLOAT4(0.4f, 0.3f, 0.8f, 1.0f);
 	m_pLights[0].m_xmf4Specular = XMFLOAT4(0.5f, 0.5f, 0.5f, 0.0f);
-	m_pLights[0].m_xmf3Position = XMFLOAT3(230.0f, 330.0f, 480.0f);
+	m_pLights[0].m_xmf3Position = XMFLOAT3(0, -1000.f, 0);
 	m_pLights[0].m_xmf3Attenuation = XMFLOAT3(1.0f, 0.001f, 0.0001f);
 	m_pLights[1].m_bEnable = true;
 	m_pLights[1].m_nType = SPOT_LIGHT;
@@ -67,7 +67,7 @@ void CTestScene::BuildDefaultLightsAndMaterials()
 	m_pLights[1].m_xmf4Ambient = XMFLOAT4(0.1f, 0.1f, 0.1f, 1.0f);
 	m_pLights[1].m_xmf4Diffuse = XMFLOAT4(0.4f, 0.4f, 0.4f, 1.0f);
 	m_pLights[1].m_xmf4Specular = XMFLOAT4(0.3f, 0.3f, 0.3f, 0.0f);
-	m_pLights[1].m_xmf3Position = XMFLOAT3(-50.0f, 20.0f, -5.0f);
+	m_pLights[1].m_xmf3Position = XMFLOAT3(0, -1000.f, 0);
 	m_pLights[1].m_xmf3Direction = XMFLOAT3(0.0f, 0.0f, 1.0f);
 	m_pLights[1].m_xmf3Attenuation = XMFLOAT3(1.0f, 0.01f, 0.0001f);
 	m_pLights[1].m_fFalloff = 8.0f;
@@ -85,7 +85,7 @@ void CTestScene::BuildDefaultLightsAndMaterials()
 	m_pLights[3].m_xmf4Ambient = XMFLOAT4(0.3f, 0.3f, 0.3f, 1.0f);
 	m_pLights[3].m_xmf4Diffuse = XMFLOAT4(0.3f, 0.7f, 0.0f, 1.0f);
 	m_pLights[3].m_xmf4Specular = XMFLOAT4(0.3f, 0.3f, 0.3f, 0.0f);
-	m_pLights[3].m_xmf3Position = XMFLOAT3(550.0f, 530.0f, 530.0f);
+	m_pLights[3].m_xmf3Position = XMFLOAT3(0, -1000.f, 0);
 	m_pLights[3].m_xmf3Direction = XMFLOAT3(0.0f, 1.0f, 1.0f);
 	m_pLights[3].m_xmf3Attenuation = XMFLOAT3(1.0f, 0.01f, 0.0001f);
 	m_pLights[3].m_fFalloff = 8.0f;
@@ -97,7 +97,7 @@ void CTestScene::BuildDefaultLightsAndMaterials()
 	m_pLights[4].m_xmf4Ambient = XMFLOAT4(0.2f, 0.2f, 0.2f, 1.0f);
 	m_pLights[4].m_xmf4Diffuse = XMFLOAT4(0.8f, 0.3f, 0.3f, 1.0f);
 	m_pLights[4].m_xmf4Specular = XMFLOAT4(0.5f, 0.5f, 0.5f, 0.0f);
-	m_pLights[4].m_xmf3Position = XMFLOAT3(600.0f, 250.0f, 700.0f);
+	m_pLights[4].m_xmf3Position = XMFLOAT3(0, -1000.f, 0);
 	m_pLights[4].m_xmf3Attenuation = XMFLOAT3(1.0f, 0.001f, 0.0001f);
 }
 
@@ -623,7 +623,7 @@ void CTestScene::Render(ID3D12GraphicsCommandList* pd3dCommandList, CCamera* pCa
 	{
 		m_bCreateEngineRefraction = false;
 		CEngineRafraction* testRafraction;
-		testRafraction = new CEngineRafraction(0, GET_MANAGER<CDeviceManager>()->GetDevice(), pd3dCommandList, m_pd3dGraphicsRootSignature, 1.f, 2.f, 0.f);
+		testRafraction = new CEngineRafraction(0, GET_MANAGER<CDeviceManager>()->GetDevice(), pd3dCommandList, m_pd3dGraphicsRootSignature, 1.f, 3.f, 0.f);
 		testRafraction->SetPosition(0, 1000, 2000);
 		//testRafraction->SetScale(400, 400, 400);
 		m_ObjManager->AddObject(L"EngineRefractionObj", testRafraction, OBJ_EFFECT);

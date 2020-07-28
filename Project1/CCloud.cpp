@@ -2,7 +2,7 @@
 #include "CCloud.h"
 #include "CTestScene.h"
 #include "CShaderManager.h"
-
+#include "CEngineRafraction.h"
 #define TEXTURES 8
 
 CCloud::CCloud(int nIndex, ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList, ID3D12RootSignature* pd3dGraphicsRootSignature, float fXPos, float fZPos, UINT nInstance, std::default_random_engine dre)
@@ -13,12 +13,14 @@ CCloud::CCloud(int nIndex, ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* 
 
 	std::uniform_real_distribution<float>y(5000, 6000);
 	std::uniform_real_distribution<float>range(1000, 3000);
-	std::uniform_real_distribution<float>x(fXPos - range(dre), fXPos + range(dre));
-	std::uniform_real_distribution<float>z(fZPos - range(dre) - 1000, fZPos + range(dre) - 1000);
+	float fRangeX = range(dre);
+	float fRangeZ = range(dre);
+	std::uniform_real_distribution<float>x(fXPos - fRangeX, fXPos + fRangeX);
+	std::uniform_real_distribution<float>z(fZPos - fRangeZ - 1000, fZPos + fRangeZ - 1000);
 	std::uniform_real_distribution<float>size(1, 2);
 	float sizeTotal = size(dre);
 	m_pPlaneMesh = new CPlaneMesh(pd3dDevice, pd3dCommandList, 1024 * sizeTotal, 768 * sizeTotal, 1, XMFLOAT2(0, 0), XMFLOAT2(0, 0), XMFLOAT2(0, 0), XMFLOAT2(0, 0));
-	m_pPlaneMesh->SetAABB(XMFLOAT3(fXPos, 5500, fZPos), XMFLOAT3(4000, 600, 4000));
+	m_pPlaneMesh->SetAABB(XMFLOAT3(fXPos, 5500, fZPos), XMFLOAT3(fRangeX + 600, 600, fRangeZ + 600));
 	SetMesh(m_pPlaneMesh);
 
 	for (int i = 0; i < m_nInstance; ++i)
@@ -84,6 +86,36 @@ void CCloud::Animate(float fTimeElapsed)
 	LenthToPlayer = Vector3::Length(xmf3TargetVector);
 	//LenthToPlayer = sqrt(xmf3TargetVector.x * xmf3TargetVector.x + xmf3TargetVector.y * xmf3TargetVector.x + xmf3TargetVector.z * xmf3TargetVector.z);
 	//cout << LenthToPlayer << endl;
+
+	if (GET_MANAGER<ObjectManager>()->GetObjFromTag(L"EngineRefractionObj", OBJ_EFFECT) && LenthToPlayer < 5000)
+	{
+		if (m_pPlaneMesh->m_xmAABB.Intersects(GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player", OBJ_PLAYER)->SphereCollider->m_BoundingSphere))
+		{
+			CEngineRafraction* RefractObj = (CEngineRafraction*)GET_MANAGER<ObjectManager>()->GetObjFromTag(L"EngineRefractionObj", OBJ_EFFECT);
+			RefractObj->m_bWaterDrop = true;
+			if (RefractObj->m_fBurnerBlendAmount < 0.1f)
+				RefractObj->m_fBurnerBlendAmount += 0.2f * fTimeElapsed;
+			else if (RefractObj->m_fBurnerBlendAmount > 0.1f)
+				RefractObj->m_fBurnerBlendAmount = 0.1f;
+			GET_MANAGER<SoundManager>()->SetVolume(CH_BGM, 0.3f);
+		}
+		else
+		{
+			CEngineRafraction* RefractObj = (CEngineRafraction*)GET_MANAGER<ObjectManager>()->GetObjFromTag(L"EngineRefractionObj", OBJ_EFFECT);
+			if (RefractObj->m_fBurnerBlendAmount <= 0)
+			{
+				if (RefractObj->m_bWaterDrop == true)
+				{
+					GET_MANAGER<SoundManager>()->SetVolume(CH_BGM, 1.f);
+				}
+				RefractObj->m_bWaterDrop = false;
+				if (RefractObj->m_fBurnerBlendAmount < 0)
+				{
+					RefractObj->m_fBurnerBlendAmount = 0.002f;
+				}
+			}
+		}
+	}
 }
 
 void CCloud::SetLookAt(XMFLOAT3& xmfTarget)

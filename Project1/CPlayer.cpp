@@ -576,6 +576,13 @@ void CPlayer::CollisionActivate(CGameObject* collideTarget)
 		//m_pCamera->SetPosition(XMFLOAT3(GetPosition().x, GetPosition().y + 200, GetPosition().z));
 		//wcout << GET_MANAGER<ObjectManager>()->GetTagFromObj(this, OBJ_PLAYER) << endl;
 		cout << "Ãæµ¹!" << endl;
+		if (m_bGunFire == false)
+		{
+			if ((int)(GetPosition().x + GetPosition().y + GetPosition().z) / 2 == 0)
+				m_pCamera->Rotate(20, 0, 0);
+			else
+				m_pCamera->Rotate(-20, 0, 0);
+		}
 		//m_bGameOver = true;
 	}
 }

@@ -291,7 +291,7 @@ public:
 				pMissle->SetPosition(pObj->GetPosition());
 				pMissle->m_xmf3Look = XMFLOAT3(0, 1, 0);
 				pMissle->m_bLaunchFromShip = true;
-				pMissle->m_fDeleteFrequence = 8;
+				pMissle->m_fDeleteFrequence = 6.f;
 				GET_MANAGER<ObjectManager>()->AddObject(L"enemy_missle", pMissle, OBJ_ENEMISSLE);
 				return true;
 			}
