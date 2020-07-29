@@ -3,6 +3,7 @@
 #include "CAfterBurner.h"
 #include "CGunshipObject.h"
 #include "CPlayer.h"
+#include "CEngineRafraction.h"
 
 CPlayer::CPlayer()
 {
@@ -489,7 +490,9 @@ void CPlayer::Update_Input(const float& TimeDelta)
 
 	if (m_fAircraftSpeed > 700)
 	{
-		GET_MANAGER<CDeviceManager>()->SetBulrSwitch(true);
+		CEngineRafraction* RefractObj = (CEngineRafraction*)GET_MANAGER<ObjectManager>()->GetObjFromTag(L"EngineRefractionObj", OBJ_EFFECT);
+		if (RefractObj->m_bWaterDrop == false)
+			GET_MANAGER<CDeviceManager>()->SetBulrSwitch(true);
 	}
 	if (m_fAircraftSpeed < 600 && GET_MANAGER<CDeviceManager>()->GetBlurAmount() == 0)
 		GET_MANAGER<CDeviceManager>()->SetBulrSwitch(false);
@@ -844,7 +847,11 @@ void CPlayer::Update_PadInput(const float& TimeDelta)
 
 	if (m_fAircraftSpeed > 700)
 	{
-		GET_MANAGER<CDeviceManager>()->SetBulrSwitch(true);
+		CEngineRafraction* RefractObj = (CEngineRafraction*)GET_MANAGER<ObjectManager>()->GetObjFromTag(L"EngineRefractionObj", OBJ_EFFECT);
+		if (RefractObj->m_bWaterDrop == false)
+			GET_MANAGER<CDeviceManager>()->SetBulrSwitch(true);
+		else
+			GET_MANAGER<CDeviceManager>()->SetBulrSwitch(false);
 	}
 	if (m_fAircraftSpeed < 600 && GET_MANAGER<CDeviceManager>()->GetBlurAmount() == 0)
 		GET_MANAGER<CDeviceManager>()->SetBulrSwitch(false);

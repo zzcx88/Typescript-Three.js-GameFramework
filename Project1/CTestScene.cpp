@@ -623,7 +623,7 @@ void CTestScene::Render(ID3D12GraphicsCommandList* pd3dCommandList, CCamera* pCa
 	{
 		m_bCreateEngineRefraction = false;
 		CEngineRafraction* testRafraction;
-		testRafraction = new CEngineRafraction(0, GET_MANAGER<CDeviceManager>()->GetDevice(), pd3dCommandList, m_pd3dGraphicsRootSignature, 1.f, 3.f, 0.f);
+		testRafraction = new CEngineRafraction(0, GET_MANAGER<CDeviceManager>()->GetDevice(), pd3dCommandList, m_pd3dGraphicsRootSignature, 1.f, 2.f, 0.f);
 		testRafraction->SetPosition(0, 1000, 2000);
 		//testRafraction->SetScale(400, 400, 400);
 		m_ObjManager->AddObject(L"EngineRefractionObj", testRafraction, OBJ_EFFECT);
