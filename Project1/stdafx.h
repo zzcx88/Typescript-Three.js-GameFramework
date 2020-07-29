@@ -37,6 +37,8 @@
 #include <map>
 #include <unordered_map>
 
+#include <xinput.h>
+
 using namespace std;
 
 #include <d3d12.h>
@@ -373,6 +375,7 @@ namespace Plane
 }
 
 #include "Constant.h"
+#include "CXBOXController.h"
 
 // 매니저
 #include "DeviceManager.h"

@@ -126,7 +126,7 @@ bool SceneManager::GetStoped()
 void SceneManager::SceneStoped()
 {
 	KeyManager* keyManager = GET_MANAGER<KeyManager>();
-	if (true == keyManager->GetKeyState(STATE_DOWN, VK_G))
+	if (true == keyManager->GetKeyState(STATE_DOWN, VK_G) || true == keyManager->GetPadState(STATE_DOWN, XINPUT_GAMEPAD_START))
 	{
 		if (m_Scene->GetStoped() == false)
 		{

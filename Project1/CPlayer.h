@@ -129,6 +129,7 @@ public:
 	virtual void GunCameraMove(float fTimeElapsed) {}
 
 	void Update_Input(const float& TimeDelta);
+	void Update_PadInput(const float& TimeDelta);
 	virtual void WingAnimate(float fTimeElapsed, DWORD Direction);
 	virtual void Animate(float fTimeElapsed);
 

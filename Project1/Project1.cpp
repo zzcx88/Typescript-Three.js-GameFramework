@@ -66,6 +66,7 @@ int APIENTRY _tWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpCm
                 exit(-1);
                 return -1;
             }
+            pDeviceManager->SceneChangeInput();
             pDeviceManager->FrameAdvance();
         }
     }
@@ -162,7 +163,6 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
     case WM_KEYDOWN:
     case WM_KEYUP:
         pDeviceManager->OnProcessingWindowMessage(hWnd, message, wParam, lParam);
-        pDeviceManager->SceneChangeInput();
         break;
     case WM_COMMAND:
         wmId = LOWORD(wParam);

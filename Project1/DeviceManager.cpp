@@ -423,7 +423,7 @@ void CDeviceManager::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPA
 	}
 }
 
-void CDeviceManager::SceneChangeInput()
+void CDeviceManager::SceneChangeInput(bool bCallByPlayer)
 {
 	KeyManager* keyManager = GET_MANAGER<KeyManager>();
 	DWORD dwDirection = 0;
@@ -443,7 +443,7 @@ void CDeviceManager::SceneChangeInput()
 			}
 		}
 	}
-	if (true == keyManager->GetKeyState(STATE_PUSH, VK_UP))
+	if (true == keyManager->GetKeyState(STATE_PUSH, VK_UP) || true == keyManager->GetPadState(STATE_PUSH, XINPUT_GAMEPAD_DPAD_UP))
 	{
 		if (m_SceneSwitch == SCENE_TEST) {
 			if (m_pSceneManager->GetSceneStoped() == true)
@@ -453,7 +453,7 @@ void CDeviceManager::SceneChangeInput()
 			}
 		}
 	}
-	if (true == keyManager->GetKeyState(STATE_PUSH, VK_DOWN))
+	if (true == keyManager->GetKeyState(STATE_PUSH, VK_DOWN) || true == keyManager->GetPadState(STATE_PUSH, XINPUT_GAMEPAD_DPAD_DOWN))
 	{
 		if (m_SceneSwitch == SCENE_TEST) {
 			if (m_pSceneManager->GetSceneStoped() == true)
@@ -469,7 +469,7 @@ void CDeviceManager::SceneChangeInput()
 			switch (m_ArrowSwitch)
 			{
 			case 0:
-				if (true == keyManager->GetKeyState(STATE_PUSH, VK_RETURN))
+				if (true == keyManager->GetKeyState(STATE_PUSH, VK_RETURN) || true == keyManager->GetPadState(STATE_PUSH, XINPUT_GAMEPAD_A))
 				{
 					GET_MANAGER<SceneManager>()->SetStoped(false);
 					for (auto i = (int)OBJ_MINIMAP_UI; i <= OBJ_UI; ++i)
@@ -485,7 +485,7 @@ void CDeviceManager::SceneChangeInput()
 				}
 				break;
 			case 1:
-				if (true == keyManager->GetKeyState(STATE_PUSH, VK_RETURN))
+				if (true == keyManager->GetKeyState(STATE_PUSH, VK_RETURN) || true == keyManager->GetPadState(STATE_PUSH, XINPUT_GAMEPAD_A))
 				{
 					m_pd3dCommandList->Reset(m_pd3dCommandAllocator, NULL);
 
@@ -540,7 +540,7 @@ void CDeviceManager::SceneChangeInput()
 		m_GameTimer.Reset();
 	}
 
-	if (true == keyManager->GetKeyState(STATE_PUSH, VK_SPACE))
+	if (true == keyManager->GetKeyState(STATE_PUSH, VK_SPACE) || true == keyManager->GetPadState(STATE_PUSH, XINPUT_GAMEPAD_START))
 	{
 		if (m_SceneSwitch == SCENE_MENU)
 		{
@@ -848,11 +848,11 @@ void CDeviceManager::FrameAdvance()
 		if (m_pSceneManager) m_pSceneManager->ReleaseUploadBuffers();
 		m_GameTimer.Reset();
 	}
-	if (m_bStartGame == true)
+	/*if (m_bStartGame == true)
 	{
 		m_bStartGame = false;
 		ChangeSwapChainState();
-	}
+	}*/
 }
 
 void CDeviceManager::WaitForGpuComplete()

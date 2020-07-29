@@ -208,6 +208,9 @@
     <Filter Include="GameObject\Mesh\NavigatorMesh">
       <UniqueIdentifier>{0dd0b86f-01d6-4482-8ca0-2ebad21d1a48}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Xinput">
+      <UniqueIdentifier>{3340dba4-fb40-4fd6-9847-28d990327bc9}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="targetver.h">
@@ -426,6 +429,12 @@
     <ClInclude Include="CNavMesh.h">
       <Filter>GameObject\Mesh\NavigatorMesh</Filter>
     </ClInclude>
+    <ClInclude Include="CXBOXController.h">
+      <Filter>Xinput</Filter>
+    </ClInclude>
+    <ClInclude Include="Xinput.h">
+      <Filter>Xinput</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="DDSTextureLoader12.cpp">
@@ -616,6 +625,9 @@
     </ClCompile>
     <ClCompile Include="CNavMesh.cpp">
       <Filter>GameObject\Mesh\NavigatorMesh</Filter>
+    </ClCompile>
+    <ClCompile Include="CXBOXController.cpp">
+      <Filter>Xinput</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
