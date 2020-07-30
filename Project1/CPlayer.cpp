@@ -845,6 +845,376 @@ void CPlayer::Update_PadInput(const float& TimeDelta)
 	{
 		m_pCamera->SetLookPlayer();
 	}
+	if (m_bEye_fixation == false && m_fFOV < 60)
+	{
+		m_pCamera->GenerateProjectionMatrix(1.01f, m_fFarPlaneDistance, ASPECT_RATIO, m_fFOV);
+		m_fFOV += 30 * TimeDelta;
+	}
+
+	if (m_bEye_fixation == false && m_bGunFire == false && m_bMissleLockCamera == false)
+	{
+		m_pCamera->SetLookPlayer();
+	}
+
+	if (m_fAircraftSpeed > 700)
+	{
+		CEngineRafraction* RefractObj = (CEngineRafraction*)GET_MANAGER<ObjectManager>()->GetObjFromTag(L"EngineRefractionObj", OBJ_EFFECT);
+		if (RefractObj->m_bWaterDrop == false)
+			GET_MANAGER<CDeviceManager>()->SetBulrSwitch(true);
+		else
+			GET_MANAGER<CDeviceManager>()->SetBulrSwitch(false);
+	}
+	if (m_fAircraftSpeed < 600 && GET_MANAGER<CDeviceManager>()->GetBlurAmount() == 0)
+		GET_MANAGER<CDeviceManager>()->SetBulrSwitch(false);
+
+	Move(DIR_FORWARD, m_fAircraftSpeed * TimeDelta, true);
+	MoveForward(8.0f);
+	WingAnimate(TimeDelta, dwDirection);
+	GunCameraMove(TimeDelta);
+
+}
+
+void CPlayer::Update_PadInput(const float& TimeDelta)
+{
+	KeyManager* keyManager = GET_MANAGER<KeyManager>();
+	DWORD dwDirection = 0;
+
+	if (true == keyManager->GetPadState(STATE_DOWN, XINPUT_GAMEPAD_X))
+	{
+		//m_bGameOver = true;
+		if (GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player_missle", OBJ_ALLYMISSLE))
+		{
+			if (GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player_missle", OBJ_ALLYMISSLE)->m_bMissleLockCamera == false)
+			{
+				dwDirection |= XINPUT_GAMEPAD_X;
+				if (m_bEye_fixation == false)
+				{
+					m_bEye_fixation = true;
+				}
+				else
+				{
+					m_bEye_fixation = false;
+					if (m_bGunFire == true)
+					{
+						m_fGunFOV = 60;
+						ReturnEyeFix();
+					}
+				}
+			}
+		}
+		else
+		{
+			dwDirection |= XINPUT_GAMEPAD_Y;
+			if (m_bEye_fixation == false)
+			{
+				m_bEye_fixation = true;
+			}
+			else
+			{
+				m_bEye_fixation = false;
+				if (m_bGunFire == true)
+				{
+					m_fGunFOV = 60;
+					ReturnEyeFix();
+				}
+			}
+		}
+	}
+
+	//if (true == keyManager->GetKeyState(STATE_DOWN, VK_LSHIFT))
+	//{
+	//	//m_bGameOver = true;
+	//	dwDirection |= VK_LSHIFT;
+	//	if (m_bLockType == false)
+	//	{
+	//		m_bLockType = true;
+	//	}
+	//	else
+	//	{
+	//		m_bLockType = false;
+	//	}
+	//}
+
+	if (true == keyManager->GetPadState(STATE_PUSH, XINPUT_GAMEPAD_A))
+	{
+		if (m_bGunSoundPlayed == false)
+		{
+			GET_MANAGER<SoundManager>()->PlaySound(L"GunFire.mp3", CH_AIRGUN);
+			GET_MANAGER<SoundManager>()->SetVolume(CH_AIRGUN, 0.3f);
+			m_bGunSoundPlayed = true;
+		}
+		if (!m_bEye_fixation)
+			m_fFOV = 60;
+		m_bGunFire = true;
+		m_fGunFireElapsed += TimeDelta;
+		dwDirection |= XINPUT_GAMEPAD_A;
+		GunFire(TimeDelta);
+	}
+
+	if (true == keyManager->GetPadState(STATE_UP, XINPUT_GAMEPAD_A))
+	{
+		GET_MANAGER<SoundManager>()->StopSound(CH_AIRGUN);
+		m_bGunSoundPlayed = false;
+		if (m_bGunFire != false && m_bEye_fixation == false)
+		{
+			m_bGunFire = false;
+			m_fGunFOV = 60.f;
+			m_pCamera->GenerateProjectionMatrix(1.01f, m_fFarPlaneDistance, ASPECT_RATIO, m_fFOV);
+		}
+		dwDirection |= XINPUT_GAMEPAD_A;
+	}
+
+
+	if (true == keyManager->GetPadState(STATE_PUSH, XINPUT_GAMEPAD_B))
+	{
+		dwDirection |= XINPUT_GAMEPAD_B;
+		if (m_fPushSpaceElapsed == 0.0f)
+		{
+			GET_MANAGER<SoundManager>()->PlaySound(L"Missile_launch.mp3", CH_MISSLE);
+			GET_MANAGER<SoundManager>()->SetVolume(CH_MISSLE, 0.2f);
+			MissleLaunch();
+		}
+		m_fPushSpaceElapsed += 1 * TimeDelta;
+		if (m_fPushSpaceElapsed > 0.3f)
+		{
+			if (GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player_missle", OBJ_ALLYMISSLE))
+				GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player_missle", OBJ_ALLYMISSLE)->m_bMissleLockCamera = true;
+			m_bMissleLockCamera = true;
+		}
+	}
+
+	if (true == keyManager->GetPadState(STATE_UP, XINPUT_GAMEPAD_B))
+	{
+		m_fPushSpaceElapsed = 0.0f;
+		if (GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player_missle", OBJ_ALLYMISSLE))
+			GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player_missle", OBJ_ALLYMISSLE)->m_bMissleLockCamera = false;
+		m_bMissleLockCamera = false;
+		if (m_bEye_fixation == false && m_bGunFire == false)
+		{
+			if (m_fFOV < 60)
+				m_fFOV = 60;
+			m_pCamera->GenerateProjectionMatrix(1.01f, m_fFarPlaneDistance, ASPECT_RATIO, m_fFOV);
+		}
+	}
+
+	if (true == keyManager->normalizedLX > 0 || true == keyManager->normalizedLX < 0)
+	{
+		m_fTimeLegElapsed += TimeDelta;
+		if (true == keyManager->normalizedLX > 0)
+		{
+			if (!(true == keyManager->normalizedLX < 0))
+			{
+				dwDirection |= VK_RIGHT;
+				Rotate(0.0f, 0.0f, -Roll_WingsRotateDegree * m_fRollPerformance * TimeDelta);
+				RightRollAnimation(TimeDelta);
+			}
+			else
+			{
+				if (Roll_WingsRotateDegree != 0)
+					Rotate(0.0f, 0.0f, -Roll_WingsRotateDegree * m_fRollPerformance * TimeDelta);
+				RollWingReturn(TimeDelta);
+			}
+		}
+
+		if (true == keyManager->normalizedLX < 0)
+		{
+			if (!(true == keyManager->normalizedLX > 0))
+			{
+				dwDirection |= VK_LEFT;
+				Rotate(0.0f, 0.0f, -Roll_WingsRotateDegree * m_fRollPerformance * TimeDelta);
+				LeftRollAnimation(TimeDelta);
+			}
+		}
+	}
+	else
+	{
+		if (Roll_WingsRotateDegree != 0)
+			Rotate(0.0f, 0.0f, -Roll_WingsRotateDegree * m_fRollPerformance * TimeDelta);
+		RollWingReturn(TimeDelta);
+	}
+
+	if (true == keyManager->normalizedLY > 0 || true == keyManager->normalizedLY < 0)
+	{
+		m_fTimeLegElapsed += TimeDelta;
+		if (true == keyManager->normalizedLY > 0)
+		{
+			if (!(true == keyManager->normalizedLY < 0))
+			{
+				dwDirection |= VK_UP;
+				Rotate(Pitch_WingsRotateDegree * m_fPitchPerformance * TimeDelta, 0.0f, 0.0f);
+				DownPitchAnimation(TimeDelta);
+			}
+			else
+			{
+				if (Pitch_WingsRotateDegree != 0)
+					Rotate(Pitch_WingsRotateDegree * m_fPitchPerformance * TimeDelta, 0.0f, 0.0f);
+				PitchWingReturn(TimeDelta);
+			}
+		}
+
+		if (true == keyManager->normalizedLY < 0)
+		{
+			if (!(true == keyManager->normalizedLY > 0))
+			{
+				dwDirection |= VK_DOWN;
+				Rotate(Pitch_WingsRotateDegree * m_fPitchPerformance * TimeDelta, 0.0f, 0.0f);
+				UpPitchAnimation(TimeDelta);
+			}
+		}
+	}
+	else
+	{
+		if (Pitch_WingsRotateDegree != 0)
+			Rotate(Pitch_WingsRotateDegree * m_fPitchPerformance * TimeDelta, 0.0f, 0.0f);
+		PitchWingReturn(TimeDelta);
+	}
+
+
+	if (keyManager->GetPadState(STATE_PUSH, XINPUT_GAMEPAD_LEFT_SHOULDER) || keyManager->GetPadState(STATE_PUSH, XINPUT_GAMEPAD_RIGHT_SHOULDER))
+	{
+		m_fTimeLegElapsed += TimeDelta;
+		if (true == keyManager->GetPadState(STATE_PUSH, XINPUT_GAMEPAD_LEFT_SHOULDER))
+		{
+			if (!(true == keyManager->GetPadState(STATE_PUSH, XINPUT_GAMEPAD_RIGHT_SHOULDER)))
+			{
+				dwDirection |= XINPUT_GAMEPAD_LEFT_SHOULDER;
+				Rotate(0.0f, Yaw_WingsRotateDegree * m_fYawPerformance * TimeDelta, 0.0f);
+				LeftYawAnimation(TimeDelta);
+			}
+			else
+			{
+				if (Yaw_WingsRotateDegree != 0)
+					Rotate(0.0f, Yaw_WingsRotateDegree * m_fYawPerformance * TimeDelta, 0.0f);
+				YawWingReturn(TimeDelta);
+			}
+		}
+
+		if (true == keyManager->GetPadState(STATE_PUSH, XINPUT_GAMEPAD_RIGHT_SHOULDER))
+		{
+			if (!(true == keyManager->GetPadState(STATE_PUSH, XINPUT_GAMEPAD_LEFT_SHOULDER)))
+			{
+				dwDirection |= XINPUT_GAMEPAD_RIGHT_SHOULDER;
+				Rotate(0.0f, Yaw_WingsRotateDegree * m_fYawPerformance * TimeDelta, 0.0f);
+				RightYawAnimation(TimeDelta);
+			}
+		}
+	}
+	else
+	{
+		if (Yaw_WingsRotateDegree != 0)
+			Rotate(0.0f, Yaw_WingsRotateDegree * m_fYawPerformance * TimeDelta, 0.0f);
+		YawWingReturn(TimeDelta);
+	}
+
+
+	if (keyManager->ComputePadLeftTrigerState() > 0.5f || keyManager->ComputePadRightTrigerState() > 0.5f)
+	{
+		if (true == keyManager->ComputePadRightTrigerState() > 0.5f)
+		{
+			if (!(true == keyManager->ComputePadLeftTrigerState() > 0.5f))
+			{
+				//dwDirection |= VK_W;
+				if (m_fAircraftSpeed < 1000)
+				{
+					m_fAircraftSpeed += 100 * TimeDelta;
+				}
+				if (m_fFOV < 70 && m_bEye_fixation == false)
+				{
+					if (!m_bGunFire)
+						m_pCamera->GenerateProjectionMatrix(1.01f, m_fFarPlaneDistance, ASPECT_RATIO, m_fFOV += 10.f * TimeDelta);
+				}
+				if (m_fBurnerElapsed < 100)
+				{
+					m_fBurnerElapsed += 100 * TimeDelta;
+				}
+			}
+		}
+
+		if (true == keyManager->ComputePadLeftTrigerState() > 0.5f)
+		{
+			//dwDirection |= VK_S;
+			if (m_fAircraftSpeed > 150)
+			{
+				m_fAircraftSpeed -= 150 * TimeDelta;
+			}
+			if (m_fFOV > 60)
+			{
+				if (!m_bGunFire)
+					m_pCamera->GenerateProjectionMatrix(1.01f, m_fFarPlaneDistance, ASPECT_RATIO, m_fFOV -= 20.f * TimeDelta);
+			}
+			if (m_fBurnerElapsed > 0)
+			{
+				m_fBurnerElapsed -= 100 * TimeDelta;
+			}
+		}
+	}
+	else
+	{
+		if (m_fAircraftSpeed > 200)
+		{
+			m_fAircraftSpeed -= 100 * TimeDelta;
+		}
+		if (m_fFOV > 60)
+		{
+			m_pCamera->GenerateProjectionMatrix(1.01f, m_fFarPlaneDistance, ASPECT_RATIO, m_fFOV -= 10.f * TimeDelta);
+		}
+		if (m_fBurnerElapsed > 0)
+		{
+			m_fBurnerElapsed -= 100 * TimeDelta;
+		}
+
+		if (m_fAircraftSpeed < 1000 && m_fAircraftSpeed > 200)
+		{
+			m_fAircraftSpeed -= 50 * TimeDelta;
+		}
+	}
+
+	if (m_fAircraftSpeed >= 148 && m_fAircraftSpeed < 200)
+	{
+		if (m_fAircraftSpeed < 150)
+		{
+			m_fAircraftSpeed = 150;
+		}
+		m_fAircraftSpeed += 50 * TimeDelta;
+	}
+
+	if (m_fAircraftSpeed >= 148 && m_fAircraftSpeed < 200)
+	{
+		if (m_fAircraftSpeed < 150)
+		{
+			m_fAircraftSpeed = 150;
+		}
+		m_fAircraftSpeed += 50 * TimeDelta;
+	}
+
+	if (m_bEye_fixation == true)
+	{
+		m_pCamera->SetPosition(XMFLOAT3(GetPosition().x - m_pCamera->GetLookVector().x * 7, GetPosition().y + 1.3 - m_pCamera->GetLookVector().y * 7,
+			GetPosition().z - m_pCamera->GetLookVector().z * 7));
+		for (auto& Ene : m_ObjManager->GetObjFromType(OBJ_ENEMY))
+		{
+			if (Ene.second->m_bAiming == true && Ene.second->GetState() != true)
+			{
+				m_xmf3FixTarget = Ene.second->GetPosition();
+				m_pCamera->SetLookAt(XMFLOAT3(m_xmf3FixTarget));
+			}
+		}
+		if (m_fFOV > 25)
+		{
+			m_pCamera->GenerateProjectionMatrix(1.01f, m_fFarPlaneDistance, ASPECT_RATIO, m_fFOV);
+			m_fFOV -= 80 * TimeDelta;
+		}
+	}
+	if (m_bEye_fixation == false && m_fFOV < 60)
+	{
+		m_pCamera->GenerateProjectionMatrix(1.01f, m_fFarPlaneDistance, ASPECT_RATIO, m_fFOV);
+		m_fFOV += 30 * TimeDelta;
+	}
+
+	if (m_bEye_fixation == false && m_bGunFire == false && m_bMissleLockCamera == false)
+	{
+		m_pCamera->SetLookPlayer();
+	}
 
 	if (m_fAircraftSpeed > 700)
 	{
@@ -983,7 +1353,7 @@ void CPlayer::CollisionActivate(CGameObject* collideTarget)
 		cout << "플레이어 충돌!" << endl;
 
 		// 플레이어 체력, 게임 오버 시 작동 되는 코드
-		if (m_nHp > 1)
+		if (m_nHp > 1&&!m_bGameOver)
 		{
 			m_nHp -= 1;
 			cout << " 피가 이만큼 남았어요: " << m_nHp << endl;

@@ -3,7 +3,7 @@
 #include "CPlaneMesh.h"
 #include "CTestScene.h"
 
-#define TEXTURES 13
+#define TEXTURES 14
 CUI::CUI()
 {}
 
@@ -44,6 +44,8 @@ CUI::CUI(int nIndex, ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCo
 	m_ppUITexture[11]->LoadTextureFromFile(pd3dDevice, pd3dCommandList, L"UI/Destroyed.dds", 0);
 	m_ppUITexture[12] = new CTexture(1, RESOURCE_TEXTURE2D, 0);
 	m_ppUITexture[12]->LoadTextureFromFile(pd3dDevice, pd3dCommandList, L"UI/1Stage_Loading.dds", 0);
+	m_ppUITexture[13] = new CTexture(1, RESOURCE_TEXTURE2D, 0);
+	m_ppUITexture[13]->LoadTextureFromFile(pd3dDevice, pd3dCommandList, L"UI/MissionFUI.dds", 0);
 
 	
 	UINT ncbElementBytes = ((sizeof(CB_GAMEOBJECT_INFO) + 255) & ~255);

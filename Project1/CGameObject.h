@@ -292,6 +292,7 @@ public:
 	float m_fBurnerBlendAmount;
 	float m_bEffectedObj = false;
 	float m_bWarning = false;
+	float m_falpha = 0.f;
 
 	float m_fFOV = 60;
 

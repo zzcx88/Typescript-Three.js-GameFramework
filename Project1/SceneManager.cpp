@@ -133,11 +133,14 @@ void SceneManager::SceneStoped()
 		{
 			m_Scene->SetStoped(true);
 			GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player_ui16_navigator", OBJ_NAVIGATOR)->SetIsRender(false);
-			for (auto i = (int)OBJ_MINIMAP_UI; i <= OBJ_LOCKONUI; ++i)
+			for (auto i = (int)OBJ_MINIMAP_UI; i <= OBJ_UI; ++i)
 			{
-				for (auto p = m_Scene->m_ObjManager->GetObjFromType((OBJTYPE)i).begin(); p != m_Scene->m_ObjManager->GetObjFromType((OBJTYPE)i).end(); ++p)
+				if (i == OBJ_MINIMAP_UI || i == OBJ_UI)
 				{
-					(*p).second->SetIsRender(false);
+					for (auto p = m_Scene->m_ObjManager->GetObjFromType((OBJTYPE)i).begin(); p != m_Scene->m_ObjManager->GetObjFromType((OBJTYPE)i).end(); ++p)
+					{
+						(*p).second->SetIsRender(false);
+					}
 				}
 			}
 
@@ -145,12 +148,17 @@ void SceneManager::SceneStoped()
 		else
 		{
 			m_Scene->SetStoped(false);
-			for (auto i = (int)OBJ_MINIMAP_UI; i <= OBJ_LOCKONUI; ++i)
+			for (auto i = (int)OBJ_MINIMAP_UI; i <= OBJ_UI; ++i)
 			{
-				for (auto p = m_Scene->m_ObjManager->GetObjFromType((OBJTYPE)i).begin(); p != m_Scene->m_ObjManager->GetObjFromType((OBJTYPE)i).end(); ++p)
+				if (i == OBJ_MINIMAP_UI || i == OBJ_UI)
 				{
-					(*p).second->SetIsRender(true);
+					for (auto p = m_Scene->m_ObjManager->GetObjFromType((OBJTYPE)i).begin(); p != m_Scene->m_ObjManager->GetObjFromType((OBJTYPE)i).end(); ++p)
+					{
+						(*p).second->SetIsRender(true);
+					}
 				}
+				
+				
 			}
 		}
 	}

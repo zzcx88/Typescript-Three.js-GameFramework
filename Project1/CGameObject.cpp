@@ -526,7 +526,8 @@ void CGameObject::UpdateShaderVariable(ID3D12GraphicsCommandList* pd3dCommandLis
 	pd3dCommandList->SetGraphicsRoot32BitConstants(16, 1, &m_fBurnerBlendAmount, 0);
 	pd3dCommandList->SetGraphicsRoot32BitConstants(16, 1, &m_bEffectedObj,1);
 	pd3dCommandList->SetGraphicsRoot32BitConstants(16, 1, &m_bWarning, 2);
-	
+	pd3dCommandList->SetGraphicsRoot32BitConstants(16, 1, &m_falpha, 3);
+
 }
 
 void CGameObject::UpdateShaderVariable(ID3D12GraphicsCommandList* pd3dCommandList, CMaterial* pMaterial)
