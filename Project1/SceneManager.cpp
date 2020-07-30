@@ -126,20 +126,18 @@ bool SceneManager::GetStoped()
 void SceneManager::SceneStoped()
 {
 	KeyManager* keyManager = GET_MANAGER<KeyManager>();
-	if (true == keyManager->GetKeyState(STATE_DOWN, VK_G) || true == keyManager->GetPadState(STATE_DOWN, XINPUT_GAMEPAD_START))
+
+	if ((true == keyManager->GetKeyState(STATE_DOWN, VK_G) || true == keyManager->GetPadState(STATE_DOWN, XINPUT_GAMEPAD_START) )&&GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player", OBJ_PLAYER)->m_bGameOver != true)
 	{
 		if (m_Scene->GetStoped() == false)
 		{
 			m_Scene->SetStoped(true);
 			GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player_ui16_navigator", OBJ_NAVIGATOR)->SetIsRender(false);
-			for (auto i = (int)OBJ_MINIMAP_UI; i <= OBJ_UI; ++i)
+			for (auto i = (int)OBJ_MINIMAP_UI; i <= OBJ_LOCKONUI; ++i)
 			{
-				if (i == OBJ_UI || i == OBJ_MINIMAP_UI)
+				for (auto p = m_Scene->m_ObjManager->GetObjFromType((OBJTYPE)i).begin(); p != m_Scene->m_ObjManager->GetObjFromType((OBJTYPE)i).end(); ++p)
 				{
-					for (auto p = m_Scene->m_ObjManager->GetObjFromType((OBJTYPE)i).begin(); p != m_Scene->m_ObjManager->GetObjFromType((OBJTYPE)i).end(); ++p)
-					{
-						(*p).second->SetIsRender(false);
-					}
+					(*p).second->SetIsRender(false);
 				}
 			}
 
@@ -147,14 +145,11 @@ void SceneManager::SceneStoped()
 		else
 		{
 			m_Scene->SetStoped(false);
-			for (auto i = (int)OBJ_MINIMAP_UI; i <= OBJ_UI; ++i)
+			for (auto i = (int)OBJ_MINIMAP_UI; i <= OBJ_LOCKONUI; ++i)
 			{
-				if (i == OBJ_UI || i == OBJ_MINIMAP_UI)
+				for (auto p = m_Scene->m_ObjManager->GetObjFromType((OBJTYPE)i).begin(); p != m_Scene->m_ObjManager->GetObjFromType((OBJTYPE)i).end(); ++p)
 				{
-					for (auto p = m_Scene->m_ObjManager->GetObjFromType((OBJTYPE)i).begin(); p != m_Scene->m_ObjManager->GetObjFromType((OBJTYPE)i).end(); ++p)
-					{
-						(*p).second->SetIsRender(true);
-					}
+					(*p).second->SetIsRender(true);
 				}
 			}
 		}

@@ -16,7 +16,9 @@ UIManager::UIManager()
 	score.reserve(6);
 	distance.reserve(5);
 
-	GameOBJs.reserve(50);
+	FighterOBJs.reserve(50);
+	ShipOBJs.reserve(50);
+
 }
 
 UIManager::~UIManager()
@@ -140,12 +142,18 @@ void UIManager::MoveLockOnUI(ObjectManager::MAPOBJ* PlyList, ObjectManager::MAPO
 			Ene.second->m_pLockOnUI = pLockOnUI;
 
 			GET_MANAGER<ObjectManager>()->AddObject(L"LockOnInstance", pLockOnUI, OBJ_LOCKONUI);
-
-			GameOBJs.emplace_back(Ene.second);
-			if(GameOBJs.size() > 1)
+			if (GET_MANAGER<ObjectManager>()->GetTagFromObj(Ene.second, OBJ_ENEMY) != L"052C")
+			{
+				FighterOBJs.emplace_back(Ene.second);
+			}
+			else
+			{
+				ShipOBJs.emplace_back(Ene.second);
+			}
+			/*if(GameOBJs.size() > 1)
 			sort(begin(GameOBJs), end(GameOBJs), [](const CGameObject* a, const CGameObject* b) {
 				return a->m_xmf4x4World._41 < b->m_xmf4x4World._41;
-				});
+				});*/
 		}
 
 		if (Ene.second->m_bReffernce == false)
@@ -309,39 +317,89 @@ void UIManager::MoveLockOnUI(ObjectManager::MAPOBJ* PlyList, ObjectManager::MAPO
 		}
 	}
 
-	for (auto p = GameOBJs.begin(); p != GameOBJs.end(); ++p)
+	if (m_bFighterType == true)
 	{
-		if (*p != NULL)
+		for (auto p = ShipOBJs.begin(); p != ShipOBJs.end(); ++p)
 		{
-			if ((*p)->GetState() != true)
+			(*p)->m_bAiming = false;
+		}
+		for (auto p = FighterOBJs.begin(); p != FighterOBJs.end(); ++p)
+		{
+			if (*p != NULL)
 			{
-				if (p == GameOBJs.begin() + Count)
-					(*p)->m_bAiming = true;
+				if ((*p)->GetState() != true)
+				{
+					if (p == FighterOBJs.begin() + Count)
+						(*p)->m_bAiming = true;
+					else
+					{
+						(*p)->m_bAiming = false;
+						(*p)->m_bCanFire = false;
+					}
+				}
 				else
 				{
-					(*p)->m_bAiming = false;
-					(*p)->m_bCanFire = false;
+					if (FighterOBJs.size() > 1)
+					{
+						p = FighterOBJs.erase(p);
+						Count = 0;
+						p = FighterOBJs.begin() + Count;
+					}
+					else
+					{
+						FighterOBJs.clear();
+						p = FighterOBJs.end();
+
+						break;
+					}
+			
+					sort(begin(FighterOBJs), end(FighterOBJs), [](const CGameObject* a, const CGameObject* b) {
+						return a->LenthToPlayer < b->LenthToPlayer;
+						});
 				}
 			}
-			else
+		}
+	}
+	else
+	{
+		for (auto p = FighterOBJs.begin(); p != FighterOBJs.end(); ++p)
+		{
+			(*p)->m_bAiming = false;
+		}
+		for (auto p = ShipOBJs.begin(); p != ShipOBJs.end(); ++p)
+		{
+			if (*p != NULL)
 			{
-				if (GameOBJs.size() != 1)
+				if ((*p)->GetState() != true)
 				{
-					p = GameOBJs.erase(p);
-					Count = 0;
-					p = GameOBJs.begin() + Count;
-					cout << GameOBJs.capacity();
+					if (p == ShipOBJs.begin() + Count)
+						(*p)->m_bAiming = true;
+					else
+					{
+						(*p)->m_bAiming = false;
+						(*p)->m_bCanFire = false;
+					}
 				}
 				else
 				{
-					GameOBJs.clear();
-					p = GameOBJs.end();
-					break;
-				}
+					if (ShipOBJs.size() > 1)
+					{
+						p = ShipOBJs.erase(p);
+						Count = 0;
+						p = ShipOBJs.begin() + Count;
+					}
+					else
+					{
+						ShipOBJs.clear();
+						p = ShipOBJs.end();
 
-				sort(begin(GameOBJs), end(GameOBJs), [](const CGameObject* a, const CGameObject* b) {
-					return a->LenthToPlayer < b->LenthToPlayer;
-					});
+						break;
+					}
+
+					sort(begin(ShipOBJs), end(ShipOBJs), [](const CGameObject* a, const CGameObject* b) {
+						return a->LenthToPlayer < b->LenthToPlayer;
+						});
+				}
 			}
 		}
 	}
@@ -349,12 +407,41 @@ void UIManager::MoveLockOnUI(ObjectManager::MAPOBJ* PlyList, ObjectManager::MAPO
 	KeyManager* keyManager = GET_MANAGER<KeyManager>();
 	DWORD dwDirection = 0;
 
+	if (true == keyManager->GetKeyState(STATE_DOWN, VK_LSHIFT))
+	{
+		dwDirection |= VK_LSHIFT;
+		if (m_bFighterType == true)
+		{
+			m_bFighterType = false;
+			Count = 0;
+		}
+		else
+		{
+			m_bFighterType = true;
+			Count = 0;
+
+		}
+	}
+
 	if (true == keyManager->GetKeyState(STATE_DOWN, VK_F) || true == keyManager->GetPadState(STATE_DOWN, XINPUT_GAMEPAD_Y))
 	{
-		dwDirection |= VK_F;
-		Count++;
-		if (GameOBJs.size() <= Count)
-			Count = 0;
+		if (m_bFighterType == true)
+		{
+			dwDirection |= VK_F;
+			Count++;
+			if (FighterOBJs.size() <= Count)
+				Count = 0;
+		}
+		else
+		{
+			dwDirection |= VK_F;
+			Count++;
+			if (ShipOBJs.size() <= Count)
+				Count = 0;
+
+		}
+		cout << "전투기 사이즈 : " << FighterOBJs.size() << endl;
+		cout << Count << endl;
 	}
 }
 

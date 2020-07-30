@@ -2,6 +2,7 @@
 #include "CHeightMapTerrain.h"
 #include "CAfterBurner.h"
 #include "CGunshipObject.h"
+#include "CLockOnUI.h"
 #include "CPlayer.h"
 #include "CEngineRafraction.h"
 
@@ -193,19 +194,19 @@ void CPlayer::Update_Input(const float& TimeDelta)
 		}
 	}
 
-	if (true == keyManager->GetKeyState(STATE_DOWN, VK_LSHIFT))
-	{
-		//m_bGameOver = true;
-		dwDirection |= VK_LSHIFT;
-		if (m_bLockType == false)
-		{
-			m_bLockType = true;
-		}
-		else
-		{
-			m_bLockType = false;
-		}
-	}
+	//if (true == keyManager->GetKeyState(STATE_DOWN, VK_LSHIFT))
+	//{
+	//	//m_bGameOver = true;
+	//	dwDirection |= VK_LSHIFT;
+	//	if (m_bLockType == false)
+	//	{
+	//		m_bLockType = true;
+	//	}
+	//	else
+	//	{
+	//		m_bLockType = false;
+	//	}
+	//}
 
 	if (true == keyManager->GetKeyState(STATE_PUSH, VK_LCONTROL))
 	{
@@ -941,7 +942,6 @@ void CPlayer::CollisionActivate(CGameObject* collideTarget)
 	{
 		//m_pCamera->SetPosition(XMFLOAT3(GetPosition().x, GetPosition().y + 200, GetPosition().z));
 		//wcout << GET_MANAGER<ObjectManager>()->GetTagFromObj(this, OBJ_PLAYER) << endl;
-		cout << "충돌!" << endl;
 		if (m_bGunFire == false)
 		{
 			if ((int)(GetPosition().x + GetPosition().y + GetPosition().z) / 2 == 0)
@@ -950,6 +950,58 @@ void CPlayer::CollisionActivate(CGameObject* collideTarget)
 				m_pCamera->Rotate(-20, 0, 0);
 		}
 		//m_bGameOver = true;
+		cout << "플레이어 충돌!" << endl;
+
+		// 플레이어 체력, 게임 오버 시 작동 되는 코드
+		if (m_nHp > 1)
+		{
+			m_nHp -= 1;
+			//m_ppGameObjects[13]->SetIsRender(true);
+		/*	for (auto& obj : m_ObjManager->GetObjFromType(OBJ_UI))
+			{
+				obj.second->m_bWarning = 1.f;
+			}
+			for (auto& obj : m_ObjManager->GetObjFromType(OBJ_SPEED_UI))
+			{
+				obj.second->m_bWarning = 1.f;
+			}*/
+			cout << " 피가 이만큼 남았어요: " << m_nHp << endl;
+		}
+		else
+		{
+			//m_bGameOver = true;
+
+			//GET_MANAGER<SceneManager>()->SetStoped(true);
+			//GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player_ui16_navigator", OBJ_NAVIGATOR)->SetIsRender(false);
+			for (auto i = (int)OBJ_ENEMY; i <= OBJ_UI; ++i)
+			{
+				/*if (i == OBJ_UI || i == OBJ_MINIMAP_UI || i == OBJ_FIGHT_UI1 || i == OBJ_FIGHT_UI2 || i == OBJ_FIGHT_UI3)
+				{
+					for (auto p = GET_MANAGER<ObjectManager>()->GetObjFromType((OBJTYPE)i).begin(); p != GET_MANAGER<ObjectManager>()->GetObjFromType((OBJTYPE)i).end(); ++p)
+					{
+						(*p).second->SetIsRender(false);
+					}
+				}*/
+				if (i == OBJ_ENEMY)
+				{
+					for (auto p = GET_MANAGER<ObjectManager>()->GetObjFromType((OBJTYPE)i).begin(); p != GET_MANAGER<ObjectManager>()->GetObjFromType((OBJTYPE)i).end(); ++p)
+					{
+						(*p).second->m_isDead = true;
+						(*p).second->m_pMUI->m_isDead = true;
+						(*p).second->m_pLockOnUI->m_isDead = true;
+					}
+				}
+			}
+			GET_MANAGER<SceneManager>()->m_bCreateShip = false;
+			GET_MANAGER<SceneManager>()->m_nWaveCnt = 0;
+			GET_MANAGER<SceneManager>()->m_nTgtObject = 0;
+			GET_MANAGER<UIManager>()->FighterOBJs.clear();
+			GET_MANAGER<UIManager>()->ShipOBJs.clear();
+
+			GET_MANAGER<ObjectManager>()->ReleaseFromType(OBJ_ENEMY);
+			m_nHp = 1;
+			SetPosition(XMFLOAT3(0, 1000, 0));
+		}
 	}
 }
 

@@ -10,7 +10,7 @@ CTU160::CTU160()
 {
 	m_bReffernce = false;
 	m_ObjManager = GET_MANAGER<ObjectManager>();
-	m_pModelInfo = m_ObjManager->GetObjFromTag(L"tu160Ref", OBJ_ENEMY)->m_pModelInfo;
+	m_pModelInfo = m_ObjManager->GetObjFromTag(L"tu160Ref", OBJ_REF)->m_pModelInfo;
 
 	SphereCollider = new CSphereCollider();
 	SphereCollider->SetSphereCollider(GetPosition(), 110);

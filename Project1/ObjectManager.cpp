@@ -116,7 +116,7 @@ void ObjectManager::Render(ID3D12GraphicsCommandList* pd3dCommandList, CCamera* 
 		{
 			for (auto& obj : m_mapObj[i])
 			{
-				if (i == OBJ_ENEMY)
+				if (OBJ_ENEMY)
 					obj.second->SetScreenPos(obj.second->GetPosition(), pCamera);
 
 				obj.second->Render(pd3dCommandList, pCamera);

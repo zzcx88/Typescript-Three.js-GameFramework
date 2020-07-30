@@ -163,6 +163,9 @@ void CTestScene::BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandLis
 	// Speed
 	m_ppGameObjects[10] = new CNumber(0, pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, scaleX, scaleY, 0.f);
 	m_ppGameObjects[10]->SetIsRender(false);
+	m_ppGameObjects[10]->SetPosition(fx * -2.f, fy * -2.f, 0.f);
+
+
 	m_ppGameObjects[11] = new CUI(7, pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, 80.f, 80.f, 0.f, XMFLOAT2(-0.f, -0.f), XMFLOAT2(-0.f, -0.f), XMFLOAT2(-0.f, -0.f), XMFLOAT2(-0.f, -0.f));
 	m_ppGameObjects[11]->SetPosition(0.f, fy * -0.05f, 0.f);
 
@@ -231,16 +234,16 @@ void CTestScene::BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandLis
 
 	CMig21* pMig21Ref;
 	pMig21Ref = new CMig21(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature);
-	m_ObjManager->AddObject(L"mig21Ref", pMig21Ref, OBJ_ENEMY);
+	m_ObjManager->AddObject(L"mig21Ref", pMig21Ref, OBJ_REF);
 
 	CTU160* pTu160Ref;
 	pTu160Ref = new CTU160(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature);
-	m_ObjManager->AddObject(L"tu160Ref", pTu160Ref, OBJ_ENEMY);
+	m_ObjManager->AddObject(L"tu160Ref", pTu160Ref, OBJ_REF);
 
 	C052CDestroyer* p052C;
 	p052C = new C052CDestroyer(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature);
 	p052C->SetPosition(0, 0, 0);
-	m_ObjManager->AddObject(L"052CRef", p052C, OBJ_ENEMY);
+	m_ObjManager->AddObject(L"052CRef", p052C, OBJ_REF);
 
 	//Prepare EffectObject
 	//////////////////////////////////////////////////////
@@ -377,7 +380,7 @@ void CTestScene::CreateStageObject()
 		return;
 	}
 
-	if (m_bCreateShip == false)
+	if (GET_MANAGER<SceneManager>()->m_bCreateShip == false)
 	{
 		m_bCreateShip = true;
 		for (int i = 0; i < 5; ++i)
@@ -523,62 +526,63 @@ void CTestScene::AnimateObjects(float fTimeElapsed)
 
 	CreateStageObject();
 
-	for (auto& obj : m_ObjManager->GetObjFromType(OBJ_ENEMY))
+	if (!GET_MANAGER<SceneManager>()->GetSceneStoped())
 	{
-		if (obj.second->m_bDestroyed)
+		for (auto& obj : m_ObjManager->GetObjFromType(OBJ_ENEMY))
 		{
-			m_ppGameObjects[14]->SetIsRender(true);
-			elapsedTime = 0;
-		}
-		else if (elapsedTime > 2)
-		{
-			m_ppGameObjects[14]->SetIsRender(false);
-		}
+			if (obj.second->m_bDestroyed)
+			{
+				m_ppGameObjects[14]->SetIsRender(true);
+				elapsedTime = 0;
+			}
+			else if (elapsedTime > 2)
+			{
+				m_ppGameObjects[14]->SetIsRender(false);
+			}
 
-		if (obj.second->m_bAiLockOn == true)
-		{
-			m_ppGameObjects[12]->SetIsRender(true);
+			if (obj.second->m_bAiLockOn == true)
+			{
+				m_ppGameObjects[12]->SetIsRender(true);
 
-			if (m_fElapsedTime > 3.0)
+				if (m_fElapsedTime > 3.0)
+				{
+					m_ppGameObjects[12]->SetIsRender(false);
+					m_fElapsedTime = 0.f;
+				}
+			}
+			else
 			{
 				m_ppGameObjects[12]->SetIsRender(false);
-				m_fElapsedTime = 0.f;
 			}
-		}
-		else
-		{
-			m_ppGameObjects[12]->SetIsRender(false);
-		}
 
-		if (m_pPlayer->m_AiMissleAssert == true)
-		{
-			m_ppGameObjects[13]->SetIsRender(true);
-			for (auto& obj : m_ObjManager->GetObjFromType(OBJ_UI))
+			if (m_pPlayer->m_AiMissleAssert == true)
 			{
-				obj.second->m_bWarning = 1.f;
+				m_ppGameObjects[13]->SetIsRender(true);
+				for (auto& obj : m_ObjManager->GetObjFromType(OBJ_UI))
+				{
+					obj.second->m_bWarning = 1.f;
+				}
+				for (auto& obj : m_ObjManager->GetObjFromType(OBJ_SPEED_UI))
+				{
+					obj.second->m_bWarning = 1.f;
+				}
 			}
-			for (auto& obj : m_ObjManager->GetObjFromType(OBJ_SPEED_UI))
+			else
 			{
-				obj.second->m_bWarning = 1.f;
+				m_ppGameObjects[13]->SetIsRender(false);
+				for (auto& obj : m_ObjManager->GetObjFromType(OBJ_UI))
+				{
+					obj.second->m_bWarning = 0.f;
+				}
+				for (auto& obj : m_ObjManager->GetObjFromType(OBJ_SPEED_UI))
+				{
+					obj.second->m_bWarning = 0.f;
+				}
 			}
-		}
-		else
-		{
-			m_ppGameObjects[13]->SetIsRender(false);
-			for (auto& obj : m_ObjManager->GetObjFromType(OBJ_UI))
-			{
-				obj.second->m_bWarning = 0.f;
-			}
-			for (auto& obj : m_ObjManager->GetObjFromType(OBJ_SPEED_UI))
-			{
-				obj.second->m_bWarning = 0.f;
-			}
+
 		}
 
 	}
-
-	
-
 
 	m_ObjManager->GetObjFromTag(L"player", OBJ_PLAYER)->SetPlayerMSL(m_pPlayer->GetMSLCount());
 	m_ObjManager->GetObjFromTag(L"player", OBJ_PLAYER)->SetPlayerSpeed(m_pPlayer->GetAircraftSpeed());

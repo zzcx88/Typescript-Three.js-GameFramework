@@ -488,3 +488,23 @@ bool CCamera::IsInFrustum(BoundingSphere& xmBoundingSphere)
 {
 	return(m_xmFrustum.Intersects(xmBoundingSphere));
 }
+
+void CCamera::GenerateFrustum()
+{
+	//원근 투영 변환 행렬에서 절두체를 생성한다(절두체는 카메라 좌표계로 표현된다).
+	m_xmFrustum.CreateFromMatrix(m_xmFrustum, XMLoadFloat4x4(&m_xmf4x4Projection));
+	//카메라 변환 행렬의 역행렬을 구한다.
+	XMMATRIX xmmtxInversView = XMMatrixInverse(NULL, XMLoadFloat4x4(&m_xmf4x4View));
+	//절두체를 카메라 변환 행렬의 역행렬로 변환한다(이제 절두체는 월드 좌표계로 표현된다).
+	m_xmFrustum.Transform(m_xmFrustum, xmmtxInversView);
+}
+
+bool CCamera::IsInFrustum(BoundingOrientedBox& xmBoundingBox)
+{
+	return(m_xmFrustum.Intersects(xmBoundingBox));
+}
+
+bool CCamera::IsInFrustum(BoundingBox& xmBoundingBox)
+{
+	return(m_xmFrustum.Intersects(xmBoundingBox));
+}

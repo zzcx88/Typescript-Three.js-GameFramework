@@ -427,7 +427,7 @@ void CDeviceManager::SceneChangeInput(bool bCallByPlayer)
 {
 	KeyManager* keyManager = GET_MANAGER<KeyManager>();
 	DWORD dwDirection = 0;
-	if (m_pSceneManager->GetCurrentSceneState() == SCENE_TEST)
+	if (m_pSceneManager->GetCurrentSceneState() == SCENE_TEST&&GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player", OBJ_PLAYER)->m_bGameOver != true)
 	{
 		if (true == keyManager->GetKeyState(STATE_PUSH, VK_G))
 		{
@@ -759,7 +759,7 @@ void CDeviceManager::FrameAdvance()
 		m_pd3dCommandList->ResourceBarrier(1, &d3dResourceBarrier);
 	}
 
-	if (m_SceneSwitch == SCENE_TEST&&m_pSceneManager->GetSceneStoped() == true)
+	if (m_SceneSwitch == SCENE_TEST&&m_pSceneManager->GetSceneStoped() == true&& GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player", OBJ_PLAYER)->m_bGameOver != true)
 	{
 		m_pUIarrow->SetIsRender(true);
 		m_pUIarrow->Render(m_pd3dCommandList, m_pCamera);
@@ -796,6 +796,31 @@ void CDeviceManager::FrameAdvance()
 	_stprintf_s(m_pszFrameRate + nLength, 70 - nLength, _T("(%4f, %4f, %4f)"), xmf3Position.x, xmf3Position.y, xmf3Position.z);
 	::SetWindowText(m_hWnd, m_pszFrameRate);
 
+	// 게임 오버시 시작화면으로
+	if(m_SceneSwitch == SCENE_TEST && m_pSceneManager->GetSceneStoped() == true && GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player", OBJ_PLAYER)->m_bGameOver == true)
+	{
+		m_pUI->SetIsRender(true);
+
+		/*m_pd3dCommandList->Reset(m_pd3dCommandAllocator, NULL);
+		m_SceneSwitch = SCENE_MENU;
+		m_pSceneManager->ChangeSceneState(SCENE_MENU, m_pd3dDevice, m_pd3dCommandList);
+		CTerrainPlayer* pPlayer = new CTerrainPlayer(m_pd3dDevice, m_pd3dCommandList, m_pSceneManager->GetGraphicsRootSignature(), NULL);
+		pPlayer->SetGameOver(true);
+		m_pPlayer = pPlayer;
+
+		m_pCamera = m_pPlayer->GetCamera();
+		m_pd3dCommandList->Close();
+		ID3D12CommandList* ppd3dCommandLists[] = { m_pd3dCommandList };
+		m_pd3dCommandQueue->ExecuteCommandLists(1, ppd3dCommandLists);
+
+		WaitForGpuComplete();
+		m_pSceneManager->SetPlayer(m_pPlayer);
+		m_pSceneManager->SetObjManagerInPlayer();
+
+		if (m_pPlayer) m_pPlayer->ReleaseUploadBuffers();
+		if (m_pSceneManager) m_pSceneManager->ReleaseUploadBuffers();
+		m_GameTimer.Reset();*/
+	}
 
 	if (m_SceneSwitch == SCENE_MENU && m_bSceneFlag == true)
 	{
@@ -848,11 +873,11 @@ void CDeviceManager::FrameAdvance()
 		if (m_pSceneManager) m_pSceneManager->ReleaseUploadBuffers();
 		m_GameTimer.Reset();
 	}
-	if (m_bStartGame == true)
+	/*if (m_bStartGame == true)
 	{
 		m_bStartGame = false;
 		ChangeSwapChainState();
-	}
+	}*/
 }
 
 void CDeviceManager::WaitForGpuComplete()
