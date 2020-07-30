@@ -28,6 +28,11 @@ public:
 	CCloud(int nIndex, ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList, ID3D12RootSignature* pd3dGraphicsRootSignature, float fXPos, float fZPos, UINT nInstance, std::default_random_engine dre);
 	virtual ~CCloud();
 
+public:
+	//게임 객체가 카메라에 보인는 가를 검사한다. 
+	bool IsVisible(CCamera *pCamera=NULL);
+
+
 	virtual void Animate(float fTimeElapsed);
 	void SetLookAt(XMFLOAT3& xmfTarget);
 	void Render(ID3D12GraphicsCommandList* pd3dCommandList, CCamera* pCamera);

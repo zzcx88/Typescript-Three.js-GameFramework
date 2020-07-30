@@ -2,6 +2,7 @@
 #include "CHeightMapTerrain.h"
 #include "CAfterBurner.h"
 #include "CGunshipObject.h"
+#include "CLockOnUI.h"
 #include "CPlayer.h"
 
 CPlayer::CPlayer()
@@ -195,19 +196,19 @@ void CPlayer::Update_Input(const float& TimeDelta)
 		}
 	}
 
-	if (true == keyManager->GetKeyState(STATE_DOWN, VK_LSHIFT))
-	{
-		//m_bGameOver = true;
-		dwDirection |= VK_LSHIFT;
-		if (m_bLockType == false)
-		{
-			m_bLockType = true;
-		}
-		else
-		{
-			m_bLockType = false;
-		}
-	}
+	//if (true == keyManager->GetKeyState(STATE_DOWN, VK_LSHIFT))
+	//{
+	//	//m_bGameOver = true;
+	//	dwDirection |= VK_LSHIFT;
+	//	if (m_bLockType == false)
+	//	{
+	//		m_bLockType = true;
+	//	}
+	//	else
+	//	{
+	//		m_bLockType = false;
+	//	}
+	//}
 
 	if (true == keyManager->GetKeyState(STATE_PUSH, VK_LCONTROL))
 	{
@@ -259,6 +260,7 @@ void CPlayer::Update_Input(const float& TimeDelta)
 		{
 			if(GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player_missle", OBJ_ALLYMISSLE))
 				GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player_missle", OBJ_ALLYMISSLE)->m_bMissleLockCamera = true;
+			m_bMissleLockCamera = true;
 		}
 	}
 
@@ -267,6 +269,7 @@ void CPlayer::Update_Input(const float& TimeDelta)
 		m_fPushSpaceElapsed = 0.0f;
 		if(GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player_missle", OBJ_ALLYMISSLE))
 			GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player_missle", OBJ_ALLYMISSLE)->m_bMissleLockCamera = false;
+		m_bMissleLockCamera = false;
 		if (m_bEye_fixation == false && m_bGunFire == false)
 		{
 			if (m_fFOV < 60)
@@ -578,8 +581,57 @@ void CPlayer::CollisionActivate(CGameObject* collideTarget)
 	{
 		//m_pCamera->SetPosition(XMFLOAT3(GetPosition().x, GetPosition().y + 200, GetPosition().z));
 		//wcout << GET_MANAGER<ObjectManager>()->GetTagFromObj(this, OBJ_PLAYER) << endl;
-		cout << "충돌!" << endl;
-		//m_bGameOver = true;
+		cout << "플레이어 충돌!" << endl;
+
+		if (m_nHp > 1)
+		{
+			m_nHp -= 1;
+			//m_ppGameObjects[13]->SetIsRender(true);
+		/*	for (auto& obj : m_ObjManager->GetObjFromType(OBJ_UI))
+			{
+				obj.second->m_bWarning = 1.f;
+			}
+			for (auto& obj : m_ObjManager->GetObjFromType(OBJ_SPEED_UI))
+			{
+				obj.second->m_bWarning = 1.f;
+			}*/
+			cout << " 피가 이만큼 남았어요: " << m_nHp << endl;
+		}
+		else
+		{
+			//m_bGameOver = true;
+
+			//GET_MANAGER<SceneManager>()->SetStoped(true);
+			//GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player_ui16_navigator", OBJ_NAVIGATOR)->SetIsRender(false);
+			for (auto i = (int)OBJ_ENEMY; i <= OBJ_UI; ++i)
+			{
+				/*if (i == OBJ_UI || i == OBJ_MINIMAP_UI || i == OBJ_FIGHT_UI1 || i == OBJ_FIGHT_UI2 || i == OBJ_FIGHT_UI3)
+				{
+					for (auto p = GET_MANAGER<ObjectManager>()->GetObjFromType((OBJTYPE)i).begin(); p != GET_MANAGER<ObjectManager>()->GetObjFromType((OBJTYPE)i).end(); ++p)
+					{
+						(*p).second->SetIsRender(false);
+					}
+				}*/
+				if (i == OBJ_ENEMY)
+				{
+					for (auto p = GET_MANAGER<ObjectManager>()->GetObjFromType((OBJTYPE)i).begin(); p != GET_MANAGER<ObjectManager>()->GetObjFromType((OBJTYPE)i).end(); ++p)
+					{
+						(*p).second->m_isDead = true;
+						(*p).second->m_pMUI->m_isDead = true;
+						(*p).second->m_pLockOnUI->m_isDead = true;
+					}
+				}
+			}
+			GET_MANAGER<SceneManager>()->m_bCreateShip = false;
+			GET_MANAGER<SceneManager>()->m_nWaveCnt = 0;
+			GET_MANAGER<SceneManager>()->m_nTgtObject = 0;
+			GET_MANAGER<UIManager>()->FighterOBJs.clear();
+			GET_MANAGER<UIManager>()->ShipOBJs.clear();
+
+			GET_MANAGER<ObjectManager>()->ReleaseFromType(OBJ_ENEMY);
+			m_nHp = 1;
+			SetPosition(XMFLOAT3(0, 1000, 0));
+		}
 	}
 }
 
@@ -964,7 +1016,7 @@ void CAirplanePlayer::RollWingReturn(float fTimeElapsed)
 void CAirplanePlayer::PitchWingReturn(float fTimeElapsed)
 {
 	//pitch
-	if (Pitch_WingsRotateDegree < 0)
+	if (Pitch_WingsRotateDegree <= 0)
 	{
 		XMMATRIX xmmtxRotate = XMMatrixRotationX(XMConvertToRadians(-Pitch_WingsRotateDegree * 50.0f) * fTimeElapsed);
 		if (m_pLeft_Pitch_Wing)m_pLeft_Pitch_Wing->m_xmf4x4ToParent = Matrix4x4::Multiply(xmmtxRotate, m_pLeft_Pitch_Wing->m_xmf4x4ToParent);
@@ -980,7 +1032,7 @@ void CAirplanePlayer::PitchWingReturn(float fTimeElapsed)
 			m_pLeft_Pitch_Wing->m_xmf4x4ToParent._22 = 0;
 		}
 	}
-	if (Pitch_WingsRotateDegree > 0)
+	if (Pitch_WingsRotateDegree >= 0)
 	{
 		XMMATRIX xmmtxRotate = XMMatrixRotationX(XMConvertToRadians(-Pitch_WingsRotateDegree * 50.0f) * fTimeElapsed);
 		if (m_pLeft_Pitch_Wing)m_pLeft_Pitch_Wing->m_xmf4x4ToParent = Matrix4x4::Multiply(xmmtxRotate, m_pLeft_Pitch_Wing->m_xmf4x4ToParent);
@@ -989,7 +1041,7 @@ void CAirplanePlayer::PitchWingReturn(float fTimeElapsed)
 		if (m_pRight_Pitch_Wing)m_pRight_Pitch_Wing->m_xmf4x4ToParent = Matrix4x4::Multiply(xmmtxRotate1, m_pRight_Pitch_Wing->m_xmf4x4ToParent);
 
 		Pitch_WingsRotateDegree -= fTimeElapsed;
-		if (Pitch_WingsRotateDegree < 0)
+		if (Pitch_WingsRotateDegree <= 0)
 		{
 			Pitch_WingsRotateDegree = 0;
 			m_pRight_Pitch_Wing->m_xmf4x4ToParent._22 = 0;

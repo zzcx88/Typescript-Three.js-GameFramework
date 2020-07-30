@@ -15,6 +15,9 @@ class CPlayer;
 class CCamera
 {
 protected:
+	BoundingFrustum m_xmFrustum;
+
+protected:
 	XMFLOAT3						m_xmf3Position;
 	XMFLOAT3						m_xmf3Right;
 	XMFLOAT3						m_xmf3Up;
@@ -107,6 +110,16 @@ public:
 	virtual void Update(XMFLOAT3& xmf3LookAt, float fTimeElapsed) { }
 	virtual void SetLookAt(XMFLOAT3& xmf3LookAt);
 	void SetLookPlayer();
+
+public:
+	//절두체(월드 좌표계)를 생성한다. 
+	void GenerateFrustum();
+
+public:
+	//바운딩 박스(OOBB, 월드 좌표계)가 절두체에 포함되는 가를 검사한다. 
+	bool IsInFrustum(BoundingOrientedBox& xmBoundingBox);
+	//바운딩 박스(AABB, 월드 좌표계)가 절두체에 포함되는 가를 검사한다.
+	bool IsInFrustum(BoundingBox& xmBoundingBox);
 };
 
 class CSpaceShipCamera : public CCamera

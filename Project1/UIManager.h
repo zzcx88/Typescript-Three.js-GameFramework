@@ -21,6 +21,7 @@ class UIManager : public SingletonBase<UIManager>
 
 	int numObjects = 29;
 
+	bool m_bFighterType = false;
 	bool m_bNotSort = false;
 	bool m_bLockOnSoundPlayed = false;
 
@@ -31,7 +32,7 @@ public:
 
 	CCamera* m_pCamera = NULL;
 
-	vector<CGameObject*> GameOBJs;
+	vector<CGameObject*> FighterOBJs, ShipOBJs;
 	vector<int> speed, alt, missile, timeMS, timeS, timeM, score, distance{};
 
 public:

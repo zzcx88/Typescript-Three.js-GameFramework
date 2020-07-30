@@ -136,13 +136,13 @@ class CRafractionShader;
 class CPlaneMesh;
 class CUI;
 class CRedUIShader;
-class CLockOnUI;
 class CAfterBurner;
 class CBoxMesh;
 class CMinimapShader;
 class CNumber;
 class CNavMesh;
 class CMinimap;
+class CLockOnUI;
 class CGameObject
 {
 private:

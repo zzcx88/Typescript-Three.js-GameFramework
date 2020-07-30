@@ -6,7 +6,7 @@
 CSuperCobraObject::CSuperCobraObject()
 {
 	m_ObjManager = GET_MANAGER<ObjectManager>();
-	m_pModelInfo = m_ObjManager->GetObjFromTag(L"mig21Ref", OBJ_ENEMY)->m_pModelInfo;
+	m_pModelInfo = m_ObjManager->GetObjFromTag(L"mig21Ref", OBJ_REF)->m_pModelInfo;
 
 	SphereCollider = new CSphereCollider();
 	SphereCollider->SetSphereCollider(GetPosition(), 5.f);

@@ -304,6 +304,11 @@ CGameObject::~CGameObject()
 	if (m_ppMaterials) delete[] m_ppMaterials;
 
 	if (m_pSkinnedAnimationController) delete m_pSkinnedAnimationController;
+
+	if(SphereCollider) 
+		delete SphereCollider;
+	if(OrientedBoxCollider) 
+		delete OrientedBoxCollider;
 }
 
 void CGameObject::AddRef()
@@ -534,15 +539,18 @@ void CGameObject::ReleaseShaderVariables()
 
 void CGameObject::ReleaseUploadBuffers()
 {
-	if (m_pMesh) m_pMesh->ReleaseUploadBuffers();
-
-	for (int i = 0; i < m_nMaterials; i++)
+	if (GET_MANAGER<ObjectManager>()->GetTagFromObj(this, OBJ_EFFECT) != L"EngineRefractionObj")
 	{
-		if (m_ppMaterials[i]) m_ppMaterials[i]->ReleaseUploadBuffers();
-	}
+		if (m_pMesh) m_pMesh->ReleaseUploadBuffers();
 
-	if (m_pSibling) m_pSibling->ReleaseUploadBuffers();
-	if (m_pChild) m_pChild->ReleaseUploadBuffers();
+		for (int i = 0; i < m_nMaterials; i++)
+		{
+			if (m_ppMaterials[i]) m_ppMaterials[i]->ReleaseUploadBuffers();
+		}
+
+		if (m_pSibling) m_pSibling->ReleaseUploadBuffers();
+		if (m_pChild) m_pChild->ReleaseUploadBuffers();
+	}
 }
 
 void CGameObject::SetPosition(float x, float y, float z)

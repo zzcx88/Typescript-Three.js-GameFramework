@@ -16,7 +16,6 @@ public:
 	XMFLOAT2 m_xmf2PrePositionRightBot = XMFLOAT2(0.f, 0.f);
 	XMFLOAT2 m_xmf2PrePositionRightTop = XMFLOAT2(0.f, 0.f);
 
-	CCamera* m_pCamera;
 	float m_fScaleX = 1, m_fScaleY = 1;
 
 	float m_fTimeElapsed = 0.f;

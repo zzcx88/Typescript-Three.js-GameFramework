@@ -100,6 +100,12 @@ CEngineRafraction::CEngineRafraction(int nIndex, ID3D12Device* pd3dDevice, ID3D1
 CEngineRafraction::~CEngineRafraction()
 {
 	if (m_pd3dDepthStencilBuffer) m_pd3dDepthStencilBuffer->Release();
+
+	if (m_pd3dDsvDescriptorHeap) m_pd3dDsvDescriptorHeap->Release();
+	if (m_pd3dRtvDescriptorHeap) m_pd3dRtvDescriptorHeap->Release();
+
+	if (m_pd3dCommandAllocator) m_pd3dCommandAllocator->Release();
+	if (m_pd3dCommandList) m_pd3dCommandList->Release();
 }
 
 void CEngineRafraction::Animate(float fTimeElapsed)
@@ -109,10 +115,10 @@ void CEngineRafraction::Animate(float fTimeElapsed)
 	m_xmf3Position.y = m_xmf4x4ToParent._42;
 	m_xmf3Position.z = m_xmf4x4ToParent._43;
 
-	std::default_random_engine dre(time(NULL) * m_fTimeElapsed);
+	std::default_random_engine dre(m_fTimeElapsed * 100);
 	std::uniform_real_distribution<float>range(0, 360);
 	m_fRotateSpeed = range(dre);
-	Rotate(0, 0, m_fRotateSpeed);
+	Rotate(0, 0, m_fRotateSpeed + 10);
 	SetLookAt(GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player", OBJ_PLAYER)->m_pCamera->GetPosition());
 
 	float fRefractionAmount = GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player", OBJ_PLAYER)->GetPlayerSpeed() * 0.00001f;
@@ -144,7 +150,8 @@ void CEngineRafraction::OnPreRender(ID3D12Device* pd3dDevice, ID3D12CommandQueue
 	m_pCamera->GenerateViewMatrix(xmf3Position, Vector3::Add(xmf3Position, GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player", OBJ_PLAYER)->m_pCamera->GetLookVector()), GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player", OBJ_PLAYER)->m_pCamera->GetUpVector());
 	m_pCamera->GenerateProjectionMatrix(1.01f, 100000.0f, ASPECT_RATIO, GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player", OBJ_PLAYER)->GetFov());*/
 	
-	if (GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player", OBJ_PLAYER)->m_bEye_fixation == false)
+	if (GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player", OBJ_PLAYER)->m_bEye_fixation == false && 
+		GET_MANAGER<CDeviceManager>()->GetBlurAmount() <= 0.5f)
 	{
 		m_pd3dCommandAllocator->Reset();
 		m_pd3dCommandList->Reset(m_pd3dCommandAllocator, NULL);
@@ -173,7 +180,9 @@ void CEngineRafraction::OnPreRender(ID3D12Device* pd3dDevice, ID3D12CommandQueue
 
 void CEngineRafraction::Render(ID3D12GraphicsCommandList* pd3dCommandList, CCamera* pCamera)
 {
-	if (GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player", OBJ_PLAYER)->m_bEye_fixation == false)
+	if (GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player", OBJ_PLAYER)->m_bEye_fixation == false && 
+		GET_MANAGER<CDeviceManager>()->GetBlurAmount() <= 0.5f && 
+		GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player", OBJ_PLAYER)->m_bMissleLockCamera == false)
 	{
 		CGameObject::Render(pd3dCommandList, pCamera);
 	}

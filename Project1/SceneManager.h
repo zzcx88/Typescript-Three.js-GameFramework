@@ -34,7 +34,8 @@ public:
 
 	bool m_bStageClear = false;
 	bool m_bStageFail = false;
-	
+	bool m_bCreateShip = false;
+
 public:
 	int Update(const float& TimeDelta);
 

@@ -15,8 +15,8 @@ SceneManager::~SceneManager()
 
 bool SceneManager::ChangeSceneState(SCENESTATE SceneState, ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList)
 {
-	GET_MANAGER<SoundManager>()->StopSound(CH_BGM);
-	//if (m_Scene) m_Scene->ReleaseUploadBuffers();
+	GET_MANAGER<SoundManager>()->StopAll();
+	if (m_Scene) m_Scene->ReleaseUploadBuffers();
 	if (m_Scene) m_Scene->ReleaseObjects();
 
 	if (nullptr != m_Scene)
@@ -30,6 +30,7 @@ bool SceneManager::ChangeSceneState(SCENESTATE SceneState, ID3D12Device* pd3dDev
 	{
 	case SCENE_TEST:
 		m_Scene = new CTestScene;
+		GET_MANAGER<SoundManager>()->PlaySound(L"PressSpace.mp3", CH_EFFECT);
 		break;
 	case SCENE_MENU:
 		m_Scene = new CMenuScene;
@@ -125,20 +126,18 @@ bool SceneManager::GetStoped()
 void SceneManager::SceneStoped()
 {
 	KeyManager* keyManager = GET_MANAGER<KeyManager>();
-	if (true == keyManager->GetKeyState(STATE_DOWN, VK_G))
+
+	if (true == keyManager->GetKeyState(STATE_DOWN, VK_G)&&GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player", OBJ_PLAYER)->m_bGameOver != true)
 	{
 		if (m_Scene->GetStoped() == false)
 		{
 			m_Scene->SetStoped(true);
 			GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player_ui16_navigator", OBJ_NAVIGATOR)->SetIsRender(false);
-			for (auto i = (int)OBJ_MINIMAP_UI; i <= OBJ_UI; ++i)
+			for (auto i = (int)OBJ_MINIMAP_UI; i <= OBJ_LOCKONUI; ++i)
 			{
-				if (i == OBJ_UI || i == OBJ_MINIMAP_UI)
+				for (auto p = m_Scene->m_ObjManager->GetObjFromType((OBJTYPE)i).begin(); p != m_Scene->m_ObjManager->GetObjFromType((OBJTYPE)i).end(); ++p)
 				{
-					for (auto p = m_Scene->m_ObjManager->GetObjFromType((OBJTYPE)i).begin(); p != m_Scene->m_ObjManager->GetObjFromType((OBJTYPE)i).end(); ++p)
-					{
-						(*p).second->SetIsRender(false);
-					}
+					(*p).second->SetIsRender(false);
 				}
 			}
 
@@ -146,14 +145,11 @@ void SceneManager::SceneStoped()
 		else
 		{
 			m_Scene->SetStoped(false);
-			for (auto i = (int)OBJ_MINIMAP_UI; i <= OBJ_UI; ++i)
+			for (auto i = (int)OBJ_MINIMAP_UI; i <= OBJ_LOCKONUI; ++i)
 			{
-				if (i == OBJ_UI || i == OBJ_MINIMAP_UI)
+				for (auto p = m_Scene->m_ObjManager->GetObjFromType((OBJTYPE)i).begin(); p != m_Scene->m_ObjManager->GetObjFromType((OBJTYPE)i).end(); ++p)
 				{
-					for (auto p = m_Scene->m_ObjManager->GetObjFromType((OBJTYPE)i).begin(); p != m_Scene->m_ObjManager->GetObjFromType((OBJTYPE)i).end(); ++p)
-					{
-						(*p).second->SetIsRender(true);
-					}
+					(*p).second->SetIsRender(true);
 				}
 			}
 		}

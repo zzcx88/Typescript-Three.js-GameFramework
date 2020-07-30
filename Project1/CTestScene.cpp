@@ -163,6 +163,9 @@ void CTestScene::BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandLis
 	// Speed
 	m_ppGameObjects[10] = new CNumber(0, pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, scaleX, scaleY, 0.f);
 	m_ppGameObjects[10]->SetIsRender(false);
+	m_ppGameObjects[10]->SetPosition(fx * -2.f, fy * -2.f, 0.f);
+
+
 	m_ppGameObjects[11] = new CUI(7, pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, 80.f, 80.f, 0.f, XMFLOAT2(-0.f, -0.f), XMFLOAT2(-0.f, -0.f), XMFLOAT2(-0.f, -0.f), XMFLOAT2(-0.f, -0.f));
 	m_ppGameObjects[11]->SetPosition(0.f, fy * -0.05f, 0.f);
 
@@ -231,16 +234,16 @@ void CTestScene::BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandLis
 
 	CMig21* pMig21Ref;
 	pMig21Ref = new CMig21(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature);
-	m_ObjManager->AddObject(L"mig21Ref", pMig21Ref, OBJ_ENEMY);
+	m_ObjManager->AddObject(L"mig21Ref", pMig21Ref, OBJ_REF);
 
 	CTU160* pTu160Ref;
 	pTu160Ref = new CTU160(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature);
-	m_ObjManager->AddObject(L"tu160Ref", pTu160Ref, OBJ_ENEMY);
+	m_ObjManager->AddObject(L"tu160Ref", pTu160Ref, OBJ_REF);
 
 	C052CDestroyer* p052C;
 	p052C = new C052CDestroyer(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature);
 	p052C->SetPosition(0, 0, 0);
-	m_ObjManager->AddObject(L"052CRef", p052C, OBJ_ENEMY);
+	m_ObjManager->AddObject(L"052CRef", p052C, OBJ_REF);
 
 	//Prepare EffectObject
 	//////////////////////////////////////////////////////
@@ -352,16 +355,16 @@ void CTestScene::BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandLis
 		{
 			float fX = fXPos(dre);
 			float fZ = fZPos(dre);
-			pCloud[j] = new CCloud(j, pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, fX, fZ, nInstance(dre), dre);
+			pCloud[j] = new CCloud(j, pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, fX, fZ, /*nInstance(dre)*/500, dre);
 			pCloud[j]->m_pCloudShader = pCloudRef->m_pCloudShader;
 			pCloud[j]->m_pCloudMaterial = new CMaterial(1);
 			pCloud[j]->m_pCloudMaterial->SetShader(pCloudRef->m_pCloudShader);
 			pCloud[j]->m_pCloudMaterial->SetTexture(pCloudRef->m_pCloudTexture[j]);
 			pCloud[j]->SetMaterial(0, pCloud[j]->m_pCloudMaterial);
+			pCloud[j]->SetPosition(fX,5500 ,fZ);
 			m_ObjManager->AddObject(L"cloud", pCloud[j], OBJ_ALPHAMAP);
 		}
 	}
-
 	CreateShaderVariables(pd3dDevice, pd3dCommandList);
 	GET_MANAGER<SoundManager>()->PlayBGM(L"Stage1_BGM.mp3", CH_BGM);
 }
@@ -377,9 +380,9 @@ void CTestScene::CreateStageObject()
 		return;
 	}
 
-	if (m_bCreateShip == false)
+	if (GET_MANAGER<SceneManager>()->m_bCreateShip == false)
 	{
-		m_bCreateShip = true;
+		GET_MANAGER<SceneManager>()->m_bCreateShip = true;
 		for (int i = 0; i < 8; ++i)
 		{
 			std::default_random_engine dre(time(NULL) * i * 0.548);
@@ -523,61 +526,63 @@ void CTestScene::AnimateObjects(float fTimeElapsed)
 
 	CreateStageObject();
 
-	for (auto& obj : m_ObjManager->GetObjFromType(OBJ_ENEMY))
+	if (!GET_MANAGER<SceneManager>()->GetSceneStoped())
 	{
-		if (obj.second->m_bDestroyed)
+		for (auto& obj : m_ObjManager->GetObjFromType(OBJ_ENEMY))
 		{
-			m_ppGameObjects[14]->SetIsRender(true);
-			elapsedTime = 0;
-		}
-		else if (elapsedTime > 2)d
-		{
-			m_ppGameObjects[14]->SetIsRender(false);
-		}
+			if (obj.second->m_bDestroyed)
+			{
+				m_ppGameObjects[14]->SetIsRender(true);
+				elapsedTime = 0;
+			}
+			else if (elapsedTime > 2)
+			{
+				m_ppGameObjects[14]->SetIsRender(false);
+			}
 
-		if (obj.second->m_bAiLockOn == true)
-		{
-			m_ppGameObjects[12]->SetIsRender(true);
+			if (obj.second->m_bAiLockOn == true)
+			{
+				m_ppGameObjects[12]->SetIsRender(true);
 
-			if (m_fElapsedTime > 3.0)
+				if (m_fElapsedTime > 3.0)
+				{
+					m_ppGameObjects[12]->SetIsRender(false);
+					m_fElapsedTime = 0.f;
+				}
+			}
+			else
 			{
 				m_ppGameObjects[12]->SetIsRender(false);
-				m_fElapsedTime = 0.f;
 			}
-		}
-		else
-		{
-			m_ppGameObjects[12]->SetIsRender(false);
-		}
 
-		if (m_pPlayer->m_AiMissleAssert == true)
-		{
-			m_ppGameObjects[13]->SetIsRender(true);
-			for (auto& obj : m_ObjManager->GetObjFromType(OBJ_UI))
+			if (m_pPlayer->m_AiMissleAssert == true)
 			{
-				obj.second->m_bWarning = 1.f;
+				m_ppGameObjects[13]->SetIsRender(true);
+				for (auto& obj : m_ObjManager->GetObjFromType(OBJ_UI))
+				{
+					obj.second->m_bWarning = 1.f;
+				}
+				for (auto& obj : m_ObjManager->GetObjFromType(OBJ_SPEED_UI))
+				{
+					obj.second->m_bWarning = 1.f;
+				}
 			}
-			for (auto& obj : m_ObjManager->GetObjFromType(OBJ_SPEED_UI))
+			else
 			{
-				obj.second->m_bWarning = 1.f;
+				m_ppGameObjects[13]->SetIsRender(false);
+				for (auto& obj : m_ObjManager->GetObjFromType(OBJ_UI))
+				{
+					obj.second->m_bWarning = 0.f;
+				}
+				for (auto& obj : m_ObjManager->GetObjFromType(OBJ_SPEED_UI))
+				{
+					obj.second->m_bWarning = 0.f;
+				}
 			}
-		}
-		else
-		{
-			m_ppGameObjects[13]->SetIsRender(false);
-			for (auto& obj : m_ObjManager->GetObjFromType(OBJ_UI))
-			{
-				obj.second->m_bWarning = 0.f;
-			}
-			for (auto& obj : m_ObjManager->GetObjFromType(OBJ_SPEED_UI))
-			{
-				obj.second->m_bWarning = 0.f;
-			}
+
 		}
 
 	}
-
-	
 
 
 	m_ObjManager->GetObjFromTag(L"player", OBJ_PLAYER)->SetPlayerMSL(m_pPlayer->GetMSLCount());

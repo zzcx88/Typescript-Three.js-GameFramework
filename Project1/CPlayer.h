@@ -63,6 +63,9 @@ protected:
 	// Weapon Count
 	int m_nMSL_Count = 0;
 	int m_nScore = 0;
+
+	//Hp Count
+	int m_nHp = 0;
 public:
 	CPlayer();
 	virtual ~CPlayer();

@@ -40,6 +40,6 @@ Texture2D gtxtTexture : register(t0);
 float4 PSBillboardInstancing(VS_BILLBOARD_INSTANCING_OUTPUT input) : SV_TARGET
 {
 	float4 cColor = gtxtTexture.Sample(gssWrap, input.uv);
-	//clip(cColor.a - 0.2f);
+	clip(cColor.a - 0.3f);
 	return(cColor);
 }

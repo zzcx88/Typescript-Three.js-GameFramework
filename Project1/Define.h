@@ -33,6 +33,7 @@
 #define VK_S												0x53
 #define VK_G												0x47
 #define VK_F												0x46
+#define VK_T											0x54
 
 //TextureType
 #define RESOURCE_TEXTURE2D					0x01

@@ -1,0 +1,155 @@
+__________________________________________________________________________________________________________________________________________________
+INDEX TABLE
+
+[Contents]
+1. UIManager class 
+2. 
+__________________________________________________________________________________________________________________________________________________
+
+1. UIManager class ================================================================================
+	0. 
+	텍스처를 저장한 배열의 인덱스와 Render 할 Texture 이미지 숫자가 동일하다.
+	ex) m_ppUITexture[0] = 0 ~ m_ppUITexture[9] = 9 
+	________________________________________________________________________________________________________________________________________
+	1-1. HUD Speed(속도) number texture
+	ppNumObjects[0]
+	ppNumObjects[1]
+	ppNumObjects[2]
+	ppNumObjects[3]
+
+	1-2. Vector container(Number update)
+	speed[0] : nPlayerSpeed 1의 자리 숫자를 저장
+	speed[1] : nPlayerSpeed 10의 자리 숫자를 저장
+	speed[2] : nPlayerSpeed 100의 자리 숫자를 저장
+	speed[3] : nPlayerSpeed 1000의 자리 숫자를 저장
+
+	1-3. For example
+	 (CGameObject.h) nPlayerSpeed가 123이면 Vector에 저장 되는 원소 [0]: 3 [1]: 2 [2]: 1, speed.size() = 3    
+
+	숫자 자리수에 따라 바뀌는 과정 설명
+ 	ppNumObjects[0]->m_ppUITexture[speed[0]] <-Render(true)  화면 출력 3
+	ppNumObjects[1] <-Render(false)
+	ppNumObjects[2] <-Render(false)
+	ppNumObjects[3] <-Render(false)
+
+	ppNumObjects[0]->m_ppUITexture[speed[1]] <-Render(true)  화면 출력 23
+	ppNumObjects[1]->m_ppUITexture[speed[0]] <-Render(true)
+	ppNumObjects[2] <-Render(false)
+	ppNumObjects[3] <-Render(false)
+
+	ppNumObjects[0]->m_ppUITexture[speed[2]] <-Render(true)  화면 출력 123
+	ppNumObjects[1]->m_ppUITexture[speed[1]] <-Render(true)
+	ppNumObjects[2]->m_ppUITexture[speed[0]] <-Render(true)
+	ppNumObjects[3] <-Render(false)
+	________________________________________________________________________________________________________________________________________
+	________________________________________________________________________________________________________________________________________
+	2-1. HUD Alt(고도) number texture 
+	ppNumObjects[4]
+	ppNumObjects[5]
+	ppNumObjects[6]
+	ppNumObjects[7]
+	ppNumObjects[8]
+
+	2-2. Vector container(Number update)
+	alt[0] : Player GetPosition().z 1의 자리 숫자를 저장
+	alt[1] : Player GetPosition().z 10의 자리 숫자를 저장
+	alt[2] : Player GetPosition().z 100의 자리 숫자를 저장
+	alt[3] : Player GetPosition().z 1000의 자리 숫자를 저장
+	alt[4] : Player GetPosition().z 10000의 자리 숫자를 저장
+
+	2-3. For example
+	(CGameObject.h) GetPosition().z 값이 12345이면 Vector에 저장 되는 원소 [0]: 5 [1]: 4 [2]: 3 [3]: 2 [4]: 1, alt.size() = 5      
+	________________________________________________________________________________________________________________________________________
+	________________________________________________________________________________________________________________________________________
+	3-1. HUD Missile(미사일 탄) number texture 
+	ppNumObjects[9]
+	ppNumObjects[10]
+	ppNumObjects[11]
+
+	3-2. Vector container(Number update)
+	missile[0] : nPlayerMSL 1의 자리 숫자를 저장
+	missile[1] : nPlayerMSL 10의 자리 숫자를 저장
+	missile[2] : nPlayerMSL 100의 자리 숫자를 저장
+
+	3-3. For example
+	(CGameObject.h) nPlayerMSL 값이 123이면 Vector에 저장 되는 원소 [0]: 3 [1]: 2 [2]: 1, missile.size() = 3      
+	________________________________________________________________________________________________________________________________________
+	________________________________________________________________________________________________________________________________________
+	4-1. HUD Minute(분) number texture 
+	ppNumObjects[12]
+	ppNumObjects[13]
+
+	4-2. Vector container(Number update)
+	timeM[0] : 분의 1의 자리 숫자를 저장
+	timeM[1] : 분의 10의 자리 숫자를 저장
+
+	4-3. For example
+	(UIManager.h) n_minute 값이 59이면 Vector에 저장 되는 원소 [0]: 9 [1]: 5, timeM.size() = 2      
+	________________________________________________________________________________________________________________________________________
+	________________________________________________________________________________________________________________________________________
+	5-1. HUD Second(초) number texture 
+	ppNumObjects[14]
+	ppNumObjects[15]
+
+	5-2. Vector container(Number update)
+	timeS[0] : 초의 1의 자리 숫자를 저장
+	timeS[1] : 초의 10의 자리 숫자를 저장
+
+	5-3. For example
+	(UIManager.h) n_second 값이 59이면 Vector에 저장 되는 원소 [0]: 9 [1]: 5, timeS.size() = 2      
+	________________________________________________________________________________________________________________________________________
+	________________________________________________________________________________________________________________________________________
+	6-1. HUD Millisecond(밀리초) number texture 
+	ppNumObjects[16]
+	ppNumObjects[17]
+
+	6-2. Vector container(Number update)
+	timeMS[0] : 초의 1의 자리 숫자를 저장
+	timeMS[1] : 초의 10의 자리 숫자를 저장
+
+	6-3. For example
+	(UIManager.h) fElapsedTime 값이 29이면 Vector에 저장 되는 원소 [0]: 9 [1]: 2, timeMS.size() = 2      
+
+	(추가 설명)
+	fElapsedTime 값이 99.f 가 되면 0으로 초기화 하고 n_second -= 1
+	n_second가 0 이하면 59로 초기화 하고 n_minute -= 1 
+	________________________________________________________________________________________________________________________________________
+	________________________________________________________________________________________________________________________________________
+	7-1. HUD Score(점수) number texture 
+	ppNumObjects[18]
+	ppNumObjects[19]
+	ppNumObjects[20]
+	ppNumObjects[21]
+	ppNumObjects[22]
+	ppNumObjects[23]
+
+	7-2. Vector container(Number update)
+	score[0] : m_nPlayerScore 1의 자리 숫자를 저장
+	score[1] : m_nPlayerScore 10의 자리 숫자를 저장
+	score[2] : m_nPlayerScore 100의 자리 숫자를 저장
+	score[3] : m_nPlayerScore 1000의 자리 숫자를 저장
+	score[4] : m_nPlayerScore 10000의 자리 숫자를 저장
+	score[5] : m_nPlayerScore 100000의 자리 숫자를 저장
+
+	7-3. For example
+	(CGameObject.h) m_nPlayerScore 값이 123456이면 Vector에 저장 되는 원소 [0]: 6 [1]: 5 [2]: 4 [3]: 3 [4]: 2 [5]: 1, score.size() = 6   
+	________________________________________________________________________________________________________________________________________
+	________________________________________________________________________________________________________________________________________
+	8-1. HUD Distance from player to lockon target(플레이어와 락온 타겟 간의 거리) number texture 
+	ppNumObjects[24]
+	ppNumObjects[25]
+	ppNumObjects[26]
+	ppNumObjects[27]
+	ppNumObjects[28]
+
+	8-2. Vector container(Number update)
+	score[0] : m_fLenth 1의 자리 숫자를 저장
+	score[1] : m_fLenth 10의 자리 숫자를 저장
+	score[2] : m_fLenth 100의 자리 숫자를 저장
+	score[3] : m_fLenth 1000의 자리 숫자를 저장
+	score[4] : m_fLenth 10000의 자리 숫자를 저장
+	score[5] : m_fLenth 100000의 자리 숫자를 저장
+
+	8-3. For example
+	(CLockOnUI.h) m_fLenth 값이 123456이면 Vector에 저장 되는 원소 [0]: 6 [1]: 5 [2]: 4 [3]: 3 [4]: 2 [5]: 1, distance.size() = 6 
+	________________________________________________________________________________________________________________________________________    

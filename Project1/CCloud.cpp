@@ -18,6 +18,7 @@ CCloud::CCloud(int nIndex, ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* 
 	std::uniform_real_distribution<float>size(1, 2);
 	float sizeTotal = size(dre);
 	m_pPlaneMesh = new CPlaneMesh(pd3dDevice, pd3dCommandList, 1024 * sizeTotal, 768 * sizeTotal, 1, XMFLOAT2(0, 0), XMFLOAT2(0, 0), XMFLOAT2(0, 0), XMFLOAT2(0, 0));
+	m_pPlaneMesh->SetAABB(XMFLOAT3(fXPos, 5500, fZPos), XMFLOAT3(4000, 600, 4000));
 	SetMesh(m_pPlaneMesh);
 
 	for (int i = 0; i < m_nInstance; ++i)
@@ -60,10 +61,28 @@ CCloud::CCloud(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandL
 
 CCloud::~CCloud()
 {
+	if (m_pd3dInstanceUploadBuffer) m_pd3dInstanceUploadBuffer->Release();
+}
+
+bool CCloud::IsVisible(CCamera* pCamera)
+{
+	bool bIsVisible = false;
+	BoundingBox xmBoundingBox = m_pPlaneMesh->m_xmAABB;
+	//모델 좌표계의 바운딩 박스를 월드 좌표계로 변환한다. xmBoundingBox.Transform(xmBoundingBox, XMLoadFloat4x4(&m_xmf4x4World));
+	if (pCamera) bIsVisible = pCamera->IsInFrustum(xmBoundingBox);
+	return(bIsVisible);
 }
 
 void CCloud::Animate(float fTimeElapsed)
 {
+	CPlayer* pPlayer = (CPlayer*)GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player", OBJ_PLAYER);
+	XMFLOAT3 xmf3Pos, xmf3PlayerPos, xmf3TargetVector;
+	xmf3Pos = GetPosition();
+	xmf3PlayerPos = GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player", OBJ_PLAYER)->GetPosition();
+	xmf3TargetVector = Vector3::Subtract(xmf3Pos, xmf3PlayerPos);
+	XMFLOAT3 xmfAxis = Vector3::CrossProduct(pPlayer->GetLookVector(), xmf3TargetVector);
+	LenthToPlayer = sqrt(xmf3TargetVector.x * xmf3TargetVector.x + xmf3TargetVector.y * xmf3TargetVector.x + xmf3TargetVector.z * xmf3TargetVector.z);
+	//cout << LenthToPlayer << endl;
 }
 
 void CCloud::SetLookAt(XMFLOAT3& xmfTarget)
@@ -72,7 +91,11 @@ void CCloud::SetLookAt(XMFLOAT3& xmfTarget)
 
 void CCloud::Render(ID3D12GraphicsCommandList* pd3dCommandList, CCamera* pCamera)
 {
-	m_pCloudShader->Render(pd3dCommandList, pCamera);
-	m_pCloudMaterial->m_ppTextures[0]->UpdateShaderVariables(pd3dCommandList);
-	m_pPlaneMesh->Render(pd3dCommandList, m_d3dInstancingBufferView, m_nInstance);
+	if(LenthToPlayer < 40000)
+	if (IsVisible(pCamera))
+	{
+		m_pCloudShader->Render(pd3dCommandList, pCamera);
+		m_pCloudMaterial->m_ppTextures[0]->UpdateShaderVariables(pd3dCommandList);
+		m_pPlaneMesh->Render(pd3dCommandList, m_d3dInstancingBufferView, m_nInstance);
+	}
 }
