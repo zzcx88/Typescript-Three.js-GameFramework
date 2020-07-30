@@ -63,9 +63,24 @@ void C052CDestroyer::Animate(float fTimeElapsed)
 
 	GET_MANAGER<CollisionManager>()->CollisionSphere(this, &GET_MANAGER<ObjectManager>()->GetObjFromType(OBJ_ENEMY));
 	
+	if (m_bAiCanFire == false)
+	{
+		m_fMissleFireElapsed += fTimeElapsed;
+		if (m_fMissleFireElapsed > m_fAfterFireFrequence)
+		{
+			m_bAiAfterFire = false;
+		}
+		if (m_fMissleFireElapsed > m_fMissleFireFrequence)
+		{
+			m_bAiCanFire = true;
+			m_fMissleFireElapsed = 0.f;
+		}
+	}
+
 	if (m_bReffernce == false && m_bDestroyed == false)
 	{
-		//GET_MANAGER<AIManager>()->DoAction(AI_SHIP, this);
+		GET_MANAGER<AIManager>()->DoAction(AI_SHIP, this);
+		UpdateTransform(NULL);
 	}
 
 	if (m_bDestroyed == true)
@@ -107,7 +122,6 @@ void C052CDestroyer::CollisionActivate(CGameObject* collideTarget)
 void C052CDestroyer::Render(ID3D12GraphicsCommandList* pd3dCommandList, CCamera* pCamera)
 {
 	//if (SphereCollider)SphereCollider->Render(pd3dCommandList, pCamera);
-	
 	if (m_bDestroyed == true)
 	{
 		m_fDeadElapsed += 1.f * GET_MANAGER<CDeviceManager>()->GetGameTimer().GetTimeElapsed();

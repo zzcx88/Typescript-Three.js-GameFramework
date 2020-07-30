@@ -522,8 +522,7 @@ typedef enum
     -----------------------
     This mode is for 2 speaker arrangements that have a left and right speaker.
     - Mono sounds default to an even distribution between left and right.  They can be panned with Channel::setPan.
-    - Stereo sounds default to the middle, or 
-    left in the left speaker and full right in the right speaker.  
+    - Stereo sounds default to the middle, or full left in the left speaker and full right in the right speaker.  
     - They can be cross faded with Channel::setPan.
     - Multichannel sounds have each sound channel played on each speaker at unity.
     - Mix behavior for multichannel sounds can be set with Channel::setSpeakerLevels.

@@ -17,7 +17,7 @@ CEngineRafraction::CEngineRafraction(int nIndex, ID3D12Device* pd3dDevice, ID3D1
 	//m_bReffernce = true;
 	m_fBurnerBlendAmount = 1;
 	m_pPlaneMesh = new CPlaneMesh(pd3dDevice, pd3dCommandList, fWidth, fHeight, fDepth, XMFLOAT2(0, 0), XMFLOAT2(0, 0), XMFLOAT2(0, 0), XMFLOAT2(0, 0));
-
+	m_pPlaneMeshDrop = new CPlaneMesh(pd3dDevice, pd3dCommandList, 3, 3, fDepth, XMFLOAT2(0, 0), XMFLOAT2(0, 0), XMFLOAT2(0, 0), XMFLOAT2(0, 0),7,7);
 	SetMesh(m_pPlaneMesh);
 
 	CreateShaderVariables(pd3dDevice, pd3dCommandList);
@@ -25,6 +25,8 @@ CEngineRafraction::CEngineRafraction(int nIndex, ID3D12Device* pd3dDevice, ID3D1
 	//m_pEffectTexture[TEXTURES];
 	m_pEffectTexture[0] = new CTexture(1, RESOURCE_TEXTURE2D, 0);
 	m_pEffectTexture[0]->LoadTextureFromFile(pd3dDevice, pd3dCommandList, L"Effect/Heat_Distortion_Normal.dds", 0);
+	m_pEffectTexture[2] = new CTexture(1, RESOURCE_TEXTURE2D, 0);
+	m_pEffectTexture[2]->LoadTextureFromFile(pd3dDevice, pd3dCommandList, L"Effect/waterdrop_Normal.dds", 0);
 
 	D3D12_DESCRIPTOR_HEAP_DESC d3dDescriptorHeapDesc;
 	d3dDescriptorHeapDesc.NumDescriptors = 1;
@@ -73,6 +75,7 @@ CEngineRafraction::CEngineRafraction(int nIndex, ID3D12Device* pd3dDevice, ID3D1
 	m_pRafractionShader->CreateShaderVariables(pd3dDevice, pd3dCommandList);
 
 	CTestScene::CreateShaderResourceViews(pd3dDevice, m_pEffectTexture[0], 5, false);
+	CTestScene::CreateShaderResourceViews(pd3dDevice, m_pEffectTexture[2], 5, false);
 
 	m_pEffectMaterial = new CMaterial(2);
 	m_pEffectMaterial->SetTexture(m_pEffectTexture[0], 0);
@@ -115,15 +118,35 @@ void CEngineRafraction::Animate(float fTimeElapsed)
 	m_xmf3Position.y = m_xmf4x4ToParent._42;
 	m_xmf3Position.z = m_xmf4x4ToParent._43;
 
-	std::default_random_engine dre(m_fTimeElapsed * 100);
-	std::uniform_real_distribution<float>range(0, 360);
-	m_fRotateSpeed = range(dre);
-	Rotate(0, 0, m_fRotateSpeed + 10);
+	if (m_bWaterDrop == true)
+	{
+		m_pMesh = m_pPlaneMeshDrop;
+		m_pEffectMaterial->m_ppTextures[0] = m_pEffectTexture[2];
+		CCamera* pCamera = GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player", OBJ_PLAYER)->m_pCamera;
+		if(GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player", OBJ_PLAYER)->m_bEye_fixation == false)
+			SetPosition(pCamera->GetPosition().x + pCamera->GetLookVector().x * 1.1f, pCamera->GetPosition().y + pCamera->GetLookVector().y * 1.1f, pCamera->GetPosition().z + pCamera->GetLookVector().z * 1.1f);
+		else
+			SetPosition(pCamera->GetPosition().x + pCamera->GetLookVector().x * 1.5f, pCamera->GetPosition().y + pCamera->GetLookVector().y * 1.5f, pCamera->GetPosition().z + pCamera->GetLookVector().z * 1.5f);
+	}
+	else
+	{
+		m_pMesh = m_pPlaneMesh;
+		m_pEffectMaterial->m_ppTextures[0] = m_pEffectTexture[0];
+		std::default_random_engine dre(m_fTimeElapsed * 100);
+		std::uniform_real_distribution<float>range(0, 360);
+		m_fRotateSpeed = range(dre);
+		Rotate(0, 0, m_fRotateSpeed + 10);
+	}
+	
 	SetLookAt(GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player", OBJ_PLAYER)->m_pCamera->GetPosition());
 
 	float fRefractionAmount = GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player", OBJ_PLAYER)->GetPlayerSpeed() * 0.00001f;
-	if(fRefractionAmount < 0.003f)
+	if(fRefractionAmount < 0.003f && m_bWaterDrop == false)
 		m_fBurnerBlendAmount = fRefractionAmount;
+	else if (m_bWaterDrop == true)
+	{
+		m_fBurnerBlendAmount -= 0.1f * fTimeElapsed;
+	}
 }
 
 void CEngineRafraction::TextureAnimate()
@@ -136,6 +159,11 @@ void CEngineRafraction::SetLookAt(XMFLOAT3& xmfTarget)
 	XMFLOAT4X4 mtxLookAt = Matrix4x4::LookAtLH(xmfTarget, m_xmf3Position, xmfUp);
 	m_xmf3Right = XMFLOAT3(mtxLookAt._11, mtxLookAt._21, mtxLookAt._31);
 	m_xmf3Up = XMFLOAT3(mtxLookAt._12, mtxLookAt._22, mtxLookAt._32);
+	if (m_bWaterDrop == true)
+	{
+		m_xmf3Right = GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player", OBJ_PLAYER)->m_pCamera->GetRightVector();
+		m_xmf3Up = GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player", OBJ_PLAYER)->m_pCamera->GetUpVector();
+	}
 	m_xmf3Look = XMFLOAT3(mtxLookAt._13, mtxLookAt._23, mtxLookAt._33);
 	m_xmf4x4ToParent._11 = m_xmf3Right.x;			m_xmf4x4ToParent._12 = m_xmf3Right.y;		m_xmf4x4ToParent._13 = m_xmf3Right.z;
 	m_xmf4x4ToParent._21 = m_xmf3Up.x;			m_xmf4x4ToParent._22 = m_xmf3Up.y;		m_xmf4x4ToParent._23 = m_xmf3Up.z;
@@ -150,9 +178,11 @@ void CEngineRafraction::OnPreRender(ID3D12Device* pd3dDevice, ID3D12CommandQueue
 	m_pCamera->GenerateViewMatrix(xmf3Position, Vector3::Add(xmf3Position, GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player", OBJ_PLAYER)->m_pCamera->GetLookVector()), GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player", OBJ_PLAYER)->m_pCamera->GetUpVector());
 	m_pCamera->GenerateProjectionMatrix(1.01f, 100000.0f, ASPECT_RATIO, GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player", OBJ_PLAYER)->GetFov());*/
 	
-	if (GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player", OBJ_PLAYER)->m_bEye_fixation == false && 
-		GET_MANAGER<CDeviceManager>()->GetBlurAmount() <= 0.5f)
+	if ((GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player", OBJ_PLAYER)->m_bEye_fixation == false && 
+		GET_MANAGER<CDeviceManager>()->GetBlurAmount() <= 0.5f &&
+		GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player", OBJ_PLAYER)->m_bMissleLockCamera == false && m_bWaterDrop == false) || m_bWaterDrop == true)
 	{
+
 		m_pd3dCommandAllocator->Reset();
 		m_pd3dCommandList->Reset(m_pd3dCommandAllocator, NULL);
 
@@ -180,9 +210,9 @@ void CEngineRafraction::OnPreRender(ID3D12Device* pd3dDevice, ID3D12CommandQueue
 
 void CEngineRafraction::Render(ID3D12GraphicsCommandList* pd3dCommandList, CCamera* pCamera)
 {
-	if (GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player", OBJ_PLAYER)->m_bEye_fixation == false && 
+	if ((GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player", OBJ_PLAYER)->m_bEye_fixation == false && 
 		GET_MANAGER<CDeviceManager>()->GetBlurAmount() <= 0.5f && 
-		GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player", OBJ_PLAYER)->m_bMissleLockCamera == false)
+		GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player", OBJ_PLAYER)->m_bMissleLockCamera == false && m_bWaterDrop == false)|| m_bWaterDrop == true)
 	{
 		CGameObject::Render(pd3dCommandList, pCamera);
 	}

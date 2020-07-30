@@ -59,7 +59,7 @@ void CTestScene::BuildDefaultLightsAndMaterials()
 	m_pLights[0].m_xmf4Ambient = XMFLOAT4(0.2f, 0.2f, 0.2f, 1.0f);
 	m_pLights[0].m_xmf4Diffuse = XMFLOAT4(0.4f, 0.3f, 0.8f, 1.0f);
 	m_pLights[0].m_xmf4Specular = XMFLOAT4(0.5f, 0.5f, 0.5f, 0.0f);
-	m_pLights[0].m_xmf3Position = XMFLOAT3(230.0f, 330.0f, 480.0f);
+	m_pLights[0].m_xmf3Position = XMFLOAT3(0, -1000.f, 0);
 	m_pLights[0].m_xmf3Attenuation = XMFLOAT3(1.0f, 0.001f, 0.0001f);
 	m_pLights[1].m_bEnable = true;
 	m_pLights[1].m_nType = SPOT_LIGHT;
@@ -67,7 +67,7 @@ void CTestScene::BuildDefaultLightsAndMaterials()
 	m_pLights[1].m_xmf4Ambient = XMFLOAT4(0.1f, 0.1f, 0.1f, 1.0f);
 	m_pLights[1].m_xmf4Diffuse = XMFLOAT4(0.4f, 0.4f, 0.4f, 1.0f);
 	m_pLights[1].m_xmf4Specular = XMFLOAT4(0.3f, 0.3f, 0.3f, 0.0f);
-	m_pLights[1].m_xmf3Position = XMFLOAT3(-50.0f, 20.0f, -5.0f);
+	m_pLights[1].m_xmf3Position = XMFLOAT3(0, -1000.f, 0);
 	m_pLights[1].m_xmf3Direction = XMFLOAT3(0.0f, 0.0f, 1.0f);
 	m_pLights[1].m_xmf3Attenuation = XMFLOAT3(1.0f, 0.01f, 0.0001f);
 	m_pLights[1].m_fFalloff = 8.0f;
@@ -85,7 +85,7 @@ void CTestScene::BuildDefaultLightsAndMaterials()
 	m_pLights[3].m_xmf4Ambient = XMFLOAT4(0.3f, 0.3f, 0.3f, 1.0f);
 	m_pLights[3].m_xmf4Diffuse = XMFLOAT4(0.3f, 0.7f, 0.0f, 1.0f);
 	m_pLights[3].m_xmf4Specular = XMFLOAT4(0.3f, 0.3f, 0.3f, 0.0f);
-	m_pLights[3].m_xmf3Position = XMFLOAT3(550.0f, 530.0f, 530.0f);
+	m_pLights[3].m_xmf3Position = XMFLOAT3(0, -1000.f, 0);
 	m_pLights[3].m_xmf3Direction = XMFLOAT3(0.0f, 1.0f, 1.0f);
 	m_pLights[3].m_xmf3Attenuation = XMFLOAT3(1.0f, 0.01f, 0.0001f);
 	m_pLights[3].m_fFalloff = 8.0f;
@@ -97,7 +97,7 @@ void CTestScene::BuildDefaultLightsAndMaterials()
 	m_pLights[4].m_xmf4Ambient = XMFLOAT4(0.2f, 0.2f, 0.2f, 1.0f);
 	m_pLights[4].m_xmf4Diffuse = XMFLOAT4(0.8f, 0.3f, 0.3f, 1.0f);
 	m_pLights[4].m_xmf4Specular = XMFLOAT4(0.5f, 0.5f, 0.5f, 0.0f);
-	m_pLights[4].m_xmf3Position = XMFLOAT3(600.0f, 250.0f, 700.0f);
+	m_pLights[4].m_xmf3Position = XMFLOAT3(0, -1000.f, 0);
 	m_pLights[4].m_xmf3Attenuation = XMFLOAT3(1.0f, 0.001f, 0.0001f);
 }
 
@@ -119,7 +119,7 @@ void CTestScene::BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandLis
 	float fx =  FRAME_BUFFER_WIDTH / 2;
 	float fy =  FRAME_BUFFER_HEIGHT / 2;
 	
-	m_nGameObjects = 16;
+	m_nGameObjects = 18;
 	m_ppGameObjects = new CGameObject * [m_nGameObjects];
 	m_ppGameObjects[0] = new CUI(0, pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, 200.f, 200.f, 0.f, XMFLOAT2(0.f, 0.f), XMFLOAT2(0.f, 0.f), XMFLOAT2(0.f, 0.f), XMFLOAT2(0.f, 0.f));
 	m_ppGameObjects[0]->SetPosition(fx * 0.8, fy * 0.8, 0.f);
@@ -182,9 +182,17 @@ void CTestScene::BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandLis
 	// 파괴
 	m_ppGameObjects[14] = new CUI(11, pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, 240.f, 240.f, 0.f, XMFLOAT2(-0.f, -0.f), XMFLOAT2(-0.f, -0.f), XMFLOAT2(-0.f, -0.f), XMFLOAT2(-0.f, -0.f));
 	m_ppGameObjects[14]->SetIsRender(false);
-	m_ppGameObjects[14]->SetPosition( fx*0.001f, fy * 0.25f, 0.f);
+	m_ppGameObjects[14]->SetPosition(fx * -2.f, fy * -2.f, 0.f);
+
 
 	m_ppGameObjects[15] = new CNavigator(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature);
+	
+	m_ppGameObjects[16] = new CUI(13, pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, 500.f, 70.f, 0.f, XMFLOAT2(-0.f, -0.f), XMFLOAT2(-0.f, -0.f), XMFLOAT2(-0.f, -0.f), XMFLOAT2(-0.f, -0.f));
+	m_ppGameObjects[16]->SetIsRender(false);
+	m_ppGameObjects[16]->SetPosition(fx * 0.001f, fy * 0.25f, 0.f);
+
+	m_ppGameObjects[17] = new CUI(12, pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, 500.f, 70.f, 0.f, XMFLOAT2(-0.f, -0.f), XMFLOAT2(-0.f, -0.f), XMFLOAT2(-0.f, -0.f), XMFLOAT2(-0.f, -0.f));
+	m_ppGameObjects[17]->SetIsRender(false);
 
 	m_ObjManager->AddObject(L"player_ui1_testui", m_ppGameObjects[0], OBJ_UI);
 	m_ObjManager->AddObject(L"player_ui2_weapon", m_ppGameObjects[1], OBJ_UI);
@@ -202,6 +210,8 @@ void CTestScene::BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandLis
 	m_ObjManager->AddObject(L"player_ui14_missile", m_ppGameObjects[13], OBJ_FIGHT_UI2);
 	m_ObjManager->AddObject(L"player_ui15_destroyed", m_ppGameObjects[14], OBJ_FIGHT_UI3);
 	m_ObjManager->AddObject(L"player_ui16_navigator", m_ppGameObjects[15], OBJ_NAVIGATOR);
+	m_ObjManager->AddObject(L"player_ui17_mission_failed", m_ppGameObjects[16], OBJ_FIGHT_UI4);
+	m_ObjManager->AddObject(L"player_ui18_mission_restart", m_ppGameObjects[17], OBJ_FIGHT_UI4);
 
 	XMFLOAT3 xmf3Scale(8.0f, 2.0f, 8.0f);
 	XMFLOAT4 xmf4Color(0.0f, 0.3f, 0.0f, 0.0f);
@@ -383,10 +393,10 @@ void CTestScene::CreateStageObject()
 	if (GET_MANAGER<SceneManager>()->m_bCreateShip == false)
 	{
 		GET_MANAGER<SceneManager>()->m_bCreateShip = true;
-		for (int i = 0; i < 8; ++i)
+		for (int i = 0; i < 5; ++i)
 		{
 			std::default_random_engine dre(time(NULL) * i * 0.548);
-			std::uniform_real_distribution<float>fXPos(-4000.f, 4000.f);
+			std::uniform_real_distribution<float>fXPos(-7000.f, 7000.f);
 			std::uniform_real_distribution<float>fZPos(3200.f, 6400.f);
 
 			C052CDestroyer* p052C;
@@ -426,7 +436,7 @@ void CTestScene::CreateStageObject()
 			pMig21_A->SetPosition(pTu160->GetPosition().x + 200, pTu160->GetPosition().y, pTu160->GetPosition().z + 150);
 			pMig21_A->Rotate(0, 180, 0);
 			pMig21_A->m_xmf3Look = XMFLOAT3(0, 0, -1);
-			m_ObjManager->AddObject(L"mig21", pMig21_A, OBJ_ENEMY);
+			m_ObjManager->AddObject(L"mig21A", pMig21_A, OBJ_ENEMY);
 			GET_MANAGER<SceneManager>()->m_nTgtObject++;
 
 			CMig21* pMig21_B;
@@ -434,7 +444,7 @@ void CTestScene::CreateStageObject()
 			pMig21_B->SetPosition(pTu160->GetPosition().x - 200, pTu160->GetPosition().y, pTu160->GetPosition().z + 150);
 			pMig21_B->Rotate(0, 180, 0);
 			pMig21_B->m_xmf3Look = XMFLOAT3(0, 0, -1);
-			m_ObjManager->AddObject(L"mig21", pMig21_B, OBJ_ENEMY);
+			m_ObjManager->AddObject(L"mig21B", pMig21_B, OBJ_ENEMY);
 			GET_MANAGER<SceneManager>()->m_nTgtObject++;
 		}
 		cout << GET_MANAGER<SceneManager>()->m_nTgtObject;
@@ -519,11 +529,22 @@ bool CTestScene::ProcessInput(UCHAR* pKeysBuffer)
 
 void CTestScene::AnimateObjects(float fTimeElapsed)
 {
-	m_fElapsedTime += fTimeElapsed;
-	elapsedTime += fTimeElapsed;
-	
 	GET_MANAGER<SceneManager>()->SceneStoped();
-
+	 
+	if (m_pPlayer->m_bGameOver)
+	{
+		m_ppGameObjects[16]->SetIsRender(true);
+		cout << "게임오버라고 ?!" << m_fElapsedTime << endl;
+		m_fElapsedTime += fTimeElapsed;
+		if (m_fElapsedTime > 7)
+		{
+			m_ppGameObjects[16]->SetIsRender(false);
+			m_pPlayer->m_bGameOver = false;
+			cout << "응 아니야" << endl;
+			m_fElapsedTime = 0.f;
+		}
+	}
+	
 	CreateStageObject();
 
 	if (!GET_MANAGER<SceneManager>()->GetSceneStoped())
@@ -533,16 +554,23 @@ void CTestScene::AnimateObjects(float fTimeElapsed)
 			if (obj.second->m_bDestroyed)
 			{
 				m_ppGameObjects[14]->SetIsRender(true);
-				elapsedTime = 0;
+				m_ppGameObjects[14]->SetPosition(fx * 0.001f, fy * 0.25f, 0.f);
+
+				elapsedTime += fTimeElapsed;
+				if (elapsedTime > 2)
+				{
+					m_ppGameObjects[14]->SetIsRender(false);
+						m_ppGameObjects[14]->SetPosition( fx*-2.f, fy * -2.f, 0.f);
+
+				}
 			}
-			else if (elapsedTime > 2)
-			{
-				m_ppGameObjects[14]->SetIsRender(false);
-			}
+			
+			
 
 			if (obj.second->m_bAiLockOn == true)
 			{
 				m_ppGameObjects[12]->SetIsRender(true);
+				m_fElapsedTime += fTimeElapsed;
 
 				if (m_fElapsedTime > 3.0)
 				{
@@ -583,7 +611,6 @@ void CTestScene::AnimateObjects(float fTimeElapsed)
 		}
 
 	}
-
 
 	m_ObjManager->GetObjFromTag(L"player", OBJ_PLAYER)->SetPlayerMSL(m_pPlayer->GetMSLCount());
 	m_ObjManager->GetObjFromTag(L"player", OBJ_PLAYER)->SetPlayerSpeed(m_pPlayer->GetAircraftSpeed());

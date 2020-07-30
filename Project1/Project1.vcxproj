@@ -206,6 +206,7 @@
     <ClInclude Include="CUI.h" />
     <ClInclude Include="CVertex.h" />
     <ClInclude Include="CWater.h" />
+    <ClInclude Include="CXBOXController.h" />
     <ClInclude Include="d3dx12.h" />
     <ClInclude Include="DDSTextureLoader12.h" />
     <ClInclude Include="Define.h" />
@@ -242,6 +243,7 @@
     </ClInclude>
     <ClInclude Include="WICTextureLoader12.h" />
     <ClInclude Include="CMinimap.h" />
+    <ClInclude Include="Xinput.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AIManager.cpp" />
@@ -288,6 +290,7 @@
     <ClCompile Include="CTU160.cpp" />
     <ClCompile Include="CVertex.cpp" />
     <ClCompile Include="CWater.cpp" />
+    <ClCompile Include="CXBOXController.cpp" />
     <ClCompile Include="DDSTextureLoader12.cpp" />
     <ClCompile Include="DeviceManager.cpp" />
     <ClCompile Include="CHeightMapMesh.cpp" />

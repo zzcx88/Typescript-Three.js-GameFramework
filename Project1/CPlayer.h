@@ -66,6 +66,7 @@ protected:
 
 	//Hp Count
 	int m_nHp = 0;
+
 public:
 	CPlayer();
 	virtual ~CPlayer();
@@ -132,6 +133,7 @@ public:
 	virtual void GunCameraMove(float fTimeElapsed) {}
 
 	void Update_Input(const float& TimeDelta);
+	void Update_PadInput(const float& TimeDelta);
 	virtual void WingAnimate(float fTimeElapsed, DWORD Direction);
 	virtual void Animate(float fTimeElapsed);
 

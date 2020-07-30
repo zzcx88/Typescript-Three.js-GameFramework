@@ -174,7 +174,8 @@ void UIManager::MoveLockOnUI(ObjectManager::MAPOBJ* PlyList, ObjectManager::MAPO
 						float fx = Ene.second->GetScreenPosition().x - ((float)FRAME_BUFFER_WIDTH / 2.f);
 						float fy = (Ene.second->GetScreenPosition().y - ((float)FRAME_BUFFER_HEIGHT / 2.f)) * -1;
 
-						nDistance = Ene.second->m_pLockOnUI->GetLenth();
+						nDistance = Ene.second->LenthToPlayer;
+						Ene.second->m_pLockOnUI->m_fLenth = nDistance;
 						if (nDistance < 0)
 							nDistance = 1;
 						//cout << nDistance << " °Å¸®" << endl;
@@ -422,7 +423,7 @@ void UIManager::MoveLockOnUI(ObjectManager::MAPOBJ* PlyList, ObjectManager::MAPO
 		}
 	}
 
-	if (true == keyManager->GetKeyState(STATE_DOWN, VK_F))
+	if (true == keyManager->GetKeyState(STATE_DOWN, VK_F) || true == keyManager->GetPadState(STATE_DOWN, XINPUT_GAMEPAD_Y))
 	{
 		if (m_bFighterType == true)
 		{

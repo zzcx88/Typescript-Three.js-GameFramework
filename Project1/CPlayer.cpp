@@ -4,6 +4,7 @@
 #include "CGunshipObject.h"
 #include "CLockOnUI.h"
 #include "CPlayer.h"
+#include "CEngineRafraction.h"
 
 CPlayer::CPlayer()
 {
@@ -37,9 +38,7 @@ CPlayer::~CPlayer()
 
 void CPlayer::ReturnEyeFix()
 {
-	m_fFOV = 60;
-	m_pCamera->GenerateProjectionMatrix(1.01f, m_fFarPlaneDistance, ASPECT_RATIO, m_fFOV);
-	m_pCamera->SetLookPlayer();
+	m_pCamera->SetLookPlayer(false);
 	XMFLOAT3 xmf3Shift = XMFLOAT3(0, 0, 0);
 	xmf3Shift = Vector3::Add(xmf3Shift, m_xmf3Up, 0.6);
 	m_pCamera->SetPosition(Vector3::Add(m_xmf3Position, xmf3Shift));
@@ -143,7 +142,6 @@ void CPlayer::Rotate(float x, float y, float z)
 			m_xmf3Right = Vector3::TransformNormal(m_xmf3Right, xmmtxRotate);
 		}
 	}
-
 	m_xmf3Look = Vector3::Normalize(m_xmf3Look);
 	m_xmf3Right = Vector3::CrossProduct(m_xmf3Up, m_xmf3Look, true);
 	m_xmf3Up = Vector3::CrossProduct(m_xmf3Look, m_xmf3Right, true);
@@ -169,11 +167,11 @@ void CPlayer::Update_Input(const float& TimeDelta)
 				else
 				{
 					m_bEye_fixation = false;
-				}
-
-				if (m_bEye_fixation == false)
-				{
-					ReturnEyeFix();
+					if (m_bGunFire == true)
+					{
+						m_fGunFOV = 60;
+						ReturnEyeFix();
+					}
 				}
 			}
 		}
@@ -187,11 +185,11 @@ void CPlayer::Update_Input(const float& TimeDelta)
 			else
 			{
 				m_bEye_fixation = false;
-			}
-
-			if (m_bEye_fixation == false)
-			{
-				ReturnEyeFix();
+				if (m_bGunFire == true)
+				{
+					m_fGunFOV = 60;
+					ReturnEyeFix();
+				}
 			}
 		}
 	}
@@ -235,12 +233,6 @@ void CPlayer::Update_Input(const float& TimeDelta)
 			m_bGunFire = false;
 			m_fGunFOV = 60.f;
 			m_pCamera->GenerateProjectionMatrix(1.01f, m_fFarPlaneDistance, ASPECT_RATIO, m_fFOV);
-			m_pCamera->SetLookPlayer();
-			XMFLOAT3 xmf3Shift = XMFLOAT3(0, 0, 0);
-			xmf3Shift = Vector3::Add(xmf3Shift, m_xmf3Up, 0.6);
-			m_pCamera->SetPosition(Vector3::Add(m_xmf3Position, xmf3Shift));
-			xmf3Shift = Vector3::Add(xmf3Shift, m_xmf3Look, -4.1);
-			m_pCamera->SetPosition(Vector3::Add(m_xmf3Position, xmf3Shift));
 		}
 		dwDirection |= VK_LCONTROL;
 	}
@@ -275,12 +267,6 @@ void CPlayer::Update_Input(const float& TimeDelta)
 			if (m_fFOV < 60)
 				m_fFOV = 60;
 			m_pCamera->GenerateProjectionMatrix(1.01f, m_fFarPlaneDistance, ASPECT_RATIO, m_fFOV);
-			m_pCamera->SetLookPlayer();
-			XMFLOAT3 xmf3Shift = XMFLOAT3(0, 0, 0);
-			xmf3Shift = Vector3::Add(xmf3Shift, m_xmf3Up, 0.6);
-			m_pCamera->SetPosition(Vector3::Add(m_xmf3Position, xmf3Shift));
-			xmf3Shift = Vector3::Add(xmf3Shift, m_xmf3Look, -4.1);
-			m_pCamera->SetPosition(Vector3::Add(m_xmf3Position, xmf3Shift));
 		}
 	}
 
@@ -486,16 +472,28 @@ void CPlayer::Update_Input(const float& TimeDelta)
 				m_pCamera->SetLookAt(XMFLOAT3(m_xmf3FixTarget));
 			}
 		}
-			if (m_fFOV > 40)
+			if (m_fFOV > 25)
 			{
 				m_pCamera->GenerateProjectionMatrix(1.01f, m_fFarPlaneDistance, ASPECT_RATIO, m_fFOV);
-				m_fFOV -= 30 * TimeDelta;
+				m_fFOV -= 80 * TimeDelta;
 			}
+	}
+	if (m_bEye_fixation == false && m_fFOV < 60)
+	{
+		m_pCamera->GenerateProjectionMatrix(1.01f, m_fFarPlaneDistance, ASPECT_RATIO, m_fFOV);
+		m_fFOV += 30 * TimeDelta;
+	}
+
+	if (m_bEye_fixation == false && m_bGunFire == false && m_bMissleLockCamera == false)
+	{
+		m_pCamera->SetLookPlayer();
 	}
 
 	if (m_fAircraftSpeed > 700)
 	{
-		GET_MANAGER<CDeviceManager>()->SetBulrSwitch(true);
+		CEngineRafraction* RefractObj = (CEngineRafraction*)GET_MANAGER<ObjectManager>()->GetObjFromTag(L"EngineRefractionObj", OBJ_EFFECT);
+		if (RefractObj->m_bWaterDrop == false)
+			GET_MANAGER<CDeviceManager>()->SetBulrSwitch(true);
 	}
 	if (m_fAircraftSpeed < 600 && GET_MANAGER<CDeviceManager>()->GetBlurAmount() == 0)
 		GET_MANAGER<CDeviceManager>()->SetBulrSwitch(false);
@@ -504,6 +502,366 @@ void CPlayer::Update_Input(const float& TimeDelta)
 	MoveForward(8.0f);
 	WingAnimate(TimeDelta, dwDirection);
 	GunCameraMove(TimeDelta);
+}
+
+void CPlayer::Update_PadInput(const float& TimeDelta)
+{
+	KeyManager* keyManager = GET_MANAGER<KeyManager>();
+	DWORD dwDirection = 0;
+
+	if (true == keyManager->GetPadState(STATE_DOWN, XINPUT_GAMEPAD_X))
+	{
+		//m_bGameOver = true;
+		if (GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player_missle", OBJ_ALLYMISSLE))
+		{
+			if (GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player_missle", OBJ_ALLYMISSLE)->m_bMissleLockCamera == false)
+			{
+				dwDirection |= XINPUT_GAMEPAD_X;
+				if (m_bEye_fixation == false)
+				{
+					m_bEye_fixation = true;
+				}
+				else
+				{
+					m_bEye_fixation = false;
+					if (m_bGunFire == true)
+					{
+						m_fGunFOV = 60;
+						ReturnEyeFix();
+					}
+				}
+			}
+		}
+		else
+		{
+			dwDirection |= XINPUT_GAMEPAD_Y;
+			if (m_bEye_fixation == false)
+			{
+				m_bEye_fixation = true;
+			}
+			else
+			{
+				m_bEye_fixation = false;
+				if (m_bGunFire == true)
+				{
+					m_fGunFOV = 60;
+					ReturnEyeFix();
+				}
+			}
+		}
+	}
+
+	//if (true == keyManager->GetKeyState(STATE_DOWN, VK_LSHIFT))
+	//{
+	//	//m_bGameOver = true;
+	//	dwDirection |= VK_LSHIFT;
+	//	if (m_bLockType == false)
+	//	{
+	//		m_bLockType = true;
+	//	}
+	//	else
+	//	{
+	//		m_bLockType = false;
+	//	}
+	//}
+
+	if (true == keyManager->GetPadState(STATE_PUSH, XINPUT_GAMEPAD_A))
+	{
+		if (m_bGunSoundPlayed == false)
+		{
+			GET_MANAGER<SoundManager>()->PlaySound(L"GunFire.mp3", CH_AIRGUN);
+			GET_MANAGER<SoundManager>()->SetVolume(CH_AIRGUN, 0.3f);
+			m_bGunSoundPlayed = true;
+		}
+		if (!m_bEye_fixation)
+			m_fFOV = 60;
+		m_bGunFire = true;
+		m_fGunFireElapsed += TimeDelta;
+		dwDirection |= XINPUT_GAMEPAD_A;
+		GunFire(TimeDelta);
+	}
+
+	if (true == keyManager->GetPadState(STATE_UP, XINPUT_GAMEPAD_A))
+	{
+		GET_MANAGER<SoundManager>()->StopSound(CH_AIRGUN);
+		m_bGunSoundPlayed = false;
+		if (m_bGunFire != false && m_bEye_fixation == false)
+		{
+			m_bGunFire = false;
+			m_fGunFOV = 60.f;
+			m_pCamera->GenerateProjectionMatrix(1.01f, m_fFarPlaneDistance, ASPECT_RATIO, m_fFOV);
+		}
+		dwDirection |= XINPUT_GAMEPAD_A;
+	}
+
+
+	if (true == keyManager->GetPadState(STATE_PUSH, XINPUT_GAMEPAD_B))
+	{
+		dwDirection |= XINPUT_GAMEPAD_B;
+		if (m_fPushSpaceElapsed == 0.0f)
+		{
+			GET_MANAGER<SoundManager>()->PlaySound(L"Missile_launch.mp3", CH_MISSLE);
+			GET_MANAGER<SoundManager>()->SetVolume(CH_MISSLE, 0.2f);
+			MissleLaunch();
+		}
+		m_fPushSpaceElapsed += 1 * TimeDelta;
+		if (m_fPushSpaceElapsed > 0.3f)
+		{
+			if (GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player_missle", OBJ_ALLYMISSLE))
+				GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player_missle", OBJ_ALLYMISSLE)->m_bMissleLockCamera = true;
+			m_bMissleLockCamera = true;
+		}
+	}
+
+	if (true == keyManager->GetPadState(STATE_UP, XINPUT_GAMEPAD_B))
+	{
+		m_fPushSpaceElapsed = 0.0f;
+		if (GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player_missle", OBJ_ALLYMISSLE))
+			GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player_missle", OBJ_ALLYMISSLE)->m_bMissleLockCamera = false;
+		m_bMissleLockCamera = false;
+		if (m_bEye_fixation == false && m_bGunFire == false)
+		{
+			if (m_fFOV < 60)
+				m_fFOV = 60;
+			m_pCamera->GenerateProjectionMatrix(1.01f, m_fFarPlaneDistance, ASPECT_RATIO, m_fFOV);
+		}
+	}
+
+	if (true == keyManager->normalizedLX > 0 || true == keyManager->normalizedLX < 0)
+	{
+		m_fTimeLegElapsed += TimeDelta;
+		if (true == keyManager->normalizedLX > 0)
+		{
+			if (!(true == keyManager->normalizedLX < 0))
+			{
+				dwDirection |= VK_RIGHT;
+				Rotate(0.0f, 0.0f, -Roll_WingsRotateDegree * m_fRollPerformance * TimeDelta);
+				RightRollAnimation(TimeDelta);
+			}
+			else
+			{
+				if (Roll_WingsRotateDegree != 0)
+					Rotate(0.0f, 0.0f, -Roll_WingsRotateDegree * m_fRollPerformance * TimeDelta);
+				RollWingReturn(TimeDelta);
+			}
+		}
+
+		if (true == keyManager->normalizedLX < 0)
+		{
+			if (!(true == keyManager->normalizedLX > 0))
+			{
+				dwDirection |= VK_LEFT;
+				Rotate(0.0f, 0.0f, -Roll_WingsRotateDegree * m_fRollPerformance * TimeDelta);
+				LeftRollAnimation(TimeDelta);
+			}
+		}
+	}
+	else
+	{
+		if (Roll_WingsRotateDegree != 0)
+			Rotate(0.0f, 0.0f, -Roll_WingsRotateDegree * m_fRollPerformance * TimeDelta);
+		RollWingReturn(TimeDelta);
+	}
+
+	if (true == keyManager->normalizedLY > 0 || true == keyManager->normalizedLY < 0)
+	{
+		m_fTimeLegElapsed += TimeDelta;
+		if (true == keyManager->normalizedLY > 0)
+		{
+			if (!(true == keyManager->normalizedLY < 0))
+			{
+				dwDirection |= VK_UP;
+				Rotate(Pitch_WingsRotateDegree * m_fPitchPerformance * TimeDelta, 0.0f, 0.0f);
+				DownPitchAnimation(TimeDelta);
+			}
+			else
+			{
+				if (Pitch_WingsRotateDegree != 0)
+					Rotate(Pitch_WingsRotateDegree * m_fPitchPerformance * TimeDelta, 0.0f, 0.0f);
+				PitchWingReturn(TimeDelta);
+			}
+		}
+
+		if (true == keyManager->normalizedLY < 0)
+		{
+			if (!(true == keyManager->normalizedLY > 0))
+			{
+				dwDirection |= VK_DOWN;
+				Rotate(Pitch_WingsRotateDegree * m_fPitchPerformance * TimeDelta, 0.0f, 0.0f);
+				UpPitchAnimation(TimeDelta);
+			}
+		}
+	}
+	else
+	{
+		if (Pitch_WingsRotateDegree != 0)
+			Rotate(Pitch_WingsRotateDegree * m_fPitchPerformance * TimeDelta, 0.0f, 0.0f);
+		PitchWingReturn(TimeDelta);
+	}
+
+
+	if (keyManager->GetPadState(STATE_PUSH, XINPUT_GAMEPAD_LEFT_SHOULDER) || keyManager->GetPadState(STATE_PUSH, XINPUT_GAMEPAD_RIGHT_SHOULDER))
+	{
+		m_fTimeLegElapsed += TimeDelta;
+		if (true == keyManager->GetPadState(STATE_PUSH, XINPUT_GAMEPAD_LEFT_SHOULDER))
+		{
+			if (!(true == keyManager->GetPadState(STATE_PUSH, XINPUT_GAMEPAD_RIGHT_SHOULDER)))
+			{
+				dwDirection |= XINPUT_GAMEPAD_LEFT_SHOULDER;
+				Rotate(0.0f, Yaw_WingsRotateDegree * m_fYawPerformance * TimeDelta, 0.0f);
+				LeftYawAnimation(TimeDelta);
+			}
+			else
+			{
+				if (Yaw_WingsRotateDegree != 0)
+					Rotate(0.0f, Yaw_WingsRotateDegree * m_fYawPerformance * TimeDelta, 0.0f);
+				YawWingReturn(TimeDelta);
+			}
+		}
+
+		if (true == keyManager->GetPadState(STATE_PUSH, XINPUT_GAMEPAD_RIGHT_SHOULDER))
+		{
+			if (!(true == keyManager->GetPadState(STATE_PUSH, XINPUT_GAMEPAD_LEFT_SHOULDER)))
+			{
+				dwDirection |= XINPUT_GAMEPAD_RIGHT_SHOULDER;
+				Rotate(0.0f, Yaw_WingsRotateDegree * m_fYawPerformance * TimeDelta, 0.0f);
+				RightYawAnimation(TimeDelta);
+			}
+		}
+	}
+	else
+	{
+		if (Yaw_WingsRotateDegree != 0)
+			Rotate(0.0f, Yaw_WingsRotateDegree * m_fYawPerformance * TimeDelta, 0.0f);
+		YawWingReturn(TimeDelta);
+	}
+
+
+	if (keyManager->ComputePadLeftTrigerState() > 0.5f || keyManager->ComputePadRightTrigerState() > 0.5f)
+	{
+		if (true == keyManager->ComputePadRightTrigerState() > 0.5f)
+		{
+			if (!(true == keyManager->ComputePadLeftTrigerState() > 0.5f))
+			{
+				//dwDirection |= VK_W;
+				if (m_fAircraftSpeed < 1000)
+				{
+					m_fAircraftSpeed += 100 * TimeDelta;
+				}
+				if (m_fFOV < 70 && m_bEye_fixation == false)
+				{
+					if (!m_bGunFire)
+						m_pCamera->GenerateProjectionMatrix(1.01f, m_fFarPlaneDistance, ASPECT_RATIO, m_fFOV += 10.f * TimeDelta);
+				}
+				if (m_fBurnerElapsed < 100)
+				{
+					m_fBurnerElapsed += 100 * TimeDelta;
+				}
+			}
+		}
+
+		if (true == keyManager->ComputePadLeftTrigerState() > 0.5f)
+		{
+			//dwDirection |= VK_S;
+			if (m_fAircraftSpeed > 150)
+			{
+				m_fAircraftSpeed -= 150 * TimeDelta;
+			}
+			if (m_fFOV > 60)
+			{
+				if (!m_bGunFire)
+					m_pCamera->GenerateProjectionMatrix(1.01f, m_fFarPlaneDistance, ASPECT_RATIO, m_fFOV -= 20.f * TimeDelta);
+			}
+			if (m_fBurnerElapsed > 0)
+			{
+				m_fBurnerElapsed -= 100 * TimeDelta;
+			}
+		}
+	}
+	else
+	{
+		if (m_fAircraftSpeed > 200)
+		{
+			m_fAircraftSpeed -= 100 * TimeDelta;
+		}
+		if (m_fFOV > 60)
+		{
+			m_pCamera->GenerateProjectionMatrix(1.01f, m_fFarPlaneDistance, ASPECT_RATIO, m_fFOV -= 10.f * TimeDelta);
+		}
+		if (m_fBurnerElapsed > 0)
+		{
+			m_fBurnerElapsed -= 100 * TimeDelta;
+		}
+
+		if (m_fAircraftSpeed < 1000 && m_fAircraftSpeed > 200)
+		{
+			m_fAircraftSpeed -= 50 * TimeDelta;
+		}
+	}
+
+	if (m_fAircraftSpeed >= 148 && m_fAircraftSpeed < 200)
+	{
+		if (m_fAircraftSpeed < 150)
+		{
+			m_fAircraftSpeed = 150;
+		}
+		m_fAircraftSpeed += 50 * TimeDelta;
+	}
+
+	if (m_fAircraftSpeed >= 148 && m_fAircraftSpeed < 200)
+	{
+		if (m_fAircraftSpeed < 150)
+		{
+			m_fAircraftSpeed = 150;
+		}
+		m_fAircraftSpeed += 50 * TimeDelta;
+	}
+
+	if (m_bEye_fixation == true)
+	{
+		m_pCamera->SetPosition(XMFLOAT3(GetPosition().x - m_pCamera->GetLookVector().x * 7, GetPosition().y + 1.3 - m_pCamera->GetLookVector().y * 7,
+			GetPosition().z - m_pCamera->GetLookVector().z * 7));
+		for (auto& Ene : m_ObjManager->GetObjFromType(OBJ_ENEMY))
+		{
+			if (Ene.second->m_bAiming == true && Ene.second->GetState() != true)
+			{
+				m_xmf3FixTarget = Ene.second->GetPosition();
+				m_pCamera->SetLookAt(XMFLOAT3(m_xmf3FixTarget));
+			}
+		}
+		if (m_fFOV > 25)
+		{
+			m_pCamera->GenerateProjectionMatrix(1.01f, m_fFarPlaneDistance, ASPECT_RATIO, m_fFOV);
+			m_fFOV -= 80 * TimeDelta;
+		}
+	}
+	if (m_bEye_fixation == false && m_fFOV < 60)
+	{
+		m_pCamera->GenerateProjectionMatrix(1.01f, m_fFarPlaneDistance, ASPECT_RATIO, m_fFOV);
+		m_fFOV += 30 * TimeDelta;
+	}
+
+	if (m_bEye_fixation == false && m_bGunFire == false && m_bMissleLockCamera == false)
+	{
+		m_pCamera->SetLookPlayer();
+	}
+
+	if (m_fAircraftSpeed > 700)
+	{
+		CEngineRafraction* RefractObj = (CEngineRafraction*)GET_MANAGER<ObjectManager>()->GetObjFromTag(L"EngineRefractionObj", OBJ_EFFECT);
+		if (RefractObj->m_bWaterDrop == false)
+			GET_MANAGER<CDeviceManager>()->SetBulrSwitch(true);
+		else
+			GET_MANAGER<CDeviceManager>()->SetBulrSwitch(false);
+	}
+	if (m_fAircraftSpeed < 600 && GET_MANAGER<CDeviceManager>()->GetBlurAmount() == 0)
+		GET_MANAGER<CDeviceManager>()->SetBulrSwitch(false);
+
+	Move(DIR_FORWARD, m_fAircraftSpeed * TimeDelta, true);
+	MoveForward(8.0f);
+	WingAnimate(TimeDelta, dwDirection);
+	GunCameraMove(TimeDelta);
+
 }
 
 void CPlayer::Animate(float fTimeElapsed)
@@ -525,11 +883,11 @@ void CPlayer::Animate(float fTimeElapsed)
 
 		Move(m_xmf3Velocity, false);
 
-		if (m_pPlayerUpdatedContext) OnPlayerUpdateCallback(fTimeElapsed);
+		//if (m_pPlayerUpdatedContext) OnPlayerUpdateCallback(fTimeElapsed);
 
 		DWORD nCurrentCameraMode = m_pCamera->GetMode();
 		if (nCurrentCameraMode == THIRD_PERSON_CAMERA) m_pCamera->Update(m_xmf3Position, fTimeElapsed);
-		if (m_pCameraUpdatedContext) OnCameraUpdateCallback(fTimeElapsed);
+		//if (m_pCameraUpdatedContext) OnCameraUpdateCallback(fTimeElapsed);
 		if (nCurrentCameraMode == THIRD_PERSON_CAMERA) m_pCamera->SetLookAt(m_xmf3Position);
 		m_pCamera->RegenerateViewMatrix();
 
@@ -540,7 +898,10 @@ void CPlayer::Animate(float fTimeElapsed)
 
 		if (GET_MANAGER<SceneManager>()->GetCurrentSceneState() != SCENE_MENU && m_nMSL_Count != NULL)
 		{
-			Update_Input(fTimeElapsed);
+			if (GET_MANAGER<KeyManager>()->m_pPadConnecter->IsConnected() == false)
+				Update_Input(fTimeElapsed);
+			else
+				Update_PadInput(fTimeElapsed);
 		}
 
 		SetEngineRefractionPos();
@@ -577,13 +938,23 @@ void CPlayer::Animate(float fTimeElapsed)
 
 void CPlayer::CollisionActivate(CGameObject* collideTarget)
 {
+	
 	if (collideTarget->m_ObjType == OBJ_ENEBULLET || collideTarget->m_ObjType == OBJ_ENEMISSLE)
 	{
 		//m_pCamera->SetPosition(XMFLOAT3(GetPosition().x, GetPosition().y + 200, GetPosition().z));
 		//wcout << GET_MANAGER<ObjectManager>()->GetTagFromObj(this, OBJ_PLAYER) << endl;
+		if (m_bGunFire == false)
+		{
+			if ((int)(GetPosition().x + GetPosition().y + GetPosition().z) / 2 == 0)
+				m_pCamera->Rotate(20, 0, 0);
+			else
+				m_pCamera->Rotate(-20, 0, 0);
+		}
+		//m_bGameOver = true;
 		cout << "플레이어 충돌!" << endl;
 
-		if (m_nHp > 1)
+		// 플레이어 체력, 게임 오버 시 작동 되는 코드
+		if (m_nHp > 1&&!m_bGameOver)
 		{
 			m_nHp -= 1;
 			//m_ppGameObjects[13]->SetIsRender(true);
@@ -599,7 +970,7 @@ void CPlayer::CollisionActivate(CGameObject* collideTarget)
 		}
 		else
 		{
-			//m_bGameOver = true;
+			m_bGameOver = true;
 
 			//GET_MANAGER<SceneManager>()->SetStoped(true);
 			//GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player_ui16_navigator", OBJ_NAVIGATOR)->SetIsRender(false);
@@ -629,8 +1000,11 @@ void CPlayer::CollisionActivate(CGameObject* collideTarget)
 			GET_MANAGER<UIManager>()->ShipOBJs.clear();
 
 			GET_MANAGER<ObjectManager>()->ReleaseFromType(OBJ_ENEMY);
-			m_nHp = 1;
+			m_nHp = 99;
 			SetPosition(XMFLOAT3(0, 1000, 0));
+			m_xmf3Look = XMFLOAT3(0, 0, 1);
+			m_xmf3Up = XMFLOAT3(0, 1, 0);
+			m_xmf3Right = XMFLOAT3(1, 0, 0);
 		}
 	}
 }

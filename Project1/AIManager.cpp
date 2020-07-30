@@ -56,6 +56,25 @@ void AIManager::MakeAction(AITYPE aiType)
 	}
 	if (aiType == AI_SHIP)
 	{
+		BT::Sequence* root = new BT::Sequence(); // ·çÆ® ³ëµå(½ÃÄö½º ³ëµå·Î »ý¼º)
+		BT::Selector* selector = new BT::Selector(); // ¼¿·ºÅÍ
+
+		BT::Sequence* seqPatrol = new BT::Sequence(); // Á¤Âû ½ÃÄö½º
+		BT::Sequence* seqAttack = new BT::Sequence();
+
+		BT::CNode* BT_Stop = new Stop();
+		BT::CNode* BT_MoveFoward = new MoveFoward();
+		BT::CNode* BT_EnemyNear = new IsEnemyNear();
+		BT::CNode* BT_Attack = new Attack();
+
+		root->AddChild(selector);
+		selector->AddChild(seqPatrol);
+		
+		seqPatrol->AddChild(BT_MoveFoward);
+		seqPatrol->AddChild(BT_EnemyNear);
+		seqPatrol->AddChild(BT_Attack);
+
+		m_mapNode.insert(MAPNODE::value_type(AI_SHIP, root->GetChildren()));
 	}
 }
 
@@ -63,6 +82,7 @@ void AIManager::DoAction(AITYPE Type, CGameObject* pObj)
 {
 	if (!pObj->m_bAIEnable)
 	{
+		pObj->m_AiType = Type;
 		MakeAction(Type);
 		pObj->m_bAIEnable = true;
 	}
@@ -70,8 +90,4 @@ void AIManager::DoAction(AITYPE Type, CGameObject* pObj)
 	iter = m_mapNode.find(Type)->second.begin();
 
 	(*iter)->Invoke(pObj);
-	/*while (!(*iter)->Invoke())
-	{
-
-	}*/
 }

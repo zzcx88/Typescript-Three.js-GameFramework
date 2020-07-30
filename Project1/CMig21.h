@@ -24,7 +24,7 @@ private:
 	CGameObject* m_pLeftWingEdge = NULL;
 	CGameObject* m_pRightWingEdge = NULL;
 
-	float m_fAddFogFrequence = 0.001f;
+	float m_fAddFogFrequence = 0.01f;
 	float m_fAddFogTimeElapsed = 0.f;
 
 	float m_fAddCrushFogFrequence = 0.05f;
@@ -34,5 +34,6 @@ public:
 	virtual void OnPrepareAnimate();
 	virtual void Animate(float fTimeElapsed);
 	void CollisionActivate(CGameObject* collideTarget);
+	bool IsVisible(CCamera* pCamera = NULL);
 	virtual void Render(ID3D12GraphicsCommandList* pd3dCommandList, CCamera* pCamera);
 };

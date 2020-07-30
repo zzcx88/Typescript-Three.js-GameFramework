@@ -27,6 +27,7 @@ cbuffer cbBlandAmount : register(b3)
 	float gfBlendAmount;
 	float gbEffectedObj;
 	float gbWarning;
+	float gfalpha;
 }
 
 #include "Light.hlsl"

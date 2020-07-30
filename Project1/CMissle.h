@@ -26,8 +26,10 @@ public:
 	bool FirstFire = true;
 	bool m_bLockOn = false;
 	bool m_bCameraPlayed = false;
+	bool m_bLaunchFromShip = false;
+	bool m_bShipMissleTurn = false;
 
-	float m_fAssertFrequence = 3.0f;
+	float m_fAssertFrequence = 4.0f;
 	float m_fDeleteFrequence = 5.0f;
 	float m_fAddFogFrequence = 0.001f;
 	float m_fAddFogTimeElapsed = 0.f;

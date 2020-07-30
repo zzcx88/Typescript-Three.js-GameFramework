@@ -24,6 +24,11 @@ CMissle::CMissle(CGameObject* pObj)
 
 	m_xmf4x4ToParent = Matrix4x4::Multiply(XMMatrixScaling(1, 1, 1), pObj->m_xmf4x4ToParent);
 	SetScale(10.f, 10.f, 10.f);
+
+	if (m_bLaunchFromShip == true)
+	{
+		m_fAssertFrequence = 6.f;
+	}
 }
 
 CMissle::CMissle(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList, ID3D12RootSignature* pd3dGraphicsRootSignature, XMFLOAT3* xmfTarget, XMFLOAT3 xmfLunchPosition, ObjectManager* pObjectManager)
@@ -56,7 +61,7 @@ void CMissle::Animate(float fTimeElapsed)
 	if (m_bRefference == false)
 	{
 		m_fAddFogTimeElapsed += fTimeElapsed;
-		m_fDeleteTimeElapsed += fTimeElapsed;
+		m_fDeleteTimeElapsed += 1.2f * fTimeElapsed;
 
 		m_xmf3Position.x = m_xmf4x4ToParent._41;
 		m_xmf3Position.y = m_xmf4x4ToParent._42;
@@ -77,11 +82,21 @@ void CMissle::Animate(float fTimeElapsed)
 			XMFLOAT3 xmf3TargetVector = Vector3::Subtract(GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player", OBJ_PLAYER)->GetPosition(), GetPosition());
 			xmf3TargetVector = Vector3::Normalize(xmf3TargetVector);
 			float xmfAxis = Vector3::DotProduct(GetLook(), xmf3TargetVector);
-			if ((xmfAxis > 0.4f || xmfAxis < -0.4f) && xmfAxis > 0.f)
+			if ((xmfAxis > 0.5f || xmfAxis < -0.5f) && xmfAxis > 0.f)
 			{
 				GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player", OBJ_PLAYER)->m_AiMissleAssert = false;
 			}
 		}
+
+		if (m_fDeleteTimeElapsed > 0.5f && m_bShipMissleTurn == false && m_bLaunchFromShip == true)
+		{
+			m_bShipMissleTurn = true;
+			XMFLOAT4X4 mtxLookAt = Matrix4x4::LookAtLH(GetPosition(), GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player", OBJ_PLAYER)->GetPosition(), GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player", OBJ_PLAYER)->m_xmf3Up);
+			m_xmf3Right = XMFLOAT3(mtxLookAt._11, mtxLookAt._21, mtxLookAt._31);
+			m_xmf3Up = XMFLOAT3(mtxLookAt._12, mtxLookAt._22, mtxLookAt._32);
+			m_xmf3Look = XMFLOAT3(mtxLookAt._13, mtxLookAt._23, mtxLookAt._33);
+		}
+
 		if (m_fDeleteTimeElapsed > m_fDeleteFrequence)
 		{
 			m_isDead = true;
@@ -122,7 +137,7 @@ void CMissle::Animate(float fTimeElapsed)
 			m_fAddFogTimeElapsed = 0;
 		}
 
-		if (GET_MANAGER<ObjectManager>()->GetTagFromObj(this, OBJ_ALLYMISSLE) == L"player_missle" && m_bMissleLockCamera == true)
+		if (GET_MANAGER<ObjectManager>()->GetTagFromObj(this, OBJ_ALLYMISSLE) == L"player_missle" && m_bMissleLockCamera == true && m_bLockOn == true)
 		{
 			if (m_bCameraPlayed == false)
 			{
@@ -260,7 +275,7 @@ void CMissle::SetLookAt(float fTimeElapsed)
 		XMFLOAT3 xmfAxis = Vector3::CrossProduct(m_xmf3Look, xmf3TargetVector);
 		xmfAxis = Vector3::Normalize(xmfAxis);
 
-		LenthToPlayer = sqrt(xmf3TargetVector.x * xmf3TargetVector.x + xmf3TargetVector.y * xmf3TargetVector.x + xmf3TargetVector.z * xmf3TargetVector.z);
+		LenthToPlayer = Vector3::Length(xmf3TargetVector);
 		XMFLOAT3 LenthXYZ = Vector3::Subtract(*m_xmfTarget, m_xmfLunchPosition);
 		float LenthZ = sqrt(LenthXYZ.z * LenthXYZ.z);
 

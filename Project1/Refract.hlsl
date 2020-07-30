@@ -68,5 +68,6 @@ float4 PSTextured(VS_TEXTURED_OUTPUT input, uint primitiveID : SV_PrimitiveID) :
 
 	//refractionColor.a = 0.3;
 	//clip(refractionColor.a - 0.1);
+	//refractionColor.r = 1.f;
 	return refractionColor;
 }

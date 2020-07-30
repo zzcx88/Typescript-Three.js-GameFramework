@@ -267,6 +267,7 @@ public:
 	bool m_bEye_fixation = false;
 	bool		m_bLockType = false;
 
+	AITYPE m_AiType;
 	bool m_bAiContrail = false;
 	bool m_bAiLockOn = false;
 	bool m_bAiCanFire = false;
@@ -276,6 +277,7 @@ public:
 	bool m_AiMissleAssert = false;
 
 	bool m_bMissleLockCamera = false;
+	bool m_bLookAtOption = false;
 
 	OBJTYPE				m_ObjType = OBJ_END;
 
@@ -290,6 +292,7 @@ public:
 	float m_fBurnerBlendAmount;
 	float m_bEffectedObj = false;
 	float m_bWarning = false;
+	float m_falpha = 0.f;
 
 	float m_fFOV = 60;
 

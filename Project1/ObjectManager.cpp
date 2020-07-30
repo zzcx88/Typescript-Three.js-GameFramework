@@ -139,11 +139,12 @@ void ObjectManager::Render(ID3D12GraphicsCommandList* pd3dCommandList, CCamera* 
 					{
 						obj.second->Render(pd3dCommandList, pCamera);
 						//if(obj.first != L"MissleFogInstance")
-						if(i != OBJ_EFFECT)
-							if(i != OBJ_ALPHAMAP)
-								obj.second->UpdateTransform(NULL);
 					}
 				}
+				if (i != OBJ_EFFECT)
+					if (i != OBJ_ALPHAMAP)
+						if(i != OBJ_PLAYER)
+							obj.second->UpdateTransform(NULL);
 			}
 		}
 	}

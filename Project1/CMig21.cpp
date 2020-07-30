@@ -62,7 +62,7 @@ void CMig21::Animate(float fTimeElapsed)
 		m_xmf3Position.x = m_xmf4x4ToParent._41;
 		m_xmf3Position.y = m_xmf4x4ToParent._42;
 		m_xmf3Position.z = m_xmf4x4ToParent._43;
-		if (m_bAiContrail == true && m_bDestroyed == false)
+		if (m_bAiContrail == true && m_bDestroyed == false && LenthToPlayer < 5000.f && IsVisible(m_ObjManager->GetObjFromTag(L"player", OBJ_PLAYER)->m_pCamera))
 		{
 			if (m_fAddFogTimeElapsed > m_fAddFogFrequence)
 			{
@@ -76,8 +76,6 @@ void CMig21::Animate(float fTimeElapsed)
 					pMissleFog->m_pCamera = m_ObjManager->GetObjFromTag(L"player", OBJ_PLAYER)->m_pCamera;
 					pMissleFog->SetMesh(m_ObjManager->GetObjFromTag(L"MissleFog", OBJ_EFFECT)->m_pPlaneMesh);
 					pMissleFog->m_pEffectMaterial = new CMaterial(1);
-					std::default_random_engine dre(time(NULL) * fTimeElapsed);
-					std::uniform_int_distribution<int> index(0, 1);
 					pMissleFog->m_pEffectMaterial->SetTexture(m_ObjManager->GetObjFromTag(L"MissleFog", OBJ_EFFECT)->m_pEffectTexture[0]);
 					pMissleFog->m_pEffectMaterial->SetShader(m_ObjManager->GetObjFromTag(L"MissleFog", OBJ_EFFECT)->m_EffectShader);
 					pMissleFog->SetMaterial(0, pMissleFog->m_pEffectMaterial);
@@ -98,8 +96,6 @@ void CMig21::Animate(float fTimeElapsed)
 					pMissleFog->m_pCamera = m_ObjManager->GetObjFromTag(L"player", OBJ_PLAYER)->m_pCamera;
 					pMissleFog->SetMesh(m_ObjManager->GetObjFromTag(L"MissleFog", OBJ_EFFECT)->m_pPlaneMesh);
 					pMissleFog->m_pEffectMaterial = new CMaterial(1);
-					std::default_random_engine dre(time(NULL) * fTimeElapsed);
-					std::uniform_int_distribution<int> index(0, 1);
 					pMissleFog->m_pEffectMaterial->SetTexture(m_ObjManager->GetObjFromTag(L"MissleFog", OBJ_EFFECT)->m_pEffectTexture[0]);
 					pMissleFog->m_pEffectMaterial->SetShader(m_ObjManager->GetObjFromTag(L"MissleFog", OBJ_EFFECT)->m_EffectShader);
 					pMissleFog->SetMaterial(0, pMissleFog->m_pEffectMaterial);
@@ -145,6 +141,7 @@ void CMig21::Animate(float fTimeElapsed)
 		if (m_bReffernce == false && m_bDestroyed == false)
 		{
 			GET_MANAGER<AIManager>()->DoAction(AI_ESCORT, this);
+			UpdateTransform(NULL);
 		}
 
 		if (m_bDestroyed == true)
@@ -223,6 +220,15 @@ void CMig21::CollisionActivate(CGameObject* collideTarget)
 			}
 		}
 	}
+}
+
+bool CMig21::IsVisible(CCamera* pCamera)
+{
+	bool bIsVisible = false;
+	BoundingSphere xmBondingSphere = SphereCollider->m_BoundingSphere;
+	if (pCamera) bIsVisible = pCamera->IsInFrustum(xmBondingSphere);
+	UpdateTransform(NULL);
+	return(bIsVisible);
 }
 
 void CMig21::Render(ID3D12GraphicsCommandList* pd3dCommandList, CCamera* pCamera)

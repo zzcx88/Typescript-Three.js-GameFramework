@@ -37,6 +37,8 @@
 #include <map>
 #include <unordered_map>
 
+#include <xinput.h>
+
 using namespace std;
 
 #include <d3d12.h>
@@ -63,6 +65,8 @@ using Microsoft::WRL::ComPtr;
 //1536x864
 //1920x1080
 
+//#define FRAME_BUFFER_WIDTH		1366
+//#define FRAME_BUFFER_HEIGHT		768
 #define FRAME_BUFFER_WIDTH		1536
 #define FRAME_BUFFER_HEIGHT		864
 //#define FRAME_BUFFER_WIDTH		1920
@@ -373,6 +377,7 @@ namespace Plane
 }
 
 #include "Constant.h"
+#include "CXBOXController.h"
 
 // 매니저
 #include "DeviceManager.h"

@@ -456,7 +456,7 @@ void CGameObject::Animate(float fTimeElapsed)
 		xmf3PlayerPos = GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player", OBJ_PLAYER)->GetPosition();
 		xmf3TargetVector = Vector3::Subtract(xmf3Pos, xmf3PlayerPos);
 		XMFLOAT3 xmfAxis = Vector3::CrossProduct(pPlayer->GetLookVector() , xmf3TargetVector);
-		LenthToPlayer = sqrt(xmf3TargetVector.x * xmf3TargetVector.x + xmf3TargetVector.y * xmf3TargetVector.x + xmf3TargetVector.z * xmf3TargetVector.z);
+		LenthToPlayer = Vector3::Length(xmf3TargetVector);
 
 		if (m_bAiming == true)
 		{
@@ -526,7 +526,8 @@ void CGameObject::UpdateShaderVariable(ID3D12GraphicsCommandList* pd3dCommandLis
 	pd3dCommandList->SetGraphicsRoot32BitConstants(16, 1, &m_fBurnerBlendAmount, 0);
 	pd3dCommandList->SetGraphicsRoot32BitConstants(16, 1, &m_bEffectedObj,1);
 	pd3dCommandList->SetGraphicsRoot32BitConstants(16, 1, &m_bWarning, 2);
-	
+	pd3dCommandList->SetGraphicsRoot32BitConstants(16, 1, &m_falpha, 3);
+
 }
 
 void CGameObject::UpdateShaderVariable(ID3D12GraphicsCommandList* pd3dCommandList, CMaterial* pMaterial)
