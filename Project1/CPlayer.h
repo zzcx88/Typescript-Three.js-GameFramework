@@ -68,7 +68,7 @@ protected:
 	int m_nScore = 0;
 
 	//Hp Count
-	int m_nHp = 5;
+	int m_nHp = 0;
 public:
 	CPlayer();
 	virtual ~CPlayer();

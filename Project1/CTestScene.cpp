@@ -531,19 +531,7 @@ void CTestScene::AnimateObjects(float fTimeElapsed)
 {
 	GET_MANAGER<SceneManager>()->SceneStoped();
 	 
-	if (m_pPlayer->m_bGameOver)
-	{
-		m_ppGameObjects[16]->SetIsRender(true);
-		cout << "게임오버라고 ?!" << m_fElapsedTime << endl;
-		m_fElapsedTime += fTimeElapsed;
-		if (m_fElapsedTime > 7)
-		{
-			m_ppGameObjects[16]->SetIsRender(false);
-			m_pPlayer->m_bGameOver = false;
-			cout << "응 아니야" << endl;
-			m_fElapsedTime = 0.f;
-		}
-	}
+	
 	
 	CreateStageObject();
 
