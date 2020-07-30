@@ -84,7 +84,7 @@ void CollisionManager::CollisionFloor()
 			if (PlayerHeight < 200)
 			{
 				GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player", OBJ_PLAYER)->m_bGameOver = true;
-				GET_MANAGER<SceneManager>()->SetStoped(true);
+				//GET_MANAGER<SceneManager>()->SetStoped(true);
 				GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player_ui16_navigator", OBJ_NAVIGATOR)->SetIsRender(false);
 				for (auto i = (int)OBJ_MINIMAP_UI; i <= OBJ_UI; ++i)
 				{

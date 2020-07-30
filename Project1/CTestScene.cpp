@@ -382,7 +382,7 @@ void CTestScene::CreateStageObject()
 
 	if (GET_MANAGER<SceneManager>()->m_bCreateShip == false)
 	{
-		m_bCreateShip = true;
+		GET_MANAGER<SceneManager>()->m_bCreateShip = true;
 		for (int i = 0; i < 5; ++i)
 		{
 			std::default_random_engine dre(time(NULL) * i * 0.548);

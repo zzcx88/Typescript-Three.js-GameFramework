@@ -407,7 +407,7 @@ void UIManager::MoveLockOnUI(ObjectManager::MAPOBJ* PlyList, ObjectManager::MAPO
 	KeyManager* keyManager = GET_MANAGER<KeyManager>();
 	DWORD dwDirection = 0;
 
-	if (true == keyManager->GetKeyState(STATE_DOWN, VK_LSHIFT))
+	if (true == keyManager->GetKeyState(STATE_DOWN, VK_LSHIFT) || true == keyManager->GetPadState(STATE_DOWN, XINPUT_GAMEPAD_BACK))
 	{
 		dwDirection |= VK_LSHIFT;
 		if (m_bFighterType == true)

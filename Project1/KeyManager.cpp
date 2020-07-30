@@ -47,6 +47,7 @@ int KeyManager::UpdateKey()
 		ComputePadState(XINPUT_GAMEPAD_X);
 		ComputePadState(XINPUT_GAMEPAD_Y);
 		ComputePadState(XINPUT_GAMEPAD_START);
+		ComputePadState(XINPUT_GAMEPAD_BACK);
 		ComputePadState(XINPUT_GAMEPAD_LEFT_SHOULDER);
 		ComputePadState(XINPUT_GAMEPAD_RIGHT_SHOULDER);
 		ComputePadState(XINPUT_GAMEPAD_DPAD_DOWN);
