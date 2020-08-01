@@ -903,7 +903,7 @@ void CPlayer::Animate(float fTimeElapsed)
 			else
 				Update_PadInput(fTimeElapsed);
 		}
-		cout << m_xmf3Look.x << " " << m_xmf3Look.y << " " << m_xmf3Look.z << endl;
+		//cout << m_xmf3Look.x << " " << m_xmf3Look.y << " " << m_xmf3Look.z << endl;
 		SetEngineRefractionPos();
 
 		SetAfterBurnerPosition(fTimeElapsed);
@@ -938,7 +938,8 @@ void CPlayer::Animate(float fTimeElapsed)
 		else
 		{
 
-			GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player_ui17_mission_failed", OBJ_FIGHT_UI4)->SetIsRender(false);
+			if (GET_MANAGER<SceneManager>()->GetCurrentSceneState() == SCENE_TEST)
+				GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player_ui17_mission_failed", OBJ_FIGHT_UI4)->SetIsRender(false);
 			m_fRestartElapsed = 0;
 			m_bGameOver = false;
 			for (auto i = (int)OBJ_ENEMY; i <= OBJ_UI; ++i)

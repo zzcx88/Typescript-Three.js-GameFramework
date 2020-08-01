@@ -182,7 +182,7 @@ void CTestScene::BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandLis
 	// ÆÄ±«
 	m_ppGameObjects[14] = new CUI(11, pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, 240.f, 240.f, 0.f, XMFLOAT2(-0.f, -0.f), XMFLOAT2(-0.f, -0.f), XMFLOAT2(-0.f, -0.f), XMFLOAT2(-0.f, -0.f));
 	m_ppGameObjects[14]->SetIsRender(false);
-	m_ppGameObjects[14]->SetPosition(fx * -2.f, fy * -2.f, 0.f);
+	m_ppGameObjects[14]->SetPosition(fx * 0.001f, fy * 0.25f, 0.f);
 
 
 	m_ppGameObjects[15] = new CNavigator(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature);
@@ -531,7 +531,7 @@ void CTestScene::AnimateObjects(float fTimeElapsed)
 {
 	GET_MANAGER<SceneManager>()->SceneStoped();
 	 
-	
+	elapsedTime += fTimeElapsed;
 	
 	CreateStageObject();
 
@@ -542,15 +542,11 @@ void CTestScene::AnimateObjects(float fTimeElapsed)
 			if (obj.second->m_bDestroyed)
 			{
 				m_ppGameObjects[14]->SetIsRender(true);
-				m_ppGameObjects[14]->SetPosition(fx * 0.001f, fy * 0.25f, 0.f);
-
-				elapsedTime += fTimeElapsed;
-				if (elapsedTime > 2)
-				{
-					m_ppGameObjects[14]->SetIsRender(false);
-						m_ppGameObjects[14]->SetPosition( fx*-2.f, fy * -2.f, 0.f);
-
-				}
+				elapsedTime = 0;
+			}
+			else if (elapsedTime > 2)
+			{
+				m_ppGameObjects[14]->SetIsRender(false);
 			}
 			
 			
