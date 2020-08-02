@@ -116,36 +116,39 @@ void CollisionManager::CollisionTerrain()
 	if (GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player", OBJ_PLAYER) && GET_MANAGER<ObjectManager>()->GetObjFromTag(L"terrain", OBJ_TEST))
 	{
 		float PlayerHeight = GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player", OBJ_PLAYER)->GetPosition().y;
-		CHeightMapTerrain* pTempTerrain = (CHeightMapTerrain*)GET_MANAGER<ObjectManager>()->GetObjFromTag(L"terrain", OBJ_TEST);
-		float TerrainHeight = pTempTerrain->GetHeight(GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player", OBJ_PLAYER)->GetPosition().x + 20500,
-			GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player", OBJ_PLAYER)->GetPosition().z + 20500) - 1500;
-
-		if (PlayerHeight <= TerrainHeight)
+		if (PlayerHeight < 1200)
 		{
-			GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player", OBJ_PLAYER)->m_bGameOver = true;
+			CHeightMapTerrain* pTempTerrain = (CHeightMapTerrain*)GET_MANAGER<ObjectManager>()->GetObjFromTag(L"terrain", OBJ_TEST);
+			float TerrainHeight = pTempTerrain->GetHeight(GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player", OBJ_PLAYER)->GetPosition().x + 20500,
+				GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player", OBJ_PLAYER)->GetPosition().z + 20500) - 1500;
 
-			GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player", OBJ_PLAYER)->SetPosition(
-				GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player", OBJ_PLAYER)->GetPosition().x,
-				GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player", OBJ_PLAYER)->GetPosition().y + 10,
-				GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player", OBJ_PLAYER)->GetPosition().z);
+			if (PlayerHeight <= TerrainHeight)
+			{
+				GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player", OBJ_PLAYER)->m_bGameOver = true;
 
-			GET_MANAGER<SoundManager>()->PlaySound(L"SplashNormal.mp3", CH_SPLASH);
+				GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player", OBJ_PLAYER)->SetPosition(
+					GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player", OBJ_PLAYER)->GetPosition().x,
+					GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player", OBJ_PLAYER)->GetPosition().y + 10,
+					GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player", OBJ_PLAYER)->GetPosition().z);
 
-			CMissleSplash* pMissleSplash = new CMissleSplash();
-			pMissleSplash = new CMissleSplash();
-			pMissleSplash->m_pPlaneMesh = GET_MANAGER<ObjectManager>()->GetObjFromTag(L"MissleSplashRef", OBJ_EFFECT)->m_pPlaneMesh;
-			pMissleSplash->SetMesh(pMissleSplash->m_pPlaneMesh);
-			for (int i = 0; i < GET_MANAGER<ObjectManager>()->GetObjFromTag(L"MissleSplashRef", OBJ_EFFECT)->m_nNumTex; ++i)
-				pMissleSplash->m_pEffectTexture[i] = GET_MANAGER<ObjectManager>()->GetObjFromTag(L"MissleSplashRef", OBJ_EFFECT)->m_pEffectTexture[i];
-			pMissleSplash->m_pEffectMaterial = new CMaterial(1);
-			pMissleSplash->m_pEffectMaterial->SetTexture(pMissleSplash->m_pEffectTexture[0]);
-			pMissleSplash->m_pEffectMaterial->SetShader(GET_MANAGER<ObjectManager>()->GetObjFromTag(L"MissleSplashRef", OBJ_EFFECT)->m_EffectShader);
-			pMissleSplash->SetMaterial(0, pMissleSplash->m_pEffectMaterial);
-			pMissleSplash->SetPosition(GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player", OBJ_PLAYER)->m_xmf4x4World._41, 
-				GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player", OBJ_PLAYER)->m_xmf4x4World._42, 
-				GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player", OBJ_PLAYER)->m_xmf4x4World._43);
+				GET_MANAGER<SoundManager>()->PlaySound(L"SplashNormal.mp3", CH_SPLASH);
 
-			GET_MANAGER<ObjectManager>()->AddObject(L"MissleSplashInstance", pMissleSplash, OBJ_EFFECT);
+				CMissleSplash* pMissleSplash = new CMissleSplash();
+				pMissleSplash = new CMissleSplash();
+				pMissleSplash->m_pPlaneMesh = GET_MANAGER<ObjectManager>()->GetObjFromTag(L"MissleSplashRef", OBJ_EFFECT)->m_pPlaneMesh;
+				pMissleSplash->SetMesh(pMissleSplash->m_pPlaneMesh);
+				for (int i = 0; i < GET_MANAGER<ObjectManager>()->GetObjFromTag(L"MissleSplashRef", OBJ_EFFECT)->m_nNumTex; ++i)
+					pMissleSplash->m_pEffectTexture[i] = GET_MANAGER<ObjectManager>()->GetObjFromTag(L"MissleSplashRef", OBJ_EFFECT)->m_pEffectTexture[i];
+				pMissleSplash->m_pEffectMaterial = new CMaterial(1);
+				pMissleSplash->m_pEffectMaterial->SetTexture(pMissleSplash->m_pEffectTexture[0]);
+				pMissleSplash->m_pEffectMaterial->SetShader(GET_MANAGER<ObjectManager>()->GetObjFromTag(L"MissleSplashRef", OBJ_EFFECT)->m_EffectShader);
+				pMissleSplash->SetMaterial(0, pMissleSplash->m_pEffectMaterial);
+				pMissleSplash->SetPosition(GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player", OBJ_PLAYER)->m_xmf4x4World._41,
+					GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player", OBJ_PLAYER)->m_xmf4x4World._42,
+					GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player", OBJ_PLAYER)->m_xmf4x4World._43);
+
+				GET_MANAGER<ObjectManager>()->AddObject(L"MissleSplashInstance", pMissleSplash, OBJ_EFFECT);
+			}
 		}
 	}
 }

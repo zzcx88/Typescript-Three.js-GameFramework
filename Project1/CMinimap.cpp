@@ -102,20 +102,6 @@ void CMinimap::MoveMinimapPoint(XMFLOAT3& xmfPlayer, CGameObject* pGameOBJ)
 	fx = getx + (200.f / 20500.f) * xmfPlayer.x;
 	fy = gety + (200.f / 20500.f) * xmfPlayer.z;
 
-	if (fx >= getx + 200.f)
-		this->SetIsRender(false);
-	else if (fx <= getx - 200.f)
-		this->SetIsRender(false);
-	else
-		this->SetIsRender(true);
-
-	if (fy >= gety + 200.f)
-		this->SetIsRender(false);
-	else if (fy <= gety - 200.f)
-		this->SetIsRender(false);
-	else
-		this->SetIsRender(true);
-
 	pGameOBJ->SetPosition(fx, fy, 0.f);
 }
 
