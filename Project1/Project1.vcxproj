@@ -169,6 +169,7 @@
     <ClInclude Include="CAnimationController.h" />
     <ClInclude Include="CCrushSmoke.h" />
     <ClInclude Include="CEngineRafraction.h" />
+    <ClInclude Include="CFlare.h" />
     <ClInclude Include="CMig21.h" />
     <ClInclude Include="CNavigator.h" />
     <ClInclude Include="CNavMesh.h" />
@@ -255,6 +256,7 @@
     <ClCompile Include="CAnimationController.cpp" />
     <ClCompile Include="CCrushSmoke.cpp" />
     <ClCompile Include="CEngineRafraction.cpp" />
+    <ClCompile Include="CFlare.cpp" />
     <ClCompile Include="CMig21.cpp" />
     <ClCompile Include="CNavigator.cpp" />
     <ClCompile Include="CNavMesh.cpp" />

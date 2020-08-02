@@ -5,6 +5,7 @@
 #include "CLockOnUI.h"
 #include "CPlayer.h"
 #include "CEngineRafraction.h"
+#include "CFlare.h"
 
 CPlayer::CPlayer()
 {
@@ -192,6 +193,21 @@ void CPlayer::Update_Input(const float& TimeDelta)
 				}
 			}
 		}
+	}
+
+	if (true == keyManager->GetKeyState(STATE_DOWN, VK_T))
+	{
+		dwDirection |= VK_T;
+		CFlare* pFlare = new CFlare(GetUp());
+		pFlare->SetMesh(m_ObjManager->GetObjFromTag(L"flareRef", OBJ_EFFECT)->m_pPlaneMesh);
+		pFlare->m_pEffectMaterial = new CMaterial(1);
+		pFlare->m_pEffectMaterial->SetTexture(m_ObjManager->GetObjFromTag(L"flareRef", OBJ_EFFECT)->m_pEffectTexture[0]);
+		pFlare->CGameObject::SetShader(m_ObjManager->GetObjFromTag(L"flareRef", OBJ_EFFECT)->m_EffectShader);
+		pFlare->m_pEffectMaterial->SetShader(m_ObjManager->GetObjFromTag(L"flareRef", OBJ_EFFECT)->m_EffectShader);
+		pFlare->SetMaterial(0, pFlare->m_pEffectMaterial);
+		pFlare->SetPosition(GetPosition());
+		//pFlare->m_bEffectedObj = true;
+		m_ObjManager->AddObject(L"flareInstance", pFlare, OBJ_EFFECT);
 	}
 
 	if (true == keyManager->GetKeyState(STATE_PUSH, VK_LCONTROL))

@@ -14,6 +14,7 @@
 #include "CSphereCollider.h"
 #include "CMissle.h"
 #include "CMissleFog.h"
+#include "CFlare.h"
 #include "CCrushSmoke.h"
 #include "CWater.h"
 #include "CAfterBurner.h"
@@ -233,6 +234,9 @@ void CTestScene::BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandLis
 
 	CMissleFog* pMissleFog = new CMissleFog(0, pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, 1.f, 1.f, 0.f);
 	m_ObjManager->AddObject(L"MissleFog", pMissleFog, OBJ_EFFECT);
+
+	/*CFlare* pFlare = new CFlare(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, 1.f, 1.f, 0.f);
+	m_ObjManager->AddObject(L"flareRef", pFlare, OBJ_EFFECT);*/
 
 	CCrushSmoke* pCrushSmoke = new CCrushSmoke(0, pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, 1.f, 1.f, 0.f);
 	m_ObjManager->AddObject(L"crushsmokeRef", pCrushSmoke, OBJ_EFFECT);

@@ -211,6 +211,9 @@
     <Filter Include="Xinput">
       <UniqueIdentifier>{3340dba4-fb40-4fd6-9847-28d990327bc9}</UniqueIdentifier>
     </Filter>
+    <Filter Include="GameObject\Plane\Effect\Flare">
+      <UniqueIdentifier>{9a159e82-b848-4c1f-b48f-3302d7ccbb8a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="targetver.h">
@@ -435,6 +438,9 @@
     <ClInclude Include="Xinput.h">
       <Filter>Xinput</Filter>
     </ClInclude>
+    <ClInclude Include="CFlare.h">
+      <Filter>GameObject\Plane\Effect\Flare</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="DDSTextureLoader12.cpp">
@@ -628,6 +634,9 @@
     </ClCompile>
     <ClCompile Include="CXBOXController.cpp">
       <Filter>Xinput</Filter>
+    </ClCompile>
+    <ClCompile Include="CFlare.cpp">
+      <Filter>GameObject\Plane\Effect\Flare</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
