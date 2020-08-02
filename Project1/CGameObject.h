@@ -149,6 +149,7 @@ private:
 	int								m_nReferences = 0;
 	int nPlayerSpeed = 0;
 	int nPlayerMSL = 0;
+	int nPlayerHp = 0;
 
 	bool isRender = true;
 
@@ -222,7 +223,7 @@ public:
 	CTexture* m_pNavTexture[2];
 	CMaterial* m_pNavMaterial;
 	///////////////////////////////////////////
-	CNumber* ppNumObjects[29];
+	CNumber* ppNumObjects[32];
 	CRedUIShader* m_pRedShader;
 	///////////////////////////////////////////
 	CRafractionShader* m_pRafractionShader;
@@ -343,10 +344,12 @@ public:
 	int GetPlayerSpeed()const { return nPlayerSpeed; }
 	bool GetIsRender() const { return isRender; }
 	int GetPlayerMSL() const { return nPlayerMSL; }
+	int GetPlayerHp() const { return nPlayerHp;  }
 
 	void SetIsRender(bool b) { isRender = b; }
 	void SetPlayerSpeed(float speed) { nPlayerSpeed = (int)speed; }
 	void SetPlayerMSL(int MSL) { nPlayerMSL = MSL; }
+	void SetPlayerHp(int Hp) { nPlayerHp = Hp; }
 
 	void SetPosition(float x, float y, float z);
 	void SetPosition(XMFLOAT3 xmf3Position);

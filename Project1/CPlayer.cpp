@@ -884,6 +884,7 @@ void CPlayer::Update_PadInput(const float& TimeDelta)
 void CPlayer::Animate(float fTimeElapsed)
 {
 	m_pCamera->m_fTimeElapsed = fTimeElapsed;
+
 	if (m_bGameOver == false)
 	{
 		if (GetPosition().y >= 10000)
@@ -958,16 +959,23 @@ void CPlayer::Animate(float fTimeElapsed)
 			m_pCamera->SetPosition(XMFLOAT3(GetPosition().x, m_xmf4x4World._42 + 500, GetPosition().z));
 			m_pCamera->SetLookAt(GetPosition());
 			m_pCamera->RegenerateViewMatrix();
-			if(GET_MANAGER<SceneManager>()->GetCurrentSceneState() == SCENE_TEST )
+		
+			if(GET_MANAGER<SceneManager>()->GetCurrentSceneState() == SCENE_TEST && !GET_MANAGER<SceneManager>()->m_bStageClear)
 				GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player_ui17_mission_failed", OBJ_FIGHT_UI4)->SetIsRender(true);
+			else if (GET_MANAGER<SceneManager>()->GetCurrentSceneState() == SCENE_TEST&& GET_MANAGER<SceneManager>()->m_bStageClear)
+				GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player_ui21_mission_accomplished", OBJ_FIGHT_UI4)->SetIsRender(true);
 		}
 		else
 		{
-
-			if (GET_MANAGER<SceneManager>()->GetCurrentSceneState() == SCENE_TEST)
+			if (GET_MANAGER<SceneManager>()->GetCurrentSceneState() == SCENE_TEST && !GET_MANAGER<SceneManager>()->m_bStageClear)
 				GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player_ui17_mission_failed", OBJ_FIGHT_UI4)->SetIsRender(false);
+			else if (GET_MANAGER<SceneManager>()->GetCurrentSceneState() == SCENE_TEST && GET_MANAGER<SceneManager>()->m_bStageClear)
+				GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player_ui21_mission_accomplished", OBJ_FIGHT_UI4)->SetIsRender(false);
+		
 			m_fRestartElapsed = 0;
 			m_bGameOver = false;
+			GET_MANAGER<SceneManager>()->m_bStageClear = false;
+
 			for (auto i = (int)OBJ_ENEMY; i <= OBJ_UI; ++i)
 			{
 				if (i == OBJ_ENEMY)

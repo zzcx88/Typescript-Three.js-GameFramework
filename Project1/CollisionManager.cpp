@@ -83,7 +83,7 @@ void CollisionManager::CollisionFloor()
 
 		if (GET_MANAGER<SceneManager>()->GetCurrentSceneState() == SCENE_TEST)
 		{
-			if (PlayerHeight < 200)
+			if(PlayerHeight < 200.f)
 			{
 				GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player", OBJ_PLAYER)->m_bGameOver = true;
 				GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player", OBJ_PLAYER)->SetPosition(GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player", OBJ_PLAYER)->GetPosition().x,
@@ -106,6 +106,7 @@ void CollisionManager::CollisionFloor()
 					GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player", OBJ_PLAYER)->GetPosition().z);
 				GET_MANAGER<ObjectManager>()->AddObject(L"MissleSplashInstance", pMissleSplash, OBJ_EFFECT);
 			}
+		
 		}
 	}
 }
