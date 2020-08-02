@@ -77,7 +77,7 @@ void CMissle::Animate(float fTimeElapsed)
 			GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player", OBJ_PLAYER)->m_AiMissleAssert = true;
 		}
 
-		if (m_fDeleteTimeElapsed > m_fAssertFrequence)
+		if (m_fDeleteTimeElapsed > m_fAssertFrequence && (m_bLaunchFromAircraft == true || m_bLaunchFromShip == true))
 		{
 			XMFLOAT3 xmf3TargetVector = Vector3::Subtract(GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player", OBJ_PLAYER)->GetPosition(), GetPosition());
 			xmf3TargetVector = Vector3::Normalize(xmf3TargetVector);
@@ -100,8 +100,11 @@ void CMissle::Animate(float fTimeElapsed)
 		if (m_fDeleteTimeElapsed > m_fDeleteFrequence)
 		{
 			m_isDead = true;
-			GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player", OBJ_PLAYER)->m_AiMissleAssert = false;
-			GET_MANAGER<SoundManager>()->StopSound(CH_EFFECT);
+			if (m_bLaunchFromAircraft == true || m_bLaunchFromShip == true)
+			{
+				GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player", OBJ_PLAYER)->m_AiMissleAssert = false;
+				GET_MANAGER<SoundManager>()->StopSound(CH_EFFECT);
+			}
 		}
 
 		if (m_bLockOn == true)
@@ -187,8 +190,11 @@ void CMissle::CollisionActivate(CGameObject* collideTarget)
 			GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player", OBJ_PLAYER)->m_bEye_fixation = true;
 		}
 		m_isDead = true;
-		GET_MANAGER<SoundManager>()->StopSound(CH_EFFECT);
-		GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player", OBJ_PLAYER)->m_AiMissleAssert = false;
+		if (m_bLaunchFromAircraft == true || m_bLaunchFromShip == true)
+		{
+			GET_MANAGER<SoundManager>()->StopSound(CH_EFFECT);
+			GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player", OBJ_PLAYER)->m_AiMissleAssert = false;
+		}
 	}
 }
 

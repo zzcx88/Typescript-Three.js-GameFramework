@@ -5,6 +5,7 @@
 #include "CLockOnUI.h"
 #include "CPlayer.h"
 #include "CEngineRafraction.h"
+#include "CFlare.h"
 
 CPlayer::CPlayer()
 {
@@ -151,7 +152,7 @@ void CPlayer::Update_Input(const float& TimeDelta)
 {
 	KeyManager* keyManager = GET_MANAGER<KeyManager>();
 	DWORD dwDirection = 0;
-	
+
 	if (true == keyManager->GetKeyState(STATE_DOWN, VK_TAB))
 	{
 		//m_bGameOver = true;
@@ -194,19 +195,20 @@ void CPlayer::Update_Input(const float& TimeDelta)
 		}
 	}
 
-	//if (true == keyManager->GetKeyState(STATE_DOWN, VK_LSHIFT))
-	//{
-	//	//m_bGameOver = true;
-	//	dwDirection |= VK_LSHIFT;
-	//	if (m_bLockType == false)
-	//	{
-	//		m_bLockType = true;
-	//	}
-	//	else
-	//	{
-	//		m_bLockType = false;
-	//	}
-	//}
+	if (true == keyManager->GetKeyState(STATE_DOWN, VK_T))
+	{
+		dwDirection |= VK_T;
+		CFlare* pFlare = new CFlare(GetUp());
+		pFlare->SetMesh(m_ObjManager->GetObjFromTag(L"flareRef", OBJ_EFFECT)->m_pPlaneMesh);
+		pFlare->m_pEffectMaterial = new CMaterial(1);
+		pFlare->m_pEffectMaterial->SetTexture(m_ObjManager->GetObjFromTag(L"flareRef", OBJ_EFFECT)->m_pEffectTexture[0]);
+		pFlare->CGameObject::SetShader(m_ObjManager->GetObjFromTag(L"flareRef", OBJ_EFFECT)->m_EffectShader);
+		pFlare->m_pEffectMaterial->SetShader(m_ObjManager->GetObjFromTag(L"flareRef", OBJ_EFFECT)->m_EffectShader);
+		pFlare->SetMaterial(0, pFlare->m_pEffectMaterial);
+		pFlare->SetPosition(GetPosition());
+		//pFlare->m_bEffectedObj = true;
+		m_ObjManager->AddObject(L"flareInstance", pFlare, OBJ_EFFECT);
+	}
 
 	if (true == keyManager->GetKeyState(STATE_PUSH, VK_LCONTROL))
 	{
@@ -498,6 +500,21 @@ void CPlayer::Update_Input(const float& TimeDelta)
 	if (m_fAircraftSpeed < 600 && GET_MANAGER<CDeviceManager>()->GetBlurAmount() == 0)
 		GET_MANAGER<CDeviceManager>()->SetBulrSwitch(false);
 
+	if (m_bStall == true)
+	{
+		XMFLOAT3 xmf3NewLook = XMFLOAT3(0, -1, 0);
+		XMVECTOR Dest = XMLoadFloat3(&xmf3NewLook);
+		XMVECTOR Start = XMLoadFloat3(&GetLookVector());
+		XMVECTOR Result = XMVectorLerp(Start, Dest, 5.f * TimeDelta);
+		XMFLOAT3 xmf3Result;
+		XMStoreFloat3(&xmf3Result, Result);
+		m_xmf3Look = xmf3Result;
+		Rotate(0,0,0);
+
+		if (GetPosition().y < 9000)
+			m_bStall = false;
+	}
+
 	Move(DIR_FORWARD, m_fAircraftSpeed * TimeDelta, true);
 	MoveForward(8.0f);
 	WingAnimate(TimeDelta, dwDirection);
@@ -550,20 +567,6 @@ void CPlayer::Update_PadInput(const float& TimeDelta)
 			}
 		}
 	}
-
-	//if (true == keyManager->GetKeyState(STATE_DOWN, VK_LSHIFT))
-	//{
-	//	//m_bGameOver = true;
-	//	dwDirection |= VK_LSHIFT;
-	//	if (m_bLockType == false)
-	//	{
-	//		m_bLockType = true;
-	//	}
-	//	else
-	//	{
-	//		m_bLockType = false;
-	//	}
-	//}
 
 	if (true == keyManager->GetPadState(STATE_PUSH, XINPUT_GAMEPAD_A))
 	{
@@ -857,11 +860,25 @@ void CPlayer::Update_PadInput(const float& TimeDelta)
 	if (m_fAircraftSpeed < 600 && GET_MANAGER<CDeviceManager>()->GetBlurAmount() == 0)
 		GET_MANAGER<CDeviceManager>()->SetBulrSwitch(false);
 
+	if (m_bStall == true)
+	{
+		XMFLOAT3 xmf3NewLook = XMFLOAT3(0, -1, 0);
+		XMVECTOR Dest = XMLoadFloat3(&xmf3NewLook);
+		XMVECTOR Start = XMLoadFloat3(&GetLookVector());
+		XMVECTOR Result = XMVectorLerp(Start, Dest, 5.f * TimeDelta);
+		XMFLOAT3 xmf3Result;
+		XMStoreFloat3(&xmf3Result, Result);
+		m_xmf3Look = xmf3Result;
+		Rotate(0, 0, 0);
+
+		if (GetPosition().y < 9000)
+			m_bStall = false;
+	}
+
 	Move(DIR_FORWARD, m_fAircraftSpeed * TimeDelta, true);
 	MoveForward(8.0f);
 	WingAnimate(TimeDelta, dwDirection);
 	GunCameraMove(TimeDelta);
-
 }
 
 void CPlayer::Animate(float fTimeElapsed)
@@ -870,6 +887,15 @@ void CPlayer::Animate(float fTimeElapsed)
 
 	if (m_bGameOver == false)
 	{
+		if (GetPosition().y >= 10000)
+		{
+			m_bStall = true;
+			std::default_random_engine dre(time(NULL) * GetPosition().z);
+			std::uniform_real_distribution<float>fXPos(-400, 400);
+			std::uniform_real_distribution<float>fZPos(200, 400);
+			xmf3StallRecoverPosition = XMFLOAT3(GetPosition().x + fXPos(dre), -2000.f, GetPosition().z + fZPos(dre));
+		}
+
 		m_xmf3Velocity = Vector3::Add(m_xmf3Velocity, Vector3::ScalarProduct(m_xmf3Gravity, fTimeElapsed, false));
 		float fLength = sqrtf(m_xmf3Velocity.x * m_xmf3Velocity.x + m_xmf3Velocity.z * m_xmf3Velocity.z);
 		float fMaxVelocityXZ = m_fMaxVelocityXZ * fTimeElapsed;
@@ -904,7 +930,7 @@ void CPlayer::Animate(float fTimeElapsed)
 			else
 				Update_PadInput(fTimeElapsed);
 		}
-		cout << m_xmf3Look.x << " " << m_xmf3Look.y << " " << m_xmf3Look.z << endl;
+		//cout << m_xmf3Look.x << " " << m_xmf3Look.y << " " << m_xmf3Look.z << endl;
 		SetEngineRefractionPos();
 
 		SetAfterBurnerPosition(fTimeElapsed);
@@ -974,7 +1000,6 @@ void CPlayer::Animate(float fTimeElapsed)
 			m_xmf3Look = XMFLOAT3(0,0,1);
 			m_xmf3Up = XMFLOAT3(0, 1, 0);
 			m_xmf3Right = XMFLOAT3(1, 0, 0);
-		
 		}
 	}
 	/*if (-1 ==Update_Input(fTimeElapsed))

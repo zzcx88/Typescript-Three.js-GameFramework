@@ -47,6 +47,9 @@ protected:
 
 	bool m_bGunSoundPlayed = false;
 	bool m_bAssertSoundPlayed = false;
+	bool m_bStall = false;
+
+	XMFLOAT3 xmf3StallRecoverPosition = XMFLOAT3(0.0f, 0.0f, 0.0f);
 
 	XMFLOAT3					m_xmf3Velocity = XMFLOAT3(0.0f, 0.0f, 0.0f);
 	XMFLOAT3     				m_xmf3Gravity = XMFLOAT3(0.0f, 0.0f, 0.0f);

@@ -27,6 +27,7 @@ public:
 	bool m_bLockOn = false;
 	bool m_bCameraPlayed = false;
 	bool m_bLaunchFromShip = false;
+	bool m_bLaunchFromAircraft = false;
 	bool m_bShipMissleTurn = false;
 
 	float m_fAssertFrequence = 4.0f;

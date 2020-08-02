@@ -70,6 +70,7 @@ int KeyManager::UpdateKey()
 		ComputeKeyState(VK_W);
 		ComputeKeyState(VK_S);
 		ComputeKeyState(VK_G);
+		ComputeKeyState(VK_T);
 		ComputeKeyState(VK_F);
 		ComputeKeyState(VK_F1);
 		ComputeKeyState(VK_F2);

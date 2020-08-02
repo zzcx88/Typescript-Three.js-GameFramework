@@ -14,6 +14,7 @@
 #include "CSphereCollider.h"
 #include "CMissle.h"
 #include "CMissleFog.h"
+#include "CFlare.h"
 #include "CCrushSmoke.h"
 #include "CWater.h"
 #include "CAfterBurner.h"
@@ -119,7 +120,7 @@ void CTestScene::BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandLis
 	float fx =  FRAME_BUFFER_WIDTH / 2;
 	float fy =  FRAME_BUFFER_HEIGHT / 2;
 	
-	m_nGameObjects = 21;
+	m_nGameObjects = 22;
 	m_ppGameObjects = new CGameObject * [m_nGameObjects];
 	m_ppGameObjects[0] = new CUI(0, pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, 200.f, 200.f, 0.f, XMFLOAT2(0.f, 0.f), XMFLOAT2(0.f, 0.f), XMFLOAT2(0.f, 0.f), XMFLOAT2(0.f, 0.f));
 	m_ppGameObjects[0]->SetPosition(fx * 0.8, fy * 0.8, 0.f);
@@ -182,7 +183,7 @@ void CTestScene::BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandLis
 	// 파괴
 	m_ppGameObjects[14] = new CUI(11, pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, 240.f, 240.f, 0.f, XMFLOAT2(-0.f, -0.f), XMFLOAT2(-0.f, -0.f), XMFLOAT2(-0.f, -0.f), XMFLOAT2(-0.f, -0.f));
 	m_ppGameObjects[14]->SetIsRender(false);
-	m_ppGameObjects[14]->SetPosition(fx * -2.f, fy * -2.f, 0.f);
+	m_ppGameObjects[14]->SetPosition(fx * 0.001f, fy * 0.25f, 0.f);
 
 
 	m_ppGameObjects[15] = new CNavigator(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature);
@@ -210,6 +211,10 @@ void CTestScene::BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandLis
 	m_ppGameObjects[20]->SetIsRender(false);
 	m_ppGameObjects[20]->SetPosition(fx * 0.001f, fy * 0.25f, 0.f);
 
+	// 구역 이탈 경고
+	m_ppGameObjects[21] = new CUI(17, pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, FRAME_BUFFER_WIDTH, FRAME_BUFFER_HEIGHT, 0.f, XMFLOAT2(-0.f, -0.f), XMFLOAT2(-0.f, -0.f), XMFLOAT2(-0.f, -0.f), XMFLOAT2(-0.f, -0.f));
+	m_ppGameObjects[21]->SetIsRender(false);
+
 	m_ObjManager->AddObject(L"player_ui1_testui", m_ppGameObjects[0], OBJ_UI);
 	m_ObjManager->AddObject(L"player_ui2_weapon", m_ppGameObjects[1], OBJ_UI);
 	m_ObjManager->AddObject(L"player_ui3_time_score", m_ppGameObjects[2], OBJ_UI);
@@ -231,13 +236,15 @@ void CTestScene::BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandLis
 	m_ObjManager->AddObject(L"player_ui19_fighter", m_ppGameObjects[18], OBJ_UI);
 	m_ObjManager->AddObject(L"player_ui20_ship", m_ppGameObjects[19], OBJ_UI);
 	m_ObjManager->AddObject(L"player_ui21_mission_accomplished", m_ppGameObjects[20], OBJ_FIGHT_UI4);
+	m_ObjManager->AddObject(L"player_ui22_out_of_area", m_ppGameObjects[21], OBJ_OUT_UI);
 
-	XMFLOAT3 xmf3Scale(8.0f, 2.0f, 8.0f);
+	XMFLOAT3 xmf3Scale(80.0f, 20.0f, 80.0f);
 	XMFLOAT4 xmf4Color(0.0f, 0.3f, 0.0f, 0.0f);
 	m_pTerrain = new CHeightMapTerrain(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, _T("Terrain/Stage1.raw"), 513, 513, xmf3Scale, xmf4Color);
-	m_pTerrain->SetScale(10,10,10);
+	//m_pTerrain->SetScale(10,10,10);
 
 	m_pTerrain->SetPosition(-20500,-1500,-20500);
+	//m_pTerrain->SetPosition(0, 0, 0);
 	//m_pTerrain->Rotate(0, 90, 0);
 	m_ObjManager->AddObject(L"terrain", m_pTerrain, OBJ_TEST);
 
@@ -251,6 +258,9 @@ void CTestScene::BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandLis
 
 	CMissleFog* pMissleFog = new CMissleFog(0, pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, 1.f, 1.f, 0.f);
 	m_ObjManager->AddObject(L"MissleFog", pMissleFog, OBJ_EFFECT);
+
+	/*CFlare* pFlare = new CFlare(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, 1.f, 1.f, 0.f);
+	m_ObjManager->AddObject(L"flareRef", pFlare, OBJ_EFFECT);*/
 
 	CCrushSmoke* pCrushSmoke = new CCrushSmoke(0, pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, 1.f, 1.f, 0.f);
 	m_ObjManager->AddObject(L"crushsmokeRef", pCrushSmoke, OBJ_EFFECT);
@@ -400,7 +410,7 @@ void CTestScene::BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandLis
 
 void CTestScene::CreateStageObject()
 {
-	if (GET_MANAGER<SceneManager>()->m_nWaveCnt == 3)
+	if (GET_MANAGER<SceneManager>()->m_nWaveCnt == 4)
 	{
 		if (GET_MANAGER<SceneManager>()->m_bStageClear == false)
 		{
@@ -426,6 +436,7 @@ void CTestScene::CreateStageObject()
 			p052C->m_xmf3Look = XMFLOAT3(0, 0, -1);
 			m_ObjManager->AddObject(L"052C", p052C, OBJ_ENEMY);
 		}
+		GET_MANAGER<SceneManager>()->m_nWave = 0;
 	}
 
 	if (GET_MANAGER<SceneManager>()->m_nWave == GET_MANAGER<SceneManager>()->m_nWaveCnt && GET_MANAGER<SceneManager>()->m_nTgtObject == 0)
@@ -549,6 +560,7 @@ bool CTestScene::ProcessInput(UCHAR* pKeysBuffer)
 
 void CTestScene::AnimateObjects(float fTimeElapsed)
 {
+	elapsedTime += fTimeElapsed;
 	
 	CreateStageObject();
 
@@ -556,20 +568,9 @@ void CTestScene::AnimateObjects(float fTimeElapsed)
 	{
 		for (auto& obj : m_ObjManager->GetObjFromType(OBJ_ENEMY))
 		{
-			if (obj.second->GetPosition().z < -18000.f)
-			{
-				m_ObjManager->GetObjFromTag(L"player", OBJ_PLAYER)->m_bGameOver = true;
-				/*if (GET_MANAGER<SceneManager>()->m_bStageClear == false)
-				{
-					GET_MANAGER<SceneManager>()->m_bStageClear = true;
-					m_ObjManager->GetObjFromTag(L"player", OBJ_PLAYER)->m_bGameOver = true;
-				}*/
-			}
-
 			if (obj.second->m_bDestroyed)
 			{
 				m_ppGameObjects[14]->SetIsRender(true);
-
 				elapsedTime = 0;
 			}
 			else if (elapsedTime > 2)
@@ -631,7 +632,21 @@ void CTestScene::AnimateObjects(float fTimeElapsed)
 			m_ppGameObjects[19]->SetIsRender(true);
 		}
 
+		if ((GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player", OBJ_PLAYER)->GetPosition().x > 17000 || GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player", OBJ_PLAYER)->GetPosition().x < -17000)
+			|| (GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player", OBJ_PLAYER)->GetPosition().z > 17000 || GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player", OBJ_PLAYER)->GetPosition().z < -17000))
+		{
+			GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player_ui22_out_of_area", OBJ_OUT_UI)->SetIsRender(true);
+			cout << "경고" << endl;
+		}
+		else
+		{
+			GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player_ui22_out_of_area", OBJ_OUT_UI)->SetIsRender(false);
+			cout << "편안" << endl;
+		}
+
 	}
+
+
 
 	m_ObjManager->GetObjFromTag(L"player", OBJ_PLAYER)->SetPlayerHp(m_pPlayer->GetHp());
 	m_ObjManager->GetObjFromTag(L"player", OBJ_PLAYER)->SetPlayerMSL(m_pPlayer->GetMSLCount());
