@@ -3,7 +3,7 @@
 #include "CPlaneMesh.h"
 #include "CTestScene.h"
 
-#define TEXTURES 14
+#define TEXTURES 17
 CUI::CUI()
 {}
 
@@ -21,7 +21,7 @@ CUI::CUI(int nIndex, ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCo
 	m_ppUITexture[0] = new CTexture(1, RESOURCE_TEXTURE2D, 0);
 	m_ppUITexture[0]->LoadTextureFromFile(pd3dDevice, pd3dCommandList, L"UI/UI.dds", 0);
 	m_ppUITexture[1] = new CTexture(1, RESOURCE_TEXTURE2D, 0);
-	m_ppUITexture[1]->LoadTextureFromFile(pd3dDevice, pd3dCommandList, L"UI/WeaponUI.dds", 0);
+	m_ppUITexture[1]->LoadTextureFromFile(pd3dDevice, pd3dCommandList, L"UI/Weapon.dds", 0);
 	m_ppUITexture[2] = new CTexture(1, RESOURCE_TEXTURE2D, 0);
 	m_ppUITexture[2]->LoadTextureFromFile(pd3dDevice, pd3dCommandList, L"UI/TimeScoreUI2.dds", 0);
 	m_ppUITexture[3] = new CTexture(1, RESOURCE_TEXTURE2D, 0);
@@ -46,6 +46,12 @@ CUI::CUI(int nIndex, ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCo
 	m_ppUITexture[12]->LoadTextureFromFile(pd3dDevice, pd3dCommandList, L"UI/1Stage_Loading.dds", 0);
 	m_ppUITexture[13] = new CTexture(1, RESOURCE_TEXTURE2D, 0);
 	m_ppUITexture[13]->LoadTextureFromFile(pd3dDevice, pd3dCommandList, L"UI/MissionFUI.dds", 0);
+	m_ppUITexture[14] = new CTexture(1, RESOURCE_TEXTURE2D, 0);
+	m_ppUITexture[14]->LoadTextureFromFile(pd3dDevice, pd3dCommandList, L"UI/fighter.dds", 0);
+	m_ppUITexture[15] = new CTexture(1, RESOURCE_TEXTURE2D, 0);
+	m_ppUITexture[15]->LoadTextureFromFile(pd3dDevice, pd3dCommandList, L"UI/ship.dds", 0);
+	m_ppUITexture[16] = new CTexture(1, RESOURCE_TEXTURE2D, 0);
+	m_ppUITexture[16]->LoadTextureFromFile(pd3dDevice, pd3dCommandList, L"UI/MissionAUI.dds", 0);
 
 	
 	UINT ncbElementBytes = ((sizeof(CB_GAMEOBJECT_INFO) + 255) & ~255);

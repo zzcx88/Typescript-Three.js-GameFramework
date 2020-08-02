@@ -867,6 +867,7 @@ void CPlayer::Update_PadInput(const float& TimeDelta)
 void CPlayer::Animate(float fTimeElapsed)
 {
 	m_pCamera->m_fTimeElapsed = fTimeElapsed;
+
 	if (m_bGameOver == false)
 	{
 		m_xmf3Velocity = Vector3::Add(m_xmf3Velocity, Vector3::ScalarProduct(m_xmf3Gravity, fTimeElapsed, false));
@@ -903,7 +904,7 @@ void CPlayer::Animate(float fTimeElapsed)
 			else
 				Update_PadInput(fTimeElapsed);
 		}
-
+		cout << m_xmf3Look.x << " " << m_xmf3Look.y << " " << m_xmf3Look.z << endl;
 		SetEngineRefractionPos();
 
 		SetAfterBurnerPosition(fTimeElapsed);
@@ -926,63 +927,31 @@ void CPlayer::Animate(float fTimeElapsed)
 	}
 	else
 	{
-		m_pCamera->SetPosition(XMFLOAT3(GetPosition().x, m_xmf4x4World._42 + 500, GetPosition().z));
-		m_pCamera->SetLookAt(GetPosition());
-		m_pCamera->RegenerateViewMatrix();
-	}
-	/*if (-1 ==Update_Input(fTimeElapsed))
-	{
-		return -1;
-	}*/
-}
-
-void CPlayer::CollisionActivate(CGameObject* collideTarget)
-{
-	
-	if (collideTarget->m_ObjType == OBJ_ENEBULLET || collideTarget->m_ObjType == OBJ_ENEMISSLE)
-	{
-		//m_pCamera->SetPosition(XMFLOAT3(GetPosition().x, GetPosition().y + 200, GetPosition().z));
-		//wcout << GET_MANAGER<ObjectManager>()->GetTagFromObj(this, OBJ_PLAYER) << endl;
-		if (m_bGunFire == false)
+		m_fRestartElapsed += 1.3f * fTimeElapsed;
+		if (m_fRestartElapsed < m_fRestartFrequency)
 		{
-			if ((int)(GetPosition().x + GetPosition().y + GetPosition().z) / 2 == 0)
-				m_pCamera->Rotate(20, 0, 0);
-			else
-				m_pCamera->Rotate(-20, 0, 0);
-		}
-		//m_bGameOver = true;
-		cout << "플레이어 충돌!" << endl;
-
-		// 플레이어 체력, 게임 오버 시 작동 되는 코드
-		if (m_nHp > 1&&!m_bGameOver)
-		{
-			m_nHp -= 1;
-			//m_ppGameObjects[13]->SetIsRender(true);
-		/*	for (auto& obj : m_ObjManager->GetObjFromType(OBJ_UI))
-			{
-				obj.second->m_bWarning = 1.f;
-			}
-			for (auto& obj : m_ObjManager->GetObjFromType(OBJ_SPEED_UI))
-			{
-				obj.second->m_bWarning = 1.f;
-			}*/
-			cout << " 피가 이만큼 남았어요: " << m_nHp << endl;
+			m_pCamera->SetPosition(XMFLOAT3(GetPosition().x, m_xmf4x4World._42 + 500, GetPosition().z));
+			m_pCamera->SetLookAt(GetPosition());
+			m_pCamera->RegenerateViewMatrix();
+		
+			if(GET_MANAGER<SceneManager>()->GetCurrentSceneState() == SCENE_TEST && !GET_MANAGER<SceneManager>()->m_bStageClear)
+				GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player_ui17_mission_failed", OBJ_FIGHT_UI4)->SetIsRender(true);
+			else if (GET_MANAGER<SceneManager>()->GetCurrentSceneState() == SCENE_TEST&& GET_MANAGER<SceneManager>()->m_bStageClear)
+				GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player_ui21_mission_accomplished", OBJ_FIGHT_UI4)->SetIsRender(true);
 		}
 		else
 		{
-			m_bGameOver = true;
+			if (GET_MANAGER<SceneManager>()->GetCurrentSceneState() == SCENE_TEST && !GET_MANAGER<SceneManager>()->m_bStageClear)
+				GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player_ui17_mission_failed", OBJ_FIGHT_UI4)->SetIsRender(false);
+			else if (GET_MANAGER<SceneManager>()->GetCurrentSceneState() == SCENE_TEST && GET_MANAGER<SceneManager>()->m_bStageClear)
+				GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player_ui21_mission_accomplished", OBJ_FIGHT_UI4)->SetIsRender(false);
+		
+			m_fRestartElapsed = 0;
+			m_bGameOver = false;
+			GET_MANAGER<SceneManager>()->m_bStageClear = false;
 
-			//GET_MANAGER<SceneManager>()->SetStoped(true);
-			//GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player_ui16_navigator", OBJ_NAVIGATOR)->SetIsRender(false);
 			for (auto i = (int)OBJ_ENEMY; i <= OBJ_UI; ++i)
 			{
-				/*if (i == OBJ_UI || i == OBJ_MINIMAP_UI || i == OBJ_FIGHT_UI1 || i == OBJ_FIGHT_UI2 || i == OBJ_FIGHT_UI3)
-				{
-					for (auto p = GET_MANAGER<ObjectManager>()->GetObjFromType((OBJTYPE)i).begin(); p != GET_MANAGER<ObjectManager>()->GetObjFromType((OBJTYPE)i).end(); ++p)
-					{
-						(*p).second->SetIsRender(false);
-					}
-				}*/
 				if (i == OBJ_ENEMY)
 				{
 					for (auto p = GET_MANAGER<ObjectManager>()->GetObjFromType((OBJTYPE)i).begin(); p != GET_MANAGER<ObjectManager>()->GetObjFromType((OBJTYPE)i).end(); ++p)
@@ -1000,11 +969,42 @@ void CPlayer::CollisionActivate(CGameObject* collideTarget)
 			GET_MANAGER<UIManager>()->ShipOBJs.clear();
 
 			GET_MANAGER<ObjectManager>()->ReleaseFromType(OBJ_ENEMY);
-			m_nHp = 99;
+			m_nHp = 5;
 			SetPosition(XMFLOAT3(0, 1000, 0));
-			m_xmf3Look = XMFLOAT3(0, 0, 1);
+			m_xmf3Look = XMFLOAT3(0,0,1);
 			m_xmf3Up = XMFLOAT3(0, 1, 0);
 			m_xmf3Right = XMFLOAT3(1, 0, 0);
+		
+		}
+	}
+	/*if (-1 ==Update_Input(fTimeElapsed))
+	{
+		return -1;
+	}*/
+}
+
+void CPlayer::CollisionActivate(CGameObject* collideTarget)
+{
+	if (collideTarget->m_ObjType == OBJ_ENEBULLET || collideTarget->m_ObjType == OBJ_ENEMISSLE)
+	{
+		if (m_bGunFire == false)
+		{
+			if ((int)(GetPosition().x + GetPosition().y + GetPosition().z) / 2 == 0)
+				m_pCamera->Rotate(20, 0, 0);
+			else
+				m_pCamera->Rotate(-20, 0, 0);
+		}
+		cout << "플레이어 충돌!" << endl;
+
+		// 플레이어 체력, 게임 오버 시 작동 되는 코드
+		if (m_nHp > 1&&!m_bGameOver)
+		{
+			m_nHp -= 1;
+			cout << " 피가 이만큼 남았어요: " << m_nHp << endl;
+		}
+		else
+		{
+			m_bGameOver = true;
 		}
 	}
 }

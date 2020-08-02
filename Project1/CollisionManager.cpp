@@ -81,23 +81,11 @@ void CollisionManager::CollisionFloor()
 
 		if (GET_MANAGER<SceneManager>()->GetCurrentSceneState() == SCENE_TEST)
 		{
-			if (PlayerHeight < 200)
+			if(PlayerHeight < 200.f)
 			{
 				GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player", OBJ_PLAYER)->m_bGameOver = true;
-				GET_MANAGER<SceneManager>()->SetStoped(true);
-				GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player_ui16_navigator", OBJ_NAVIGATOR)->SetIsRender(false);
-				for (auto i = (int)OBJ_MINIMAP_UI; i <= OBJ_UI; ++i)
-				{
-					if (i == OBJ_UI || i == OBJ_MINIMAP_UI)
-					{
-						for (auto p = GET_MANAGER<ObjectManager>()->GetObjFromType((OBJTYPE)i).begin(); p != GET_MANAGER<ObjectManager>()->GetObjFromType((OBJTYPE)i).end(); ++p)
-						{
-							(*p).second->SetIsRender(false);
-						}
-					}
-				}
-
 			}
+		
 		}
 	}
 }

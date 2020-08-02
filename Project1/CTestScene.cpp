@@ -119,17 +119,17 @@ void CTestScene::BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandLis
 	float fx =  FRAME_BUFFER_WIDTH / 2;
 	float fy =  FRAME_BUFFER_HEIGHT / 2;
 	
-	m_nGameObjects = 18;
+	m_nGameObjects = 21;
 	m_ppGameObjects = new CGameObject * [m_nGameObjects];
 	m_ppGameObjects[0] = new CUI(0, pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, 200.f, 200.f, 0.f, XMFLOAT2(0.f, 0.f), XMFLOAT2(0.f, 0.f), XMFLOAT2(0.f, 0.f), XMFLOAT2(0.f, 0.f));
 	m_ppGameObjects[0]->SetPosition(fx * 0.8, fy * 0.8, 0.f);
 
 	// weapon
 	m_ppGameObjects[1] = new CUI(1, pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature,  160.f, 160.f, 0.f, XMFLOAT2(0.f, 0.f), XMFLOAT2(0.f, 0.f), XMFLOAT2(0.f, 0.f), XMFLOAT2(0.f, 0.f));
-	m_ppGameObjects[1]->SetPosition(fx*0.8, -fy*0.55, 0.f);
+	m_ppGameObjects[1]->SetPosition(fx*0.7, -fy*0.55, 0.f);
 
 	// time score
-	m_ppGameObjects[2] = new CUI(2, pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, 160.f, 160.f, 0.f, XMFLOAT2(0.f, 0.f), XMFLOAT2(0.f, 0.f), XMFLOAT2(0.f, 0.f), XMFLOAT2(0.f, 0.f));
+	m_ppGameObjects[2] = new CUI(2, pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, 170.f, 170.f, 0.f, XMFLOAT2(0.f, 0.f), XMFLOAT2(0.f, 0.f), XMFLOAT2(0.f, 0.f), XMFLOAT2(0.f, 0.f));
 	m_ppGameObjects[2]->SetPosition(fx*-0.85f, fy*0.8f, 0.f);
 
 	// speed
@@ -187,12 +187,28 @@ void CTestScene::BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandLis
 
 	m_ppGameObjects[15] = new CNavigator(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature);
 	
-	m_ppGameObjects[16] = new CUI(13, pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, 500.f, 70.f, 0.f, XMFLOAT2(-0.f, -0.f), XMFLOAT2(-0.f, -0.f), XMFLOAT2(-0.f, -0.f), XMFLOAT2(-0.f, -0.f));
+	// 미션 실패
+	m_ppGameObjects[16] = new CUI(13, pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, 400.f, 20.f, 0.f, XMFLOAT2(-0.f, -0.f), XMFLOAT2(-0.f, -0.f), XMFLOAT2(-0.f, -0.f), XMFLOAT2(-0.f, -0.f));
 	m_ppGameObjects[16]->SetIsRender(false);
 	m_ppGameObjects[16]->SetPosition(fx * 0.001f, fy * 0.25f, 0.f);
 
-	m_ppGameObjects[17] = new CUI(12, pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, 500.f, 70.f, 0.f, XMFLOAT2(-0.f, -0.f), XMFLOAT2(-0.f, -0.f), XMFLOAT2(-0.f, -0.f), XMFLOAT2(-0.f, -0.f));
+	m_ppGameObjects[17] = new CUI(12, pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, 500.f, 10.f, 0.f, XMFLOAT2(-0.f, -0.f), XMFLOAT2(-0.f, -0.f), XMFLOAT2(-0.f, -0.f), XMFLOAT2(-0.f, -0.f));
 	m_ppGameObjects[17]->SetIsRender(false);
+
+	// 전투기
+	m_ppGameObjects[18] = new CUI(14, pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, 120.f, 55.f, 0.f, XMFLOAT2(-0.f, -0.f), XMFLOAT2(-0.f, -0.f), XMFLOAT2(-0.f, -0.f), XMFLOAT2(-0.f, -0.f));
+	m_ppGameObjects[18]->SetIsRender(false);
+	m_ppGameObjects[18]->SetPosition(m_ppGameObjects[2]->GetPosition().x + 80.f, m_ppGameObjects[2]->GetPosition().y - 31.f, 0.f);
+
+	// 배
+	m_ppGameObjects[19] = new CUI(15, pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, 120.f, 55.f, 0.f, XMFLOAT2(-0.f, -0.f), XMFLOAT2(-0.f, -0.f), XMFLOAT2(-0.f, -0.f), XMFLOAT2(-0.f, -0.f));
+	m_ppGameObjects[19]->SetIsRender(false);
+	m_ppGameObjects[19]->SetPosition(m_ppGameObjects[2]->GetPosition().x + 80.f, m_ppGameObjects[2]->GetPosition().y - 31.f, 0.f);
+
+	// 미션 성공
+	m_ppGameObjects[20] = new CUI(16, pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, 400.f, 20.f, 0.f, XMFLOAT2(-0.f, -0.f), XMFLOAT2(-0.f, -0.f), XMFLOAT2(-0.f, -0.f), XMFLOAT2(-0.f, -0.f));
+	m_ppGameObjects[20]->SetIsRender(false);
+	m_ppGameObjects[20]->SetPosition(fx * 0.001f, fy * 0.25f, 0.f);
 
 	m_ObjManager->AddObject(L"player_ui1_testui", m_ppGameObjects[0], OBJ_UI);
 	m_ObjManager->AddObject(L"player_ui2_weapon", m_ppGameObjects[1], OBJ_UI);
@@ -212,6 +228,9 @@ void CTestScene::BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandLis
 	m_ObjManager->AddObject(L"player_ui16_navigator", m_ppGameObjects[15], OBJ_NAVIGATOR);
 	m_ObjManager->AddObject(L"player_ui17_mission_failed", m_ppGameObjects[16], OBJ_FIGHT_UI4);
 	m_ObjManager->AddObject(L"player_ui18_mission_restart", m_ppGameObjects[17], OBJ_FIGHT_UI4);
+	m_ObjManager->AddObject(L"player_ui19_fighter", m_ppGameObjects[18], OBJ_UI);
+	m_ObjManager->AddObject(L"player_ui20_ship", m_ppGameObjects[19], OBJ_UI);
+	m_ObjManager->AddObject(L"player_ui21_mission_accomplished", m_ppGameObjects[20], OBJ_FIGHT_UI4);
 
 	XMFLOAT3 xmf3Scale(8.0f, 2.0f, 8.0f);
 	XMFLOAT4 xmf4Color(0.0f, 0.3f, 0.0f, 0.0f);
@@ -386,6 +405,7 @@ void CTestScene::CreateStageObject()
 		if (GET_MANAGER<SceneManager>()->m_bStageClear == false)
 		{
 			GET_MANAGER<SceneManager>()->m_bStageClear = true;
+			m_ObjManager->GetObjFromTag(L"player", OBJ_PLAYER)->m_bGameOver = true;
 		}
 		return;
 	}
@@ -529,21 +549,6 @@ bool CTestScene::ProcessInput(UCHAR* pKeysBuffer)
 
 void CTestScene::AnimateObjects(float fTimeElapsed)
 {
-	GET_MANAGER<SceneManager>()->SceneStoped();
-	 
-	if (m_pPlayer->m_bGameOver)
-	{
-		m_ppGameObjects[16]->SetIsRender(true);
-		cout << "게임오버라고 ?!" << m_fElapsedTime << endl;
-		m_fElapsedTime += fTimeElapsed;
-		if (m_fElapsedTime > 7)
-		{
-			m_ppGameObjects[16]->SetIsRender(false);
-			m_pPlayer->m_bGameOver = false;
-			cout << "응 아니야" << endl;
-			m_fElapsedTime = 0.f;
-		}
-	}
 	
 	CreateStageObject();
 
@@ -551,21 +556,26 @@ void CTestScene::AnimateObjects(float fTimeElapsed)
 	{
 		for (auto& obj : m_ObjManager->GetObjFromType(OBJ_ENEMY))
 		{
+			if (obj.second->GetPosition().z < -18000.f)
+			{
+				m_ObjManager->GetObjFromTag(L"player", OBJ_PLAYER)->m_bGameOver = true;
+				/*if (GET_MANAGER<SceneManager>()->m_bStageClear == false)
+				{
+					GET_MANAGER<SceneManager>()->m_bStageClear = true;
+					m_ObjManager->GetObjFromTag(L"player", OBJ_PLAYER)->m_bGameOver = true;
+				}*/
+			}
+
 			if (obj.second->m_bDestroyed)
 			{
 				m_ppGameObjects[14]->SetIsRender(true);
-				m_ppGameObjects[14]->SetPosition(fx * 0.001f, fy * 0.25f, 0.f);
 
-				elapsedTime += fTimeElapsed;
-				if (elapsedTime > 2)
-				{
-					m_ppGameObjects[14]->SetIsRender(false);
-						m_ppGameObjects[14]->SetPosition( fx*-2.f, fy * -2.f, 0.f);
-
-				}
+				elapsedTime = 0;
 			}
-			
-			
+			else if (elapsedTime > 2)
+			{
+				m_ppGameObjects[14]->SetIsRender(false);
+			}
 
 			if (obj.second->m_bAiLockOn == true)
 			{
@@ -610,11 +620,25 @@ void CTestScene::AnimateObjects(float fTimeElapsed)
 
 		}
 
+		if (GET_MANAGER<UIManager>()->GetLockOnType())
+		{
+			m_ppGameObjects[18]->SetIsRender(true);
+			m_ppGameObjects[19]->SetIsRender(false);
+		}
+		else
+		{
+			m_ppGameObjects[18]->SetIsRender(false);
+			m_ppGameObjects[19]->SetIsRender(true);
+		}
+
 	}
 
+	m_ObjManager->GetObjFromTag(L"player", OBJ_PLAYER)->SetPlayerHp(m_pPlayer->GetHp());
 	m_ObjManager->GetObjFromTag(L"player", OBJ_PLAYER)->SetPlayerMSL(m_pPlayer->GetMSLCount());
 	m_ObjManager->GetObjFromTag(L"player", OBJ_PLAYER)->SetPlayerSpeed(m_pPlayer->GetAircraftSpeed());
 	m_ObjManager->Update(fTimeElapsed);
+	GET_MANAGER<SceneManager>()->SceneStoped();
+
 }
 
 void CTestScene::OnPrepareRender(ID3D12GraphicsCommandList* pd3dCommandList)

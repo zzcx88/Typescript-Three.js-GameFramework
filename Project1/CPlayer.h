@@ -57,6 +57,9 @@ protected:
 	float           			m_fMaxVelocityY = 0.0f;
 	float           			m_fFriction = 0.0f;
 
+	float						m_fRestartFrequency = 5.f;
+	float						m_fRestartElapsed = 0.0f;
+
 	LPVOID						m_pPlayerUpdatedContext = NULL;
 	LPVOID						m_pCameraUpdatedContext = NULL;
 
@@ -65,8 +68,7 @@ protected:
 	int m_nScore = 0;
 
 	//Hp Count
-	int m_nHp = 0;
-
+	int m_nHp = 5;
 public:
 	CPlayer();
 	virtual ~CPlayer();
@@ -106,6 +108,8 @@ public:
 	int GetMSLCount() const { return(m_nMSL_Count); }
 	int GetScore() const { return(m_nScore); }
 	bool GetGameOver() const { return(m_bGameOver); }
+	int GetHp() const { return(m_nHp); }
+
 	const XMFLOAT3& GetTargetDir() const { return (m_xmf3TargetDirection); }
 
 	ObjectManager* m_ObjManager;

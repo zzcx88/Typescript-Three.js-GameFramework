@@ -7,6 +7,7 @@ class UIManager : public SingletonBase<UIManager>
 	int alt_number = 0;
 	int missile_number = 0;
 	int score_number = 0;
+	int hp_number = 0;
 
 	float fElapsedTime = 60.f;
 
@@ -19,7 +20,7 @@ class UIManager : public SingletonBase<UIManager>
 
 	int nDistance = 0;
 
-	int numObjects = 29;
+	int numObjects = 32;
 
 	bool m_bFighterType = false;
 	bool m_bNotSort = false;
@@ -33,7 +34,7 @@ public:
 	CCamera* m_pCamera = NULL;
 
 	vector<CGameObject*> FighterOBJs, ShipOBJs;
-	vector<int> speed, alt, missile, timeMS, timeS, timeM, score, distance{};
+	vector<int> speed, alt, missile, timeMS, timeS, timeM, score, distance, hp{};
 
 public:
 	void MoveMinimapPoint(ObjectManager::MAPOBJ* PlyList, ObjectManager::MAPOBJ* EneList);
@@ -42,6 +43,7 @@ public:
 	void NumberTextureAnimate(ObjectManager::MAPOBJ* PlyList, const float& TimeDelta);
 	void ReleaseUI();
 	void BuildNumberUI();
+	bool GetLockOnType() { return m_bFighterType; }
 
 	CGameObject* m_fMin = NULL;
 	int Count = 0;
