@@ -158,7 +158,7 @@ void CMissle::Animate(float fTimeElapsed)
 			m_pCamera->GenerateProjectionMatrix(1.01f, 100000.0f, ASPECT_RATIO, 20);
 			m_pCamera->RegenerateViewMatrix();
 		}
-		else
+		else if(m_bMissleLockCamera == false)
 		{
 			GET_MANAGER<SoundManager>()->StopSound(CH_EFFECT);
 		}

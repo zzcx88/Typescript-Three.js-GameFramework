@@ -198,15 +198,16 @@ void CPlayer::Update_Input(const float& TimeDelta)
 	if (true == keyManager->GetKeyState(STATE_DOWN, VK_T))
 	{
 		dwDirection |= VK_T;
+		CFlare* pFlareRef = (CFlare*)m_ObjManager->GetObjFromTag(L"flareRef", OBJ_EFFECT);
 		CFlare* pFlare = new CFlare(GetUp());
-		pFlare->SetMesh(m_ObjManager->GetObjFromTag(L"flareRef", OBJ_EFFECT)->m_pPlaneMesh);
-		pFlare->m_pEffectMaterial = new CMaterial(1);
-		pFlare->m_pEffectMaterial->SetTexture(m_ObjManager->GetObjFromTag(L"flareRef", OBJ_EFFECT)->m_pEffectTexture[0]);
-		pFlare->CGameObject::SetShader(m_ObjManager->GetObjFromTag(L"flareRef", OBJ_EFFECT)->m_EffectShader);
-		pFlare->m_pEffectMaterial->SetShader(m_ObjManager->GetObjFromTag(L"flareRef", OBJ_EFFECT)->m_EffectShader);
-		pFlare->SetMaterial(0, pFlare->m_pEffectMaterial);
+		pFlare->SetMesh(pFlareRef->m_pPlaneMesh);
+		pFlare->m_pMaterial = new CMaterial(1);
+		pFlare->m_pMaterial->SetTexture(pFlareRef->m_pTexture);
+		pFlare->m_pMaterial->SetShader(pFlareRef->m_pShader);
+		pFlare->SetMaterial(0, pFlare->m_pMaterial);
 		pFlare->SetPosition(GetPosition());
-		//pFlare->m_bEffectedObj = true;
+		pFlare->m_fFlareSpeed = m_fAircraftSpeed;
+		pFlare->m_xmf3Look = GetLook();
 		m_ObjManager->AddObject(L"flareInstance", pFlare, OBJ_EFFECT);
 	}
 
@@ -566,6 +567,22 @@ void CPlayer::Update_PadInput(const float& TimeDelta)
 				}
 			}
 		}
+	}
+
+	if (true == keyManager->GetPadState(STATE_DOWN, XINPUT_GAMEPAD_RIGHT_THUMB))
+	{
+		dwDirection |= XINPUT_GAMEPAD_RIGHT_THUMB;
+		CFlare* pFlareRef = (CFlare*)m_ObjManager->GetObjFromTag(L"flareRef", OBJ_EFFECT);
+		CFlare* pFlare = new CFlare(GetUp());
+		pFlare->SetMesh(pFlareRef->m_pPlaneMesh);
+		pFlare->m_pMaterial = new CMaterial(1);
+		pFlare->m_pMaterial->SetTexture(pFlareRef->m_pTexture);
+		pFlare->m_pMaterial->SetShader(pFlareRef->m_pShader);
+		pFlare->SetMaterial(0, pFlare->m_pMaterial);
+		pFlare->SetPosition(GetPosition());
+		pFlare->m_fFlareSpeed = m_fAircraftSpeed;
+		pFlare->m_xmf3Look = GetLook();
+		m_ObjManager->AddObject(L"flareInstance", pFlare, OBJ_EFFECT);
 	}
 
 	if (true == keyManager->GetPadState(STATE_PUSH, XINPUT_GAMEPAD_A))
@@ -1489,6 +1506,7 @@ void CAirplanePlayer::MissleLaunch()
 		if (Ene.second->m_bCanFire == true && Ene.second->GetState() != true&&m_nMSL_Count !=0 && Ene.second->m_bDestroyed == false)
 		{
 			temp = Ene.second->GetPositionForMissle();
+			Ene.second->m_AiMissleAssert = true;
 			pMissle = new CMissle(this);
 			pMissle->m_xmfTarget = temp;
 			pMissle->m_bLockOn = true;

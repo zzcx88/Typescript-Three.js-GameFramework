@@ -5,6 +5,7 @@
 #include "CMissleFog.h"
 #include "CMissleSplash.h"
 #include "CCrushSmoke.h"
+#include "CFlare.h"
 
 CMig21::CMig21()
 {
@@ -142,6 +143,30 @@ void CMig21::Animate(float fTimeElapsed)
 		{
 			GET_MANAGER<AIManager>()->DoAction(AI_ESCORT, this);
 			UpdateTransform(NULL);
+		}
+
+		m_fAddFlareTimeElapsed += fTimeElapsed;
+		if (m_nFlareCnt <= 0)
+		{
+			m_AiMissleAssert = false;
+		}
+
+		//임시 플레어
+		if (m_fAddFlareTimeElapsed > m_fAddFlareFrequence && m_AiMissleAssert && m_nFlareCnt > 0)
+		{
+			CFlare* pFlareRef = (CFlare*)m_ObjManager->GetObjFromTag(L"flareRef", OBJ_EFFECT);
+			CFlare* pFlare = new CFlare(GetUp());
+			pFlare->SetMesh(pFlareRef->m_pPlaneMesh);
+			pFlare->m_pMaterial = new CMaterial(1);
+			pFlare->m_pMaterial->SetTexture(pFlareRef->m_pTexture);
+			pFlare->m_pMaterial->SetShader(pFlareRef->m_pShader);
+			pFlare->SetMaterial(0, pFlare->m_pMaterial);
+			pFlare->SetPosition(GetPosition());
+			pFlare->m_fFlareSpeed = 250;
+			pFlare->m_xmf3Look = GetLook();
+			m_ObjManager->AddObject(L"flareInstance", pFlare, OBJ_EFFECT);
+			m_fAddFlareTimeElapsed = 0;
+			m_nFlareCnt--;
 		}
 
 		if (m_bDestroyed == true)

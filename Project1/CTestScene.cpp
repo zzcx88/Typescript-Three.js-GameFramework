@@ -254,8 +254,8 @@ void CTestScene::BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandLis
 	CMissleFog* pMissleFog = new CMissleFog(0, pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, 1.f, 1.f, 0.f);
 	m_ObjManager->AddObject(L"MissleFog", pMissleFog, OBJ_EFFECT);
 
-	/*CFlare* pFlare = new CFlare(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, 1.f, 1.f, 0.f);
-	m_ObjManager->AddObject(L"flareRef", pFlare, OBJ_EFFECT);*/
+	CFlare* pFlare = new CFlare(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, 70.f, 70.f, 0.f);
+	m_ObjManager->AddObject(L"flareRef", pFlare, OBJ_EFFECT);
 
 	CCrushSmoke* pCrushSmoke = new CCrushSmoke(0, pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, 1.f, 1.f, 0.f);
 	m_ObjManager->AddObject(L"crushsmokeRef", pCrushSmoke, OBJ_EFFECT);
@@ -405,7 +405,7 @@ void CTestScene::BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandLis
 
 void CTestScene::CreateStageObject()
 {
-	if (GET_MANAGER<SceneManager>()->m_nWaveCnt == 3)
+	if (GET_MANAGER<SceneManager>()->m_nWaveCnt == 4)
 	{
 		if (GET_MANAGER<SceneManager>()->m_bStageClear == false)
 		{
@@ -563,16 +563,6 @@ void CTestScene::AnimateObjects(float fTimeElapsed)
 	{
 		for (auto& obj : m_ObjManager->GetObjFromType(OBJ_ENEMY))
 		{
-			if (obj.second->GetPosition().z < -18000.f)
-			{
-				m_ObjManager->GetObjFromTag(L"player", OBJ_PLAYER)->m_bGameOver = true;
-				/*if (GET_MANAGER<SceneManager>()->m_bStageClear == false)
-				{
-					GET_MANAGER<SceneManager>()->m_bStageClear = true;
-					m_ObjManager->GetObjFromTag(L"player", OBJ_PLAYER)->m_bGameOver = true;
-				}*/
-			}
-
 			if (obj.second->m_bDestroyed)
 			{
 				m_ppGameObjects[14]->SetIsRender(true);

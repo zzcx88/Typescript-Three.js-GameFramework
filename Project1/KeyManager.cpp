@@ -52,6 +52,7 @@ int KeyManager::UpdateKey()
 		ComputePadState(XINPUT_GAMEPAD_RIGHT_SHOULDER);
 		ComputePadState(XINPUT_GAMEPAD_DPAD_DOWN);
 		ComputePadState(XINPUT_GAMEPAD_DPAD_UP);
+		ComputePadState(XINPUT_GAMEPAD_RIGHT_THUMB);
 		ComputePadLStickState();
 	}
 	else
