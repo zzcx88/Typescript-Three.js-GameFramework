@@ -151,7 +151,7 @@ void CPlayer::Update_Input(const float& TimeDelta)
 {
 	KeyManager* keyManager = GET_MANAGER<KeyManager>();
 	DWORD dwDirection = 0;
-	
+
 	if (true == keyManager->GetKeyState(STATE_DOWN, VK_TAB))
 	{
 		//m_bGameOver = true;
@@ -193,20 +193,6 @@ void CPlayer::Update_Input(const float& TimeDelta)
 			}
 		}
 	}
-
-	//if (true == keyManager->GetKeyState(STATE_DOWN, VK_LSHIFT))
-	//{
-	//	//m_bGameOver = true;
-	//	dwDirection |= VK_LSHIFT;
-	//	if (m_bLockType == false)
-	//	{
-	//		m_bLockType = true;
-	//	}
-	//	else
-	//	{
-	//		m_bLockType = false;
-	//	}
-	//}
 
 	if (true == keyManager->GetKeyState(STATE_PUSH, VK_LCONTROL))
 	{
@@ -498,6 +484,21 @@ void CPlayer::Update_Input(const float& TimeDelta)
 	if (m_fAircraftSpeed < 600 && GET_MANAGER<CDeviceManager>()->GetBlurAmount() == 0)
 		GET_MANAGER<CDeviceManager>()->SetBulrSwitch(false);
 
+	if (m_bStall == true)
+	{
+		XMFLOAT3 xmf3NewLook = XMFLOAT3(0, -1, 0);
+		XMVECTOR Dest = XMLoadFloat3(&xmf3NewLook);
+		XMVECTOR Start = XMLoadFloat3(&GetLookVector());
+		XMVECTOR Result = XMVectorLerp(Start, Dest, 5.f * TimeDelta);
+		XMFLOAT3 xmf3Result;
+		XMStoreFloat3(&xmf3Result, Result);
+		m_xmf3Look = xmf3Result;
+		Rotate(0,0,0);
+
+		if (GetPosition().y < 9000)
+			m_bStall = false;
+	}
+
 	Move(DIR_FORWARD, m_fAircraftSpeed * TimeDelta, true);
 	MoveForward(8.0f);
 	WingAnimate(TimeDelta, dwDirection);
@@ -550,20 +551,6 @@ void CPlayer::Update_PadInput(const float& TimeDelta)
 			}
 		}
 	}
-
-	//if (true == keyManager->GetKeyState(STATE_DOWN, VK_LSHIFT))
-	//{
-	//	//m_bGameOver = true;
-	//	dwDirection |= VK_LSHIFT;
-	//	if (m_bLockType == false)
-	//	{
-	//		m_bLockType = true;
-	//	}
-	//	else
-	//	{
-	//		m_bLockType = false;
-	//	}
-	//}
 
 	if (true == keyManager->GetPadState(STATE_PUSH, XINPUT_GAMEPAD_A))
 	{
@@ -857,11 +844,25 @@ void CPlayer::Update_PadInput(const float& TimeDelta)
 	if (m_fAircraftSpeed < 600 && GET_MANAGER<CDeviceManager>()->GetBlurAmount() == 0)
 		GET_MANAGER<CDeviceManager>()->SetBulrSwitch(false);
 
+	if (m_bStall == true)
+	{
+		XMFLOAT3 xmf3NewLook = XMFLOAT3(0, -1, 0);
+		XMVECTOR Dest = XMLoadFloat3(&xmf3NewLook);
+		XMVECTOR Start = XMLoadFloat3(&GetLookVector());
+		XMVECTOR Result = XMVectorLerp(Start, Dest, 5.f * TimeDelta);
+		XMFLOAT3 xmf3Result;
+		XMStoreFloat3(&xmf3Result, Result);
+		m_xmf3Look = xmf3Result;
+		Rotate(0, 0, 0);
+
+		if (GetPosition().y < 9000)
+			m_bStall = false;
+	}
+
 	Move(DIR_FORWARD, m_fAircraftSpeed * TimeDelta, true);
 	MoveForward(8.0f);
 	WingAnimate(TimeDelta, dwDirection);
 	GunCameraMove(TimeDelta);
-
 }
 
 void CPlayer::Animate(float fTimeElapsed)
@@ -869,6 +870,15 @@ void CPlayer::Animate(float fTimeElapsed)
 	m_pCamera->m_fTimeElapsed = fTimeElapsed;
 	if (m_bGameOver == false)
 	{
+		if (GetPosition().y >= 10000)
+		{
+			m_bStall = true;
+			std::default_random_engine dre(time(NULL) * GetPosition().z);
+			std::uniform_real_distribution<float>fXPos(-400, 400);
+			std::uniform_real_distribution<float>fZPos(200, 400);
+			xmf3StallRecoverPosition = XMFLOAT3(GetPosition().x + fXPos(dre), -2000.f, GetPosition().z + fZPos(dre));
+		}
+
 		m_xmf3Velocity = Vector3::Add(m_xmf3Velocity, Vector3::ScalarProduct(m_xmf3Gravity, fTimeElapsed, false));
 		float fLength = sqrtf(m_xmf3Velocity.x * m_xmf3Velocity.x + m_xmf3Velocity.z * m_xmf3Velocity.z);
 		float fMaxVelocityXZ = m_fMaxVelocityXZ * fTimeElapsed;

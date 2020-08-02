@@ -213,12 +213,13 @@ void CTestScene::BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandLis
 	m_ObjManager->AddObject(L"player_ui17_mission_failed", m_ppGameObjects[16], OBJ_FIGHT_UI4);
 	m_ObjManager->AddObject(L"player_ui18_mission_restart", m_ppGameObjects[17], OBJ_FIGHT_UI4);
 
-	XMFLOAT3 xmf3Scale(8.0f, 2.0f, 8.0f);
+	XMFLOAT3 xmf3Scale(80.0f, 20.0f, 80.0f);
 	XMFLOAT4 xmf4Color(0.0f, 0.3f, 0.0f, 0.0f);
 	m_pTerrain = new CHeightMapTerrain(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, _T("Terrain/Stage1.raw"), 513, 513, xmf3Scale, xmf4Color);
-	m_pTerrain->SetScale(10,10,10);
+	//m_pTerrain->SetScale(10,10,10);
 
 	m_pTerrain->SetPosition(-20500,-1500,-20500);
+	//m_pTerrain->SetPosition(0, 0, 0);
 	//m_pTerrain->Rotate(0, 90, 0);
 	m_ObjManager->AddObject(L"terrain", m_pTerrain, OBJ_TEST);
 
@@ -406,6 +407,7 @@ void CTestScene::CreateStageObject()
 			p052C->m_xmf3Look = XMFLOAT3(0, 0, -1);
 			m_ObjManager->AddObject(L"052C", p052C, OBJ_ENEMY);
 		}
+		GET_MANAGER<SceneManager>()->m_nWave = 0;
 	}
 
 	if (GET_MANAGER<SceneManager>()->m_nWave == GET_MANAGER<SceneManager>()->m_nWaveCnt && GET_MANAGER<SceneManager>()->m_nTgtObject == 0)

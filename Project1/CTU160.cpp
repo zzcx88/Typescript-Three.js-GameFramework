@@ -56,8 +56,9 @@ void CTU160::OnPrepareAnimate()
 
 void CTU160::Animate(float fTimeElapsed)
 {
-	if (GetPosition().z <= 10000.f)
-		GET_MANAGER<SceneManager>()->m_bStageFail = true;
+	if (GetPosition().z <= -16000.f)
+		GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player", OBJ_PLAYER)->m_bGameOver = true;
+		//GET_MANAGER<SceneManager>()->m_bStageFail = true;
 
 	/*if (m_pLeftEngine1 == NULL)
 	{

@@ -272,6 +272,7 @@ public:
 				pMissle->m_xmfTarget = temp;
 				pMissle->m_bLockOn = true;
 				pMissle->SetPosition(pObj->GetPosition());
+				pMissle->m_bLaunchFromAircraft = true;
 				GET_MANAGER<ObjectManager>()->AddObject(L"enemy_missle", pMissle, OBJ_ENEMISSLE);
 				return true;
 			}

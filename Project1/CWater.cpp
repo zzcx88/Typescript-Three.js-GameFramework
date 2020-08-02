@@ -12,9 +12,9 @@ CWater::CWater(int nIndex, ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* 
 
 	CTexture* pTexture[TEXTURES];
 	pTexture[0] = new CTexture(1, RESOURCE_TEXTURE2D, 0);
-	pTexture[0]->LoadTextureFromFile(pd3dDevice, pd3dCommandList, L"Effect/water_base.dds", 0);
+	pTexture[0]->LoadTextureFromFile(pd3dDevice, pd3dCommandList, L"Effect/Water_base.dds", 0);
 	pTexture[1] = new CTexture(1, RESOURCE_TEXTURE2D, 0);
-	pTexture[1]->LoadTextureFromFile(pd3dDevice, pd3dCommandList, L"Effect/Water_Normal.dds", 0);
+	pTexture[1]->LoadTextureFromFile(pd3dDevice, pd3dCommandList, L"Effect/water_Normal.dds", 0);
 
 	UINT ncbElementBytes = ((sizeof(CB_GAMEOBJECT_INFO) + 255) & ~255);
 	CWaterShader* pWaterShader;
@@ -39,6 +39,7 @@ CWater::~CWater()
 
 void CWater::Animate(float fTimeElapsed)
 {
+	//m_fBurnerBlendAmount += 0.1f * fTimeElapsed;
 }
 
 void CWater::Render(ID3D12GraphicsCommandList* pd3dCommandList, CCamera* pCamera)
