@@ -51,6 +51,11 @@ protected:
 
 public:
 	float m_fTimeElapsed = 0.f;
+	float m_fShakingTimeElapsed = 0.f;
+	float m_fShakingTimeFrequncy = 0.5f;
+	int m_nShakeAmplitude = 50;
+	bool m_bShakeSwitch = false;
+	bool m_bEneShake = false;
 
 public:
 	CCamera();
@@ -112,6 +117,8 @@ public:
 	virtual void Update(XMFLOAT3& xmf3LookAt, float fTimeElapsed) { }
 	virtual void SetLookAt(XMFLOAT3& xmf3LookAt);
 	void SetLookPlayer(bool bLerpOpt = true);
+	
+	void ShakingCamera();
 
 public:
 	//절두체(월드 좌표계)를 생성한다. 

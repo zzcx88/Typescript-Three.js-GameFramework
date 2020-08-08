@@ -15,7 +15,9 @@ public:
 
 	float m_fTimeElapsed = 0.f;
 
-	float m_fFlareSpeed = 0;
+	float m_fFlareSpeed = 200;
+
+	OBJTYPE m_FromType;
 
 	CTexture* m_pTexture = NULL;
 	CMissleFogShader* m_pShader = NULL;
@@ -29,6 +31,8 @@ public:
 	virtual void Animate(float fTimeElapsed);
 	void TextureAnimate();
 	void SetLookAt(XMFLOAT3& xmfTarget);
+
+	void Deceptioning();
 	void Render(ID3D12GraphicsCommandList* pd3dCommandList, CCamera* pCamera);
 };
 

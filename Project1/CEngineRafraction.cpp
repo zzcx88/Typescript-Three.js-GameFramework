@@ -134,7 +134,7 @@ void CEngineRafraction::Animate(float fTimeElapsed)
 		m_pEffectMaterial->m_ppTextures[0] = m_pEffectTexture[0];
 		std::default_random_engine dre(m_fTimeElapsed * 100);
 		std::uniform_real_distribution<float>range(0, 360);
-		m_fRotateSpeed = range(dre);
+		m_fRotateSpeed += range(dre);
 		Rotate(0, 0, m_fRotateSpeed + 10);
 	}
 	

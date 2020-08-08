@@ -214,6 +214,9 @@
     <Filter Include="GameObject\Plane\Effect\Flare">
       <UniqueIdentifier>{9a159e82-b848-4c1f-b48f-3302d7ccbb8a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="GameObject\Plane\Effect\JetFlame">
+      <UniqueIdentifier>{8a4130b5-e927-45c2-b28a-c558d0f75108}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="targetver.h">
@@ -441,6 +444,9 @@
     <ClInclude Include="CFlare.h">
       <Filter>GameObject\Plane\Effect\Flare</Filter>
     </ClInclude>
+    <ClInclude Include="CJetFlame.h">
+      <Filter>GameObject\Plane\Effect\JetFlame</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="DDSTextureLoader12.cpp">
@@ -638,6 +644,9 @@
     <ClCompile Include="CFlare.cpp">
       <Filter>GameObject\Plane\Effect\Flare</Filter>
     </ClCompile>
+    <ClCompile Include="CJetFlame.cpp">
+      <Filter>GameObject\Plane\Effect\JetFlame</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Project1.rc">
@@ -687,6 +696,9 @@
       <Filter>HLSL</Filter>
     </FxCompile>
     <FxCompile Include="Refract.hlsl">
+      <Filter>HLSL</Filter>
+    </FxCompile>
+    <FxCompile Include="JetFlame.hlsl">
       <Filter>HLSL</Filter>
     </FxCompile>
   </ItemGroup>

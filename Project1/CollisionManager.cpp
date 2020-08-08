@@ -113,12 +113,12 @@ void CollisionManager::CollisionFloor()
 
 void CollisionManager::CollisionTerrain()
 {
-	if (GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player", OBJ_PLAYER) && GET_MANAGER<ObjectManager>()->GetObjFromTag(L"terrain", OBJ_TEST))
+	if (GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player", OBJ_PLAYER) && GET_MANAGER<ObjectManager>()->GetObjFromTag(L"terrain", OBJ_ALPHAMAP))
 	{
 		float PlayerHeight = GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player", OBJ_PLAYER)->GetPosition().y;
 		if (PlayerHeight < 1200)
 		{
-			CHeightMapTerrain* pTempTerrain = (CHeightMapTerrain*)GET_MANAGER<ObjectManager>()->GetObjFromTag(L"terrain", OBJ_TEST);
+			CHeightMapTerrain* pTempTerrain = (CHeightMapTerrain*)GET_MANAGER<ObjectManager>()->GetObjFromTag(L"terrain", OBJ_ALPHAMAP);
 			float TerrainHeight = pTempTerrain->GetHeight(GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player", OBJ_PLAYER)->GetPosition().x + 20500,
 				GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player", OBJ_PLAYER)->GetPosition().z + 20500) - 1500;
 
@@ -143,9 +143,11 @@ void CollisionManager::CollisionTerrain()
 				pMissleSplash->m_pEffectMaterial->SetTexture(pMissleSplash->m_pEffectTexture[0]);
 				pMissleSplash->m_pEffectMaterial->SetShader(GET_MANAGER<ObjectManager>()->GetObjFromTag(L"MissleSplashRef", OBJ_EFFECT)->m_EffectShader);
 				pMissleSplash->SetMaterial(0, pMissleSplash->m_pEffectMaterial);
-				pMissleSplash->SetPosition(GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player", OBJ_PLAYER)->m_xmf4x4World._41,
-					GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player", OBJ_PLAYER)->m_xmf4x4World._42,
-					GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player", OBJ_PLAYER)->m_xmf4x4World._43);
+
+				float fPosValue = 100.f;
+				pMissleSplash->SetPosition(GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player", OBJ_PLAYER)->GetPosition().x - GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player", OBJ_PLAYER)->GetLook().x * fPosValue,
+					GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player", OBJ_PLAYER)->GetPosition().y - GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player", OBJ_PLAYER)->GetLook().y * fPosValue, 
+					GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player", OBJ_PLAYER)->GetPosition().z - GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player", OBJ_PLAYER)->GetLook().z * fPosValue);
 
 				GET_MANAGER<ObjectManager>()->AddObject(L"MissleSplashInstance", pMissleSplash, OBJ_EFFECT);
 			}
@@ -159,13 +161,15 @@ void CollisionManager::CollisionTerrainMissle(ObjectManager::MAPOBJ* SrcList)
 	{
 		if (true == Src.second->GetState())
 			continue;
-		CHeightMapTerrain* pTempTerrain = (CHeightMapTerrain*)GET_MANAGER<ObjectManager>()->GetObjFromTag(L"terrain", OBJ_TEST);
+		CHeightMapTerrain* pTempTerrain = (CHeightMapTerrain*)GET_MANAGER<ObjectManager>()->GetObjFromTag(L"terrain", OBJ_ALPHAMAP);
 		float TerrainHeight = pTempTerrain->GetHeight(Src.second->GetPosition().x + 20500,
 			Src.second->GetPosition().z + 20500) - 1500;
 
-
+		float fPosValue = 100.f;
 		if (Src.second->GetPosition().y <= TerrainHeight)
 		{
+			Src.second->SetPosition(Src.second->GetPosition().x - Src.second->GetLook().x * fPosValue,
+				Src.second->GetPosition().y - Src.second->GetLook().y * fPosValue, Src.second->GetPosition().z - Src.second->GetLook().z * fPosValue);
 			Src.second->CollisionActivate(pTempTerrain);
 		}
 	}

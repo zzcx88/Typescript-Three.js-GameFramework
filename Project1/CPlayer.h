@@ -42,12 +42,16 @@ protected:
 
 	float m_fPushSpaceElapsed = 0.0f;
 
+	float m_fCoolTime_MSL_1 = 1.0f;
+	float m_fCoolTime_MSL_2 = 1.0f;
+
 	bool m_bGunFire = false;
 	bool m_bMissleCross = false;
 
 	bool m_bGunSoundPlayed = false;
 	bool m_bAssertSoundPlayed = false;
 	bool m_bStall = false;
+	bool m_bDamaged = false;
 
 	XMFLOAT3 xmf3StallRecoverPosition = XMFLOAT3(0.0f, 0.0f, 0.0f);
 
@@ -120,6 +124,7 @@ public:
 
 	CCamera* GetCamera() { return(m_pCamera); }
 	void SetCamera(CCamera* pCamera) { m_pCamera = pCamera; }
+	void SetDamaged() { m_bDamaged = false; }
 
 	void Move(DWORD nDirection, float fDistance, bool bVelocity = false);
 	void Move(const XMFLOAT3& xmf3Shift, bool bVelocity = false);

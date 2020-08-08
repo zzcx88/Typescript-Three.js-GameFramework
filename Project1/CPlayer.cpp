@@ -200,6 +200,7 @@ void CPlayer::Update_Input(const float& TimeDelta)
 		dwDirection |= VK_T;
 		CFlare* pFlareRef = (CFlare*)m_ObjManager->GetObjFromTag(L"flareRef", OBJ_EFFECT);
 		CFlare* pFlare = new CFlare(GetUp());
+		pFlare->m_FromType = OBJ_PLAYER;
 		pFlare->SetMesh(pFlareRef->m_pPlaneMesh);
 		pFlare->m_pMaterial = new CMaterial(1);
 		pFlare->m_pMaterial->SetTexture(pFlareRef->m_pTexture);
@@ -484,7 +485,9 @@ void CPlayer::Update_Input(const float& TimeDelta)
 	if (m_bEye_fixation == false && m_fFOV < 60)
 	{
 		m_pCamera->GenerateProjectionMatrix(1.01f, m_fFarPlaneDistance, ASPECT_RATIO, m_fFOV);
-		m_fFOV += 30 * TimeDelta;
+		m_fFOV += 30.f * TimeDelta;
+		if(m_fFOV > 60.f)
+			m_fFOV = 60.f;
 	}
 
 	if (m_bEye_fixation == false && m_bGunFire == false && m_bMissleLockCamera == false)
@@ -574,6 +577,7 @@ void CPlayer::Update_PadInput(const float& TimeDelta)
 		dwDirection |= XINPUT_GAMEPAD_RIGHT_THUMB;
 		CFlare* pFlareRef = (CFlare*)m_ObjManager->GetObjFromTag(L"flareRef", OBJ_EFFECT);
 		CFlare* pFlare = new CFlare(GetUp());
+		pFlare->m_FromType = OBJ_PLAYER;
 		pFlare->SetMesh(pFlareRef->m_pPlaneMesh);
 		pFlare->m_pMaterial = new CMaterial(1);
 		pFlare->m_pMaterial->SetTexture(pFlareRef->m_pTexture);
@@ -858,7 +862,9 @@ void CPlayer::Update_PadInput(const float& TimeDelta)
 	if (m_bEye_fixation == false && m_fFOV < 60)
 	{
 		m_pCamera->GenerateProjectionMatrix(1.01f, m_fFarPlaneDistance, ASPECT_RATIO, m_fFOV);
-		m_fFOV += 30 * TimeDelta;
+		m_fFOV += 30.f * TimeDelta;
+		if (m_fFOV > 60.f)
+			m_fFOV = 60.f;
 	}
 
 	if (m_bEye_fixation == false && m_bGunFire == false && m_bMissleLockCamera == false)
@@ -1019,6 +1025,11 @@ void CPlayer::Animate(float fTimeElapsed)
 			m_xmf3Right = XMFLOAT3(1, 0, 0);
 		}
 	}
+
+	if (m_pCamera->m_bShakeSwitch == true)
+	{
+		m_pCamera->ShakingCamera();
+	}
 	/*if (-1 ==Update_Input(fTimeElapsed))
 	{
 		return -1;
@@ -1031,10 +1042,11 @@ void CPlayer::CollisionActivate(CGameObject* collideTarget)
 	{
 		if (m_bGunFire == false)
 		{
-			if ((int)(GetPosition().x + GetPosition().y + GetPosition().z) / 2 == 0)
+			/*if ((int)(GetPosition().x + GetPosition().y + GetPosition().z) / 2 == 0)
 				m_pCamera->Rotate(20, 0, 0);
 			else
-				m_pCamera->Rotate(-20, 0, 0);
+				m_pCamera->Rotate(-20, 0, 0);*/
+			m_pCamera->m_bShakeSwitch = true;
 		}
 		cout << "플레이어 충돌!" << endl;
 
@@ -1139,7 +1151,7 @@ CAirplanePlayer::CAirplanePlayer(ID3D12Device* pd3dDevice, ID3D12GraphicsCommand
 	m_pAfterBurnerEXModel = CGameObject::LoadGeometryAndAnimationFromFile(pd3dDevice, pd3dCommandList, pd3dGraphicsRootSignature, "Model/AfterBurnerEX.bin", NULL, MODEL_EFC);
 	m_pAfterBurnerINModel = CGameObject::LoadGeometryAndAnimationFromFile(pd3dDevice, pd3dCommandList, pd3dGraphicsRootSignature, "Model/AfterBurnerIN.bin", NULL, MODEL_EFC);
 
-	CLoadedModelInfo* pModel = CGameObject::LoadGeometryAndAnimationFromFile(pd3dDevice, pd3dCommandList, pd3dGraphicsRootSignature, "Model/F-4E_Phantom_II_test.bin", NULL, MODEL_ACE);
+	CLoadedModelInfo* pModel = CGameObject::LoadGeometryAndAnimationFromFile(pd3dDevice, pd3dCommandList, pd3dGraphicsRootSignature, "Model/F-4E_Phantom_II.bin", NULL, MODEL_ACE);
 	SetChild(pModel->m_pModelRootObject);
 
 	m_fRollPerformance = 100.0f;
@@ -1212,7 +1224,7 @@ void CAirplanePlayer::OnPrepareAnimate()
 	m_pNaviPos = FindFrame("Nevi_Position");
 
 
-	m_pRight_AfterBurnerEX->m_bEffectedObj = true;
+	/*m_pRight_AfterBurnerEX->m_bEffectedObj = true;
 	m_pRight_AfterBurnerEX->m_fBurnerBlendAmount = 0.5f;
 	m_pRight_AfterBurnerEX->m_ppMaterials[0]->SetAfterBurnerShader();
 
@@ -1260,7 +1272,7 @@ void CAirplanePlayer::OnPrepareAnimate()
 			m_pRight_AfterBurner[i]->m_pAfterBurner = pBurner;
 			m_pRight_AfterBurner[i]->SetScale(0.095f, 0.095f,1);
 			GET_MANAGER<ObjectManager>()->AddObject(L"AfterBurnerInstance", m_pRight_AfterBurner[i]->m_pAfterBurner, OBJ_BURNER);
-		}
+		}*/
 	}
 	//m_xmMSL_1 = m_pMSL_1->m_xmf4x4World;
 
@@ -1510,18 +1522,23 @@ void CAirplanePlayer::MissleLaunch()
 			pMissle = new CMissle(this);
 			pMissle->m_xmfTarget = temp;
 			pMissle->m_bLockOn = true;
-			if (m_bMissleCross == false)
+			if (m_bMissleCross == false && m_fCoolTime_MSL_1 >= 1.f)
 			{
 				m_bMissleCross = true;
-				pMissle->SetPosition(m_pMSL_1->GetPosition());
+				pMissle->SetPosition(m_pMSL_1->GetPosition().x - GetUp().x * 20, m_pMSL_1->GetPosition().y - GetUp().y * 20, m_pMSL_1->GetPosition().z - GetUp().z * 20);
+				pMissle->m_fTheta = 60.f;
+				m_ObjManager->AddObject(L"player_missle", pMissle, OBJ_ALLYMISSLE);
 			}
 			else
 			{
-				m_bMissleCross = false;
-				pMissle->SetPosition(m_pMSL_2->GetPosition());
+				if (m_fCoolTime_MSL_2 >= 1.f)
+				{
+					m_bMissleCross = false;
+					pMissle->SetPosition(m_pMSL_2->GetPosition().x - GetUp().x * 20, m_pMSL_2->GetPosition().y - GetUp().y * 20, m_pMSL_2->GetPosition().z - GetUp().z * 20);
+					pMissle->m_fTheta = 60.f;
+					m_ObjManager->AddObject(L"player_missle", pMissle, OBJ_ALLYMISSLE);
+				}
 			}
-			pMissle->m_fTheta = 60.f;
-			m_ObjManager->AddObject(L"player_missle", pMissle, OBJ_ALLYMISSLE);
 			
 			CPlayer::SetMissileCount(--m_nMSL_Count);
 			return;
@@ -1531,18 +1548,23 @@ void CAirplanePlayer::MissleLaunch()
 	pMissle = new CMissle(this);
 	pMissle->m_xmfTarget = temp;
 	pMissle->m_bLockOn = false;
-	if (m_bMissleCross == false)
+	if (m_bMissleCross == false && m_fCoolTime_MSL_1 >= 1.f)
 	{
 		m_bMissleCross = true;
-		pMissle->SetPosition(m_pMSL_1->GetPosition());
+		pMissle->SetPosition(m_pMSL_1->GetPosition().x - GetUp().x * 20, m_pMSL_1->GetPosition().y - GetUp().y * 20, m_pMSL_1->GetPosition().z - GetUp().z * 20);
+		pMissle->m_pCamera = m_pCamera;
+		m_ObjManager->AddObject(L"player_missle", pMissle, OBJ_ALLYMISSLE);
 	}
 	else
 	{
-		m_bMissleCross = false;
-		pMissle->SetPosition(m_pMSL_2->GetPosition());
+		if (m_fCoolTime_MSL_2 >= 1.f)
+		{
+			m_bMissleCross = false;
+			pMissle->SetPosition(m_pMSL_2->GetPosition().x - GetUp().x * 20, m_pMSL_2->GetPosition().y - GetUp().y * 20, m_pMSL_2->GetPosition().z - GetUp().z * 20);
+			pMissle->m_pCamera = m_pCamera;
+			m_ObjManager->AddObject(L"player_missle", pMissle, OBJ_ALLYMISSLE);
+		}
 	}
-	pMissle->m_pCamera = m_pCamera;
-	m_ObjManager->AddObject(L"player_missle", pMissle, OBJ_ALLYMISSLE);
 	CPlayer::SetMissileCount(--m_nMSL_Count);
 
 }
@@ -1612,30 +1634,49 @@ void CAirplanePlayer::SetAfterBurnerPosition(float fTimeElapsed)
 		volume = 1.f;
 	GET_MANAGER<SoundManager>()->SetVolume(CH_BNNRBOST, volume);
 
+	if (GET_MANAGER<ObjectManager>()->GetObjFromTag(L"jetFlameLeft", OBJ_EFFECT2))
+	{
+		float fPosValue = 0.0f - m_fBurnerElapsed / 100.f;
+		if (m_pRight_AfterBurnerEX != NULL)
+		{
+			GET_MANAGER<ObjectManager>()->GetObjFromTag(L"jetFlameLeft", OBJ_EFFECT2)->SetPosition(m_pRight_AfterBurnerEX->GetPosition().x - m_pRight_AfterBurnerEX->GetLook().x * fPosValue,
+				m_pRight_AfterBurnerEX->GetPosition().y - m_pRight_AfterBurnerEX->GetLook().y * fPosValue, m_pRight_AfterBurnerEX->GetPosition().z - m_pRight_AfterBurnerEX->GetLook().z* fPosValue);
+			if (m_fBurnerElapsed / 100.f <= 1.0f)
+				GET_MANAGER<ObjectManager>()->GetObjFromTag(L"jetFlameLeft", OBJ_EFFECT2)->m_fBurnerBlendAmount = m_fBurnerElapsed / 100.f;
+		}
+
+		if (m_pLeft_AfterBurnerEX != NULL)
+		{
+			GET_MANAGER<ObjectManager>()->GetObjFromTag(L"jetFlameRight", OBJ_EFFECT2)->SetPosition(m_pLeft_AfterBurnerEX->GetPosition().x - m_pLeft_AfterBurnerEX->GetLook().x * fPosValue,
+				m_pLeft_AfterBurnerEX->GetPosition().y - m_pLeft_AfterBurnerEX->GetLook().y * fPosValue, m_pLeft_AfterBurnerEX->GetPosition().z - m_pLeft_AfterBurnerEX->GetLook().z * fPosValue);
+			if (m_fBurnerElapsed / 100.f <= 1.0f)
+				GET_MANAGER<ObjectManager>()->GetObjFromTag(L"jetFlameRight", OBJ_EFFECT2)->m_fBurnerBlendAmount = m_fBurnerElapsed / 100.f;
+		}
+	}
 	for (int i = 0; i < 10; ++i)
 	{
 		if (m_pLeft_AfterBurner[i])
 		{
-			if (m_fBurnerElapsed / 150 <= 0.7f)
+			/*if (m_fBurnerElapsed / 150 <= 0.7f)
 			{
 				m_pLeft_AfterBurner[i]->m_pAfterBurner->m_fBurnerBlendAmount = m_fBurnerElapsed / 150;
 				m_pRight_AfterBurner[i]->m_pAfterBurner->m_fBurnerBlendAmount = m_fBurnerElapsed / 150;
-			}
-			if (m_fBurnerElapsed / 150 <= 0.4f)
+			}*/
+			/*if (m_fBurnerElapsed / 150 <= 0.4f)
 			{
 				m_pLeft_AfterBurnerEX->m_fBurnerBlendAmount = m_fBurnerElapsed / 150;
 				m_pLeft_AfterBurnerIN->m_fBurnerBlendAmount = m_fBurnerElapsed / 150;
 				m_pRight_AfterBurnerEX->m_fBurnerBlendAmount = m_fBurnerElapsed / 150;
 				m_pRight_AfterBurnerIN->m_fBurnerBlendAmount = m_fBurnerElapsed / 150;
-			}
+			}*/
 
-			m_pLeft_AfterBurner[i]->m_pAfterBurner->UpdateTransform(&m_pLeft_AfterBurner[i]->m_xmf4x4World);
+			/*m_pLeft_AfterBurner[i]->m_pAfterBurner->UpdateTransform(&m_pLeft_AfterBurner[i]->m_xmf4x4World);
 			m_pRight_AfterBurner[i]->m_pAfterBurner->UpdateTransform(&m_pRight_AfterBurner[i]->m_xmf4x4World);
 			if (m_fBurnerElapsed / 100 < 0.8)
 			{
 				m_pLeft_AfterBurner[i]->m_pAfterBurner->SetPlaneScale(m_fBurnerElapsed / 100);
 				m_pRight_AfterBurner[i]->m_pAfterBurner->SetPlaneScale(m_fBurnerElapsed / 100);
-			}
+			}*/
 		}
 	}
 }

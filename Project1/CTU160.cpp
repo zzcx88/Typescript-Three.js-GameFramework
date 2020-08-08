@@ -291,6 +291,12 @@ void CTU160::Render(ID3D12GraphicsCommandList* pd3dCommandList, CCamera* pCamera
 			pMissleSplash->SetMaterial(0, pMissleSplash->m_pEffectMaterial);
 			pMissleSplash->SetPosition(m_xmf4x4World._41, m_xmf4x4World._42, m_xmf4x4World._43);
 			GET_MANAGER<ObjectManager>()->AddObject(L"MissleSplashInstance", pMissleSplash, OBJ_EFFECT);
+
+			if (LenthToPlayer < 1000)
+			{
+				m_ObjManager->GetObjFromTag(L"player", OBJ_PLAYER)->m_pCamera->m_bEneShake = true;
+				m_ObjManager->GetObjFromTag(L"player", OBJ_PLAYER)->m_pCamera->m_bShakeSwitch = true;
+			}
 		}
 
 		if (m_fDeadElapsed >= m_fDeadFrequence)

@@ -464,6 +464,62 @@ void CCamera::SetLookPlayer(bool bLerpOpt)
 	}
 }
 
+void CCamera::ShakingCamera()
+{
+	m_fShakingTimeElapsed += 10.f * GET_MANAGER<CDeviceManager>()->GetGameTimer().GetTimeElapsed();
+
+	XMFLOAT3 xmf3Right = m_pPlayer->GetRightVector();
+	XMMATRIX xmmtxRotate = XMMatrixRotationAxis(XMLoadFloat3(&xmf3Right), XMConvertToRadians(m_nShakeAmplitude));
+
+	XMFLOAT3 Right = Vector3::TransformNormal(m_xmf3Right, xmmtxRotate);
+	XMFLOAT3 Up = Vector3::TransformNormal(m_xmf3Up, xmmtxRotate);
+	XMFLOAT3 Look = Vector3::TransformNormal(m_xmf3Look, xmmtxRotate);
+
+	XMVECTOR DestRight = XMLoadFloat3(&Right);
+	XMVECTOR DestUp = XMLoadFloat3(&Up);
+	XMVECTOR DestLook = XMLoadFloat3(&Look);
+
+	XMVECTOR StartRight = XMLoadFloat3(&m_xmf3Right);
+	XMVECTOR StartUp = XMLoadFloat3(&m_xmf3Up);
+	XMVECTOR StartLook = XMLoadFloat3(&m_xmf3Look);
+
+	XMStoreFloat3(&m_xmf3Right, XMVectorLerp(StartRight, DestRight, 10.f * GET_MANAGER<CDeviceManager>()->GetGameTimer().GetTimeElapsed()));
+	XMStoreFloat3(&m_xmf3Up, XMVectorLerp(StartUp, DestUp, 10.f * GET_MANAGER<CDeviceManager>()->GetGameTimer().GetTimeElapsed()));
+	XMStoreFloat3(&m_xmf3Look, XMVectorLerp(StartLook, DestLook, 10.f * GET_MANAGER<CDeviceManager>()->GetGameTimer().GetTimeElapsed()));
+
+	if (m_bEneShake == false)
+	{
+		if (m_fShakingTimeElapsed > m_fShakingTimeFrequncy)
+		{
+			if (m_nShakeAmplitude < 0)
+				m_nShakeAmplitude += 5;
+			else
+				m_nShakeAmplitude -= 5;
+			m_nShakeAmplitude *= -1;
+			m_fShakingTimeElapsed = 0;
+		}
+	}
+	else
+	{
+		if (m_fShakingTimeElapsed > 0.25f)
+		{
+			if (m_nShakeAmplitude < 0)
+				m_nShakeAmplitude += 5;
+			else
+				m_nShakeAmplitude -= 5;
+			m_nShakeAmplitude *= -1;
+			m_fShakingTimeElapsed = 0;
+		}
+	}
+
+	if (m_nShakeAmplitude == 0)
+	{
+		m_bShakeSwitch = false;
+		m_nShakeAmplitude = 50;
+		m_bEneShake = false;
+	}
+}
+
 
 bool CCamera::IsInFrustum(BoundingSphere& xmBoundingSphere)
 {

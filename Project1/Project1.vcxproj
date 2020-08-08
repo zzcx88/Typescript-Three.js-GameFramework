@@ -170,6 +170,7 @@
     <ClInclude Include="CCrushSmoke.h" />
     <ClInclude Include="CEngineRafraction.h" />
     <ClInclude Include="CFlare.h" />
+    <ClInclude Include="CJetFlame.h" />
     <ClInclude Include="CMig21.h" />
     <ClInclude Include="CNavigator.h" />
     <ClInclude Include="CNavMesh.h" />
@@ -257,6 +258,7 @@
     <ClCompile Include="CCrushSmoke.cpp" />
     <ClCompile Include="CEngineRafraction.cpp" />
     <ClCompile Include="CFlare.cpp" />
+    <ClCompile Include="CJetFlame.cpp" />
     <ClCompile Include="CMig21.cpp" />
     <ClCompile Include="CNavigator.cpp" />
     <ClCompile Include="CNavMesh.cpp" />
@@ -336,6 +338,16 @@
     <Image Include="small.ico" />
   </ItemGroup>
   <ItemGroup>
+    <FxCompile Include="JetFlame.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </FxCompile>
     <FxCompile Include="MissleFog.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Geometry</ShaderType>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">4.0</ShaderModel>

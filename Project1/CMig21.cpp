@@ -155,7 +155,8 @@ void CMig21::Animate(float fTimeElapsed)
 		if (m_fAddFlareTimeElapsed > m_fAddFlareFrequence && m_AiMissleAssert && m_nFlareCnt > 0)
 		{
 			CFlare* pFlareRef = (CFlare*)m_ObjManager->GetObjFromTag(L"flareRef", OBJ_EFFECT);
-			CFlare* pFlare = new CFlare(GetUp());
+			CFlare* pFlare = new CFlare(XMFLOAT3(m_xmf4x4ToParent._21, m_xmf4x4ToParent._22, m_xmf4x4ToParent._23));
+			pFlare->m_FromType = m_ObjType;
 			pFlare->SetMesh(pFlareRef->m_pPlaneMesh);
 			pFlare->m_pMaterial = new CMaterial(1);
 			pFlare->m_pMaterial->SetTexture(pFlareRef->m_pTexture);
@@ -163,7 +164,7 @@ void CMig21::Animate(float fTimeElapsed)
 			pFlare->SetMaterial(0, pFlare->m_pMaterial);
 			pFlare->SetPosition(GetPosition());
 			pFlare->m_fFlareSpeed = 250;
-			pFlare->m_xmf3Look = GetLook();
+			pFlare->m_xmf3Look = XMFLOAT3(m_xmf4x4ToParent._31, m_xmf4x4ToParent._32, m_xmf4x4ToParent._33);
 			m_ObjManager->AddObject(L"flareInstance", pFlare, OBJ_EFFECT);
 			m_fAddFlareTimeElapsed = 0;
 			m_nFlareCnt--;
@@ -280,6 +281,12 @@ void CMig21::Render(ID3D12GraphicsCommandList* pd3dCommandList, CCamera* pCamera
 			pMissleSplash->SetMaterial(0, pMissleSplash->m_pEffectMaterial);
 			pMissleSplash->SetPosition(m_xmf4x4World._41, m_xmf4x4World._42, m_xmf4x4World._43);
 			GET_MANAGER<ObjectManager>()->AddObject(L"MissleSplashInstance", pMissleSplash, OBJ_EFFECT);
+
+			if (LenthToPlayer < 1000)
+			{
+				m_ObjManager->GetObjFromTag(L"player", OBJ_PLAYER)->m_pCamera->m_bEneShake = true;
+				m_ObjManager->GetObjFromTag(L"player", OBJ_PLAYER)->m_pCamera->m_bShakeSwitch = true;
+			}
 		}
 
 		if (m_fDeadElapsed >= m_fDeadFrequence)

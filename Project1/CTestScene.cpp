@@ -25,6 +25,7 @@
 #include "RedUI.h"
 #include "CEngineRafraction.h"
 #include "CNavigator.h"
+#include "CJetFlame.h"
 
 ID3D12DescriptorHeap* CTestScene::m_pd3dCbvSrvDescriptorHeap = NULL;
 
@@ -246,7 +247,7 @@ void CTestScene::BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandLis
 	m_pTerrain->SetPosition(-20500,-1500,-20500);
 	//m_pTerrain->SetPosition(0, 0, 0);
 	//m_pTerrain->Rotate(0, 90, 0);
-	m_ObjManager->AddObject(L"terrain", m_pTerrain, OBJ_TEST);
+	m_ObjManager->AddObject(L"terrain", m_pTerrain, OBJ_ALPHAMAP);
 
 	CBullet* pBullet = new CBullet(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature);
 	pBullet->SetPosition(0, 0, 0);
@@ -270,6 +271,12 @@ void CTestScene::BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandLis
 
 	CAfterBurner* pAfterBurner = new CAfterBurner(0, pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, 0.2f, 0.2f, 0.f);
 	m_ObjManager->AddObject(L"AfterBurner", pAfterBurner, OBJ_EFFECT);
+
+	CJetFlame* pJetFlameLeft = new CJetFlame(0, pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, 1.8f, 2.5f, 0.f);
+	m_ObjManager->AddObject(L"jetFlameLeft", pJetFlameLeft, OBJ_EFFECT2);
+
+	CJetFlame* pJetFlameRight = new CJetFlame(0, pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, 1.8f, 2.5f, 0.f);
+	m_ObjManager->AddObject(L"jetFlameRight", pJetFlameRight, OBJ_EFFECT2);
 
 	CMig21* pMig21Ref;
 	pMig21Ref = new CMig21(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature);
@@ -636,12 +643,12 @@ void CTestScene::AnimateObjects(float fTimeElapsed)
 			|| (GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player", OBJ_PLAYER)->GetPosition().z > 17000 || GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player", OBJ_PLAYER)->GetPosition().z < -17000))
 		{
 			GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player_ui22_out_of_area", OBJ_OUT_UI)->SetIsRender(true);
-			cout << "경고" << endl;
+			//cout << "경고" << endl;
 		}
 		else
 		{
 			GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player_ui22_out_of_area", OBJ_OUT_UI)->SetIsRender(false);
-			cout << "편안" << endl;
+			//cout << "편안" << endl;
 		}
 
 	}

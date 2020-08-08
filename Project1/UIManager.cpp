@@ -508,7 +508,7 @@ void UIManager::NumberTextureAnimate(ObjectManager::MAPOBJ* PlyList, const float
 	else
 	{
 		for (int i = 29; i < 32; ++i)
-			cout << "·»´õ »óÅÂ "<<PlyList->begin()->second->ppNumObjects[i]->GetIsRender() << endl;
+			//cout << "·»´õ »óÅÂ "<<PlyList->begin()->second->ppNumObjects[i]->GetIsRender() << endl;
 
 		fElapsedTime -= TimeDelta*100;
 		
