@@ -615,6 +615,17 @@ void CPlayer::Update_PadInput(const float& TimeDelta)
 			m_pCamera->m_bDefaultCameraMode = false;
 	}
 
+	if (true == keyManager->GetKeyState(STATE_DOWN, VK_CAPITAL))
+	{
+		m_bGameOver = true;
+		GET_MANAGER<SceneManager>()->m_bStageClear = true;
+	}
+
+	if (true == keyManager->GetKeyState(STATE_DOWN, VK_TAB))
+	{
+		m_nHp = 99999;
+	}
+
 	if (true == keyManager->GetPadState(STATE_PUSH, XINPUT_GAMEPAD_A))
 	{
 		if (m_bGunSoundPlayed == false)
@@ -1059,6 +1070,8 @@ void CPlayer::Animate(float fTimeElapsed)
 			m_xmf3Up = XMFLOAT3(0, 1, 0);
 			m_xmf3Right = XMFLOAT3(1, 0, 0);
 			m_bEye_fixation = false;
+			m_nFLR_Count = 50;
+			m_nMSL_Count = 100;
 		}
 	}
 

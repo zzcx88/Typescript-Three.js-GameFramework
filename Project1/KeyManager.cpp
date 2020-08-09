@@ -55,6 +55,8 @@ int KeyManager::UpdateKey()
 		ComputePadState(XINPUT_GAMEPAD_RIGHT_THUMB);
 		ComputePadState(XINPUT_GAMEPAD_LEFT_THUMB);
 		ComputePadLStickState();
+		ComputeKeyState(VK_CAPITAL);
+		ComputeKeyState(VK_TAB);
 	}
 	else
 	{

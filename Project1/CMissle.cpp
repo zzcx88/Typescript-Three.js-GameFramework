@@ -155,7 +155,6 @@ void CMissle::Animate(float fTimeElapsed)
 		{
 			if (m_bCameraPlayed == false)
 			{
-				GET_MANAGER<SoundManager>()->PlaySound(L"CameraMissle.mp3", CH_EFFECT);
 				m_bCameraPlayed = true;
 			}
 
@@ -168,10 +167,6 @@ void CMissle::Animate(float fTimeElapsed)
 				GetPosition().z - m_pCamera->GetLookVector().z * 100));
 			m_pCamera->GenerateProjectionMatrix(1.01f, 100000.0f, ASPECT_RATIO, 20);
 			m_pCamera->RegenerateViewMatrix();
-		}
-		else if(m_bMissleLockCamera == false)
-		{
-			GET_MANAGER<SoundManager>()->StopSound(CH_EFFECT);
 		}
 	}
 }
