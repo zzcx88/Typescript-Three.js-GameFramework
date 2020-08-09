@@ -201,7 +201,7 @@ void CTestScene::BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandLis
 	// 전투기
 	m_ppGameObjects[18] = new CUI(14, pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, 120.f, 55.f, 0.f, XMFLOAT2(-0.f, -0.f), XMFLOAT2(-0.f, -0.f), XMFLOAT2(-0.f, -0.f), XMFLOAT2(-0.f, -0.f));
 	m_ppGameObjects[18]->SetIsRender(false);
-	m_ppGameObjects[18]->SetPosition(m_ppGameObjects[2]->GetPosition().x + 80.f, m_ppGameObjects[2]->GetPosition().y - 31.f, 0.f);
+	m_ppGameObjects[18]->SetPosition(m_ppGameObjects[2]->GetPosition().x + 60.f, m_ppGameObjects[2]->GetPosition().y - 31.f, 0.f);
 
 	// 배
 	m_ppGameObjects[19] = new CUI(15, pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, 120.f, 55.f, 0.f, XMFLOAT2(-0.f, -0.f), XMFLOAT2(-0.f, -0.f), XMFLOAT2(-0.f, -0.f), XMFLOAT2(-0.f, -0.f));
@@ -522,7 +522,7 @@ void CTestScene::CreateStageObject()
 			m_ObjManager->AddObject(L"mig21B", pMig21_B, OBJ_ENEMY);
 			GET_MANAGER<SceneManager>()->m_nTgtObject++;
 		}
-		cout << GET_MANAGER<SceneManager>()->m_nTgtObject;
+		//cout << GET_MANAGER<SceneManager>()->m_nTgtObject;
 		GET_MANAGER<SceneManager>()->m_nWaveCnt++;
 	}
 
@@ -691,22 +691,22 @@ void CTestScene::AnimateObjects(float fTimeElapsed)
 
 	}
 
-	if (m_pPlayer->GetCooltimeMSL1() == 0.f)
+	if (m_pPlayer->GetCooltimeMSL1() < 1.f)
 	{
 		m_ppGameObjects[25]->SetIsRender(true);
 		m_ppGameObjects[23]->SetIsRender(false);
 	}
-	if (m_pPlayer->GetCooltimeMSL1() == 1.f)
+	if (m_pPlayer->GetCooltimeMSL1() >= 1.f)
 	{
 		m_ppGameObjects[25]->SetIsRender(false);
 		m_ppGameObjects[23]->SetIsRender(true);
 	}
-	if (m_pPlayer->GetCooltimeMSL2() == 0.f)
+	if (m_pPlayer->GetCooltimeMSL2() < 1.f)
 	{
 		m_ppGameObjects[26]->SetIsRender(true);
 		m_ppGameObjects[24]->SetIsRender(false);
 	}
-	if (m_pPlayer->GetCooltimeMSL2() == 1.f)
+	if (m_pPlayer->GetCooltimeMSL2() >= 1.f)
 	{
 		m_ppGameObjects[26]->SetIsRender(false);
 		m_ppGameObjects[24]->SetIsRender(true);

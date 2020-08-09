@@ -224,7 +224,7 @@ void CMig21::CollisionActivate(CGameObject* collideTarget)
 			std::default_random_engine dre(time(NULL) * GetPosition().z);
 			std::uniform_real_distribution<float>fYDegree(-90, 90);
 			std::uniform_real_distribution<float>fXDegree(-90, 90);
-			cout << fXDegree(dre) << " " << fYDegree(dre) << endl;
+			//cout << fXDegree(dre) << " " << fYDegree(dre) << endl;
 			m_xmf3Ai_ColideAxis = XMFLOAT3(fXDegree(dre), fYDegree(dre), fXDegree(dre));
 		}
 		else
@@ -305,7 +305,7 @@ void CMig21::Render(ID3D12GraphicsCommandList* pd3dCommandList, CCamera* pCamera
 			if (m_isDead == false)
 			{
 				GET_MANAGER<SceneManager>()->m_nTgtObject--;
-				cout << GET_MANAGER<SceneManager>()->m_nTgtObject << endl;
+				//cout << GET_MANAGER<SceneManager>()->m_nTgtObject << endl;
 				m_isDead = true;
 				m_pMUI->m_isDead = true;
 				m_pLockOnUI->m_isDead = true;

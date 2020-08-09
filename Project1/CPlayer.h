@@ -78,10 +78,6 @@ protected:
 	//Hp Count
 	int m_nHp = 5;
 
-	// Missile CoolTime 
-	float m_fCoolTime_MSL_1 = 0.f;
-	float m_fCoolTime_MSL_2 = 0.f;
-
 	int m_vFLR_Count = 50;
 public:
 	CPlayer();
@@ -124,8 +120,6 @@ public:
 	int GetMSLCount() const { return(m_nMSL_Count); }
 	bool GetGameOver() const { return(m_bGameOver); }
 	int GetHp() const { return(m_nHp); }
-	float GetCooltimeMSL1() { return m_fCoolTime_MSL_1; }
-	float GetCooltimeMSL2() { return m_fCoolTime_MSL_2; }
 	int GetFLRCount() { return m_nFLR_Count; }
 
 	const XMFLOAT3& GetTargetDir() const { return (m_xmf3TargetDirection); }

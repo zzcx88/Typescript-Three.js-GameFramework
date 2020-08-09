@@ -256,7 +256,7 @@ void CMissle::Rotate(XMFLOAT3* pxmf3Axis, float fAngle)
 
 	if (pxmf3Axis->x == 0 && pxmf3Axis->y == 0 && pxmf3Axis->z == 0)
 	{
-		cout << "zero" << endl;
+		//cout << "zero" << endl;
 		return;
 	}
 

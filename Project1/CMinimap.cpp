@@ -69,10 +69,10 @@ void CMinimap::Animate(float fTimeElapsed)
 	{
 		LookAt = GetPosition();
 		m_fTimeElapsed = 0;
-		cout << "플레이어 현 위치" << "( " << LookAt.x << ", " << LookAt.y << ", " << LookAt.z << " )" << endl;
+	/*	cout << "플레이어 현 위치" << "( " << LookAt.x << ", " << LookAt.y << ", " << LookAt.z << " )" << endl;
 		cout << endl;
 		cout << "플레이어 전 위치" << "( " << prePosition.x << ", " << prePosition.y << ", " << prePosition.z << " )" << endl;
-		cout << endl;	
+		cout << endl;	*/
 	}
 
 	SetLookAt(fTimeElapsed);
@@ -109,11 +109,11 @@ void CMinimap::Rotate(XMFLOAT3* pxmf3Axis, float fAngle)
 {
 	if (pxmf3Axis->x == 0 && pxmf3Axis->y == 0 && pxmf3Axis->z == 0)
 	{
-		cout << "zero" << endl;
+		//cout << "zero" << endl;
 		return;
 	}
 
-	cout << "no zero" << endl;
+	//cout << "no zero" << endl;
 	pxmf3Axis->z = -pxmf3Axis->z;
 
 	XMMATRIX xmmtxRotate = XMMatrixRotationAxis(XMLoadFloat3(pxmf3Axis), XMConvertToRadians(fAngle));
