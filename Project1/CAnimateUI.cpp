@@ -3,7 +3,7 @@
 #include "CPlaneMesh.h"
 #include "CTestScene.h"
 
-#define TEXTURES 3
+#define TEXTURES 8
 CAnimateUI::CAnimateUI()
 {}
 
@@ -26,6 +26,17 @@ CAnimateUI::CAnimateUI(int nIndex, ID3D12Device* pd3dDevice, ID3D12GraphicsComma
 	m_ppUITexture[1]->LoadTextureFromFile(pd3dDevice, pd3dCommandList, L"UI/Ending_credit.dds", 0);
 	m_ppUITexture[2] = new CTexture(1, RESOURCE_TEXTURE2D, 0);
 	m_ppUITexture[2]->LoadTextureFromFile(pd3dDevice, pd3dCommandList, L"UI/Press_button.dds", 0);
+	m_ppUITexture[3] = new CTexture(1, RESOURCE_TEXTURE2D, 0);
+	m_ppUITexture[3]->LoadTextureFromFile(pd3dDevice, pd3dCommandList, L"UI/Ending_credit1.dds", 0);
+	m_ppUITexture[4] = new CTexture(1, RESOURCE_TEXTURE2D, 0);
+	m_ppUITexture[4]->LoadTextureFromFile(pd3dDevice, pd3dCommandList, L"UI/Ending_credit2.dds", 0);
+	m_ppUITexture[5] = new CTexture(1, RESOURCE_TEXTURE2D, 0);
+	m_ppUITexture[5]->LoadTextureFromFile(pd3dDevice, pd3dCommandList, L"UI/Ending_credit3.dds", 0);
+	m_ppUITexture[6] = new CTexture(1, RESOURCE_TEXTURE2D, 0);
+	m_ppUITexture[6]->LoadTextureFromFile(pd3dDevice, pd3dCommandList, L"UI/Ending_credit4.dds", 0);
+
+	m_ppUITexture[7] = new CTexture(1, RESOURCE_TEXTURE2D, 0);
+	m_ppUITexture[7]->LoadTextureFromFile(pd3dDevice, pd3dCommandList, L"UI/Black_fog.dds", 0);
 	UINT ncbElementBytes = ((sizeof(CB_GAMEOBJECT_INFO) + 255) & ~255);
 
 

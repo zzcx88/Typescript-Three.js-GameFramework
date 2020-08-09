@@ -77,7 +77,7 @@ public:
 	bool m_bCreateShip = false;
 	bool m_bCreateEngineRefraction = true;
 	float elapsedTime = 0;
-	float StageClearDeleyElepsed = 0;
+	float StageClearDeleyElapsed = 0;
 
 
 	int									m_nGameObjects = 0;
@@ -110,6 +110,8 @@ public:
 	bool quadrant2 = false;
 	bool quadrant3 = false;
 	bool quadrant4 = false;
+
+	int m_nMaxScore = 0;
 
 	int RotateMode = 0;
 };

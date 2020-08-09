@@ -19,6 +19,7 @@ class UIManager : public SingletonBase<UIManager>
 	int n_second = 29;
 	int n_minute = 15;
 
+
 	int nDistance = 0;
 
 	int numObjects = 32;
@@ -44,9 +45,14 @@ public:
 	void NumberTextureAnimate(ObjectManager::MAPOBJ* PlyList, const float& TimeDelta);
 	void ReleaseUI();
 	void BuildNumberUI();
+
 	bool GetLockOnType() { return m_bFighterType; }
+
+	void SetSec(int sec) {  n_second = sec; }
+	void SetMin(int min) {  n_minute = min; }
 
 	CPlayer* pPlayer = NULL;
 	CGameObject* m_fMin = NULL;
 	int Count = 0;
+
 };

@@ -1027,17 +1027,17 @@ void CPlayer::Animate(float fTimeElapsed)
 			m_pCamera->RegenerateViewMatrix();
 		
 			if(GET_MANAGER<SceneManager>()->GetCurrentSceneState() == SCENE_TEST && !GET_MANAGER<SceneManager>()->m_bStageClear)
-				GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player_ui17_mission_failed", OBJ_FIGHT_UI4)->SetIsRender(true);
+				GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player_ui17_mission_failed", OBJ_EFFECT)->SetIsRender(true);
 			else if (GET_MANAGER<SceneManager>()->GetCurrentSceneState() == SCENE_TEST&& GET_MANAGER<SceneManager>()->m_bStageClear)
-				GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player_ui21_mission_accomplished", OBJ_FIGHT_UI4)->SetIsRender(true);
+				GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player_ui21_mission_accomplished", OBJ_EFFECT)->SetIsRender(true);
 		}
 		else
 		{
 			if (GET_MANAGER<SceneManager>()->GetCurrentSceneState() == SCENE_TEST && !GET_MANAGER<SceneManager>()->m_bStageClear)
-				GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player_ui17_mission_failed", OBJ_FIGHT_UI4)->SetIsRender(false);
+				GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player_ui17_mission_failed", OBJ_EFFECT)->SetIsRender(false);
 			else if (GET_MANAGER<SceneManager>()->GetCurrentSceneState() == SCENE_TEST && GET_MANAGER<SceneManager>()->m_bStageClear)
-				GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player_ui21_mission_accomplished", OBJ_FIGHT_UI4)->SetIsRender(false);
-		
+				GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player_ui21_mission_accomplished", OBJ_EFFECT)->SetIsRender(false);
+			
 			m_fRestartElapsed = 0;
 			if (GET_MANAGER<SceneManager>()->m_bStageClear == false)
 			{
@@ -1062,6 +1062,10 @@ void CPlayer::Animate(float fTimeElapsed)
 			GET_MANAGER<SceneManager>()->m_nTgtObject = 0;
 			GET_MANAGER<UIManager>()->FighterOBJs.clear();
 			GET_MANAGER<UIManager>()->ShipOBJs.clear();
+			GET_MANAGER<UIManager>()->SetMin(15);
+			GET_MANAGER<UIManager>()->SetSec(30);
+
+			SetPlayerScore(0);
 
 			GET_MANAGER<ObjectManager>()->ReleaseFromType(OBJ_ENEMY);
 			m_nHp = 5;
@@ -1667,6 +1671,23 @@ void CAirplanePlayer::SetAfterBurnerPosition(float fTimeElapsed)
 			if (m_fBurnerElapsed / 100.f <= 1.0f)
 				GET_MANAGER<ObjectManager>()->GetObjFromTag(L"jetFlameRight", OBJ_EFFECT2)->m_fBurnerBlendAmount = m_fBurnerElapsed / 100.f;
 		}
+		m_pLeft_AfterBurner->m_pAfterBurner->UpdateTransform(&m_pLeft_AfterBurner->m_xmf4x4World);
+		m_pRight_AfterBurner->m_pAfterBurner->UpdateTransform(&m_pRight_AfterBurner->m_xmf4x4World);
+		/*if (m_fBurnerElapsed / 150 <= 0.4f)
+		{
+			m_pLeft_AfterBurnerEX->m_fBurnerBlendAmount = m_fBurnerElapsed / 150;
+			m_pLeft_AfterBurnerIN->m_fBurnerBlendAmount = m_fBurnerElapsed / 150;
+			m_pRight_AfterBurnerEX->m_fBurnerBlendAmount = m_fBurnerElapsed / 150;
+			m_pRight_AfterBurnerIN->m_fBurnerBlendAmount = m_fBurnerElapsed / 150;
+		}*/
+
+		/*m_pLeft_AfterBurner[i]->m_pAfterBurner->UpdateTransform(&m_pLeft_AfterBurner[i]->m_xmf4x4World);
+		m_pRight_AfterBurner[i]->m_pAfterBurner->UpdateTransform(&m_pRight_AfterBurner[i]->m_xmf4x4World);
+		if (m_fBurnerElapsed / 100 < 0.8)
+		{
+			m_pLeft_AfterBurner[i]->m_pAfterBurner->SetPlaneScale(m_fBurnerElapsed / 100);
+			m_pRight_AfterBurner[i]->m_pAfterBurner->SetPlaneScale(m_fBurnerElapsed / 100);
+		}*/
 	}
 	if (m_pLeft_AfterBurner)
 	{

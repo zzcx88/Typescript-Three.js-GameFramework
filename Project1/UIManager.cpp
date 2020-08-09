@@ -528,7 +528,6 @@ void UIManager::NumberTextureAnimate(ObjectManager::MAPOBJ* PlyList, const float
 	}
 	else
 	{
-
 		fElapsedTime -= TimeDelta*100;
 		
 		if (fElapsedTime <= 0.f)

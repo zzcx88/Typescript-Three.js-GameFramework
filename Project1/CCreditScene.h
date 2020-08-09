@@ -37,6 +37,7 @@ public:
 	float								m_fElapsedTime = 0.0f;
 	int m_nMinute = 0;
 	int m_nHour = 0;
+	bool m_bSceneStart = true;
 
 	int									m_nGameObjects = 0;
 	CGameObject** m_ppGameObjects = NULL;

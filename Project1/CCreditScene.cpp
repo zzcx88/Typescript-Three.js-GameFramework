@@ -3,6 +3,7 @@
 #include "CTestScene.h"
 #include "CNumber.h"
 #include "CUI.h"
+#include "CAnimateUI.h"
 #include "AnimateMenuTitle.h"
 #include "CLockOnUI.h"
 #include "CShaderManager.h"
@@ -43,18 +44,40 @@ void CCreditScene::BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandL
 
 	//float fx = 1.f / 0.96f;
 	//float fy = 1.f / 0.54f;
-	m_nGameObjects = 2;
+	m_nGameObjects = 5;
 	m_ppGameObjects = new CGameObject * [m_nGameObjects];
-	m_ppGameObjects[0] = new CUI(8, pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, 2.f, 2.f, 0.f, XMFLOAT2(0.f, 0.f), XMFLOAT2(0.f, 0.f), XMFLOAT2(0.f, 0.f), XMFLOAT2(0.f, 0.f));
-	m_ppGameObjects[0]->SetIsRender(true);
-	m_ppGameObjects[1] = new CUI(12, pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, 2.f, 2.f, 0.f, XMFLOAT2(0.f, 0.f), XMFLOAT2(0.f, 0.f), XMFLOAT2(0.f, 0.f), XMFLOAT2(0.f, 0.f));
+
+	// ¿£µù Å©·¹µ÷
+	m_ppGameObjects[0] = new CAnimateUI(1, pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, 2.f, 2.f, 0.f, XMFLOAT2(0.f, 0.f), XMFLOAT2(0.f, 0.f), XMFLOAT2(0.f, 0.f), XMFLOAT2(0.f, 0.f));
+	m_ppGameObjects[0]->SetIsRender(false);
+	m_ppGameObjects[0]->m_fBurnerBlendAmount = 0.0f;
+	m_ppGameObjects[0]->SetPosition(0.f, 0.f, 0.f);
+
+	m_ppGameObjects[1] = new CAnimateUI(3, pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, 2.f, 2.f, 0.f, XMFLOAT2(0.f, 0.f), XMFLOAT2(0.f, 0.f), XMFLOAT2(0.f, 0.f), XMFLOAT2(0.f, 0.f));
 	m_ppGameObjects[1]->SetIsRender(false);
+	m_ppGameObjects[1]->m_fBurnerBlendAmount = 0.0f;
+	m_ppGameObjects[1]->SetPosition(0.f, 0.f, 0.f);
 
-	AnimateMenuTitle* TitleAniamation = new AnimateMenuTitle(0, pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, 2.f, 2.f, 0.f);
-	m_ObjManager->AddObject(L"TitleAnimation", TitleAniamation, OBJ_EFFECT2);
+	m_ppGameObjects[2] = new CAnimateUI(4, pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, 2.f, 2.f, 0.f, XMFLOAT2(0.f, 0.f), XMFLOAT2(0.f, 0.f), XMFLOAT2(0.f, 0.f), XMFLOAT2(0.f, 0.f));
+	m_ppGameObjects[2]->SetIsRender(false);
+	m_ppGameObjects[2]->m_fBurnerBlendAmount = 0.0f;
+	m_ppGameObjects[2]->SetPosition(0.f, 0.f, 0.f);
 
-	m_ObjManager->AddObject(L"player_ui1_title", m_ppGameObjects[0], OBJ_UI);
-	m_ObjManager->AddObject(L"player_ui2_1stage_loading", m_ppGameObjects[1], OBJ_EFFECT);
+	m_ppGameObjects[3] = new CAnimateUI(5, pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, 2.f, 2.f, 0.f, XMFLOAT2(0.f, 0.f), XMFLOAT2(0.f, 0.f), XMFLOAT2(0.f, 0.f), XMFLOAT2(0.f, 0.f));
+	m_ppGameObjects[3]->SetIsRender(false);
+	m_ppGameObjects[3]->m_fBurnerBlendAmount = 0.0f;
+	m_ppGameObjects[3]->SetPosition(0.f, 0.f, 0.f);
+
+	m_ppGameObjects[4] = new CAnimateUI(6, pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, 2.f, 2.f, 0.f, XMFLOAT2(0.f, 0.f), XMFLOAT2(0.f, 0.f), XMFLOAT2(0.f, 0.f), XMFLOAT2(0.f, 0.f));
+	m_ppGameObjects[4]->SetIsRender(false);
+	m_ppGameObjects[4]->m_fBurnerBlendAmount = 0.0f;
+	m_ppGameObjects[4]->SetPosition(0.f, 0.f, 0.f);
+
+	m_ObjManager->AddObject(L"player_ui1_ending", m_ppGameObjects[0], OBJ_UI);
+	m_ObjManager->AddObject(L"player_ui2_ending_credit_background1", m_ppGameObjects[1], OBJ_UI);
+	m_ObjManager->AddObject(L"player_ui3_ending_credit_background2", m_ppGameObjects[2], OBJ_UI);
+	m_ObjManager->AddObject(L"player_ui4_ending_credit_background3", m_ppGameObjects[3], OBJ_UI);
+	m_ObjManager->AddObject(L"player_ui5_ending_credit_background4", m_ppGameObjects[4], OBJ_UI);
 
 	CreateShaderVariables(pd3dDevice, pd3dCommandList);
 }
@@ -118,7 +141,59 @@ bool CCreditScene::ProcessInput(UCHAR* pKeysBuffer)
 
 void CCreditScene::AnimateObjects(float fTimeElapsed)
 {
-	//m_fElapsedTime += fTimeElapsed;
+	float x = 1.f;
+	if (m_bSceneStart)
+	{
+		m_fElapsedTime += fTimeElapsed;
+		m_ppGameObjects[0]->SetIsRender(true);
+		m_ppGameObjects[1]->SetIsRender(true);
+
+		m_ppGameObjects[0]->m_fBurnerBlendAmount += x * fTimeElapsed;
+		m_ppGameObjects[1]->m_fBurnerBlendAmount += x * fTimeElapsed;
+
+		if (m_fElapsedTime > 3)
+		{
+			m_fElapsedTime = 0;
+			m_bSceneStart = false;
+			m_ppGameObjects[1]->SetIsRender(false);
+			m_ppGameObjects[2]->SetIsRender(true);
+
+		}
+		//m_ppGameObjects[0]->SetPosition(0.f, m_ppGameObjects[0]->GetPosition().y + fTimeElapsed * 0.01f, 0.f);
+	}
+	if (m_ppGameObjects[2]->GetIsRender())
+	{
+		m_fElapsedTime += fTimeElapsed;
+		m_ppGameObjects[2]->m_fBurnerBlendAmount += x * fTimeElapsed;
+		if (m_fElapsedTime > 3)
+		{
+			m_fElapsedTime = 0;
+			m_ppGameObjects[2]->SetIsRender(false);
+			m_ppGameObjects[3]->SetIsRender(true);
+		}
+	}
+	if (m_ppGameObjects[3]->GetIsRender())
+	{
+		m_fElapsedTime += fTimeElapsed;
+		m_ppGameObjects[3]->m_fBurnerBlendAmount += x * fTimeElapsed;
+		if (m_fElapsedTime > 3)
+		{
+			m_fElapsedTime = 0;
+			m_ppGameObjects[3]->SetIsRender(false);
+			m_ppGameObjects[4]->SetIsRender(true);
+		}
+	}
+	if (m_ppGameObjects[4]->GetIsRender())
+	{
+		m_fElapsedTime += fTimeElapsed;
+		m_ppGameObjects[4]->m_fBurnerBlendAmount += x * fTimeElapsed;
+		if (m_fElapsedTime > 3)
+		{
+			m_fElapsedTime = 0;
+			m_ppGameObjects[4]->SetIsRender(false);
+		}
+	}
+
 
 	m_ObjManager->Update(fTimeElapsed);
 }
