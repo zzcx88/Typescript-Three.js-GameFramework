@@ -8,6 +8,7 @@ class UIManager : public SingletonBase<UIManager>
 	int missile_number = 0;
 	int score_number = 0;
 	int hp_number = 0;
+	int flare_number = 0;
 
 	float fElapsedTime = 60.f;
 
@@ -34,7 +35,7 @@ public:
 	CCamera* m_pCamera = NULL;
 
 	vector<CGameObject*> FighterOBJs, ShipOBJs;
-	vector<int> speed, alt, missile, timeMS, timeS, timeM, score, distance, hp{};
+	vector<int> speed, alt, missile, timeMS, timeS, timeM, score, distance, hp, flare{};
 
 public:
 	void MoveMinimapPoint(ObjectManager::MAPOBJ* PlyList, ObjectManager::MAPOBJ* EneList);
@@ -45,6 +46,7 @@ public:
 	void BuildNumberUI();
 	bool GetLockOnType() { return m_bFighterType; }
 
+	CPlayer* pPlayer = NULL;
 	CGameObject* m_fMin = NULL;
 	int Count = 0;
 };

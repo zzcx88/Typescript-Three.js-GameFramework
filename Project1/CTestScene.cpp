@@ -690,26 +690,28 @@ void CTestScene::AnimateObjects(float fTimeElapsed)
 		}
 
 	}
-
-	if (m_pPlayer->GetCooltimeMSL1() < 1.f)
+	if (!GetStoped())
 	{
-		m_ppGameObjects[25]->SetIsRender(true);
-		m_ppGameObjects[23]->SetIsRender(false);
-	}
-	if (m_pPlayer->GetCooltimeMSL1() >= 1.f)
-	{
-		m_ppGameObjects[25]->SetIsRender(false);
-		m_ppGameObjects[23]->SetIsRender(true);
-	}
-	if (m_pPlayer->GetCooltimeMSL2() < 1.f)
-	{
-		m_ppGameObjects[26]->SetIsRender(true);
-		m_ppGameObjects[24]->SetIsRender(false);
-	}
-	if (m_pPlayer->GetCooltimeMSL2() >= 1.f)
-	{
-		m_ppGameObjects[26]->SetIsRender(false);
-		m_ppGameObjects[24]->SetIsRender(true);
+		if (m_pPlayer->GetCooltimeMSL1() < 1.f)
+		{
+			m_ppGameObjects[25]->SetIsRender(true);
+			m_ppGameObjects[23]->SetIsRender(false);
+		}
+		if (m_pPlayer->GetCooltimeMSL1() >= 1.f)
+		{
+			m_ppGameObjects[25]->SetIsRender(false);
+			m_ppGameObjects[23]->SetIsRender(true);
+		}
+		if (m_pPlayer->GetCooltimeMSL2() < 1.f)
+		{
+			m_ppGameObjects[26]->SetIsRender(true);
+			m_ppGameObjects[24]->SetIsRender(false);
+		}
+		if (m_pPlayer->GetCooltimeMSL2() >= 1.f)
+		{
+			m_ppGameObjects[26]->SetIsRender(false);
+			m_ppGameObjects[24]->SetIsRender(true);
+		}
 	}
 
 	m_ppGameObjects[27]->SetPosition(0.f, m_ppGameObjects[27]->GetPosition().y + fTimeElapsed*20.f, 0.f );
@@ -719,6 +721,7 @@ void CTestScene::AnimateObjects(float fTimeElapsed)
 	m_ObjManager->GetObjFromTag(L"player", OBJ_PLAYER)->SetPlayerMSL(m_pPlayer->GetMSLCount());
 	m_ObjManager->GetObjFromTag(L"player", OBJ_PLAYER)->SetPlayerSpeed(m_pPlayer->GetAircraftSpeed());
 	m_ObjManager->Update(fTimeElapsed);
+
 	GET_MANAGER<SceneManager>()->SceneStoped();
 	
 	if (GET_MANAGER<SceneManager>()->m_bStageClear == true)

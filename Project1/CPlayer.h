@@ -77,8 +77,6 @@ protected:
 
 	//Hp Count
 	int m_nHp = 5;
-
-	int m_vFLR_Count = 50;
 public:
 	CPlayer();
 	virtual ~CPlayer();

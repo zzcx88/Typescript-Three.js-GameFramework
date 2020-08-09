@@ -105,6 +105,7 @@ void ObjectManager::Update(const float& TimeDelta)
 	//GET_MANAGER<CollisionManager>()->CollisionSphereToOrientedBox(&m_mapObj[OBJ_ENEMY], & m_mapObj[OBJ_ALLYBULLET]);
 	GET_MANAGER<CollisionManager>()->CollisionFloor();
 	GET_MANAGER<CollisionManager>()->CollisionTerrain();
+
 	if (GET_MANAGER<SceneManager>()->GetCurrentSceneState() == SCENE_TEST)
 	{
 		GET_MANAGER<UIManager>()->NumberTextureAnimate(&m_mapObj[OBJ_PLAYER], GET_MANAGER<CDeviceManager>()->GetGameTimer().GetTimeElapsed());
