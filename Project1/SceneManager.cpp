@@ -123,10 +123,12 @@ void SceneManager::SetStoped(bool b)
 {
 	m_Scene->SetStoped(b);
 }
+
 bool SceneManager::GetStoped()
 {
 	return m_Scene->GetStoped();
 }
+
 void SceneManager::SceneStoped()
 {
 	KeyManager* keyManager = GET_MANAGER<KeyManager>();
@@ -140,21 +142,21 @@ void SceneManager::SceneStoped()
 			{
 				m_Scene->SetStoped(true);
 				GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player_ui16_navigator", OBJ_NAVIGATOR)->SetIsRender(false);
-				for (auto i = (int)OBJ_MINIMAP_UI; i <= OBJ_UI; ++i)
+				GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player_ui23_fog", OBJ_FILTER)->SetIsRender(false);
+
+				for (auto i = (int)OBJ_MINIMAP_UI; i <= OBJ_FIGHT_UI1; ++i)
 				{
-					if (i == OBJ_MINIMAP_UI || i == OBJ_UI)
+					for (auto p = m_Scene->m_ObjManager->GetObjFromType((OBJTYPE)i).begin(); p != m_Scene->m_ObjManager->GetObjFromType((OBJTYPE)i).end(); ++p)
 					{
-						for (auto p = m_Scene->m_ObjManager->GetObjFromType((OBJTYPE)i).begin(); p != m_Scene->m_ObjManager->GetObjFromType((OBJTYPE)i).end(); ++p)
-						{
-							(*p).second->SetIsRender(false);
-						}
+						(*p).second->SetIsRender(false);
 					}
 				}
-
 			}
 			else
 			{
 				m_Scene->SetStoped(false);
+				GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player_ui23_fog", OBJ_FILTER)->SetIsRender(true);
+
 				for (auto i = (int)OBJ_MINIMAP_UI; i <= OBJ_UI; ++i)
 				{
 					if (i == OBJ_MINIMAP_UI || i == OBJ_UI)
@@ -164,8 +166,6 @@ void SceneManager::SceneStoped()
 							(*p).second->SetIsRender(true);
 						}
 					}
-
-
 				}
 			}
 		}

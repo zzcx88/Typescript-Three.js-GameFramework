@@ -307,7 +307,6 @@ void CDeviceManager::ChangeSwapChainState()
 		}
 	}
 
-
 	DXGI_MODE_DESC dxgiTargetParameters;
 	dxgiTargetParameters.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
 	dxgiTargetParameters.Width = m_nWndClientWidth;
@@ -456,7 +455,7 @@ void CDeviceManager::SceneChangeInput(bool bCleard)
 		if (true == keyManager->GetKeyState(STATE_PUSH, VK_G))
 		{
 			m_ArrowSwitch = 0;
-			m_pUIarrow->SetPosition(m_pUI->GetPosition().x - 370, 48, 0);
+			m_pUIarrow->SetPosition(m_pUI->GetPosition().x - 370, 43, 0);
 
 			if (m_SceneSwitch == SCENE_TEST) {
 				if (m_pSceneManager->GetSceneStoped() == false)
@@ -473,7 +472,7 @@ void CDeviceManager::SceneChangeInput(bool bCleard)
 			if (m_pSceneManager->GetSceneStoped() == true)
 			{
 				m_ArrowSwitch = 0;
-				m_pUIarrow->SetPosition(m_pUI->GetPosition().x -370, 48, 0);
+				m_pUIarrow->SetPosition(m_pUI->GetPosition().x -370, 43, 0);
 			}
 		}
 	}
@@ -519,6 +518,12 @@ void CDeviceManager::SceneChangeInput(bool bCleard)
 					pPlayer->SetGameOver(true);
 					m_pPlayer = pPlayer;
 
+					m_pSceneManager->m_bCreateShip = false;
+					m_pSceneManager->m_nWaveCnt = 0;
+					m_pSceneManager->m_nTgtObject = 0;
+					GET_MANAGER<UIManager>()->FighterOBJs.clear();
+					GET_MANAGER<UIManager>()->ShipOBJs.clear();
+
 					m_pCamera = m_pPlayer->GetCamera();
 					m_pd3dCommandList->Close();
 					ID3D12CommandList* ppd3dCommandLists[] = { m_pd3dCommandList };
@@ -550,6 +555,12 @@ void CDeviceManager::SceneChangeInput(bool bCleard)
 		pPlayer->SetGameOver(true);
 		m_pPlayer = pPlayer;
 
+		m_pSceneManager->m_bCreateShip = false;
+		m_pSceneManager->m_nWaveCnt = 0;
+		m_pSceneManager->m_nTgtObject = 0;
+		GET_MANAGER<UIManager>()->FighterOBJs.clear();
+		GET_MANAGER<UIManager>()->ShipOBJs.clear();
+
 		m_pCamera = m_pPlayer->GetCamera();
 		m_pd3dCommandList->Close();
 		ID3D12CommandList* ppd3dCommandLists[] = { m_pd3dCommandList };
@@ -569,7 +580,7 @@ void CDeviceManager::SceneChangeInput(bool bCleard)
 		if (m_SceneSwitch == SCENE_MENU)
 		{
 			GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player_ui1_title", OBJ_UI)->SetIsRender(false);
-			GET_MANAGER<ObjectManager>()->GetObjFromTag(L"TitleAnimation", OBJ_EFFECT2)->SetIsRender(false);
+			GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player_ui3_title_press_button_ui", OBJ_EFFECT2)->SetIsRender(false);
 
 			GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player_ui2_1stage_loading", OBJ_EFFECT)->SetIsRender(true);
 			m_bSceneFlag = true;
@@ -683,7 +694,7 @@ void CDeviceManager::FrameAdvance()
 	D3D12_CPU_DESCRIPTOR_HANDLE d3dRtvCPUDescriptorHandle = m_pd3dRtvDescriptorHeap->GetCPUDescriptorHandleForHeapStart();
 	d3dRtvCPUDescriptorHandle.ptr += (m_nSwapChainBufferIndex * m_nRtvDescriptorIncrementSize);
 
-	float pfClearColor[4] = { 0.525f, 0.75f, 1.f, 1.0f };
+	float pfClearColor[4] = { 1.f, 1.f, 1.f, 1.0f };
 	m_pd3dCommandList->ClearRenderTargetView(d3dRtvCPUDescriptorHandle, pfClearColor/*Colors::Azure*/, 0, NULL);
 
 	D3D12_CPU_DESCRIPTOR_HANDLE d3dDsvCPUDescriptorHandle = m_pd3dDsvDescriptorHeap->GetCPUDescriptorHandleForHeapStart();
@@ -805,7 +816,7 @@ void CDeviceManager::FrameAdvance()
 
 	m_pdxgiSwapChain->Present(0, 0);
 
-	m_xmf3prePosition = m_pPlayer->GetPosition();
+	//m_xmf3prePosition = m_pPlayer->GetPosition();
 
 	MoveToNextFrame();
 
@@ -854,20 +865,20 @@ void CDeviceManager::FrameAdvance()
 		m_SceneSwitch = SCENE_TEST;
 		m_pSceneManager->ChangeSceneState(SCENE_TEST, m_pd3dDevice, m_pd3dCommandList);
 
-		CMinimap* pUI = new CMinimap(1, m_pd3dDevice, m_pd3dCommandList, m_pSceneManager->GetGraphicsRootSignature(), 800.f, 400.f, 0.f, XMFLOAT2(0.f, 0.f), XMFLOAT2(0.f, 0.f), XMFLOAT2(0.f, 0.f), XMFLOAT2(0.f, 0.f));
+		CMinimap* pUI = new CMinimap(1, m_pd3dDevice, m_pd3dCommandList, m_pSceneManager->GetGraphicsRootSignature(), 800.f, 360.f, 0.f, XMFLOAT2(0.f, 0.f), XMFLOAT2(0.f, 0.f), XMFLOAT2(0.f, 0.f), XMFLOAT2(0.f, 0.f));
 		pUI->SetPosition(0.f, 0.f, 0.f);
 		pUI->SetIsRender(false);
 		m_pUI = pUI;
 
 		CMinimap* pUIarrow = new CMinimap(5, m_pd3dDevice, m_pd3dCommandList, m_pSceneManager->GetGraphicsRootSignature(), 35.f, 35.f, 0.f, XMFLOAT2(0.f, 0.f), XMFLOAT2(0.f, 0.f), XMFLOAT2(0.f, 0.f), XMFLOAT2(0.f, 0.f));
-		pUIarrow->SetPosition(m_pUI->GetPosition().x - 370, 48, 0);
+		pUIarrow->SetPosition(m_pUI->GetPosition().x - 370, 43, 0);
 		pUIarrow->SetIsRender(false);
 		m_pUIarrow = pUIarrow;
 
 		CAirplanePlayer* pPlayer = new CAirplanePlayer(m_pd3dDevice, m_pd3dCommandList, m_pSceneManager->GetGraphicsRootSignature(), NULL);
 		pPlayer->SetGameOver(false);
 		pPlayer->SetPosition(XMFLOAT3(0, 1000, 0));
-		pPlayer->SetMissileCount(100);
+		pPlayer->SetMSLCount(100);
 		m_pPlayer = pPlayer;
 
 		m_pCamera = m_pPlayer->GetCamera();

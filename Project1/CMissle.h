@@ -35,7 +35,10 @@ public:
 	float m_fAddFogFrequence = 0.001f;
 	float m_fAddFogTimeElapsed = 0.f;
 	float m_fDeleteTimeElapsed = 0.f;
+	float randomNumX = 0.f;
+	float randomNumY = 0.f;
 
+	float m_fTimeElapsed = 0.f;
 	float m_fTheta = 50.f;
 
 	ID3D12Device* m_pd3dDevice;

@@ -453,6 +453,9 @@
     <ClInclude Include="CCreditScene.h">
       <Filter>Scene\CreditScene</Filter>
     </ClInclude>
+    <ClInclude Include="CAnimateUI.h">
+      <Filter>GameObject\Plane\UI</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="DDSTextureLoader12.cpp">
@@ -656,6 +659,9 @@
     <ClCompile Include="CCreditScene.cpp">
       <Filter>Scene\CreditScene</Filter>
     </ClCompile>
+    <ClCompile Include="CAnimateUI.cpp">
+      <Filter>GameObject\Plane\UI</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Project1.rc">
@@ -708,6 +714,9 @@
       <Filter>HLSL</Filter>
     </FxCompile>
     <FxCompile Include="JetFlame.hlsl">
+      <Filter>HLSL</Filter>
+    </FxCompile>
+    <FxCompile Include="AnimateUI.hlsl">
       <Filter>HLSL</Filter>
     </FxCompile>
   </ItemGroup>

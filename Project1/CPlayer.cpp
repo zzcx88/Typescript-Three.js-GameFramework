@@ -931,7 +931,6 @@ void CPlayer::Update_PadInput(const float& TimeDelta)
 void CPlayer::Animate(float fTimeElapsed)
 {
 	m_pCamera->m_fTimeElapsed = fTimeElapsed;
-
 	if (m_fCoolTime_MSL_1 <= 1)
 	{
 		m_fCoolTime_MSL_1 += 0.5f * fTimeElapsed;
@@ -940,7 +939,6 @@ void CPlayer::Animate(float fTimeElapsed)
 	{
 		m_fCoolTime_MSL_2 += 0.5f * fTimeElapsed;
 	}
-
 	if (m_bGameOver == false)
 	{
 		if (GetPosition().y >= 10000)
@@ -986,6 +984,7 @@ void CPlayer::Animate(float fTimeElapsed)
 			else
 				Update_PadInput(fTimeElapsed);
 		}
+
 		//cout << m_xmf3Look.x << " " << m_xmf3Look.y << " " << m_xmf3Look.z << endl;
 		SetEngineRefractionPos();
 
@@ -1504,7 +1503,6 @@ void CAirplanePlayer::MissleLaunch()
 	CMissle* pMissle;
 	XMFLOAT3* temp = NULL;
 	m_nMSL_Count = CPlayer::GetMSLCount();
-	//cout << m_nMSL_Count << endl;
 	for (auto& Ene : m_ObjManager->GetObjFromType(OBJ_ENEMY))
 	{
 		if (Ene.second->m_bCanFire == true && Ene.second->GetState() != true && m_nMSL_Count != 0 && Ene.second->m_bDestroyed == false)
@@ -1523,7 +1521,7 @@ void CAirplanePlayer::MissleLaunch()
 				m_fCoolTime_MSL_1 = 0;
 				GET_MANAGER<SoundManager>()->PlaySound(L"Missile_launch.mp3", CH_MISSLE);
 				GET_MANAGER<SoundManager>()->SetVolume(CH_MISSLE, 0.2f);
-				CPlayer::SetMissileCount(--m_nMSL_Count);
+				CPlayer::SetMSLCount(--m_nMSL_Count);
 			}
 			else
 			{
@@ -1536,7 +1534,7 @@ void CAirplanePlayer::MissleLaunch()
 					m_fCoolTime_MSL_2 = 0;
 					GET_MANAGER<SoundManager>()->PlaySound(L"Missile_launch.mp3", CH_MISSLE);
 					GET_MANAGER<SoundManager>()->SetVolume(CH_MISSLE, 0.2f);
-					CPlayer::SetMissileCount(--m_nMSL_Count);
+					CPlayer::SetMSLCount(--m_nMSL_Count);
 				}
 			}
 			return;
@@ -1557,7 +1555,7 @@ void CAirplanePlayer::MissleLaunch()
 			m_fCoolTime_MSL_1 = 0;
 			GET_MANAGER<SoundManager>()->PlaySound(L"Missile_launch.mp3", CH_MISSLE);
 			GET_MANAGER<SoundManager>()->SetVolume(CH_MISSLE, 0.2f);
-			CPlayer::SetMissileCount(--m_nMSL_Count);
+			CPlayer::SetMSLCount(--m_nMSL_Count);
 		}
 		else
 		{
@@ -1570,10 +1568,11 @@ void CAirplanePlayer::MissleLaunch()
 				m_fCoolTime_MSL_2 = 0;
 				GET_MANAGER<SoundManager>()->PlaySound(L"Missile_launch.mp3", CH_MISSLE);
 				GET_MANAGER<SoundManager>()->SetVolume(CH_MISSLE, 0.2f);
-				CPlayer::SetMissileCount(--m_nMSL_Count);
+				CPlayer::SetMSLCount(--m_nMSL_Count);
 			}
 		}
 	}
+
 }
 
 void CAirplanePlayer::GunFire(float fTimeElapsed)

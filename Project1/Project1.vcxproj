@@ -247,6 +247,7 @@
     <ClInclude Include="WICTextureLoader12.h" />
     <ClInclude Include="CMinimap.h" />
     <ClInclude Include="Xinput.h" />
+    <ClInclude Include="CAnimateUI.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AIManager.cpp" />
@@ -331,6 +332,7 @@
     </ClCompile>
     <ClCompile Include="WICTextureLoader12.cpp" />
     <ClCompile Include="CMinimap.cpp" />
+    <ClCompile Include="CAnimateUI.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Project1.rc" />
@@ -437,6 +439,10 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </FxCompile>
+    <FxCompile Include="AnimateUI.hlsl">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
     </FxCompile>
     <FxCompile Include="WaterBase.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>

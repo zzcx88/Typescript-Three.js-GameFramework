@@ -77,6 +77,12 @@ protected:
 
 	//Hp Count
 	int m_nHp = 5;
+
+	// Missile CoolTime 
+	float m_fCoolTime_MSL_1 = 0.f;
+	float m_fCoolTime_MSL_2 = 0.f;
+
+	int m_vFLR_Count = 50;
 public:
 	CPlayer();
 	virtual ~CPlayer();
@@ -99,8 +105,7 @@ public:
 
 	void SetScale(XMFLOAT3& xmf3Scale) { m_xmf3Scale = xmf3Scale; }
 
-	void SetMissileCount(int nCount) { m_nMSL_Count = nCount; }
-	void SetScore(int nScore) { m_nScore = nScore; }
+	void SetMSLCount(int nCount) { m_nMSL_Count = nCount; }
 	void SetGameOver(bool bGameOver) { m_bGameOver = bGameOver; }
 	virtual void SetEngineRefractionPos() {}
 
@@ -113,8 +118,10 @@ public:
 	float GetRoll() const { return(m_fRoll); }
 	float GetPushSpaceElapsed() { return m_fPushSpaceElapsed; }
 
+	float GetCooltimeMSL1() { return m_fCoolTime_MSL_1; }
+	float GetCooltimeMSL2() { return m_fCoolTime_MSL_2; }
+
 	int GetMSLCount() const { return(m_nMSL_Count); }
-	int GetScore() const { return(m_nScore); }
 	bool GetGameOver() const { return(m_bGameOver); }
 	int GetHp() const { return(m_nHp); }
 	float GetCooltimeMSL1() { return m_fCoolTime_MSL_1; }

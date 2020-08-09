@@ -50,7 +50,7 @@ void AnimateMenuTitle::Animate(float fTimeElapsed)
 void AnimateMenuTitle::TextureAnimate()
 {
 
-		if (m_fFadeTimeElapsed > m_fFadeFrequence)
+	/*	if (m_fFadeTimeElapsed > m_fFadeFrequence)
 		{
 			m_pUIMaterial->m_ppTextures[0] = m_ppUITexture[m_nTextureIndex];
 			m_fFadeTimeElapsed = 0.f;
@@ -71,7 +71,7 @@ void AnimateMenuTitle::TextureAnimate()
 				m_nTextureIndex = 4;
 			else if(sub)
 				m_nTextureIndex = 0;
-		}
+		}*/
 	
 }
 

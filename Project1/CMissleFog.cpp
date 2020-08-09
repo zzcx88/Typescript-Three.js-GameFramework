@@ -88,6 +88,8 @@ void CMissleFog::Animate(float fTimeElapsed)
 		//	/*if (m_fTimeElapsed > m_fDeleteFogFrequence)
 		//	TextureAnimate();*/
 		//}
+
+
 		if (m_bWingFog)
 		{
 			if (m_fScaleX > 0.1)

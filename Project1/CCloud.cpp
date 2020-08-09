@@ -92,13 +92,26 @@ void CCloud::Animate(float fTimeElapsed)
 		if (m_pPlaneMesh->m_xmAABB.Intersects(GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player", OBJ_PLAYER)->SphereCollider->m_BoundingSphere))
 		{
 			CEngineRafraction* RefractObj = (CEngineRafraction*)GET_MANAGER<ObjectManager>()->GetObjFromTag(L"EngineRefractionObj", OBJ_EFFECT);
-			if(RefractObj->m_bWaterDrop == false)
+			if (RefractObj->m_bWaterDrop == false)
+			{
 				GET_MANAGER<SoundManager>()->SetVolume(CH_BGM, 0.3f);
+			}
 			RefractObj->m_bWaterDrop = true;
+
 			if (RefractObj->m_fBurnerBlendAmount < 0.1f)
 				RefractObj->m_fBurnerBlendAmount += 0.2f * fTimeElapsed;
 			else if (RefractObj->m_fBurnerBlendAmount > 0.1f)
 				RefractObj->m_fBurnerBlendAmount = 0.1f;
+
+			if (RefractObj->m_bWaterDrop)
+			{
+				if (GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player_ui23_fog", OBJ_FILTER)->m_fBurnerBlendAmount < 0.8f)
+					GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player_ui23_fog", OBJ_FILTER)->m_fBurnerBlendAmount += 0.6f * fTimeElapsed;
+				else if (GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player_ui23_fog", OBJ_FILTER)->m_fBurnerBlendAmount > 0.8f)
+					GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player_ui23_fog", OBJ_FILTER)->m_fBurnerBlendAmount = 0.8f;
+			}
+	
+
 		}
 		else
 		{
@@ -110,12 +123,23 @@ void CCloud::Animate(float fTimeElapsed)
 					GET_MANAGER<SoundManager>()->SetVolume(CH_BGM, 1.f);
 				}
 				RefractObj->m_bWaterDrop = false;
+			
+			
+				
 				if (RefractObj->m_fBurnerBlendAmount < 0)
 				{
 					RefractObj->m_fBurnerBlendAmount = 0.002f;
 				}
 			}
+			if (GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player_ui23_fog", OBJ_FILTER)->m_fBurnerBlendAmount > 0.f)
+			{
+				GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player_ui23_fog", OBJ_FILTER)->m_fBurnerBlendAmount -= 0.4f * fTimeElapsed;
+			}
+			else if (GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player_ui23_fog", OBJ_FILTER)->m_fBurnerBlendAmount < 0.f)
+				GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player_ui23_fog", OBJ_FILTER)->m_fBurnerBlendAmount = 0.f;
+
 		}
+	
 	}
 }
 

@@ -62,6 +62,7 @@ void CMissle::Animate(float fTimeElapsed)
 	{
 		m_fAddFogTimeElapsed += fTimeElapsed;
 		m_fDeleteTimeElapsed += 1.2f * fTimeElapsed;
+		m_fTimeElapsed += fTimeElapsed;
 
 		m_xmf3Position.x = m_xmf4x4ToParent._41;
 		m_xmf3Position.y = m_xmf4x4ToParent._42;
@@ -116,6 +117,13 @@ void CMissle::Animate(float fTimeElapsed)
 		if (SphereCollider)SphereCollider->m_xmf4x4ToParent = Matrix4x4::Multiply(XMMatrixScaling(10, 10, 10), m_xmf4x4ToParent);
 		if (SphereCollider)SphereCollider->Animate(fTimeElapsed, GetPosition());
 
+		std::default_random_engine dre2(time(NULL) * m_fTimeElapsed);
+		std::uniform_int_distribution<int> uidNum(-5, 5);
+		mt19937 mt(dre2);
+
+		randomNumX = (float)uidNum(mt);
+		randomNumY = (float)uidNum(mt);
+
 		if (m_fAddFogTimeElapsed > m_fAddFogFrequence)
 		{
 			CMissleFog* pMissleFog;
@@ -129,11 +137,14 @@ void CMissle::Animate(float fTimeElapsed)
 			//머테리얼을 새로 동적할당 하지 않으면 래퍼런스 오브젝트를 직접 건드리게 되어 애니메이션에 차질이 생긴다.
 			pMissleFog->m_pEffectMaterial = new CMaterial(1);
 			std::default_random_engine dre(time(NULL) * fTimeElapsed);
+
 			std::uniform_int_distribution<int> index(0, 1);
+
 			pMissleFog->m_pEffectMaterial->SetTexture(m_ObjManager->GetObjFromTag(L"MissleFog", OBJ_EFFECT)->m_pEffectTexture[0]);
 			pMissleFog->m_pEffectMaterial->SetShader(m_ObjManager->GetObjFromTag(L"MissleFog", OBJ_EFFECT)->m_EffectShader);
 			pMissleFog->SetMaterial(0, pMissleFog->m_pEffectMaterial);
-			pMissleFog->SetPosition(m_xmf3Position);
+			pMissleFog->SetPosition(m_xmf3Position.x  + randomNumX, m_xmf3Position.y  + randomNumY, m_xmf3Position.z);
+
 			pMissleFog->m_bEffectedObj = true;
 			m_ObjManager->AddObject(L"MissleFogInstance", pMissleFog, OBJ_EFFECT);
 
