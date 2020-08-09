@@ -106,7 +106,7 @@ void CJetFlame::SetLookAt(XMFLOAT3& xmfTarget)
 
 void CJetFlame::Render(ID3D12GraphicsCommandList* pd3dCommandList, CCamera* pCamera)
 {
-	if (m_nTextureIndex < m_nNumTex)
+	if (m_nTextureIndex < m_nNumTex && GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player", OBJ_PLAYER)->m_pCamera->m_bDefaultCameraMode == true)
 	{
 		CGameObject::Render(pd3dCommandList, pCamera);
 	}

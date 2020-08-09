@@ -28,6 +28,7 @@ public:
 	float GetBlurControl() { return m_fBlurControl; }
 	float GetBlurAmount() { return m_fBlurAmount; }
 	ID3D12Device* GetDevice() { return m_pd3dDevice; }
+	ID3D12GraphicsCommandList* GetComandList() { return m_pd3dCommandList; }
 	CGameTimer GetGameTimer() { return m_GameTimer; }
 
 	ID3D12Resource *CurrentBackBuffer()const;
@@ -37,7 +38,7 @@ public:
 	void BuildScene();
 	void OnProcessingMouseMessage(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam);
 	void OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam);
-	void SceneChangeInput(bool bCallByPlayer = false);
+	void SceneChangeInput(bool bCleard = false);
 	LRESULT CALLBACK OnProcessingWindowMessage(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam);
 	void ProcessInput();
 	void AnimateObjects();

@@ -217,6 +217,9 @@
     <Filter Include="GameObject\Plane\Effect\JetFlame">
       <UniqueIdentifier>{8a4130b5-e927-45c2-b28a-c558d0f75108}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Scene\CreditScene">
+      <UniqueIdentifier>{e6b20e44-eb93-4a50-9530-240a671abb3e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="targetver.h">
@@ -447,6 +450,9 @@
     <ClInclude Include="CJetFlame.h">
       <Filter>GameObject\Plane\Effect\JetFlame</Filter>
     </ClInclude>
+    <ClInclude Include="CCreditScene.h">
+      <Filter>Scene\CreditScene</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="DDSTextureLoader12.cpp">
@@ -646,6 +652,9 @@
     </ClCompile>
     <ClCompile Include="CJetFlame.cpp">
       <Filter>GameObject\Plane\Effect\JetFlame</Filter>
+    </ClCompile>
+    <ClCompile Include="CCreditScene.cpp">
+      <Filter>Scene\CreditScene</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

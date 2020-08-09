@@ -71,7 +71,8 @@ protected:
 	LPVOID						m_pCameraUpdatedContext = NULL;
 
 	// Weapon Count
-	int m_nMSL_Count = 0;
+	int m_nMSL_Count = 100;
+	int m_nFLR_Count = 50;
 	int m_nScore = 0;
 
 	//Hp Count
@@ -116,6 +117,9 @@ public:
 	int GetScore() const { return(m_nScore); }
 	bool GetGameOver() const { return(m_bGameOver); }
 	int GetHp() const { return(m_nHp); }
+	float GetCooltimeMSL1() { return m_fCoolTime_MSL_1; }
+	float GetCooltimeMSL2() { return m_fCoolTime_MSL_2; }
+	int GetFLRCount() { return m_nFLR_Count; }
 
 	const XMFLOAT3& GetTargetDir() const { return (m_xmf3TargetDirection); }
 
@@ -213,8 +217,8 @@ public:
 	CLoadedModelInfo* m_pAfterBurnerEXModel;
 	CLoadedModelInfo* m_pAfterBurnerINModel;
 
-	CGameObject* m_pLeft_AfterBurner[10];
-	CGameObject* m_pRight_AfterBurner[10];
+	CGameObject* m_pLeft_AfterBurner;
+	CGameObject* m_pRight_AfterBurner;
 
 	CGameObject* m_pGunCamera = NULL;
 	CGameObject* m_pCameraPos = NULL;

@@ -77,6 +77,7 @@ public:
 	bool m_bCreateShip = false;
 	bool m_bCreateEngineRefraction = true;
 	float elapsedTime = 0;
+	float StageClearDeleyElepsed = 0;
 
 
 	int									m_nGameObjects = 0;

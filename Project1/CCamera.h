@@ -56,6 +56,7 @@ public:
 	int m_nShakeAmplitude = 50;
 	bool m_bShakeSwitch = false;
 	bool m_bEneShake = false;
+	bool m_bDefaultCameraMode = true;
 
 public:
 	CCamera();

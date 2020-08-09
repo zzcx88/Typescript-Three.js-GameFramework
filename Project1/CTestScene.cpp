@@ -660,7 +660,13 @@ void CTestScene::AnimateObjects(float fTimeElapsed)
 	m_ObjManager->GetObjFromTag(L"player", OBJ_PLAYER)->SetPlayerSpeed(m_pPlayer->GetAircraftSpeed());
 	m_ObjManager->Update(fTimeElapsed);
 	GET_MANAGER<SceneManager>()->SceneStoped();
-
+	
+	if (GET_MANAGER<SceneManager>()->m_bStageClear == true)
+	{
+		StageClearDeleyElepsed += 1.f * fTimeElapsed;
+		if(StageClearDeleyElepsed > 5)
+			GET_MANAGER<CDeviceManager>()->SceneChangeInput(true);
+	}
 }
 
 void CTestScene::OnPrepareRender(ID3D12GraphicsCommandList* pd3dCommandList)
