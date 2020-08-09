@@ -3,6 +3,7 @@
 #include "CTestScene.h"
 #include "CNumber.h"
 #include "CUI.h"
+#include "CAnimateUI.h"
 #include "AnimateMenuTitle.h"
 #include "CLockOnUI.h"
 #include "CShaderManager.h"
@@ -43,18 +44,20 @@ void CMenuScene::BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandLis
 
 	//float fx = 1.f / 0.96f;
 	//float fy = 1.f / 0.54f;
-	m_nGameObjects = 2;
+	m_nGameObjects = 3;
 	m_ppGameObjects = new CGameObject * [m_nGameObjects];
 	m_ppGameObjects[0] = new CUI(8, pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, 2.f, 2.f, 0.f, XMFLOAT2(0.f, 0.f), XMFLOAT2(0.f, 0.f), XMFLOAT2(0.f, 0.f), XMFLOAT2(0.f, 0.f));
 	m_ppGameObjects[0]->SetIsRender(true);
 	m_ppGameObjects[1] = new CUI(12, pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, 2.f, 2.f, 0.f, XMFLOAT2(0.f, 0.f), XMFLOAT2(0.f, 0.f), XMFLOAT2(0.f, 0.f), XMFLOAT2(0.f, 0.f));
 	m_ppGameObjects[1]->SetIsRender(false);
-
-	AnimateMenuTitle* TitleAniamation = new AnimateMenuTitle(0, pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, 2.f, 2.f, 0.f);
-	m_ObjManager->AddObject(L"TitleAnimation", TitleAniamation, OBJ_EFFECT2);
+	m_ppGameObjects[2] = new CAnimateUI(2, pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, 0.5f, 0.16f, 0.f, XMFLOAT2(0.f, 0.f), XMFLOAT2(0.f, 0.f), XMFLOAT2(0.f, 0.f), XMFLOAT2(0.f, 0.f));
+	m_ppGameObjects[2]->SetIsRender(true);
+	m_ppGameObjects[2]->m_fBurnerBlendAmount = 1.f;
+	m_ppGameObjects[2]->SetPosition(0.f, -0.3f , 0.f);
 
 	m_ObjManager->AddObject(L"player_ui1_title", m_ppGameObjects[0], OBJ_UI);
 	m_ObjManager->AddObject(L"player_ui2_1stage_loading", m_ppGameObjects[1], OBJ_EFFECT);
+	m_ObjManager->AddObject(L"player_ui3_title_press_button_ui", m_ppGameObjects[2], OBJ_EFFECT2);
 
 	CreateShaderVariables(pd3dDevice, pd3dCommandList);
 }
@@ -119,6 +122,16 @@ bool CMenuScene::ProcessInput(UCHAR* pKeysBuffer)
 void CMenuScene::AnimateObjects(float fTimeElapsed)
 {
 	//m_fElapsedTime += fTimeElapsed;
+	if (m_ppGameObjects[2]->m_fBurnerBlendAmount >= 1.f)
+		m_bFitter = true;
+	if (m_ppGameObjects[2]->m_fBurnerBlendAmount <= 0.f)
+		m_bFitter = false;
+
+
+	if (m_bFitter)
+		m_ppGameObjects[2]->m_fBurnerBlendAmount -= 2*fTimeElapsed;
+	else
+		m_ppGameObjects[2]->m_fBurnerBlendAmount += 2*fTimeElapsed;
 
 	m_ObjManager->Update(fTimeElapsed);
 }

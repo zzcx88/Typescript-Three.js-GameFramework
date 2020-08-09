@@ -25,7 +25,7 @@ private:
 	CGameObject* m_pRightEngine1 = NULL;
 	CGameObject* m_pRightEngine2 = NULL;
 
-	float m_fAddFogFrequence = 0.001f;
+	float m_fAddFogFrequence = 0.5f;
 	float m_fAddFogTimeElapsed = 0.f;
 
 	float m_fAddCrushFogFrequence = 0.05f;

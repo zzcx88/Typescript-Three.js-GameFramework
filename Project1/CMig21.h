@@ -27,8 +27,13 @@ private:
 	float m_fAddFogFrequence = 0.01f;
 	float m_fAddFogTimeElapsed = 0.f;
 
+	float m_fAddFlareFrequence = 0.4f;
+	float m_fAddFlareTimeElapsed = 0.f;
+
 	float m_fAddCrushFogFrequence = 0.05f;
 	float m_fAddCrushFogTimeElapsed = 0.f;
+
+	int m_nFlareCnt = 5;
 
 public:
 	virtual void OnPrepareAnimate();

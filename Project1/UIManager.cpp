@@ -52,6 +52,7 @@ void UIManager::MoveMinimapPoint(ObjectManager::MAPOBJ* PlyList, ObjectManager::
 	else
 	{
 		PlyList->begin()->second->m_pMUI->MoveMinimapPoint(PlyList->begin()->second->GetPosition(), PlyList->begin()->second->m_pMUI);
+
 		if (GET_MANAGER<SceneManager>()->GetSceneStoped() == true)
 			PlyList->begin()->second->m_pMUI->SetIsRender(false);
 		else
@@ -472,20 +473,20 @@ void UIManager::NumberTextureAnimate(ObjectManager::MAPOBJ* PlyList, const float
 				pnum->SetPosition(GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player_ui5_alt", OBJ_UI)->GetPosition().x - 45.f + 12.f * (i - 3),
 					GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player_ui5_alt", OBJ_UI)->GetPosition().y+ 2.2f, 0.f);
 			if (9 <= i && i < 12)
-				pnum->SetPosition(GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player_ui2_weapon", OBJ_UI)->GetPosition().x - 5.f + 11.f * (i - 8),
+				pnum->SetPosition(GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player_ui2_weapon", OBJ_UI)->GetPosition().x + 10.f + 11.f * (i - 8),
 					GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player_ui2_weapon", OBJ_UI)->GetPosition().y - 4.f, 0.f);
 			if (12 <= i && i < 14)
-				pnum->SetPosition(GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player_ui3_time_score", OBJ_UI)->GetPosition().x - 10.f + 14.f * (i - 11),
+				pnum->SetPosition(GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player_ui3_time_score", OBJ_UI)->GetPosition().x + 15.f + 14.f * (i - 11),
 					GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player_ui3_time_score", OBJ_UI)->GetPosition().y + 24.f, 0.f);
 			if (14 <= i && i < 16)
-				pnum->SetPosition(GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player_ui3_time_score", OBJ_UI)->GetPosition().x + 23.f + 14.f * (i - 13),
+				pnum->SetPosition(GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player_ui3_time_score", OBJ_UI)->GetPosition().x + 48.f + 14.f * (i - 13),
 					GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player_ui3_time_score", OBJ_UI)->GetPosition().y + 24.f, 0.f);
 			if (16 <= i && i < 18)
-				pnum->SetPosition(GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player_ui3_time_score", OBJ_UI)->GetPosition().x + 55.f + 14.f * (i - 15),
+				pnum->SetPosition(GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player_ui3_time_score", OBJ_UI)->GetPosition().x + 80.f + 14.f * (i - 15),
 					GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player_ui3_time_score", OBJ_UI)->GetPosition().y + 24.f, 0.f);
 			if (18 <= i && i < 24)
 				pnum->SetPosition(GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player_ui3_time_score", OBJ_UI)->GetPosition().x + 25.f + 14.f * (i - 17),
-					GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player_ui3_time_score", OBJ_UI)->GetPosition().y, 0.f);
+					GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player_ui3_time_score", OBJ_UI)->GetPosition().y - 3.f, 0.f);
 			if (29 <= i && i < 32)
 				pnum->SetPosition(GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player_ui2_weapon", OBJ_UI)->GetPosition().x - 5.f + 11.f * (i - 28),
 					GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player_ui2_weapon", OBJ_UI)->GetPosition().y - 54.f, 0.f);
@@ -507,8 +508,6 @@ void UIManager::NumberTextureAnimate(ObjectManager::MAPOBJ* PlyList, const float
 	}
 	else
 	{
-		for (int i = 29; i < 32; ++i)
-			cout << "·»´õ »óÅÂ "<<PlyList->begin()->second->ppNumObjects[i]->GetIsRender() << endl;
 
 		fElapsedTime -= TimeDelta*100;
 		
@@ -669,6 +668,15 @@ void UIManager::NumberTextureAnimate(ObjectManager::MAPOBJ* PlyList, const float
 		}
 
 		//// Font animation(missile)
+		if (missile.size() == 0)
+		{
+			PlyList->begin()->second->ppNumObjects[9]->SetIsRender(false);
+			PlyList->begin()->second->ppNumObjects[10]->SetIsRender(false);
+			PlyList->begin()->second->ppNumObjects[11]->SetIsRender(true);
+
+			PlyList->begin()->second->ppNumObjects[11]->m_pUIMaterial->m_ppTextures[0] = GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player_ui11_speed_number_o", OBJ_SPEED_UI)->m_ppUITexture[0];
+		}
+
 		if (missile.size() > 0)
 		{
 			PlyList->begin()->second->ppNumObjects[9]->SetIsRender(false);
@@ -692,11 +700,19 @@ void UIManager::NumberTextureAnimate(ObjectManager::MAPOBJ* PlyList, const float
 		}
 
 		// Font animation(time hour)
+		if (timeM.size() == 0)
+		{
+			PlyList->begin()->second->ppNumObjects[12]->SetIsRender(true);
+			PlyList->begin()->second->ppNumObjects[13]->SetIsRender(true);
+
+			PlyList->begin()->second->ppNumObjects[13]->m_pUIMaterial->m_ppTextures[0] = GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player_ui11_speed_number_o", OBJ_SPEED_UI)->m_ppUITexture[0];
+		}
 		if (timeM.size() > 0)
 		{
 			PlyList->begin()->second->ppNumObjects[12]->SetIsRender(true);
 			PlyList->begin()->second->ppNumObjects[13]->SetIsRender(true);
 
+			PlyList->begin()->second->ppNumObjects[12]->m_pUIMaterial->m_ppTextures[0] = GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player_ui11_speed_number_o", OBJ_SPEED_UI)->m_ppUITexture[0];
 			PlyList->begin()->second->ppNumObjects[13]->m_pUIMaterial->m_ppTextures[0] = GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player_ui11_speed_number_o", OBJ_SPEED_UI)->m_ppUITexture[timeM[0]];
 		}
 		if (timeM.size() > 1)
@@ -706,11 +722,20 @@ void UIManager::NumberTextureAnimate(ObjectManager::MAPOBJ* PlyList, const float
 		}
 
 		// Font animation(time min)
+		if (timeS.size() == 0)
+		{
+			PlyList->begin()->second->ppNumObjects[14]->SetIsRender(true);
+			PlyList->begin()->second->ppNumObjects[15]->SetIsRender(true);
+
+			PlyList->begin()->second->ppNumObjects[14]->m_pUIMaterial->m_ppTextures[0] = GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player_ui11_speed_number_o", OBJ_SPEED_UI)->m_ppUITexture[0];
+			PlyList->begin()->second->ppNumObjects[15]->m_pUIMaterial->m_ppTextures[0] = GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player_ui11_speed_number_o", OBJ_SPEED_UI)->m_ppUITexture[0];
+		}
 		if (timeS.size() > 0)
 		{
 			PlyList->begin()->second->ppNumObjects[14]->SetIsRender(true);
 			PlyList->begin()->second->ppNumObjects[15]->SetIsRender(true);
 
+			PlyList->begin()->second->ppNumObjects[14]->m_pUIMaterial->m_ppTextures[0] = GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player_ui11_speed_number_o", OBJ_SPEED_UI)->m_ppUITexture[0];
 			PlyList->begin()->second->ppNumObjects[15]->m_pUIMaterial->m_ppTextures[0] = GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player_ui11_speed_number_o", OBJ_SPEED_UI)->m_ppUITexture[timeS[0]];
 		}
 		if (timeS.size() > 1)
@@ -734,6 +759,17 @@ void UIManager::NumberTextureAnimate(ObjectManager::MAPOBJ* PlyList, const float
 		}
 
 		// Font animation(score)
+		if (score.size() == 0)
+		{
+			PlyList->begin()->second->ppNumObjects[18]->SetIsRender(false);
+			PlyList->begin()->second->ppNumObjects[19]->SetIsRender(false);
+			PlyList->begin()->second->ppNumObjects[20]->SetIsRender(false);
+			PlyList->begin()->second->ppNumObjects[21]->SetIsRender(false);
+			PlyList->begin()->second->ppNumObjects[22]->SetIsRender(false);
+			PlyList->begin()->second->ppNumObjects[23]->SetIsRender(true);
+
+			PlyList->begin()->second->ppNumObjects[23]->m_pUIMaterial->m_ppTextures[0] = GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player_ui11_speed_number_o", OBJ_SPEED_UI)->m_ppUITexture[0];
+		}
 		if (score.size() > 0)
 		{
 			PlyList->begin()->second->ppNumObjects[18]->SetIsRender(false);

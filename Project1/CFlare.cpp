@@ -12,6 +12,7 @@ CFlare::CFlare(XMFLOAT3 xmf3LaunchedUpVector)
 
 	m_ObjManager = GET_MANAGER<ObjectManager>();
 	m_pCamera = m_ObjManager->GetObjFromTag(L"player", OBJ_PLAYER)->m_pCamera;
+	m_xmf3Up = XMFLOAT3(0, 1, 0);
 }
 
 CFlare::CFlare(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList, ID3D12RootSignature* pd3dGraphicsRootSignature, float fWidth, float fHeight, float fDepth)
@@ -25,25 +26,24 @@ CFlare::CFlare(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandL
 	CreateShaderVariables(pd3dDevice, pd3dCommandList);
 
 	//m_pEffectTexture[TEXTURES];
-	m_pEffectTexture[0] = new CTexture(1, RESOURCE_TEXTURE2D, 0);
-	m_pEffectTexture[0]->LoadTextureFromFile(pd3dDevice, pd3dCommandList, L"Effect/Flare.dds", 0);
+	m_pTexture = new CTexture(1, RESOURCE_TEXTURE2D, 0);
+	m_pTexture->LoadTextureFromFile(pd3dDevice, pd3dCommandList, L"Effect/Flare.dds", 0);
 
 	UINT ncbElementBytes = ((sizeof(CB_GAMEOBJECT_INFO) + 255) & ~255);
-	m_EffectShader = new CMissleFogShader();
+	m_pShader = new CMissleFogShader();
 
-	m_EffectShader->CreateShader(pd3dDevice, pd3dCommandList, pd3dGraphicsRootSignature);
-	m_EffectShader->CreateShaderVariables(pd3dDevice, pd3dCommandList);
+	m_pShader->CreateShader(pd3dDevice, pd3dCommandList, pd3dGraphicsRootSignature);
+	m_pShader->CreateShaderVariables(pd3dDevice, pd3dCommandList);
 
-	m_EffectShader->CreateConstantBufferViews(pd3dDevice, pd3dCommandList, m_nObjects, m_EffectShader->m_pd3dcbBlendAmount, ncbElementBytes);
+	//m_pShader->CreateConstantBufferViews(pd3dDevice, pd3dCommandList, m_nObjects, m_pShader->m_pd3dcbBlendAmount, ncbElementBytes);
 
-	CTestScene::CreateShaderResourceViews(pd3dDevice, m_pEffectTexture[0], 15, false);
+	CTestScene::CreateShaderResourceViews(pd3dDevice, m_pTexture, 15, false);
 
-	m_pEffectMaterial = new CMaterial(1);
-	m_pEffectMaterial->SetTexture(m_pEffectTexture[0]);
-	CGameObject::SetShader(m_EffectShader);
-	m_pEffectMaterial->SetShader(m_EffectShader);
+	m_pMaterial = new CMaterial(1);
+	m_pMaterial->SetTexture(m_pTexture);
+	m_pMaterial->SetShader(m_pShader);
 
-	SetMaterial(0, m_pEffectMaterial);
+	SetMaterial(0, m_pMaterial);
 }
 
 CFlare::~CFlare()
@@ -78,15 +78,17 @@ void CFlare::Animate(float fTimeElapsed)
 			pMissleFog->SetMaterial(0, pMissleFog->m_pEffectMaterial);
 			pMissleFog->SetPosition(m_xmf3Position);
 			pMissleFog->m_bEffectedObj = true;
+			pMissleFog->m_bFlareFog = true;
 			m_ObjManager->AddObject(L"MissleFogInstance", pMissleFog, OBJ_EFFECT);
 
 			m_fAddCrushFogTimeElapsed = 0;
 		}
-		Move(DIR_FORWARD, 1000 * fTimeElapsed, false);
+		//Move(DIR_FORWARD, m_fFlareSpeed * fTimeElapsed, false);
 		XMFLOAT3 xmf3Shift = XMFLOAT3(0, 0, 0);
-		xmf3Shift = Vector3::Add(xmf3Shift, m_xmf3LaunchedUpVector, 300 * fTimeElapsed);
+		xmf3Shift = Vector3::Add(xmf3Shift, m_xmf3LaunchedUpVector, 50 * fTimeElapsed);
+		xmf3Shift = Vector3::Add(xmf3Shift,m_xmf3Look, 1300 * fTimeElapsed);
+		xmf3Shift = Vector3::Add(xmf3Shift, m_xmf3Up, -50 * fTimeElapsed);
 		Move(xmf3Shift, false);
-		Move(DIR_DOWN, 100 * fTimeElapsed, false);
 		SetLookAt(m_pCamera->GetPosition());
 	}
 }

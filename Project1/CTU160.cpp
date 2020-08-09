@@ -5,6 +5,7 @@
 #include "CMissleFog.h"
 #include "CMissleSplash.h"
 #include "CCrushSmoke.h"
+#include "CFlare.h"
 
 CTU160::CTU160()
 {
@@ -18,6 +19,7 @@ CTU160::CTU160()
 
 	SetChild(m_pModelInfo->m_pModelRootObject);
 	SetScale(10.f, 10.f, 10.f);
+	m_xmf3Up = XMFLOAT3(0, 1, 0);
 
 	m_fHP = 100;
 }
@@ -165,7 +167,7 @@ void CTU160::Animate(float fTimeElapsed)
 			m_xmf3Ai_EvadeAxis = XMFLOAT3(0, 0, 0);
 		}
 	}*/
-
+	
 	if (m_bAiCanFire == false)
 	{
 		m_fMissleFireElapsed += fTimeElapsed;

@@ -88,6 +88,8 @@ void CMissleFog::Animate(float fTimeElapsed)
 		//	/*if (m_fTimeElapsed > m_fDeleteFogFrequence)
 		//	TextureAnimate();*/
 		//}
+
+
 		if (m_bWingFog)
 		{
 			if (m_fScaleX > 0.1)
@@ -95,12 +97,19 @@ void CMissleFog::Animate(float fTimeElapsed)
 			else
 				SetScale(0.1,0.1,0);
 		}
+		else if (m_bFlareFog)
+		{
+			if (m_fScaleX < 25)
+				SetScale(m_fScaleX += 1.1 * m_fTimeElapsed, m_fScaleY += 1.1 * m_fTimeElapsed, 1);
+			else
+				SetScale(25, 25, 0);
+		}
 		else
 		{
-			if (m_fScaleX < 50)
+			if (m_fScaleX < 30)
 				SetScale(m_fScaleX += 1.1 * m_fTimeElapsed , m_fScaleY += 1.1 * m_fTimeElapsed, 1);
 			else
-				SetScale(50, 50, 0);
+				SetScale(30 , 30 , 0);
 		}
 		TextureAnimate();
 		SetLookAt(m_pCamera->GetPosition());

@@ -129,6 +129,7 @@ class CSphereCollider;
 class COrientedBoxCollider;
 class CMissleFogShader;
 class CUIShader;
+class CAnimateUIShader;
 class CWaterShader;
 class CBulletShader;
 class CPlaneShader;
@@ -147,11 +148,12 @@ class CGameObject
 {
 private:
 	int								m_nReferences = 0;
-	int nPlayerSpeed = 0;
-	int nPlayerMSL = 0;
-	int nPlayerHp = 0;
+	int m_nPlayerSpeed = 0;
+	int m_nPlayerMSL = 0;
+	int m_nPlayerHp = 0;
+	int m_nPlayerScore = 0;
 
-	bool isRender = true;
+	bool m_IsRender = true;
 
 public:
 	void AddRef();
@@ -171,8 +173,6 @@ public:
 
 	CMesh* m_pMesh = NULL;
 	//CMesh** m_ppMeshes = NULL;
-	int m_nPlayerScore = 0;
-
 
 	int								m_nObjects = 0;
 	int								m_nMaterials = 0;
@@ -197,6 +197,8 @@ public:
 	CPlaneMesh* m_pMinimapPlaneMesh;
 
 	CUIShader* m_pUIShader;
+	CAnimateUIShader* m_pAnimateUIShader;
+
 	CMinimapShader* m_pMinimapShader;
 	CMaterial* m_pUIMaterial;
 	CMaterial* m_pMinimapMaterial;
@@ -259,6 +261,7 @@ public:
 
 	float m_fDeadElapsed = 0.f;
 	float m_fDeadFrequence = 4.f;
+
 	bool m_bCreateOnece = false;
 
 	bool m_bReffernce = false;
@@ -341,15 +344,16 @@ public:
 
 	const bool& GetState() { return m_isDead; }
 	int GetScore() const { return m_nPlayerScore; }
-	int GetPlayerSpeed()const { return nPlayerSpeed; }
-	bool GetIsRender() const { return isRender; }
-	int GetPlayerMSL() const { return nPlayerMSL; }
-	int GetPlayerHp() const { return nPlayerHp;  }
+	int GetPlayerSpeed()const { return m_nPlayerSpeed; }
+	bool GetIsRender() const { return m_IsRender; }
+	int GetPlayerMSL() const { return m_nPlayerMSL; }
+	int GetPlayerHp() const { return m_nPlayerHp;  }
 
-	void SetIsRender(bool b) { isRender = b; }
-	void SetPlayerSpeed(float speed) { nPlayerSpeed = (int)speed; }
-	void SetPlayerMSL(int MSL) { nPlayerMSL = MSL; }
-	void SetPlayerHp(int Hp) { nPlayerHp = Hp; }
+	void SetIsRender(bool b) { m_IsRender = b; }
+	void SetPlayerSpeed(float speed) { m_nPlayerSpeed = (int)speed; }
+	void SetPlayerMSL(int MSL) { m_nPlayerMSL = MSL; }
+	void SetPlayerHp(int Hp) { m_nPlayerHp = Hp; }
+	void SetPlayerScore(int Score) { m_nPlayerScore = Score; }
 
 	void SetPosition(float x, float y, float z);
 	void SetPosition(XMFLOAT3 xmf3Position);

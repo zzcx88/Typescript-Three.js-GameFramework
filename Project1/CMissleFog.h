@@ -29,6 +29,7 @@ public:
 
 	bool m_RenderOff = false;
 	bool m_bWingFog = false;
+	bool m_bFlareFog = false;
 
 public:
 	CMissleFog();

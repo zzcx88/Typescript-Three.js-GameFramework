@@ -198,15 +198,16 @@ void CPlayer::Update_Input(const float& TimeDelta)
 	if (true == keyManager->GetKeyState(STATE_DOWN, VK_T))
 	{
 		dwDirection |= VK_T;
+		CFlare* pFlareRef = (CFlare*)m_ObjManager->GetObjFromTag(L"flareRef", OBJ_EFFECT);
 		CFlare* pFlare = new CFlare(GetUp());
-		pFlare->SetMesh(m_ObjManager->GetObjFromTag(L"flareRef", OBJ_EFFECT)->m_pPlaneMesh);
-		pFlare->m_pEffectMaterial = new CMaterial(1);
-		pFlare->m_pEffectMaterial->SetTexture(m_ObjManager->GetObjFromTag(L"flareRef", OBJ_EFFECT)->m_pEffectTexture[0]);
-		pFlare->CGameObject::SetShader(m_ObjManager->GetObjFromTag(L"flareRef", OBJ_EFFECT)->m_EffectShader);
-		pFlare->m_pEffectMaterial->SetShader(m_ObjManager->GetObjFromTag(L"flareRef", OBJ_EFFECT)->m_EffectShader);
-		pFlare->SetMaterial(0, pFlare->m_pEffectMaterial);
+		pFlare->SetMesh(pFlareRef->m_pPlaneMesh);
+		pFlare->m_pMaterial = new CMaterial(1);
+		pFlare->m_pMaterial->SetTexture(pFlareRef->m_pTexture);
+		pFlare->m_pMaterial->SetShader(pFlareRef->m_pShader);
+		pFlare->SetMaterial(0, pFlare->m_pMaterial);
 		pFlare->SetPosition(GetPosition());
-		//pFlare->m_bEffectedObj = true;
+		pFlare->m_fFlareSpeed = m_fAircraftSpeed;
+		pFlare->m_xmf3Look = GetLook();
 		m_ObjManager->AddObject(L"flareInstance", pFlare, OBJ_EFFECT);
 	}
 
@@ -245,8 +246,6 @@ void CPlayer::Update_Input(const float& TimeDelta)
 		dwDirection |= VK_SPACE;
 		if (m_fPushSpaceElapsed == 0.0f)
 		{
-			GET_MANAGER<SoundManager>()->PlaySound(L"Missile_launch.mp3", CH_MISSLE);
-			GET_MANAGER<SoundManager>()->SetVolume(CH_MISSLE, 0.2f);
 			MissleLaunch();
 		}
 		m_fPushSpaceElapsed+= 1* TimeDelta;
@@ -568,6 +567,22 @@ void CPlayer::Update_PadInput(const float& TimeDelta)
 		}
 	}
 
+	if (true == keyManager->GetPadState(STATE_DOWN, XINPUT_GAMEPAD_RIGHT_THUMB))
+	{
+		dwDirection |= XINPUT_GAMEPAD_RIGHT_THUMB;
+		CFlare* pFlareRef = (CFlare*)m_ObjManager->GetObjFromTag(L"flareRef", OBJ_EFFECT);
+		CFlare* pFlare = new CFlare(GetUp());
+		pFlare->SetMesh(pFlareRef->m_pPlaneMesh);
+		pFlare->m_pMaterial = new CMaterial(1);
+		pFlare->m_pMaterial->SetTexture(pFlareRef->m_pTexture);
+		pFlare->m_pMaterial->SetShader(pFlareRef->m_pShader);
+		pFlare->SetMaterial(0, pFlare->m_pMaterial);
+		pFlare->SetPosition(GetPosition());
+		pFlare->m_fFlareSpeed = m_fAircraftSpeed;
+		pFlare->m_xmf3Look = GetLook();
+		m_ObjManager->AddObject(L"flareInstance", pFlare, OBJ_EFFECT);
+	}
+
 	if (true == keyManager->GetPadState(STATE_PUSH, XINPUT_GAMEPAD_A))
 	{
 		if (m_bGunSoundPlayed == false)
@@ -603,8 +618,6 @@ void CPlayer::Update_PadInput(const float& TimeDelta)
 		dwDirection |= XINPUT_GAMEPAD_B;
 		if (m_fPushSpaceElapsed == 0.0f)
 		{
-			GET_MANAGER<SoundManager>()->PlaySound(L"Missile_launch.mp3", CH_MISSLE);
-			GET_MANAGER<SoundManager>()->SetVolume(CH_MISSLE, 0.2f);
 			MissleLaunch();
 		}
 		m_fPushSpaceElapsed += 1 * TimeDelta;
@@ -884,7 +897,14 @@ void CPlayer::Update_PadInput(const float& TimeDelta)
 void CPlayer::Animate(float fTimeElapsed)
 {
 	m_pCamera->m_fTimeElapsed = fTimeElapsed;
-
+	if (m_fCoolTime_MSL_1 <= 1)
+	{
+		m_fCoolTime_MSL_1 += 0.5f * fTimeElapsed;
+	}
+	if (m_fCoolTime_MSL_2 <= 1)
+	{
+		m_fCoolTime_MSL_2 += 0.5f * fTimeElapsed;
+	}
 	if (m_bGameOver == false)
 	{
 		if (GetPosition().y >= 10000)
@@ -923,13 +943,14 @@ void CPlayer::Animate(float fTimeElapsed)
 		if (fDeceleration > fLength) fDeceleration = fLength;
 		m_xmf3Velocity = Vector3::Add(m_xmf3Velocity, Vector3::ScalarProduct(m_xmf3Velocity, -fDeceleration, true));
 
-		if (GET_MANAGER<SceneManager>()->GetCurrentSceneState() != SCENE_MENU && m_nMSL_Count != NULL)
+		if (GET_MANAGER<SceneManager>()->GetCurrentSceneState() != SCENE_MENU && m_ObjManager != NULL)
 		{
 			if (GET_MANAGER<KeyManager>()->m_pPadConnecter->IsConnected() == false)
 				Update_Input(fTimeElapsed);
 			else
 				Update_PadInput(fTimeElapsed);
 		}
+
 		//cout << m_xmf3Look.x << " " << m_xmf3Look.y << " " << m_xmf3Look.z << endl;
 		SetEngineRefractionPos();
 
@@ -1482,50 +1503,76 @@ void CAirplanePlayer::MissleLaunch()
 	CMissle* pMissle;
 	XMFLOAT3* temp = NULL;
 	m_nMSL_Count = CPlayer::GetMSLCount();
-	//cout << m_nMSL_Count << endl;
 
 	for (auto& Ene : m_ObjManager->GetObjFromType(OBJ_ENEMY))
 	{
-		if (Ene.second->m_bCanFire == true && Ene.second->GetState() != true&&m_nMSL_Count !=0 && Ene.second->m_bDestroyed == false)
+		if (Ene.second->m_bCanFire == true && Ene.second->GetState() != true && m_nMSL_Count != 0 && Ene.second->m_bDestroyed == false)
 		{
 			temp = Ene.second->GetPositionForMissle();
+			Ene.second->m_AiMissleAssert = true;
 			pMissle = new CMissle(this);
 			pMissle->m_xmfTarget = temp;
 			pMissle->m_bLockOn = true;
-			if (m_bMissleCross == false)
+			if (m_bMissleCross == false && m_fCoolTime_MSL_1 >= 1.f)
 			{
 				m_bMissleCross = true;
-				pMissle->SetPosition(m_pMSL_1->GetPosition());
+				pMissle->SetPosition(m_pMSL_1->GetPosition().x - GetUp().x * 20, m_pMSL_1->GetPosition().y - GetUp().y * 20, m_pMSL_1->GetPosition().z - GetUp().z * 20);
+				pMissle->m_fTheta = 60.f;
+				m_ObjManager->AddObject(L"player_missle", pMissle, OBJ_ALLYMISSLE);
+				m_fCoolTime_MSL_1 = 0;
+				GET_MANAGER<SoundManager>()->PlaySound(L"Missile_launch.mp3", CH_MISSLE);
+				GET_MANAGER<SoundManager>()->SetVolume(CH_MISSLE, 0.2f);
+				CPlayer::SetMSLCount(--m_nMSL_Count);
 			}
 			else
 			{
-				m_bMissleCross = false;
-				pMissle->SetPosition(m_pMSL_2->GetPosition());
+				if (m_fCoolTime_MSL_2 >= 1.f)
+				{
+					m_bMissleCross = false;
+					pMissle->SetPosition(m_pMSL_2->GetPosition().x - GetUp().x * 20, m_pMSL_2->GetPosition().y - GetUp().y * 20, m_pMSL_2->GetPosition().z - GetUp().z * 20);
+					pMissle->m_fTheta = 60.f;
+					m_ObjManager->AddObject(L"player_missle", pMissle, OBJ_ALLYMISSLE);
+					m_fCoolTime_MSL_2 = 0;
+					GET_MANAGER<SoundManager>()->PlaySound(L"Missile_launch.mp3", CH_MISSLE);
+					GET_MANAGER<SoundManager>()->SetVolume(CH_MISSLE, 0.2f);
+					CPlayer::SetMSLCount(--m_nMSL_Count);
+				}
 			}
-			pMissle->m_fTheta = 60.f;
-			m_ObjManager->AddObject(L"player_missle", pMissle, OBJ_ALLYMISSLE);
-			
-			CPlayer::SetMissileCount(--m_nMSL_Count);
 			return;
 		}
 
 	}
-	pMissle = new CMissle(this);
-	pMissle->m_xmfTarget = temp;
-	pMissle->m_bLockOn = false;
-	if (m_bMissleCross == false)
+	if (m_nMSL_Count > 0)
 	{
-		m_bMissleCross = true;
-		pMissle->SetPosition(m_pMSL_1->GetPosition());
+		pMissle = new CMissle(this);
+		pMissle->m_xmfTarget = temp;
+		pMissle->m_bLockOn = false;
+		if (m_bMissleCross == false && m_fCoolTime_MSL_1 >= 1.f)
+		{
+			m_bMissleCross = true;
+			pMissle->SetPosition(m_pMSL_1->GetPosition().x - GetUp().x * 20, m_pMSL_1->GetPosition().y - GetUp().y * 20, m_pMSL_1->GetPosition().z - GetUp().z * 20);
+			pMissle->m_pCamera = m_pCamera;
+			m_ObjManager->AddObject(L"player_missle", pMissle, OBJ_ALLYMISSLE);
+			m_fCoolTime_MSL_1 = 0;
+			GET_MANAGER<SoundManager>()->PlaySound(L"Missile_launch.mp3", CH_MISSLE);
+			GET_MANAGER<SoundManager>()->SetVolume(CH_MISSLE, 0.2f);
+			CPlayer::SetMSLCount(--m_nMSL_Count);
+		}
+		else
+		{
+			if (m_fCoolTime_MSL_2 >= 1.f)
+			{
+				m_bMissleCross = false;
+				pMissle->SetPosition(m_pMSL_2->GetPosition().x - GetUp().x * 20, m_pMSL_2->GetPosition().y - GetUp().y * 20, m_pMSL_2->GetPosition().z - GetUp().z * 20);
+				pMissle->m_pCamera = m_pCamera;
+				m_ObjManager->AddObject(L"player_missle", pMissle, OBJ_ALLYMISSLE);
+				m_fCoolTime_MSL_2 = 0;
+				GET_MANAGER<SoundManager>()->PlaySound(L"Missile_launch.mp3", CH_MISSLE);
+				GET_MANAGER<SoundManager>()->SetVolume(CH_MISSLE, 0.2f);
+				CPlayer::SetMSLCount(--m_nMSL_Count);
+			}
+		}
 	}
-	else
-	{
-		m_bMissleCross = false;
-		pMissle->SetPosition(m_pMSL_2->GetPosition());
-	}
-	pMissle->m_pCamera = m_pCamera;
-	m_ObjManager->AddObject(L"player_missle", pMissle, OBJ_ALLYMISSLE);
-	CPlayer::SetMissileCount(--m_nMSL_Count);
 
 }
 

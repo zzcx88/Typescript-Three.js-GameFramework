@@ -178,6 +178,5 @@ void CollisionManager::CollisionMapOut()
 			GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player", OBJ_PLAYER)->m_bGameOver = true;
 			GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player", OBJ_PLAYER)->SetPosition(0,1000,0);
 		}
-
 	}
 }

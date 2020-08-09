@@ -2,12 +2,12 @@
 #include "CGameObject.h"
 
 class CCamera;
-class CFlare : public CGameObject
+class CFlare : public CPlane
 {
 public:
 	XMFLOAT3 m_xmf3LaunchedUpVector = XMFLOAT3(0, 0, 0);
 
-	float m_fDeleteFrequence = 1.0f;
+	float m_fDeleteFrequence = 2.0f;
 	float m_DeleteElapsed = 0;
 
 	float m_fAddCrushFogFrequence = 0.05f;
@@ -15,6 +15,11 @@ public:
 
 	float m_fTimeElapsed = 0.f;
 
+	float m_fFlareSpeed = 0;
+
+	CTexture* m_pTexture = NULL;
+	CMissleFogShader* m_pShader = NULL;
+	CMaterial* m_pMaterial = NULL;
 	ObjectManager* m_ObjManager = NULL;
 public:
 	CFlare(XMFLOAT3 xmf3LaunchedUpVector);
