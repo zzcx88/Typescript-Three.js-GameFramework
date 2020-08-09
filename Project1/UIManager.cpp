@@ -7,6 +7,7 @@
 
 UIManager::UIManager()
 {
+
 	speed.reserve(4);
 	alt.reserve(5);
 	missile.reserve(3);
@@ -16,6 +17,7 @@ UIManager::UIManager()
 	score.reserve(6);
 	distance.reserve(5);
 	hp.reserve(3);
+	flare.reserve(2);
 
 	FighterOBJs.reserve(50);
 	ShipOBJs.reserve(50);
@@ -443,20 +445,21 @@ void UIManager::MoveLockOnUI(ObjectManager::MAPOBJ* PlyList, ObjectManager::MAPO
 
 		}
 		cout << "전투기 사이즈 : " << FighterOBJs.size() << endl;
-		cout << Count << endl;
 	}
 }
 
 
 void UIManager::NumberTextureAnimate(ObjectManager::MAPOBJ* PlyList, const float& TimeDelta)
 {
-	for (int i = 0; i < 32; ++i)
+	for (int i = 0; i < 34; ++i)
 	{
 		if (24 <= i && i < 29)
 			continue;
 
 		if (PlyList->begin()->second->ppNumObjects[i] == NULL)
 		{
+			pPlayer = (CPlayer*)GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player", OBJ_PLAYER);
+
 			CNumber* pnum;
 			pnum = new CNumber();
 			pnum->SetMesh((CMesh*)GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player_ui11_speed_number_o", OBJ_SPEED_UI)->m_pUIPlaneMesh);
@@ -466,15 +469,23 @@ void UIManager::NumberTextureAnimate(ObjectManager::MAPOBJ* PlyList, const float
 			pnum->m_pUIMaterial->SetTexture(pnum->m_ppUITexture[0]);
 			pnum->m_pUIMaterial->SetShader(GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player_ui11_speed_number_o", OBJ_SPEED_UI)->m_pUIShader);
 			pnum->SetMaterial(0, pnum->m_pUIMaterial);
+			
+			// Speed font position
 			if (i < 4)
 				pnum->SetPosition(GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player_ui4_speed", OBJ_UI)->GetPosition().x - 18.f + 12.f * i,
 					GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player_ui4_speed", OBJ_UI)->GetPosition().y+ 2.2f, 0.f);
+			
+			// Alt font position
 			if (4 <= i && i < 9)
 				pnum->SetPosition(GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player_ui5_alt", OBJ_UI)->GetPosition().x - 45.f + 12.f * (i - 3),
 					GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player_ui5_alt", OBJ_UI)->GetPosition().y+ 2.2f, 0.f);
+			
+			// Missile font position
 			if (9 <= i && i < 12)
 				pnum->SetPosition(GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player_ui2_weapon", OBJ_UI)->GetPosition().x + 10.f + 11.f * (i - 8),
 					GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player_ui2_weapon", OBJ_UI)->GetPosition().y - 4.f, 0.f);
+			
+			// time M, S, MS font position
 			if (12 <= i && i < 14)
 				pnum->SetPosition(GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player_ui3_time_score", OBJ_UI)->GetPosition().x + 15.f + 14.f * (i - 11),
 					GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player_ui3_time_score", OBJ_UI)->GetPosition().y + 24.f, 0.f);
@@ -484,12 +495,21 @@ void UIManager::NumberTextureAnimate(ObjectManager::MAPOBJ* PlyList, const float
 			if (16 <= i && i < 18)
 				pnum->SetPosition(GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player_ui3_time_score", OBJ_UI)->GetPosition().x + 80.f + 14.f * (i - 15),
 					GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player_ui3_time_score", OBJ_UI)->GetPosition().y + 24.f, 0.f);
+			
+			// Score font position
 			if (18 <= i && i < 24)
 				pnum->SetPosition(GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player_ui3_time_score", OBJ_UI)->GetPosition().x + 25.f + 14.f * (i - 17),
 					GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player_ui3_time_score", OBJ_UI)->GetPosition().y - 3.f, 0.f);
+			
+			// Hp font position
 			if (29 <= i && i < 32)
 				pnum->SetPosition(GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player_ui2_weapon", OBJ_UI)->GetPosition().x - 5.f + 11.f * (i - 28),
 					GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player_ui2_weapon", OBJ_UI)->GetPosition().y - 54.f, 0.f);
+			
+			// flare font position
+			if (32 <= i && i < 34)
+				pnum->SetPosition(GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player_ui2_weapon", OBJ_UI)->GetPosition().x - 12.f + 11.f * (i - 28),
+					GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player_ui2_weapon", OBJ_UI)->GetPosition().y - 29.f, 0.f);
 
 			pnum->SetIsRender(false);
 			PlyList->begin()->second->ppNumObjects[i] = pnum;
@@ -503,12 +523,11 @@ void UIManager::NumberTextureAnimate(ObjectManager::MAPOBJ* PlyList, const float
 	{
 		for (int i = 0; i < 24; ++i)
 			PlyList->begin()->second->ppNumObjects[i]->SetIsRender(false);
-		for (int i = 29; i < 32; ++i)
+		for (int i = 29; i < 34; ++i)
 			PlyList->begin()->second->ppNumObjects[i]->SetIsRender(false);
 	}
 	else
 	{
-
 		fElapsedTime -= TimeDelta*100;
 		
 		if (fElapsedTime <= 0.f)
@@ -524,6 +543,8 @@ void UIManager::NumberTextureAnimate(ObjectManager::MAPOBJ* PlyList, const float
 			}
 		}
 
+
+		flare_number = pPlayer->GetFLRCount();
 		hp_number = (int)(fabs(GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player", OBJ_PLAYER)->GetPlayerHp()-5)) * 100/5;
 		speed_number = (int)1800.f / 1000.f * PlyList->begin()->second->GetPlayerSpeed();
 		alt_number = fabs((int)PlyList->begin()->second->GetPosition().y - 200);
@@ -564,6 +585,31 @@ void UIManager::NumberTextureAnimate(ObjectManager::MAPOBJ* PlyList, const float
 		while (hp_number != 0) {
 			hp.push_back(hp_number % 10);
 			hp_number /= 10;
+		}
+		while (flare_number != 0) {
+			flare.push_back(flare_number % 10);
+			flare_number /= 10;
+		}
+
+		// Font animation(flare)
+		if (flare.size() == 0)
+		{
+			PlyList->begin()->second->ppNumObjects[32]->SetIsRender(false);
+			PlyList->begin()->second->ppNumObjects[33]->SetIsRender(true);
+			PlyList->begin()->second->ppNumObjects[33]->m_pUIMaterial->m_ppTextures[0] = GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player_ui11_speed_number_o", OBJ_SPEED_UI)->m_ppUITexture[0];
+		}
+		if (flare.size() > 0)
+		{
+			PlyList->begin()->second->ppNumObjects[32]->SetIsRender(false);
+			PlyList->begin()->second->ppNumObjects[33]->SetIsRender(true);
+			PlyList->begin()->second->ppNumObjects[33]->m_pUIMaterial->m_ppTextures[0] = GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player_ui11_speed_number_o", OBJ_SPEED_UI)->m_ppUITexture[flare[0]];
+		}
+		if (flare.size() > 1)
+		{
+			PlyList->begin()->second->ppNumObjects[32]->SetIsRender(true);
+			PlyList->begin()->second->ppNumObjects[33]->SetIsRender(true);
+			PlyList->begin()->second->ppNumObjects[32]->m_pUIMaterial->m_ppTextures[0] = GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player_ui11_speed_number_o", OBJ_SPEED_UI)->m_ppUITexture[flare[1]];
+			PlyList->begin()->second->ppNumObjects[33]->m_pUIMaterial->m_ppTextures[0] = GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player_ui11_speed_number_o", OBJ_SPEED_UI)->m_ppUITexture[flare[0]];
 		}
 
 		// Font animation(hp)
@@ -830,6 +876,7 @@ void UIManager::NumberTextureAnimate(ObjectManager::MAPOBJ* PlyList, const float
 		timeM.clear();
 		score.clear();
 		hp.clear();
+		flare.clear();
 
 	}
 

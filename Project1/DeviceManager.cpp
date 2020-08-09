@@ -422,10 +422,34 @@ void CDeviceManager::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPA
 	}
 }
 
-void CDeviceManager::SceneChangeInput(bool bCallByPlayer)
+void CDeviceManager::SceneChangeInput(bool bCleard)
 {
 	KeyManager* keyManager = GET_MANAGER<KeyManager>();
 	DWORD dwDirection = 0;
+
+	if (bCleard == true)
+	{
+		m_pd3dCommandList->Reset(m_pd3dCommandAllocator, NULL);
+
+		m_pSceneManager->ChangeSceneState(SCENE_CREDIT, m_pd3dDevice, m_pd3dCommandList);
+		CTerrainPlayer* pPlayer = new CTerrainPlayer(m_pd3dDevice, m_pd3dCommandList, m_pSceneManager->GetGraphicsRootSignature(), NULL);
+		pPlayer->SetGameOver(true);
+		m_pPlayer = pPlayer;
+
+		m_pCamera = m_pPlayer->GetCamera();
+		m_pd3dCommandList->Close();
+		ID3D12CommandList* ppd3dCommandLists[] = { m_pd3dCommandList };
+		m_pd3dCommandQueue->ExecuteCommandLists(1, ppd3dCommandLists);
+
+		WaitForGpuComplete();
+		m_pSceneManager->SetPlayer(m_pPlayer);
+		m_pSceneManager->SetObjManagerInPlayer();
+
+		if (m_pPlayer) m_pPlayer->ReleaseUploadBuffers();
+		if (m_pSceneManager) m_pSceneManager->ReleaseUploadBuffers();
+		m_GameTimer.Reset();
+	}
+
 	if (m_pSceneManager->GetCurrentSceneState() == SCENE_TEST&&GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player", OBJ_PLAYER)->m_bGameOver != true)
 	{
 		if (true == keyManager->GetKeyState(STATE_PUSH, VK_G))

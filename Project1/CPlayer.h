@@ -42,12 +42,16 @@ protected:
 
 	float m_fPushSpaceElapsed = 0.0f;
 
+	float m_fCoolTime_MSL_1 = 1.0f;
+	float m_fCoolTime_MSL_2 = 1.0f;
+
 	bool m_bGunFire = false;
 	bool m_bMissleCross = false;
 
 	bool m_bGunSoundPlayed = false;
 	bool m_bAssertSoundPlayed = false;
 	bool m_bStall = false;
+	bool m_bDamaged = false;
 
 	XMFLOAT3 xmf3StallRecoverPosition = XMFLOAT3(0.0f, 0.0f, 0.0f);
 
@@ -67,16 +71,12 @@ protected:
 	LPVOID						m_pCameraUpdatedContext = NULL;
 
 	// Weapon Count
-	int m_nMSL_Count = 0;
+	int m_nMSL_Count = 100;
+	int m_nFLR_Count = 50;
+	int m_nScore = 0;
 
 	//Hp Count
 	int m_nHp = 5;
-
-	// Missile CoolTime 
-	float m_fCoolTime_MSL_1 = 0.f;
-	float m_fCoolTime_MSL_2 = 0.f;
-
-	int m_vFLR_Count = 50;
 public:
 	CPlayer();
 	virtual ~CPlayer();
@@ -118,6 +118,7 @@ public:
 	int GetMSLCount() const { return(m_nMSL_Count); }
 	bool GetGameOver() const { return(m_bGameOver); }
 	int GetHp() const { return(m_nHp); }
+	int GetFLRCount() { return m_nFLR_Count; }
 
 	const XMFLOAT3& GetTargetDir() const { return (m_xmf3TargetDirection); }
 
@@ -126,6 +127,7 @@ public:
 
 	CCamera* GetCamera() { return(m_pCamera); }
 	void SetCamera(CCamera* pCamera) { m_pCamera = pCamera; }
+	void SetDamaged() { m_bDamaged = false; }
 
 	void Move(DWORD nDirection, float fDistance, bool bVelocity = false);
 	void Move(const XMFLOAT3& xmf3Shift, bool bVelocity = false);
@@ -214,8 +216,8 @@ public:
 	CLoadedModelInfo* m_pAfterBurnerEXModel;
 	CLoadedModelInfo* m_pAfterBurnerINModel;
 
-	CGameObject* m_pLeft_AfterBurner[10];
-	CGameObject* m_pRight_AfterBurner[10];
+	CGameObject* m_pLeft_AfterBurner;
+	CGameObject* m_pRight_AfterBurner;
 
 	CGameObject* m_pGunCamera = NULL;
 	CGameObject* m_pCameraPos = NULL;

@@ -16,6 +16,8 @@ public:
 
 	float m_fMissleFireElapsed = 0.f;
 
+	bool m_bAiOn = false;
+
 	ObjectManager* m_ObjManager;
 
 private:

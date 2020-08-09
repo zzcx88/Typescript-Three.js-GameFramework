@@ -2,6 +2,7 @@
 #include "SceneManager.h"
 #include "CTestScene.h"
 #include "CMenuScene.h"
+#include "CCreditScene.h"
 
 SceneManager::SceneManager()
 {
@@ -34,6 +35,9 @@ bool SceneManager::ChangeSceneState(SCENESTATE SceneState, ID3D12Device* pd3dDev
 		break;
 	case SCENE_MENU:
 		m_Scene = new CMenuScene;
+		break;
+	case SCENE_CREDIT:
+		m_Scene = new CCreditScene;
 		break;
 	}
 

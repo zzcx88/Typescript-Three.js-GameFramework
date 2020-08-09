@@ -74,7 +74,6 @@ bool CCloud::IsVisible(CCamera* pCamera)
 	if (pCamera) bIsVisible = pCamera->IsInFrustum(xmBoundingBox);
 	return(bIsVisible);
 }
-
 void CCloud::Animate(float fTimeElapsed)
 {
 	CPlayer* pPlayer = (CPlayer*)GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player", OBJ_PLAYER);
@@ -86,6 +85,9 @@ void CCloud::Animate(float fTimeElapsed)
 	LenthToPlayer = Vector3::Length(xmf3TargetVector);
 	//LenthToPlayer = sqrt(xmf3TargetVector.x * xmf3TargetVector.x + xmf3TargetVector.y * xmf3TargetVector.x + xmf3TargetVector.z * xmf3TargetVector.z);
 	//cout << LenthToPlayer << endl;
+
+	// 알파 수치 확인 
+	//cout << GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player_ui23_fog", OBJ_FILTER)->m_fBurnerBlendAmount << endl;
 
 	if (GET_MANAGER<ObjectManager>()->GetObjFromTag(L"EngineRefractionObj", OBJ_EFFECT) && LenthToPlayer < 5000)
 	{
@@ -106,11 +108,11 @@ void CCloud::Animate(float fTimeElapsed)
 			if (RefractObj->m_bWaterDrop)
 			{
 				if (GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player_ui23_fog", OBJ_FILTER)->m_fBurnerBlendAmount < 0.8f)
-					GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player_ui23_fog", OBJ_FILTER)->m_fBurnerBlendAmount += 0.6f * fTimeElapsed;
+					GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player_ui23_fog", OBJ_FILTER)->m_fBurnerBlendAmount += 2.5f * fTimeElapsed;
 				else if (GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player_ui23_fog", OBJ_FILTER)->m_fBurnerBlendAmount > 0.8f)
 					GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player_ui23_fog", OBJ_FILTER)->m_fBurnerBlendAmount = 0.8f;
 			}
-	
+
 
 		}
 		else
@@ -123,9 +125,9 @@ void CCloud::Animate(float fTimeElapsed)
 					GET_MANAGER<SoundManager>()->SetVolume(CH_BGM, 1.f);
 				}
 				RefractObj->m_bWaterDrop = false;
-			
-			
-				
+
+
+
 				if (RefractObj->m_fBurnerBlendAmount < 0)
 				{
 					RefractObj->m_fBurnerBlendAmount = 0.002f;
@@ -133,13 +135,11 @@ void CCloud::Animate(float fTimeElapsed)
 			}
 			if (GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player_ui23_fog", OBJ_FILTER)->m_fBurnerBlendAmount > 0.f)
 			{
-				GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player_ui23_fog", OBJ_FILTER)->m_fBurnerBlendAmount -= 0.4f * fTimeElapsed;
+				GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player_ui23_fog", OBJ_FILTER)->m_fBurnerBlendAmount -= 1.5f * fTimeElapsed;
 			}
-			else if (GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player_ui23_fog", OBJ_FILTER)->m_fBurnerBlendAmount < 0.f)
+			if (GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player_ui23_fog", OBJ_FILTER)->m_fBurnerBlendAmount < 0.f)
 				GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player_ui23_fog", OBJ_FILTER)->m_fBurnerBlendAmount = 0.f;
-
 		}
-	
 	}
 }
 

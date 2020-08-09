@@ -60,6 +60,7 @@ void CMig21::Animate(float fTimeElapsed)
 		OnPrepareAnimate();
 	}
 		m_fAddFogTimeElapsed += fTimeElapsed;
+		m_fFalreReadyElapsed += 1.f * fTimeElapsed;
 		m_xmf3Position.x = m_xmf4x4ToParent._41;
 		m_xmf3Position.y = m_xmf4x4ToParent._42;
 		m_xmf3Position.z = m_xmf4x4ToParent._43;
@@ -151,11 +152,22 @@ void CMig21::Animate(float fTimeElapsed)
 			m_AiMissleAssert = false;
 		}
 
-		//임시 플레어
-		if (m_fAddFlareTimeElapsed > m_fAddFlareFrequence && m_AiMissleAssert && m_nFlareCnt > 0)
+		if (m_fFalreReadyElapsed > 1 && m_bFlaresReady == false)
+		{
+			std::default_random_engine dre(time(NULL) + GetPosition().x * GetPosition().z);
+			std::uniform_int_distribution<int>Range(1, 100);
+			int temp = Range(dre);
+			if (temp < 30)
+				m_bFlaresOut = true;
+			m_bFlaresReady = true;
+			m_fFalreReadyElapsed = 0;
+		}
+
+		if (m_fAddFlareTimeElapsed > m_fAddFlareFrequence && m_AiMissleAssert && m_nFlareCnt > 0 && m_bFlaresOut)
 		{
 			CFlare* pFlareRef = (CFlare*)m_ObjManager->GetObjFromTag(L"flareRef", OBJ_EFFECT);
-			CFlare* pFlare = new CFlare(GetUp());
+			CFlare* pFlare = new CFlare(XMFLOAT3(m_xmf4x4ToParent._21, m_xmf4x4ToParent._22, m_xmf4x4ToParent._23));
+			pFlare->m_FromType = m_ObjType;
 			pFlare->SetMesh(pFlareRef->m_pPlaneMesh);
 			pFlare->m_pMaterial = new CMaterial(1);
 			pFlare->m_pMaterial->SetTexture(pFlareRef->m_pTexture);
@@ -163,7 +175,7 @@ void CMig21::Animate(float fTimeElapsed)
 			pFlare->SetMaterial(0, pFlare->m_pMaterial);
 			pFlare->SetPosition(GetPosition());
 			pFlare->m_fFlareSpeed = 250;
-			pFlare->m_xmf3Look = GetLook();
+			pFlare->m_xmf3Look = XMFLOAT3(m_xmf4x4ToParent._31, m_xmf4x4ToParent._32, m_xmf4x4ToParent._33);
 			m_ObjManager->AddObject(L"flareInstance", pFlare, OBJ_EFFECT);
 			m_fAddFlareTimeElapsed = 0;
 			m_nFlareCnt--;
@@ -212,7 +224,7 @@ void CMig21::CollisionActivate(CGameObject* collideTarget)
 			std::default_random_engine dre(time(NULL) * GetPosition().z);
 			std::uniform_real_distribution<float>fYDegree(-90, 90);
 			std::uniform_real_distribution<float>fXDegree(-90, 90);
-			cout << fXDegree(dre) << " " << fYDegree(dre) << endl;
+			//cout << fXDegree(dre) << " " << fYDegree(dre) << endl;
 			m_xmf3Ai_ColideAxis = XMFLOAT3(fXDegree(dre), fYDegree(dre), fXDegree(dre));
 		}
 		else
@@ -280,6 +292,12 @@ void CMig21::Render(ID3D12GraphicsCommandList* pd3dCommandList, CCamera* pCamera
 			pMissleSplash->SetMaterial(0, pMissleSplash->m_pEffectMaterial);
 			pMissleSplash->SetPosition(m_xmf4x4World._41, m_xmf4x4World._42, m_xmf4x4World._43);
 			GET_MANAGER<ObjectManager>()->AddObject(L"MissleSplashInstance", pMissleSplash, OBJ_EFFECT);
+
+			if (LenthToPlayer < 1500)
+			{
+				m_ObjManager->GetObjFromTag(L"player", OBJ_PLAYER)->m_pCamera->m_bEneShake = true;
+				m_ObjManager->GetObjFromTag(L"player", OBJ_PLAYER)->m_pCamera->m_bShakeSwitch = true;
+			}
 		}
 
 		if (m_fDeadElapsed >= m_fDeadFrequence)
@@ -287,7 +305,7 @@ void CMig21::Render(ID3D12GraphicsCommandList* pd3dCommandList, CCamera* pCamera
 			if (m_isDead == false)
 			{
 				GET_MANAGER<SceneManager>()->m_nTgtObject--;
-				cout << GET_MANAGER<SceneManager>()->m_nTgtObject << endl;
+				//cout << GET_MANAGER<SceneManager>()->m_nTgtObject << endl;
 				m_isDead = true;
 				m_pMUI->m_isDead = true;
 				m_pLockOnUI->m_isDead = true;

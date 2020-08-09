@@ -86,10 +86,11 @@ void CFlare::Animate(float fTimeElapsed)
 		//Move(DIR_FORWARD, m_fFlareSpeed * fTimeElapsed, false);
 		XMFLOAT3 xmf3Shift = XMFLOAT3(0, 0, 0);
 		xmf3Shift = Vector3::Add(xmf3Shift, m_xmf3LaunchedUpVector, 50 * fTimeElapsed);
-		xmf3Shift = Vector3::Add(xmf3Shift,m_xmf3Look, 1300 * fTimeElapsed);
+		xmf3Shift = Vector3::Add(xmf3Shift,m_xmf3Look, (m_fFlareSpeed + 500) * fTimeElapsed);
 		xmf3Shift = Vector3::Add(xmf3Shift, m_xmf3Up, -50 * fTimeElapsed);
 		Move(xmf3Shift, false);
 		SetLookAt(m_pCamera->GetPosition());
+		Deceptioning();
 	}
 }
 
@@ -107,6 +108,49 @@ void CFlare::SetLookAt(XMFLOAT3& xmfTarget)
 	m_xmf4x4ToParent._11 = m_xmf3Right.x;			m_xmf4x4ToParent._12 = m_xmf3Right.y;		m_xmf4x4ToParent._13 = m_xmf3Right.z;
 	m_xmf4x4ToParent._21 = m_xmf3Up.x;			m_xmf4x4ToParent._22 = m_xmf3Up.y;		m_xmf4x4ToParent._23 = m_xmf3Up.z;
 	m_xmf4x4ToParent._31 = m_xmf3Look.x;		m_xmf4x4ToParent._32 = m_xmf3Look.y;	m_xmf4x4ToParent._33 = m_xmf3Look.z;
+}
+
+void CFlare::Deceptioning()
+{
+	XMFLOAT3 xmf3Pos, xmf3MisslePos, xmf3TargetVector;
+	float LenthToMissile;
+	if (m_FromType == OBJ_ENEMY)
+	{
+		for (auto& obj : GET_MANAGER<ObjectManager>()->GetObjFromType(OBJ_ALLYMISSLE))
+		{
+			xmf3Pos = GetPosition();
+			xmf3MisslePos = obj.second->GetPosition();
+			xmf3TargetVector = Vector3::Subtract(xmf3Pos, xmf3MisslePos);
+			LenthToMissile = Vector3::Length(xmf3TargetVector);
+
+			if (LenthToMissile < 800)
+			{
+				CMissle* pMissile = (CMissle*)obj.second;
+				if (pMissile->m_xmfTarget != NULL)
+				{
+					pMissile->m_xmfTarget->x = m_xmf3Position.x;
+					pMissile->m_xmfTarget->y = m_xmf3Position.y;
+					pMissile->m_xmfTarget->z = m_xmf3Position.z;
+				}
+			}
+		}
+	}
+	else if (m_FromType == OBJ_PLAYER)
+	{
+		for (auto& obj : GET_MANAGER<ObjectManager>()->GetObjFromType(OBJ_ENEMISSLE))
+		{
+			xmf3Pos = GetPosition();
+			xmf3MisslePos = obj.second->GetPosition();
+			xmf3TargetVector = Vector3::Subtract(xmf3Pos, xmf3MisslePos);
+			LenthToMissile = Vector3::Length(xmf3TargetVector);
+
+			if (LenthToMissile < 1200)
+			{
+				CMissle* pMissile = (CMissle*)obj.second;
+				pMissile->m_xmfTarget = &GetPosition();
+			}
+		}
+	}
 }
 
 void CFlare::Render(ID3D12GraphicsCommandList* pd3dCommandList, CCamera* pCamera)

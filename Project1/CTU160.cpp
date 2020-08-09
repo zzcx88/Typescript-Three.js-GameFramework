@@ -231,6 +231,7 @@ void CTU160::CollisionActivate(CGameObject* collideTarget)
 			std::default_random_engine dre(time(NULL) * GetPosition().z);
 			std::uniform_real_distribution<float>fYDegree(-90, 90);
 			std::uniform_real_distribution<float>fXDegree(-90, 90);
+			
 			cout << fXDegree(dre) << " " << fYDegree(dre) << endl;
 			m_xmf3Ai_ColideAxis = XMFLOAT3(fXDegree(dre), fYDegree(dre), fXDegree(dre));
 		}
@@ -291,6 +292,12 @@ void CTU160::Render(ID3D12GraphicsCommandList* pd3dCommandList, CCamera* pCamera
 			pMissleSplash->SetMaterial(0, pMissleSplash->m_pEffectMaterial);
 			pMissleSplash->SetPosition(m_xmf4x4World._41, m_xmf4x4World._42, m_xmf4x4World._43);
 			GET_MANAGER<ObjectManager>()->AddObject(L"MissleSplashInstance", pMissleSplash, OBJ_EFFECT);
+
+			if (LenthToPlayer < 1000)
+			{
+				m_ObjManager->GetObjFromTag(L"player", OBJ_PLAYER)->m_pCamera->m_bEneShake = true;
+				m_ObjManager->GetObjFromTag(L"player", OBJ_PLAYER)->m_pCamera->m_bShakeSwitch = true;
+			}
 		}
 
 		if (m_fDeadElapsed >= m_fDeadFrequence)

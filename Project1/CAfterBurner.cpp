@@ -20,8 +20,8 @@ CAfterBurner::CAfterBurner(int nIndex, ID3D12Device* pd3dDevice, ID3D12GraphicsC
 	CreateShaderVariables(pd3dDevice, pd3dCommandList);
 
 	m_pEffectTexture[0] = new CTexture(1, RESOURCE_TEXTURE2D, 0);
-	m_pEffectTexture[0]->LoadTextureFromFile(pd3dDevice, pd3dCommandList, L"Effect/AfterBurner/AfterBurn_Circle.dds", 0);
-	m_pEffectTexture[1] = new CTexture(1, RESOURCE_TEXTURE2D, 0);
+	m_pEffectTexture[0]->LoadTextureFromFile(pd3dDevice, pd3dCommandList, L"Effect/EngineCircle.dds", 0);
+	/*m_pEffectTexture[1] = new CTexture(1, RESOURCE_TEXTURE2D, 0);
 	m_pEffectTexture[1]->LoadTextureFromFile(pd3dDevice, pd3dCommandList, L"Effect/AfterBurner/AfterBurn_Circle1.dds", 0);
 	m_pEffectTexture[2] = new CTexture(1, RESOURCE_TEXTURE2D, 0);
 	m_pEffectTexture[2]->LoadTextureFromFile(pd3dDevice, pd3dCommandList, L"Effect/AfterBurner/AfterBurn_Circle2.dds", 0);
@@ -38,7 +38,7 @@ CAfterBurner::CAfterBurner(int nIndex, ID3D12Device* pd3dDevice, ID3D12GraphicsC
 	m_pEffectTexture[8] = new CTexture(1, RESOURCE_TEXTURE2D, 0);	
 	m_pEffectTexture[8]->LoadTextureFromFile(pd3dDevice, pd3dCommandList, L"Effect/AfterBurner/AfterBurn_Circle8.dds", 0);
 	m_pEffectTexture[9] = new CTexture(1, RESOURCE_TEXTURE2D, 0);	
-	m_pEffectTexture[9]->LoadTextureFromFile(pd3dDevice, pd3dCommandList, L"Effect/AfterBurner/AfterBurn_Circle9.dds", 0);
+	m_pEffectTexture[9]->LoadTextureFromFile(pd3dDevice, pd3dCommandList, L"Effect/AfterBurner/AfterBurn_Circle9.dds", 0);*/
 
 	UINT ncbElementBytes = ((sizeof(CB_GAMEOBJECT_INFO) + 255) & ~255);
 	m_PlaneShader = new CPlaneShader();
@@ -46,7 +46,6 @@ CAfterBurner::CAfterBurner(int nIndex, ID3D12Device* pd3dDevice, ID3D12GraphicsC
 	m_PlaneShader->CreateShader(pd3dDevice, pd3dCommandList, pd3dGraphicsRootSignature);
 	m_PlaneShader->CreateShaderVariables(pd3dDevice, pd3dCommandList);
 
-	for (int i = 0; i < TEXTURES; i++) CTestScene::CreateShaderResourceViews(pd3dDevice, m_pEffectTexture[i], 15, false);
 	CTestScene::CreateShaderResourceViews(pd3dDevice, m_pEffectTexture[0], 15, false);
 	m_pEffectMaterial = new CMaterial(1);
 	m_pEffectMaterial->SetTexture(m_pEffectTexture[0]);

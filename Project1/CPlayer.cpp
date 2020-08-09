@@ -197,18 +197,33 @@ void CPlayer::Update_Input(const float& TimeDelta)
 
 	if (true == keyManager->GetKeyState(STATE_DOWN, VK_T))
 	{
-		dwDirection |= VK_T;
-		CFlare* pFlareRef = (CFlare*)m_ObjManager->GetObjFromTag(L"flareRef", OBJ_EFFECT);
-		CFlare* pFlare = new CFlare(GetUp());
-		pFlare->SetMesh(pFlareRef->m_pPlaneMesh);
-		pFlare->m_pMaterial = new CMaterial(1);
-		pFlare->m_pMaterial->SetTexture(pFlareRef->m_pTexture);
-		pFlare->m_pMaterial->SetShader(pFlareRef->m_pShader);
-		pFlare->SetMaterial(0, pFlare->m_pMaterial);
-		pFlare->SetPosition(GetPosition());
-		pFlare->m_fFlareSpeed = m_fAircraftSpeed;
-		pFlare->m_xmf3Look = GetLook();
-		m_ObjManager->AddObject(L"flareInstance", pFlare, OBJ_EFFECT);
+		if (m_nFLR_Count > 0)
+		{
+			dwDirection |= VK_T;
+			CFlare* pFlareRef = (CFlare*)m_ObjManager->GetObjFromTag(L"flareRef", OBJ_EFFECT);
+			CFlare* pFlare = new CFlare(GetUp());
+			pFlare->m_FromType = OBJ_PLAYER;
+			pFlare->SetMesh(pFlareRef->m_pPlaneMesh);
+			pFlare->m_pMaterial = new CMaterial(1);
+			pFlare->m_pMaterial->SetTexture(pFlareRef->m_pTexture);
+			pFlare->m_pMaterial->SetShader(pFlareRef->m_pShader);
+			pFlare->SetMaterial(0, pFlare->m_pMaterial);
+			pFlare->SetPosition(GetPosition());
+			pFlare->m_fFlareSpeed = m_fAircraftSpeed;
+			pFlare->m_xmf3Look = GetLook();
+			m_ObjManager->AddObject(L"flareInstance", pFlare, OBJ_EFFECT);
+			m_nFLR_Count--;
+			GET_MANAGER<SoundManager>()->PlaySound(L"FlareCut.wav", CH_ETC);
+			GET_MANAGER<SoundManager>()->SetVolume(CH_ETC, 1.f);
+		}
+	}
+
+	if (true == keyManager->GetKeyState(STATE_DOWN, VK_CAPITAL))
+	{
+		if (m_pCamera->m_bDefaultCameraMode == false)
+			m_pCamera->m_bDefaultCameraMode = true;
+		else
+			m_pCamera->m_bDefaultCameraMode = false;
 	}
 
 	if (true == keyManager->GetKeyState(STATE_PUSH, VK_LCONTROL))
@@ -482,7 +497,9 @@ void CPlayer::Update_Input(const float& TimeDelta)
 	if (m_bEye_fixation == false && m_fFOV < 60)
 	{
 		m_pCamera->GenerateProjectionMatrix(1.01f, m_fFarPlaneDistance, ASPECT_RATIO, m_fFOV);
-		m_fFOV += 30 * TimeDelta;
+		m_fFOV += 30.f * TimeDelta;
+		if(m_fFOV > 60.f)
+			m_fFOV = 60.f;
 	}
 
 	if (m_bEye_fixation == false && m_bGunFire == false && m_bMissleLockCamera == false)
@@ -569,18 +586,33 @@ void CPlayer::Update_PadInput(const float& TimeDelta)
 
 	if (true == keyManager->GetPadState(STATE_DOWN, XINPUT_GAMEPAD_RIGHT_THUMB))
 	{
-		dwDirection |= XINPUT_GAMEPAD_RIGHT_THUMB;
-		CFlare* pFlareRef = (CFlare*)m_ObjManager->GetObjFromTag(L"flareRef", OBJ_EFFECT);
-		CFlare* pFlare = new CFlare(GetUp());
-		pFlare->SetMesh(pFlareRef->m_pPlaneMesh);
-		pFlare->m_pMaterial = new CMaterial(1);
-		pFlare->m_pMaterial->SetTexture(pFlareRef->m_pTexture);
-		pFlare->m_pMaterial->SetShader(pFlareRef->m_pShader);
-		pFlare->SetMaterial(0, pFlare->m_pMaterial);
-		pFlare->SetPosition(GetPosition());
-		pFlare->m_fFlareSpeed = m_fAircraftSpeed;
-		pFlare->m_xmf3Look = GetLook();
-		m_ObjManager->AddObject(L"flareInstance", pFlare, OBJ_EFFECT);
+		if (m_nFLR_Count > 0)
+		{
+			dwDirection |= XINPUT_GAMEPAD_RIGHT_THUMB;
+			CFlare* pFlareRef = (CFlare*)m_ObjManager->GetObjFromTag(L"flareRef", OBJ_EFFECT);
+			CFlare* pFlare = new CFlare(GetUp());
+			pFlare->m_FromType = OBJ_PLAYER;
+			pFlare->SetMesh(pFlareRef->m_pPlaneMesh);
+			pFlare->m_pMaterial = new CMaterial(1);
+			pFlare->m_pMaterial->SetTexture(pFlareRef->m_pTexture);
+			pFlare->m_pMaterial->SetShader(pFlareRef->m_pShader);
+			pFlare->SetMaterial(0, pFlare->m_pMaterial);
+			pFlare->SetPosition(GetPosition());
+			pFlare->m_fFlareSpeed = m_fAircraftSpeed;
+			pFlare->m_xmf3Look = GetLook();
+			m_ObjManager->AddObject(L"flareInstance", pFlare, OBJ_EFFECT);
+			m_nFLR_Count--;
+			GET_MANAGER<SoundManager>()->PlaySound(L"FlareCut.wav", CH_ETC);
+			GET_MANAGER<SoundManager>()->SetVolume(CH_ETC, 1.f);
+		}
+	}
+
+	if (true == keyManager->GetPadState(STATE_DOWN, XINPUT_GAMEPAD_DPAD_DOWN))
+	{
+		if (m_pCamera->m_bDefaultCameraMode == false)
+			m_pCamera->m_bDefaultCameraMode = true;
+		else
+			m_pCamera->m_bDefaultCameraMode = false;
 	}
 
 	if (true == keyManager->GetPadState(STATE_PUSH, XINPUT_GAMEPAD_A))
@@ -854,7 +886,9 @@ void CPlayer::Update_PadInput(const float& TimeDelta)
 	if (m_bEye_fixation == false && m_fFOV < 60)
 	{
 		m_pCamera->GenerateProjectionMatrix(1.01f, m_fFarPlaneDistance, ASPECT_RATIO, m_fFOV);
-		m_fFOV += 30 * TimeDelta;
+		m_fFOV += 30.f * TimeDelta;
+		if (m_fFOV > 60.f)
+			m_fFOV = 60.f;
 	}
 
 	if (m_bEye_fixation == false && m_bGunFire == false && m_bMissleLockCamera == false)
@@ -982,20 +1016,23 @@ void CPlayer::Animate(float fTimeElapsed)
 			m_pCamera->RegenerateViewMatrix();
 		
 			if(GET_MANAGER<SceneManager>()->GetCurrentSceneState() == SCENE_TEST && !GET_MANAGER<SceneManager>()->m_bStageClear)
-				GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player_ui17_mission_failed", OBJ_FIGHT_UI4)->SetIsRender(true);
+				GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player_ui17_mission_failed", OBJ_EFFECT)->SetIsRender(true);
 			else if (GET_MANAGER<SceneManager>()->GetCurrentSceneState() == SCENE_TEST&& GET_MANAGER<SceneManager>()->m_bStageClear)
-				GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player_ui21_mission_accomplished", OBJ_FIGHT_UI4)->SetIsRender(true);
+				GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player_ui21_mission_accomplished", OBJ_EFFECT)->SetIsRender(true);
 		}
 		else
 		{
 			if (GET_MANAGER<SceneManager>()->GetCurrentSceneState() == SCENE_TEST && !GET_MANAGER<SceneManager>()->m_bStageClear)
-				GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player_ui17_mission_failed", OBJ_FIGHT_UI4)->SetIsRender(false);
+				GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player_ui17_mission_failed", OBJ_EFFECT)->SetIsRender(false);
 			else if (GET_MANAGER<SceneManager>()->GetCurrentSceneState() == SCENE_TEST && GET_MANAGER<SceneManager>()->m_bStageClear)
-				GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player_ui21_mission_accomplished", OBJ_FIGHT_UI4)->SetIsRender(false);
-		
+				GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player_ui21_mission_accomplished", OBJ_EFFECT)->SetIsRender(false);
+			
 			m_fRestartElapsed = 0;
-			m_bGameOver = false;
-			GET_MANAGER<SceneManager>()->m_bStageClear = false;
+			if (GET_MANAGER<SceneManager>()->m_bStageClear == false)
+			{
+				m_bGameOver = false;
+				GET_MANAGER<SceneManager>()->m_bStageClear = false;
+			}
 
 			for (auto i = (int)OBJ_ENEMY; i <= OBJ_UI; ++i)
 			{
@@ -1014,6 +1051,10 @@ void CPlayer::Animate(float fTimeElapsed)
 			GET_MANAGER<SceneManager>()->m_nTgtObject = 0;
 			GET_MANAGER<UIManager>()->FighterOBJs.clear();
 			GET_MANAGER<UIManager>()->ShipOBJs.clear();
+			GET_MANAGER<UIManager>()->SetMin(15);
+			GET_MANAGER<UIManager>()->SetSec(30);
+
+			SetPlayerScore(0);
 
 			GET_MANAGER<ObjectManager>()->ReleaseFromType(OBJ_ENEMY);
 			m_nHp = 5;
@@ -1021,7 +1062,13 @@ void CPlayer::Animate(float fTimeElapsed)
 			m_xmf3Look = XMFLOAT3(0,0,1);
 			m_xmf3Up = XMFLOAT3(0, 1, 0);
 			m_xmf3Right = XMFLOAT3(1, 0, 0);
+			m_bEye_fixation = false;
 		}
+	}
+
+	if (m_pCamera->m_bShakeSwitch == true)
+	{
+		m_pCamera->ShakingCamera();
 	}
 	/*if (-1 ==Update_Input(fTimeElapsed))
 	{
@@ -1035,10 +1082,11 @@ void CPlayer::CollisionActivate(CGameObject* collideTarget)
 	{
 		if (m_bGunFire == false)
 		{
-			if ((int)(GetPosition().x + GetPosition().y + GetPosition().z) / 2 == 0)
+			/*if ((int)(GetPosition().x + GetPosition().y + GetPosition().z) / 2 == 0)
 				m_pCamera->Rotate(20, 0, 0);
 			else
-				m_pCamera->Rotate(-20, 0, 0);
+				m_pCamera->Rotate(-20, 0, 0);*/
+			m_pCamera->m_bShakeSwitch = true;
 		}
 		cout << "플레이어 충돌!" << endl;
 
@@ -1143,7 +1191,7 @@ CAirplanePlayer::CAirplanePlayer(ID3D12Device* pd3dDevice, ID3D12GraphicsCommand
 	m_pAfterBurnerEXModel = CGameObject::LoadGeometryAndAnimationFromFile(pd3dDevice, pd3dCommandList, pd3dGraphicsRootSignature, "Model/AfterBurnerEX.bin", NULL, MODEL_EFC);
 	m_pAfterBurnerINModel = CGameObject::LoadGeometryAndAnimationFromFile(pd3dDevice, pd3dCommandList, pd3dGraphicsRootSignature, "Model/AfterBurnerIN.bin", NULL, MODEL_EFC);
 
-	CLoadedModelInfo* pModel = CGameObject::LoadGeometryAndAnimationFromFile(pd3dDevice, pd3dCommandList, pd3dGraphicsRootSignature, "Model/F-4E_Phantom_II_test.bin", NULL, MODEL_ACE);
+	CLoadedModelInfo* pModel = CGameObject::LoadGeometryAndAnimationFromFile(pd3dDevice, pd3dCommandList, pd3dGraphicsRootSignature, "Model/F-4E_Phantom_II.bin", NULL, MODEL_ACE);
 	SetChild(pModel->m_pModelRootObject);
 
 	m_fRollPerformance = 100.0f;
@@ -1186,27 +1234,8 @@ void CAirplanePlayer::OnPrepareAnimate()
 	m_pGunCamera = FindFrame("GunCamera");
 	m_pCameraPos = FindFrame("CameraPos");
 
-	m_pLeft_AfterBurner[0] = FindFrame("Left_AfterBuner");
-	m_pLeft_AfterBurner[1] = FindFrame("Left_AfterBuner_1");
-	m_pLeft_AfterBurner[2] = FindFrame("Left_AfterBuner_2");
-	m_pLeft_AfterBurner[3] = FindFrame("Left_AfterBuner_3");
-	m_pLeft_AfterBurner[4] = FindFrame("Left_AfterBuner_4");
-	m_pLeft_AfterBurner[5] = FindFrame("Left_AfterBuner_5");
-	m_pLeft_AfterBurner[6] = FindFrame("Left_AfterBuner_6");
-	m_pLeft_AfterBurner[7] = FindFrame("Left_AfterBuner_7");
-	m_pLeft_AfterBurner[8] = FindFrame("Left_AfterBuner_8");
-	m_pLeft_AfterBurner[9] = FindFrame("Left_AfterBuner_9");
-
-	m_pRight_AfterBurner[0] = FindFrame("Right_AfterBuner");
-	m_pRight_AfterBurner[1] = FindFrame("Right_AfterBuner_1");
-	m_pRight_AfterBurner[2] = FindFrame("Right_AfterBuner_2");
-	m_pRight_AfterBurner[3] = FindFrame("Right_AfterBuner_3");
-	m_pRight_AfterBurner[4] = FindFrame("Right_AfterBuner_4");
-	m_pRight_AfterBurner[5] = FindFrame("Right_AfterBuner_5");
-	m_pRight_AfterBurner[6] = FindFrame("Right_AfterBuner_6");
-	m_pRight_AfterBurner[7] = FindFrame("Right_AfterBuner_7");
-	m_pRight_AfterBurner[8] = FindFrame("Right_AfterBuner_8");
-	m_pRight_AfterBurner[9] = FindFrame("Right_AfterBuner_9");
+	m_pLeft_AfterBurner = FindFrame("Left_AfterBuner");
+	m_pRight_AfterBurner = FindFrame("Right_AfterBuner");
 
 	m_pRight_AfterBurnerEX = FindFrame("Right_AfterBurnerEX");
 	m_pRight_AfterBurnerIN = FindFrame("Right_AfterBurnerIN");
@@ -1215,56 +1244,31 @@ void CAirplanePlayer::OnPrepareAnimate()
 	m_pEngineRefraction = FindFrame("EngineRefraction");
 	m_pNaviPos = FindFrame("Nevi_Position");
 
+	CAfterBurner* pBurner;
+	pBurner = new CAfterBurner();
+	pBurner->SetMesh((CMesh*)GET_MANAGER<ObjectManager>()->GetObjFromTag(L"AfterBurner", OBJ_EFFECT)->m_pPlaneMesh);
+	pBurner->m_pCamera = m_pCamera;
+	pBurner->m_pEffectTexture[0] = GET_MANAGER<ObjectManager>()->GetObjFromTag(L"AfterBurner", OBJ_EFFECT)->m_pEffectTexture[0];
+	pBurner->m_pEffectMaterial = new CMaterial(1);
+	pBurner->m_pEffectMaterial->SetTexture(pBurner->m_pEffectTexture[0]);
+	pBurner->m_pEffectMaterial->SetShader(GET_MANAGER<ObjectManager>()->GetObjFromTag(L"AfterBurner", OBJ_EFFECT)->m_PlaneShader);
+	pBurner->SetMaterial(0, pBurner->m_pEffectMaterial);
+	m_pLeft_AfterBurner->m_pAfterBurner = pBurner;
+	m_pLeft_AfterBurner->SetScale(0.095f, 0.095f, 1);
+	GET_MANAGER<ObjectManager>()->AddObject(L"AfterBurnerInstance", m_pLeft_AfterBurner->m_pAfterBurner, OBJ_BURNER);
 
-	m_pRight_AfterBurnerEX->m_bEffectedObj = true;
-	m_pRight_AfterBurnerEX->m_fBurnerBlendAmount = 0.5f;
-	m_pRight_AfterBurnerEX->m_ppMaterials[0]->SetAfterBurnerShader();
-
-	m_pRight_AfterBurnerIN->m_bEffectedObj = true;
-	m_pRight_AfterBurnerIN->m_fBurnerBlendAmount = 0.5f;
-	m_pRight_AfterBurnerIN->m_ppMaterials[0]->SetAfterBurnerShader();
-
-	m_pLeft_AfterBurnerEX->m_bEffectedObj = true;
-	m_pLeft_AfterBurnerEX->m_fBurnerBlendAmount = 0.5f;
-	m_pLeft_AfterBurnerEX->m_ppMaterials[0]->SetAfterBurnerShader();
-
-	m_pLeft_AfterBurnerIN->m_bEffectedObj = true;
-	m_pLeft_AfterBurnerIN->m_fBurnerBlendAmount = 0.5f;
-	m_pLeft_AfterBurnerIN->m_ppMaterials[0]->SetAfterBurnerShader();
-
-		for (int i = 0; i < 10; ++i)
-		{
-			CAfterBurner* pBurner;
-			pBurner = new CAfterBurner();
-			pBurner->SetMesh((CMesh*)GET_MANAGER<ObjectManager>()->GetObjFromTag(L"AfterBurner", OBJ_EFFECT)->m_pPlaneMesh);
-			pBurner->m_pCamera = m_pCamera;
-			for (int i = 0; i < 10; ++i)
-				pBurner->m_pEffectTexture[i] = GET_MANAGER<ObjectManager>()->GetObjFromTag(L"AfterBurner", OBJ_EFFECT)->m_pEffectTexture[i];
-			pBurner->m_pEffectMaterial = new CMaterial(1);
-			pBurner->m_pEffectMaterial->SetTexture(pBurner->m_pEffectTexture[i]);
-			pBurner->m_pEffectMaterial->SetShader(GET_MANAGER<ObjectManager>()->GetObjFromTag(L"AfterBurner", OBJ_EFFECT)->m_PlaneShader);
-			pBurner->SetMaterial(0, pBurner->m_pEffectMaterial);
-			m_pLeft_AfterBurner[i]->m_pAfterBurner = pBurner;
-			m_pLeft_AfterBurner[i]->SetScale(0.095f, 0.095f, 1);
-			GET_MANAGER<ObjectManager>()->AddObject(L"AfterBurnerInstance", m_pLeft_AfterBurner[i]->m_pAfterBurner, OBJ_BURNER);
-		}
-
-		for (int i = 0; i < 10; ++i)
-		{
-			CAfterBurner* pBurner;
-			pBurner = new CAfterBurner();
-			pBurner->SetMesh((CMesh*)GET_MANAGER<ObjectManager>()->GetObjFromTag(L"AfterBurner", OBJ_EFFECT)->m_pPlaneMesh);
-			pBurner->m_pCamera = m_pCamera;
-			for (int i = 0; i < 10; ++i)
-				pBurner->m_pEffectTexture[i] = GET_MANAGER<ObjectManager>()->GetObjFromTag(L"AfterBurner", OBJ_EFFECT)->m_pEffectTexture[i];
-			pBurner->m_pEffectMaterial = new CMaterial(1);
-			pBurner->m_pEffectMaterial->SetTexture(pBurner->m_pEffectTexture[i]);
-			pBurner->m_pEffectMaterial->SetShader(GET_MANAGER<ObjectManager>()->GetObjFromTag(L"AfterBurner", OBJ_EFFECT)->m_PlaneShader);
-			pBurner->SetMaterial(0, pBurner->m_pEffectMaterial);
-			m_pRight_AfterBurner[i]->m_pAfterBurner = pBurner;
-			m_pRight_AfterBurner[i]->SetScale(0.095f, 0.095f,1);
-			GET_MANAGER<ObjectManager>()->AddObject(L"AfterBurnerInstance", m_pRight_AfterBurner[i]->m_pAfterBurner, OBJ_BURNER);
-		}
+	CAfterBurner* pRBurner;
+	pRBurner = new CAfterBurner();
+	pRBurner->SetMesh((CMesh*)GET_MANAGER<ObjectManager>()->GetObjFromTag(L"AfterBurner", OBJ_EFFECT)->m_pPlaneMesh);
+	pRBurner->m_pCamera = m_pCamera;
+	pRBurner->m_pEffectTexture[0] = GET_MANAGER<ObjectManager>()->GetObjFromTag(L"AfterBurner", OBJ_EFFECT)->m_pEffectTexture[0];
+	pRBurner->m_pEffectMaterial = new CMaterial(1);
+	pRBurner->m_pEffectMaterial->SetTexture(pRBurner->m_pEffectTexture[0]);
+	pRBurner->m_pEffectMaterial->SetShader(GET_MANAGER<ObjectManager>()->GetObjFromTag(L"AfterBurner", OBJ_EFFECT)->m_PlaneShader);
+	pRBurner->SetMaterial(0, pRBurner->m_pEffectMaterial);
+	m_pRight_AfterBurner->m_pAfterBurner = pRBurner;
+	m_pRight_AfterBurner->SetScale(0.095f, 0.095f, 1);
+	GET_MANAGER<ObjectManager>()->AddObject(L"AfterBurnerInstance", m_pRight_AfterBurner->m_pAfterBurner, OBJ_BURNER);
 	}
 	//m_xmMSL_1 = m_pMSL_1->m_xmf4x4World;
 
@@ -1503,7 +1507,6 @@ void CAirplanePlayer::MissleLaunch()
 	CMissle* pMissle;
 	XMFLOAT3* temp = NULL;
 	m_nMSL_Count = CPlayer::GetMSLCount();
-
 	for (auto& Ene : m_ObjManager->GetObjFromType(OBJ_ENEMY))
 	{
 		if (Ene.second->m_bCanFire == true && Ene.second->GetState() != true && m_nMSL_Count != 0 && Ene.second->m_bDestroyed == false)
@@ -1600,10 +1603,6 @@ void CAirplanePlayer::GunFire(float fTimeElapsed)
 		pColliedBullet->m_xmf3Look = m_xmf3Look;
 		pColliedBullet->m_xmf4x4ToParent = m_xmf4x4ToParent;
 		pColliedBullet->m_fBulletSpeed = m_fAircraftSpeed + 1300.f;
-		//pColliedBullet->m_pEffectMaterial = new CMaterial(1);
-		//pColliedBullet->m_pEffectMaterial->SetTexture(m_ObjManager->GetObjFromTag(L"bulletRef", OBJ_ALLYBULLET)->m_pBulletTexture);
-		//pColliedBullet->m_pEffectMaterial->SetShader(m_ObjManager->GetObjFromTag(L"bulletRef", OBJ_ALLYBULLET)->m_pBulletShader);
-		//pColliedBullet->SetMaterial(0, pBullet->m_pEffectMaterial);
 		pColliedBullet->SetPosition(XMFLOAT3(m_pGunMuzzle->GetPosition().x - GetLookVector().x * 3, m_pGunMuzzle->GetPosition().y - GetLookVector().y * 3, m_pGunMuzzle->GetPosition().z - GetLookVector().z * 3));
 		m_ObjManager->AddObject(L"player_bullet_collide", pColliedBullet, OBJ_ALLYBULLET);
 		m_fGunFireElapsed = 0.0f;
@@ -1641,31 +1640,49 @@ void CAirplanePlayer::SetAfterBurnerPosition(float fTimeElapsed)
 		volume = 1.f;
 	GET_MANAGER<SoundManager>()->SetVolume(CH_BNNRBOST, volume);
 
-	for (int i = 0; i < 10; ++i)
+	if (GET_MANAGER<ObjectManager>()->GetObjFromTag(L"jetFlameLeft", OBJ_EFFECT2))
 	{
-		if (m_pLeft_AfterBurner[i])
+		float fPosValue = 0.0f - m_fBurnerElapsed / 100.f;
+		if (m_pRight_AfterBurnerEX != NULL)
 		{
-			if (m_fBurnerElapsed / 150 <= 0.7f)
-			{
-				m_pLeft_AfterBurner[i]->m_pAfterBurner->m_fBurnerBlendAmount = m_fBurnerElapsed / 150;
-				m_pRight_AfterBurner[i]->m_pAfterBurner->m_fBurnerBlendAmount = m_fBurnerElapsed / 150;
-			}
-			if (m_fBurnerElapsed / 150 <= 0.4f)
-			{
-				m_pLeft_AfterBurnerEX->m_fBurnerBlendAmount = m_fBurnerElapsed / 150;
-				m_pLeft_AfterBurnerIN->m_fBurnerBlendAmount = m_fBurnerElapsed / 150;
-				m_pRight_AfterBurnerEX->m_fBurnerBlendAmount = m_fBurnerElapsed / 150;
-				m_pRight_AfterBurnerIN->m_fBurnerBlendAmount = m_fBurnerElapsed / 150;
-			}
-
-			m_pLeft_AfterBurner[i]->m_pAfterBurner->UpdateTransform(&m_pLeft_AfterBurner[i]->m_xmf4x4World);
-			m_pRight_AfterBurner[i]->m_pAfterBurner->UpdateTransform(&m_pRight_AfterBurner[i]->m_xmf4x4World);
-			if (m_fBurnerElapsed / 100 < 0.8)
-			{
-				m_pLeft_AfterBurner[i]->m_pAfterBurner->SetPlaneScale(m_fBurnerElapsed / 100);
-				m_pRight_AfterBurner[i]->m_pAfterBurner->SetPlaneScale(m_fBurnerElapsed / 100);
-			}
+			GET_MANAGER<ObjectManager>()->GetObjFromTag(L"jetFlameLeft", OBJ_EFFECT2)->SetPosition(m_pRight_AfterBurnerEX->GetPosition().x - m_pRight_AfterBurnerEX->GetLook().x * fPosValue,
+				m_pRight_AfterBurnerEX->GetPosition().y - m_pRight_AfterBurnerEX->GetLook().y * fPosValue, m_pRight_AfterBurnerEX->GetPosition().z - m_pRight_AfterBurnerEX->GetLook().z* fPosValue);
+			if (m_fBurnerElapsed / 100.f <= 1.0f)
+				GET_MANAGER<ObjectManager>()->GetObjFromTag(L"jetFlameLeft", OBJ_EFFECT2)->m_fBurnerBlendAmount = m_fBurnerElapsed / 100.f;
 		}
+
+		if (m_pLeft_AfterBurnerEX != NULL)
+		{
+			GET_MANAGER<ObjectManager>()->GetObjFromTag(L"jetFlameRight", OBJ_EFFECT2)->SetPosition(m_pLeft_AfterBurnerEX->GetPosition().x - m_pLeft_AfterBurnerEX->GetLook().x * fPosValue,
+				m_pLeft_AfterBurnerEX->GetPosition().y - m_pLeft_AfterBurnerEX->GetLook().y * fPosValue, m_pLeft_AfterBurnerEX->GetPosition().z - m_pLeft_AfterBurnerEX->GetLook().z * fPosValue);
+			if (m_fBurnerElapsed / 100.f <= 1.0f)
+				GET_MANAGER<ObjectManager>()->GetObjFromTag(L"jetFlameRight", OBJ_EFFECT2)->m_fBurnerBlendAmount = m_fBurnerElapsed / 100.f;
+		}
+	}
+	if (m_pLeft_AfterBurner)
+	{
+		if (m_fBurnerElapsed / 150 <= 1.0f)
+		{
+			m_pLeft_AfterBurner->m_pAfterBurner->m_fBurnerBlendAmount = m_fBurnerElapsed / 150;
+			m_pRight_AfterBurner->m_pAfterBurner->m_fBurnerBlendAmount = m_fBurnerElapsed / 150;
+		}
+		m_pLeft_AfterBurner->m_pAfterBurner->UpdateTransform(&m_pLeft_AfterBurner->m_xmf4x4World);
+		m_pRight_AfterBurner->m_pAfterBurner->UpdateTransform(&m_pRight_AfterBurner->m_xmf4x4World);
+		/*if (m_fBurnerElapsed / 150 <= 0.4f)
+		{
+			m_pLeft_AfterBurnerEX->m_fBurnerBlendAmount = m_fBurnerElapsed / 150;
+			m_pLeft_AfterBurnerIN->m_fBurnerBlendAmount = m_fBurnerElapsed / 150;
+			m_pRight_AfterBurnerEX->m_fBurnerBlendAmount = m_fBurnerElapsed / 150;
+			m_pRight_AfterBurnerIN->m_fBurnerBlendAmount = m_fBurnerElapsed / 150;
+		}*/
+
+		/*m_pLeft_AfterBurner[i]->m_pAfterBurner->UpdateTransform(&m_pLeft_AfterBurner[i]->m_xmf4x4World);
+		m_pRight_AfterBurner[i]->m_pAfterBurner->UpdateTransform(&m_pRight_AfterBurner[i]->m_xmf4x4World);
+		if (m_fBurnerElapsed / 100 < 0.8)
+		{
+			m_pLeft_AfterBurner[i]->m_pAfterBurner->SetPlaneScale(m_fBurnerElapsed / 100);
+			m_pRight_AfterBurner[i]->m_pAfterBurner->SetPlaneScale(m_fBurnerElapsed / 100);
+		}*/
 	}
 }
 

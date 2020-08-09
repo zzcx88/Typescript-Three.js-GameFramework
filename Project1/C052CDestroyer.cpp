@@ -77,10 +77,22 @@ void C052CDestroyer::Animate(float fTimeElapsed)
 		}
 	}
 
-	if (m_bReffernce == false && m_bDestroyed == false)
+	if (true == GET_MANAGER<KeyManager>()->GetPadState(STATE_DOWN, XINPUT_GAMEPAD_LEFT_THUMB))
+	{
+		if (m_bAiOn == false)
+			m_bAiOn = true;
+		else
+			m_bAiOn == false;
+	}
+
+	if (m_bReffernce == false && m_bDestroyed == false && m_bAiOn == true)
 	{
 		GET_MANAGER<AIManager>()->DoAction(AI_SHIP, this);
 		UpdateTransform(NULL);
+	}
+	else
+	{
+		Move(DIR_FORWARD, 30 * fTimeElapsed, false);
 	}
 
 	if (m_bDestroyed == true)

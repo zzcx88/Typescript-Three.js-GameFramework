@@ -25,6 +25,7 @@
 #include "RedUI.h"
 #include "CEngineRafraction.h"
 #include "CNavigator.h"
+#include "CJetFlame.h"
 #include "CAnimateUI.h"
 
 ID3D12DescriptorHeap* CTestScene::m_pd3dCbvSrvDescriptorHeap = NULL;
@@ -200,7 +201,7 @@ void CTestScene::BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandLis
 	// 전투기
 	m_ppGameObjects[18] = new CUI(14, pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, 120.f, 55.f, 0.f, XMFLOAT2(-0.f, -0.f), XMFLOAT2(-0.f, -0.f), XMFLOAT2(-0.f, -0.f), XMFLOAT2(-0.f, -0.f));
 	m_ppGameObjects[18]->SetIsRender(false);
-	m_ppGameObjects[18]->SetPosition(m_ppGameObjects[2]->GetPosition().x + 80.f, m_ppGameObjects[2]->GetPosition().y - 31.f, 0.f);
+	m_ppGameObjects[18]->SetPosition(m_ppGameObjects[2]->GetPosition().x + 60.f, m_ppGameObjects[2]->GetPosition().y - 31.f, 0.f);
 
 	// 배
 	m_ppGameObjects[19] = new CUI(15, pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, 120.f, 55.f, 0.f, XMFLOAT2(-0.f, -0.f), XMFLOAT2(-0.f, -0.f), XMFLOAT2(-0.f, -0.f), XMFLOAT2(-0.f, -0.f));
@@ -240,13 +241,11 @@ void CTestScene::BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandLis
 	m_ppGameObjects[26]->SetIsRender(true);
 	m_ppGameObjects[26]->SetPosition(m_ppGameObjects[1]->GetPosition().x + 45.f, m_ppGameObjects[1]->GetPosition().y - 120.f, 0.f);
 
-	// 엔딩 크레딧
-	m_ppGameObjects[27] = new CAnimateUI(1, pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, FRAME_BUFFER_WIDTH, FRAME_BUFFER_HEIGHT, 0.f, XMFLOAT2(-0.f, -0.f), XMFLOAT2(-0.f, -0.f), XMFLOAT2(-0.f, -0.f), XMFLOAT2(-0.f, -0.f));
-	m_ppGameObjects[27]->SetIsRender(true);
-	m_ppGameObjects[27]->m_fBurnerBlendAmount = 1.0f;
-	m_ppGameObjects[27]->SetPosition(0.f, 0.f, 0.f);
+	// 엔딩 필터
+	m_ppGameObjects[27] = new CAnimateUI(7, pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, FRAME_BUFFER_WIDTH, FRAME_BUFFER_HEIGHT, 0.f, XMFLOAT2(-0.f, -0.f), XMFLOAT2(-0.f, -0.f), XMFLOAT2(-0.f, -0.f), XMFLOAT2(-0.f, -0.f));
+	m_ppGameObjects[27]->SetIsRender(false);
 
-	m_ObjManager->AddObject(L"player_ui1_testui", m_ppGameObjects[0], OBJ_UI);
+	//m_ObjManager->AddObject(L"player_ui1_testui", m_ppGameObjects[0], OBJ_UI);
 	m_ObjManager->AddObject(L"player_ui2_weapon", m_ppGameObjects[1], OBJ_UI);
 	m_ObjManager->AddObject(L"player_ui3_time_score", m_ppGameObjects[2], OBJ_UI);
 	m_ObjManager->AddObject(L"player_ui4_speed", m_ppGameObjects[3], OBJ_UI);
@@ -262,18 +261,18 @@ void CTestScene::BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandLis
 	m_ObjManager->AddObject(L"player_ui14_missile", m_ppGameObjects[13], OBJ_FIGHT_UI2);
 	m_ObjManager->AddObject(L"player_ui15_destroyed", m_ppGameObjects[14], OBJ_FIGHT_UI3);
 	m_ObjManager->AddObject(L"player_ui16_navigator", m_ppGameObjects[15], OBJ_NAVIGATOR);
-	m_ObjManager->AddObject(L"player_ui17_mission_failed", m_ppGameObjects[16], OBJ_FIGHT_UI4);
+	m_ObjManager->AddObject(L"player_ui17_mission_failed", m_ppGameObjects[16], OBJ_EFFECT);
 	m_ObjManager->AddObject(L"player_ui18_mission_restart", m_ppGameObjects[17], OBJ_FIGHT_UI4);
 	m_ObjManager->AddObject(L"player_ui19_fighter", m_ppGameObjects[18], OBJ_UI);
 	m_ObjManager->AddObject(L"player_ui20_ship", m_ppGameObjects[19], OBJ_UI);
-	m_ObjManager->AddObject(L"player_ui21_mission_accomplished", m_ppGameObjects[20], OBJ_FIGHT_UI4);
+	m_ObjManager->AddObject(L"player_ui21_mission_accomplished", m_ppGameObjects[20], OBJ_EFFECT);
 	m_ObjManager->AddObject(L"player_ui22_out_of_area", m_ppGameObjects[21], OBJ_OUT_UI);
 	m_ObjManager->AddObject(L"player_ui23_fog", m_ppGameObjects[22], OBJ_FILTER);
 	m_ObjManager->AddObject(L"player_ui24_missile1", m_ppGameObjects[23], OBJ_UI);
 	m_ObjManager->AddObject(L"player_ui25_missile2", m_ppGameObjects[24], OBJ_UI);
 	m_ObjManager->AddObject(L"player_ui26_missile1_empty", m_ppGameObjects[25], OBJ_UI);
 	m_ObjManager->AddObject(L"player_ui27_missile2_empty", m_ppGameObjects[26], OBJ_UI);
-	//m_ObjManager->AddObject(L"player_ui28_ending_credit", m_ppGameObjects[27], OBJ_EFFECT);
+	m_ObjManager->AddObject(L"player_ui28_ending_filter", m_ppGameObjects[27], OBJ_ALPHAMAP);
 
 	XMFLOAT3 xmf3Scale(80.0f, 20.0f, 80.0f);
 	XMFLOAT4 xmf4Color(0.0f, 0.3f, 0.0f, 0.0f);
@@ -283,7 +282,7 @@ void CTestScene::BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandLis
 	m_pTerrain->SetPosition(-20500,-1500,-20500);
 	//m_pTerrain->SetPosition(0, 0, 0);
 	//m_pTerrain->Rotate(0, 90, 0);
-	m_ObjManager->AddObject(L"terrain", m_pTerrain, OBJ_TEST);
+	m_ObjManager->AddObject(L"terrain", m_pTerrain, OBJ_ALPHAMAP);
 
 	CBullet* pBullet = new CBullet(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature);
 	pBullet->SetPosition(0, 0, 0);
@@ -307,6 +306,12 @@ void CTestScene::BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandLis
 
 	CAfterBurner* pAfterBurner = new CAfterBurner(0, pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, 0.2f, 0.2f, 0.f);
 	m_ObjManager->AddObject(L"AfterBurner", pAfterBurner, OBJ_EFFECT);
+
+	CJetFlame* pJetFlameLeft = new CJetFlame(0, pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, 1.8f, 2.5f, 0.f);
+	m_ObjManager->AddObject(L"jetFlameLeft", pJetFlameLeft, OBJ_EFFECT2);
+
+	CJetFlame* pJetFlameRight = new CJetFlame(0, pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, 1.8f, 2.5f, 0.f);
+	m_ObjManager->AddObject(L"jetFlameRight", pJetFlameRight, OBJ_EFFECT2);
 
 	CMig21* pMig21Ref;
 	pMig21Ref = new CMig21(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature);
@@ -515,7 +520,7 @@ void CTestScene::CreateStageObject()
 			m_ObjManager->AddObject(L"mig21B", pMig21_B, OBJ_ENEMY);
 			GET_MANAGER<SceneManager>()->m_nTgtObject++;
 		}
-		cout << GET_MANAGER<SceneManager>()->m_nTgtObject;
+		//cout << GET_MANAGER<SceneManager>()->m_nTgtObject;
 		GET_MANAGER<SceneManager>()->m_nWaveCnt++;
 	}
 
@@ -607,14 +612,18 @@ void CTestScene::AnimateObjects(float fTimeElapsed)
 		{
 			if (obj.second->m_bDestroyed)
 			{
-				GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player", OBJ_PLAYER)->SetPlayerScore(GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player", OBJ_PLAYER)->GetScore() + 10);
+				if (m_nMaxScore < 500)
+				{
+					GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player", OBJ_PLAYER)->SetPlayerScore(GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player", OBJ_PLAYER)->GetScore() + 10);
+					m_nMaxScore += 10;
+				}
 
 				m_ppGameObjects[14]->SetIsRender(true);
 				elapsedTime = 0;
 			}
 			else if (elapsedTime > 2)
 			{
-
+				m_nMaxScore = 0;
 				m_ppGameObjects[14]->SetIsRender(false);
 			}
 
@@ -683,37 +692,48 @@ void CTestScene::AnimateObjects(float fTimeElapsed)
 		}
 
 	}
-
-	if (m_pPlayer->GetCooltimeMSL1() == 0.f)
+	if (!GetStoped())
 	{
-		m_ppGameObjects[25]->SetIsRender(true);
-		m_ppGameObjects[23]->SetIsRender(false);
+		if (m_pPlayer->GetCooltimeMSL1() < 1.f)
+		{
+			m_ppGameObjects[25]->SetIsRender(true);
+			m_ppGameObjects[23]->SetIsRender(false);
+		}
+		if (m_pPlayer->GetCooltimeMSL1() >= 1.f)
+		{
+			m_ppGameObjects[25]->SetIsRender(false);
+			m_ppGameObjects[23]->SetIsRender(true);
+		}
+		if (m_pPlayer->GetCooltimeMSL2() < 1.f)
+		{
+			m_ppGameObjects[26]->SetIsRender(true);
+			m_ppGameObjects[24]->SetIsRender(false);
+		}
+		if (m_pPlayer->GetCooltimeMSL2() >= 1.f)
+		{
+			m_ppGameObjects[26]->SetIsRender(false);
+			m_ppGameObjects[24]->SetIsRender(true);
+		}
 	}
-	if (m_pPlayer->GetCooltimeMSL1() == 1.f)
-	{
-		m_ppGameObjects[25]->SetIsRender(false);
-		m_ppGameObjects[23]->SetIsRender(true);
-	}
-	if (m_pPlayer->GetCooltimeMSL2() == 0.f)
-	{
-		m_ppGameObjects[26]->SetIsRender(true);
-		m_ppGameObjects[24]->SetIsRender(false);
-	}
-	if (m_pPlayer->GetCooltimeMSL2() == 1.f)
-	{
-		m_ppGameObjects[26]->SetIsRender(false);
-		m_ppGameObjects[24]->SetIsRender(true);
-	}
-
-	m_ppGameObjects[27]->SetPosition(0.f, m_ppGameObjects[27]->GetPosition().y + fTimeElapsed*20.f, 0.f );
-
 
 	m_ObjManager->GetObjFromTag(L"player", OBJ_PLAYER)->SetPlayerHp(m_pPlayer->GetHp());
 	m_ObjManager->GetObjFromTag(L"player", OBJ_PLAYER)->SetPlayerMSL(m_pPlayer->GetMSLCount());
 	m_ObjManager->GetObjFromTag(L"player", OBJ_PLAYER)->SetPlayerSpeed(m_pPlayer->GetAircraftSpeed());
 	m_ObjManager->Update(fTimeElapsed);
-	GET_MANAGER<SceneManager>()->SceneStoped();
 
+	GET_MANAGER<SceneManager>()->SceneStoped();
+	if (GET_MANAGER<SceneManager>()->m_bStageClear == true)
+	{
+		StageClearDeleyElapsed += 1.f * fTimeElapsed;
+
+		if (StageClearDeleyElapsed > 4.f)
+		{
+			m_ppGameObjects[27]->SetIsRender(true);
+			m_ppGameObjects[27]->m_fBurnerBlendAmount += 1.f * fTimeElapsed;
+		}
+		if(StageClearDeleyElapsed > 5)
+			GET_MANAGER<CDeviceManager>()->SceneChangeInput(true);
+	}
 }
 
 void CTestScene::OnPrepareRender(ID3D12GraphicsCommandList* pd3dCommandList)

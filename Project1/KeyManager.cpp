@@ -53,6 +53,7 @@ int KeyManager::UpdateKey()
 		ComputePadState(XINPUT_GAMEPAD_DPAD_DOWN);
 		ComputePadState(XINPUT_GAMEPAD_DPAD_UP);
 		ComputePadState(XINPUT_GAMEPAD_RIGHT_THUMB);
+		ComputePadState(XINPUT_GAMEPAD_LEFT_THUMB);
 		ComputePadLStickState();
 	}
 	else
@@ -77,6 +78,7 @@ int KeyManager::UpdateKey()
 		ComputeKeyState(VK_F2);
 		ComputeKeyState(VK_BACK);
 		ComputeKeyState(VK_RETURN);
+		ComputeKeyState(VK_CAPITAL);
 
 		// Mouse
 		ComputeKeyState(VK_LBUTTON);

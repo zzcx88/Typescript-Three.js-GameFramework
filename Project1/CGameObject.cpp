@@ -712,17 +712,17 @@ void CGameObject::RotateFallow(XMFLOAT3* pxmf3Axis, float fAngle)
 	m_xmf3Look = Vector3::TransformNormal(m_xmf3Look, xmmtxRotate);
 	m_xmf3Up = Vector3::TransformNormal(m_xmf3Up, xmmtxRotate);
 
-	m_xmf4x4ToParent._31 = m_xmf3Look.x * 10;
-	m_xmf4x4ToParent._32 = m_xmf3Look.y * 10;
-	m_xmf4x4ToParent._33 = m_xmf3Look.z * 10;
+	m_xmf3Look = Vector3::Normalize(m_xmf3Look);
+	m_xmf3Right = Vector3::CrossProduct(m_xmf3Up, m_xmf3Look, true);
+	m_xmf3Up = Vector3::CrossProduct(m_xmf3Look, m_xmf3Right, true);
 
 	m_xmf4x4ToParent._21 = m_xmf3Up.x * 10;
 	m_xmf4x4ToParent._22 = m_xmf3Up.y * 10;
 	m_xmf4x4ToParent._23 = m_xmf3Up.z * 10;
 
-	m_xmf3Look = Vector3::Normalize(m_xmf3Look);
-	m_xmf3Right = Vector3::CrossProduct(m_xmf3Up, m_xmf3Look, true);
-	m_xmf3Up = Vector3::CrossProduct(m_xmf3Look, m_xmf3Right, true);
+	m_xmf4x4ToParent._31 = m_xmf3Look.x * 10;
+	m_xmf4x4ToParent._32 = m_xmf3Look.y * 10;
+	m_xmf4x4ToParent._33 = m_xmf3Look.z * 10;
 
 	m_xmf4x4ToParent._11 = m_xmf3Right.x * 10;
 	m_xmf4x4ToParent._12 = m_xmf3Right.y * 10;

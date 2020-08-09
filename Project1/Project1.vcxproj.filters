@@ -214,6 +214,12 @@
     <Filter Include="GameObject\Plane\Effect\Flare">
       <UniqueIdentifier>{9a159e82-b848-4c1f-b48f-3302d7ccbb8a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="GameObject\Plane\Effect\JetFlame">
+      <UniqueIdentifier>{8a4130b5-e927-45c2-b28a-c558d0f75108}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Scene\CreditScene">
+      <UniqueIdentifier>{e6b20e44-eb93-4a50-9530-240a671abb3e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="targetver.h">
@@ -441,6 +447,12 @@
     <ClInclude Include="CFlare.h">
       <Filter>GameObject\Plane\Effect\Flare</Filter>
     </ClInclude>
+    <ClInclude Include="CJetFlame.h">
+      <Filter>GameObject\Plane\Effect\JetFlame</Filter>
+    </ClInclude>
+    <ClInclude Include="CCreditScene.h">
+      <Filter>Scene\CreditScene</Filter>
+    </ClInclude>
     <ClInclude Include="CAnimateUI.h">
       <Filter>GameObject\Plane\UI</Filter>
     </ClInclude>
@@ -641,6 +653,12 @@
     <ClCompile Include="CFlare.cpp">
       <Filter>GameObject\Plane\Effect\Flare</Filter>
     </ClCompile>
+    <ClCompile Include="CJetFlame.cpp">
+      <Filter>GameObject\Plane\Effect\JetFlame</Filter>
+    </ClCompile>
+    <ClCompile Include="CCreditScene.cpp">
+      <Filter>Scene\CreditScene</Filter>
+    </ClCompile>
     <ClCompile Include="CAnimateUI.cpp">
       <Filter>GameObject\Plane\UI</Filter>
     </ClCompile>
@@ -693,6 +711,9 @@
       <Filter>HLSL</Filter>
     </FxCompile>
     <FxCompile Include="Refract.hlsl">
+      <Filter>HLSL</Filter>
+    </FxCompile>
+    <FxCompile Include="JetFlame.hlsl">
       <Filter>HLSL</Filter>
     </FxCompile>
     <FxCompile Include="AnimateUI.hlsl">
