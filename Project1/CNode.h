@@ -73,7 +73,8 @@ public:
 		{
 			if (pObj->m_bAiDetected == false)
 			{
-				pObj->Move(DIR_FORWARD, 30 * GET_MANAGER<CDeviceManager>()->GetGameTimer().GetTimeElapsed(), false);
+				if(pObj->GetPosition().z > -8500)
+					pObj->Move(DIR_FORWARD, 30 * GET_MANAGER<CDeviceManager>()->GetGameTimer().GetTimeElapsed(), false);
 			}
 			return true;
 		}

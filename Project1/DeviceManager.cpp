@@ -452,7 +452,7 @@ void CDeviceManager::SceneChangeInput(bool bCleard)
 
 	if (m_pSceneManager->GetCurrentSceneState() == SCENE_TEST&&GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player", OBJ_PLAYER)->m_bGameOver != true)
 	{
-		if (true == keyManager->GetKeyState(STATE_PUSH, VK_G))
+		if (true == keyManager->GetKeyState(STATE_PUSH, VK_G) || true == keyManager->GetPadState(STATE_PUSH, XINPUT_GAMEPAD_START))
 		{
 			m_ArrowSwitch = 0;
 			m_pUIarrow->SetPosition(m_pUI->GetPosition().x - 370, 43, 0);
@@ -461,7 +461,9 @@ void CDeviceManager::SceneChangeInput(bool bCleard)
 				if (m_pSceneManager->GetSceneStoped() == false)
 					m_BlurSwitch = BLUR_OFF;
 				else
+				{
 					m_BlurSwitch = BLUR_ON;
+				}
 
 			}
 		}
@@ -908,11 +910,11 @@ void CDeviceManager::FrameAdvance()
 		if (m_pSceneManager) m_pSceneManager->ReleaseUploadBuffers();
 		m_GameTimer.Reset();
 	}
-	/*if (m_bStartGame == true)
+	if (m_bStartGame == true)
 	{
 		m_bStartGame = false;
 		ChangeSwapChainState();
-	}*/
+	}
 }
 
 void CDeviceManager::WaitForGpuComplete()

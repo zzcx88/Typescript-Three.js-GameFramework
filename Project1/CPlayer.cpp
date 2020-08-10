@@ -1076,6 +1076,7 @@ void CPlayer::Animate(float fTimeElapsed)
 			m_bEye_fixation = false;
 			m_nFLR_Count = 50;
 			m_nMSL_Count = 100;
+			m_fAircraftSpeed = 300;
 		}
 	}
 
@@ -1671,8 +1672,6 @@ void CAirplanePlayer::SetAfterBurnerPosition(float fTimeElapsed)
 			if (m_fBurnerElapsed / 100.f <= 1.0f)
 				GET_MANAGER<ObjectManager>()->GetObjFromTag(L"jetFlameRight", OBJ_EFFECT2)->m_fBurnerBlendAmount = m_fBurnerElapsed / 100.f;
 		}
-		m_pLeft_AfterBurner->m_pAfterBurner->UpdateTransform(&m_pLeft_AfterBurner->m_xmf4x4World);
-		m_pRight_AfterBurner->m_pAfterBurner->UpdateTransform(&m_pRight_AfterBurner->m_xmf4x4World);
 		/*if (m_fBurnerElapsed / 150 <= 0.4f)
 		{
 			m_pLeft_AfterBurnerEX->m_fBurnerBlendAmount = m_fBurnerElapsed / 150;
