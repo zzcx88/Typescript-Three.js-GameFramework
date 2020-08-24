@@ -4,7 +4,7 @@
 
 
 
-UINT gnCbvSrvDescriptorIncrementSize = 64;
+UINT gnCbvSrvDescriptorIncrementSize = 32;
 
 void SynchronizeResourceTransition(ID3D12GraphicsCommandList* pd3dCommandList, ID3D12Resource* pd3dResource, D3D12_RESOURCE_STATES d3dStateBefore, D3D12_RESOURCE_STATES d3dStateAfter)
 {

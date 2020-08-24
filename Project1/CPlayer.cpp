@@ -941,153 +941,156 @@ void CPlayer::Update_PadInput(const float& TimeDelta)
 
 void CPlayer::Animate(float fTimeElapsed)
 {
-	m_pCamera->m_fTimeElapsed = fTimeElapsed;
-	if (m_fCoolTime_MSL_1 <= 1)
+	if (GET_MANAGER<SceneManager>()->GetCurrentSceneState() == SCENE_TEST)
 	{
-		m_fCoolTime_MSL_1 += 0.5f * fTimeElapsed;
-	}
-	if (m_fCoolTime_MSL_2 <= 1)
-	{
-		m_fCoolTime_MSL_2 += 0.5f * fTimeElapsed;
-	}
-	if (m_bGameOver == false)
-	{
-		if (GetPosition().y >= 10000)
+		m_pCamera->m_fTimeElapsed = fTimeElapsed;
+		if (m_fCoolTime_MSL_1 <= 1)
 		{
-			m_bStall = true;
-			std::default_random_engine dre(time(NULL) * GetPosition().z);
-			std::uniform_real_distribution<float>fXPos(-400, 400);
-			std::uniform_real_distribution<float>fZPos(200, 400);
-			xmf3StallRecoverPosition = XMFLOAT3(GetPosition().x + fXPos(dre), -2000.f, GetPosition().z + fZPos(dre));
+			m_fCoolTime_MSL_1 += 0.5f * fTimeElapsed;
 		}
-
-		m_xmf3Velocity = Vector3::Add(m_xmf3Velocity, Vector3::ScalarProduct(m_xmf3Gravity, fTimeElapsed, false));
-		float fLength = sqrtf(m_xmf3Velocity.x * m_xmf3Velocity.x + m_xmf3Velocity.z * m_xmf3Velocity.z);
-		float fMaxVelocityXZ = m_fMaxVelocityXZ * fTimeElapsed;
-		if (fLength > m_fMaxVelocityXZ)
+		if (m_fCoolTime_MSL_2 <= 1)
 		{
-			m_xmf3Velocity.x *= (fMaxVelocityXZ / fLength);
-			m_xmf3Velocity.z *= (fMaxVelocityXZ / fLength);
+			m_fCoolTime_MSL_2 += 0.5f * fTimeElapsed;
 		}
-		float fMaxVelocityY = m_fMaxVelocityY * fTimeElapsed;
-		fLength = sqrtf(m_xmf3Velocity.y * m_xmf3Velocity.y);
-		if (fLength > m_fMaxVelocityY) m_xmf3Velocity.y *= (fMaxVelocityY / fLength);
-
-		Move(m_xmf3Velocity, false);
-
-		//if (m_pPlayerUpdatedContext) OnPlayerUpdateCallback(fTimeElapsed);
-
-		DWORD nCurrentCameraMode = m_pCamera->GetMode();
-		if (nCurrentCameraMode == THIRD_PERSON_CAMERA) m_pCamera->Update(m_xmf3Position, fTimeElapsed);
-		//if (m_pCameraUpdatedContext) OnCameraUpdateCallback(fTimeElapsed);
-		if (nCurrentCameraMode == THIRD_PERSON_CAMERA) m_pCamera->SetLookAt(m_xmf3Position);
-		m_pCamera->RegenerateViewMatrix();
-
-		fLength = Vector3::Length(m_xmf3Velocity);
-		float fDeceleration = (m_fFriction * fTimeElapsed);
-		if (fDeceleration > fLength) fDeceleration = fLength;
-		m_xmf3Velocity = Vector3::Add(m_xmf3Velocity, Vector3::ScalarProduct(m_xmf3Velocity, -fDeceleration, true));
-
-		if (GET_MANAGER<SceneManager>()->GetCurrentSceneState() != SCENE_MENU && m_ObjManager != NULL)
+		if (m_bGameOver == false)
 		{
-			if (GET_MANAGER<KeyManager>()->m_pPadConnecter->IsConnected() == false)
-				Update_Input(fTimeElapsed);
-			else
-				Update_PadInput(fTimeElapsed);
-		}
-
-		//cout << m_xmf3Look.x << " " << m_xmf3Look.y << " " << m_xmf3Look.z << endl;
-		SetEngineRefractionPos();
-
-		SetAfterBurnerPosition(fTimeElapsed);
-
-		SetNaviPosition();
-
-		if (m_AiMissleAssert == true)
-		{
-			if (m_bAssertSoundPlayed == false)
+			if (GetPosition().y >= 10000)
 			{
-				GET_MANAGER<SoundManager>()->PlaySound(L"Missle_Alert.mp3", CH_ALERT, true);
-				m_bAssertSoundPlayed = true;
+				m_bStall = true;
+				std::default_random_engine dre(time(NULL) * GetPosition().z);
+				std::uniform_real_distribution<float>fXPos(-400, 400);
+				std::uniform_real_distribution<float>fZPos(200, 400);
+				xmf3StallRecoverPosition = XMFLOAT3(GetPosition().x + fXPos(dre), -2000.f, GetPosition().z + fZPos(dre));
 			}
-		}
-		else
-		{
-			GET_MANAGER<SoundManager>()->StopSound(CH_ALERT);
-			m_bAssertSoundPlayed = false;
-		}
-	}
-	else
-	{
-		m_fRestartElapsed += 1.3f * fTimeElapsed;
-		if (m_fRestartElapsed < m_fRestartFrequency)
-		{
-			m_pCamera->SetPosition(XMFLOAT3(GetPosition().x, m_xmf4x4World._42 + 500, GetPosition().z));
-			m_pCamera->SetLookAt(GetPosition());
+
+			m_xmf3Velocity = Vector3::Add(m_xmf3Velocity, Vector3::ScalarProduct(m_xmf3Gravity, fTimeElapsed, false));
+			float fLength = sqrtf(m_xmf3Velocity.x * m_xmf3Velocity.x + m_xmf3Velocity.z * m_xmf3Velocity.z);
+			float fMaxVelocityXZ = m_fMaxVelocityXZ * fTimeElapsed;
+			if (fLength > m_fMaxVelocityXZ)
+			{
+				m_xmf3Velocity.x *= (fMaxVelocityXZ / fLength);
+				m_xmf3Velocity.z *= (fMaxVelocityXZ / fLength);
+			}
+			float fMaxVelocityY = m_fMaxVelocityY * fTimeElapsed;
+			fLength = sqrtf(m_xmf3Velocity.y * m_xmf3Velocity.y);
+			if (fLength > m_fMaxVelocityY) m_xmf3Velocity.y *= (fMaxVelocityY / fLength);
+
+			Move(m_xmf3Velocity, false);
+
+			//if (m_pPlayerUpdatedContext) OnPlayerUpdateCallback(fTimeElapsed);
+
+			DWORD nCurrentCameraMode = m_pCamera->GetMode();
+			if (nCurrentCameraMode == THIRD_PERSON_CAMERA) m_pCamera->Update(m_xmf3Position, fTimeElapsed);
+			//if (m_pCameraUpdatedContext) OnCameraUpdateCallback(fTimeElapsed);
+			if (nCurrentCameraMode == THIRD_PERSON_CAMERA) m_pCamera->SetLookAt(m_xmf3Position);
 			m_pCamera->RegenerateViewMatrix();
-		
-			if(GET_MANAGER<SceneManager>()->GetCurrentSceneState() == SCENE_TEST && !GET_MANAGER<SceneManager>()->m_bStageClear)
-				GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player_ui17_mission_failed", OBJ_EFFECT)->SetIsRender(true);
-			else if (GET_MANAGER<SceneManager>()->GetCurrentSceneState() == SCENE_TEST&& GET_MANAGER<SceneManager>()->m_bStageClear)
-				GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player_ui21_mission_accomplished", OBJ_EFFECT)->SetIsRender(true);
-		}
-		else
-		{
-			if (GET_MANAGER<SceneManager>()->GetCurrentSceneState() == SCENE_TEST && !GET_MANAGER<SceneManager>()->m_bStageClear)
-				GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player_ui17_mission_failed", OBJ_EFFECT)->SetIsRender(false);
-			else if (GET_MANAGER<SceneManager>()->GetCurrentSceneState() == SCENE_TEST && GET_MANAGER<SceneManager>()->m_bStageClear)
-				GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player_ui21_mission_accomplished", OBJ_EFFECT)->SetIsRender(false);
-			
-			m_fRestartElapsed = 0;
-			if (GET_MANAGER<SceneManager>()->m_bStageClear == false)
+
+			fLength = Vector3::Length(m_xmf3Velocity);
+			float fDeceleration = (m_fFriction * fTimeElapsed);
+			if (fDeceleration > fLength) fDeceleration = fLength;
+			m_xmf3Velocity = Vector3::Add(m_xmf3Velocity, Vector3::ScalarProduct(m_xmf3Velocity, -fDeceleration, true));
+
+			if (GET_MANAGER<SceneManager>()->GetCurrentSceneState() != SCENE_MENU && m_ObjManager != NULL)
 			{
-				m_bGameOver = false;
-				GET_MANAGER<SceneManager>()->m_bStageClear = false;
+				if (GET_MANAGER<KeyManager>()->m_pPadConnecter->IsConnected() == false)
+					Update_Input(fTimeElapsed);
+				else
+					Update_PadInput(fTimeElapsed);
 			}
 
-			for (auto i = (int)OBJ_ENEMY; i <= OBJ_UI; ++i)
+			//cout << m_xmf3Look.x << " " << m_xmf3Look.y << " " << m_xmf3Look.z << endl;
+			SetEngineRefractionPos();
+
+			SetAfterBurnerPosition(fTimeElapsed);
+
+			SetNaviPosition();
+
+			if (m_AiMissleAssert == true)
 			{
-				if (i == OBJ_ENEMY)
+				if (m_bAssertSoundPlayed == false)
 				{
-					for (auto p = GET_MANAGER<ObjectManager>()->GetObjFromType((OBJTYPE)i).begin(); p != GET_MANAGER<ObjectManager>()->GetObjFromType((OBJTYPE)i).end(); ++p)
-					{
-						(*p).second->m_isDead = true;
-						(*p).second->m_pMUI->m_isDead = true;
-						(*p).second->m_pLockOnUI->m_isDead = true;
-					}
+					GET_MANAGER<SoundManager>()->PlaySound(L"Missle_Alert.mp3", CH_ALERT, true);
+					m_bAssertSoundPlayed = true;
 				}
 			}
-			GET_MANAGER<SceneManager>()->m_bCreateShip = false;
-			GET_MANAGER<SceneManager>()->m_nWaveCnt = 0;
-			GET_MANAGER<SceneManager>()->m_nTgtObject = 0;
-			GET_MANAGER<UIManager>()->FighterOBJs.clear();
-			GET_MANAGER<UIManager>()->ShipOBJs.clear();
-			GET_MANAGER<UIManager>()->SetMin(15);
-			GET_MANAGER<UIManager>()->SetSec(30);
-
-			SetPlayerScore(0);
-
-			GET_MANAGER<ObjectManager>()->ReleaseFromType(OBJ_ENEMY);
-			m_nHp = 5;
-			SetPosition(XMFLOAT3(0, 1000, 0));
-			m_xmf3Look = XMFLOAT3(0,0,1);
-			m_xmf3Up = XMFLOAT3(0, 1, 0);
-			m_xmf3Right = XMFLOAT3(1, 0, 0);
-			m_bEye_fixation = false;
-			m_nFLR_Count = 50;
-			m_nMSL_Count = 100;
-			m_fAircraftSpeed = 300;
+			else
+			{
+				GET_MANAGER<SoundManager>()->StopSound(CH_ALERT);
+				m_bAssertSoundPlayed = false;
+			}
 		}
-	}
+		else
+		{
+			m_fRestartElapsed += 1.3f * fTimeElapsed;
+			if (m_fRestartElapsed < m_fRestartFrequency)
+			{
+				m_pCamera->SetPosition(XMFLOAT3(GetPosition().x, m_xmf4x4World._42 + 500, GetPosition().z));
+				m_pCamera->SetLookAt(GetPosition());
+				m_pCamera->RegenerateViewMatrix();
 
-	if (m_pCamera->m_bShakeSwitch == true)
-	{
-		m_pCamera->ShakingCamera();
+				if (GET_MANAGER<SceneManager>()->GetCurrentSceneState() == SCENE_TEST && !GET_MANAGER<SceneManager>()->m_bStageClear)
+					GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player_ui17_mission_failed", OBJ_EFFECT)->SetIsRender(true);
+				else if (GET_MANAGER<SceneManager>()->GetCurrentSceneState() == SCENE_TEST && GET_MANAGER<SceneManager>()->m_bStageClear)
+					GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player_ui21_mission_accomplished", OBJ_EFFECT)->SetIsRender(true);
+			}
+			else
+			{
+				if (GET_MANAGER<SceneManager>()->GetCurrentSceneState() == SCENE_TEST && !GET_MANAGER<SceneManager>()->m_bStageClear)
+					GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player_ui17_mission_failed", OBJ_EFFECT)->SetIsRender(false);
+				else if (GET_MANAGER<SceneManager>()->GetCurrentSceneState() == SCENE_TEST && GET_MANAGER<SceneManager>()->m_bStageClear)
+					GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player_ui21_mission_accomplished", OBJ_EFFECT)->SetIsRender(false);
+
+				m_fRestartElapsed = 0;
+				if (GET_MANAGER<SceneManager>()->m_bStageClear == false)
+				{
+					m_bGameOver = false;
+					GET_MANAGER<SceneManager>()->m_bStageClear = false;
+				}
+
+				for (auto i = (int)OBJ_ENEMY; i <= OBJ_UI; ++i)
+				{
+					if (i == OBJ_ENEMY)
+					{
+						for (auto p = GET_MANAGER<ObjectManager>()->GetObjFromType((OBJTYPE)i).begin(); p != GET_MANAGER<ObjectManager>()->GetObjFromType((OBJTYPE)i).end(); ++p)
+						{
+							(*p).second->m_isDead = true;
+							(*p).second->m_pMUI->m_isDead = true;
+							(*p).second->m_pLockOnUI->m_isDead = true;
+						}
+					}
+				}
+				GET_MANAGER<SceneManager>()->m_bCreateShip = false;
+				GET_MANAGER<SceneManager>()->m_nWaveCnt = 0;
+				GET_MANAGER<SceneManager>()->m_nTgtObject = 0;
+				GET_MANAGER<UIManager>()->FighterOBJs.clear();
+				GET_MANAGER<UIManager>()->ShipOBJs.clear();
+				GET_MANAGER<UIManager>()->SetMin(15);
+				GET_MANAGER<UIManager>()->SetSec(30);
+
+				SetPlayerScore(0);
+
+				GET_MANAGER<ObjectManager>()->ReleaseFromType(OBJ_ENEMY);
+				m_nHp = 5;
+				SetPosition(XMFLOAT3(0, 1000, 0));
+				m_xmf3Look = XMFLOAT3(0, 0, 1);
+				m_xmf3Up = XMFLOAT3(0, 1, 0);
+				m_xmf3Right = XMFLOAT3(1, 0, 0);
+				m_bEye_fixation = false;
+				m_nFLR_Count = 50;
+				m_nMSL_Count = 100;
+				m_fAircraftSpeed = 300;
+			}
+		}
+
+		if (m_pCamera->m_bShakeSwitch == true)
+		{
+			m_pCamera->ShakingCamera();
+		}
+		/*if (-1 ==Update_Input(fTimeElapsed))
+		{
+			return -1;
+		}*/
 	}
-	/*if (-1 ==Update_Input(fTimeElapsed))
-	{
-		return -1;
-	}*/
 }
 
 void CPlayer::CollisionActivate(CGameObject* collideTarget)
@@ -1178,8 +1181,8 @@ void CPlayer::Render(ID3D12GraphicsCommandList* pd3dCommandList, CCamera* pCamer
 	if (m_bGameOver == false)
 	{
 		DWORD nCameraMode = (pCamera) ? pCamera->GetMode() : 0x00;
-		if (nCameraMode == THIRD_PERSON_CAMERA) CGameObject::Render(pd3dCommandList, pCamera);
-		/*if (nCameraMode == SPACESHIP_CAMERA)*/ CGameObject::Render(pd3dCommandList, pCamera);
+		//if (nCameraMode == THIRD_PERSON_CAMERA) CGameObject::Render(pd3dCommandList, pCamera);
+		if (GET_MANAGER<SceneManager>()->GetCurrentSceneState() == SCENE_TEST) CGameObject::Render(pd3dCommandList, pCamera);
 	}
 }
 

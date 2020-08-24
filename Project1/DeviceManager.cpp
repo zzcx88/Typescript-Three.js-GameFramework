@@ -910,11 +910,11 @@ void CDeviceManager::FrameAdvance()
 		if (m_pSceneManager) m_pSceneManager->ReleaseUploadBuffers();
 		m_GameTimer.Reset();
 	}
-	if (m_bStartGame == true)
+	/*if (m_bStartGame == true)
 	{
 		m_bStartGame = false;
 		ChangeSwapChainState();
-	}
+	}*/
 }
 
 void CDeviceManager::WaitForGpuComplete()

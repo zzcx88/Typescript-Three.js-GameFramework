@@ -481,7 +481,7 @@ void CTestScene::CreateStageObject()
 		GET_MANAGER<SceneManager>()->m_nWave = 0;
 	}
 
-	if (GET_MANAGER<SceneManager>()->m_nWave == GET_MANAGER<SceneManager>()->m_nWaveCnt && GET_MANAGER<SceneManager>()->m_nTgtObject == 0)
+	if (GET_MANAGER<SceneManager>()->m_nWave == GET_MANAGER<SceneManager>()->m_nWaveCnt && GET_MANAGER<SceneManager>()->m_nTgtObject == 0 && GET_MANAGER<SceneManager>()->m_bStageClear == false)
 	{
 		for (int i = 0; i < GET_MANAGER<SceneManager>()->m_nWaveCnt + 1; ++i)
 		{
