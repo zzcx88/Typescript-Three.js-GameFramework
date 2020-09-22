@@ -82,7 +82,7 @@ void C052CDestroyer::Animate(float fTimeElapsed)
 		if (m_bAiOn == false)
 			m_bAiOn = true;
 		else
-			m_bAiOn == false;
+			m_bAiOn = false;
 	}
 
 	if (m_bReffernce == false && m_bDestroyed == false && m_bAiOn == true)

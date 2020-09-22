@@ -43,7 +43,7 @@ void CJetFlame::Animate(float fTimeElapsed)
 
 	TextureAnimate();
 
-	if (GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player", OBJ_PLAYER));
+	if (GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player", OBJ_PLAYER))
 	{
 		SetLookAt(GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player", OBJ_PLAYER)->m_pCamera->GetPosition());
 		if(m_fBurnerBlendAmount < 1.0f)

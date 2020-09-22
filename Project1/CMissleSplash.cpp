@@ -44,7 +44,7 @@ void CMissleSplash::Animate(float fTimeElapsed)
 
 	TextureAnimate();
 
-	if (GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player", OBJ_PLAYER));
+	if (GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player", OBJ_PLAYER))
 	{
 		SetScale(m_fScale, m_fScale, 1);
 		SetLookAt(GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player", OBJ_PLAYER)->m_pCamera->GetPosition());
