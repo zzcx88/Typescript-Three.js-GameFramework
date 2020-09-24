@@ -512,6 +512,8 @@ void CPlayer::Update_Input(const float& TimeDelta)
 		CEngineRafraction* RefractObj = (CEngineRafraction*)GET_MANAGER<ObjectManager>()->GetObjFromTag(L"EngineRefractionObj", OBJ_EFFECT);
 		if (RefractObj->m_bWaterDrop == false)
 			GET_MANAGER<CDeviceManager>()->SetBulrSwitch(true);
+		else
+			GET_MANAGER<CDeviceManager>()->SetBulrSwitch(false);
 	}
 	if (m_fAircraftSpeed < 600 && GET_MANAGER<CDeviceManager>()->GetBlurAmount() == 0)
 		GET_MANAGER<CDeviceManager>()->SetBulrSwitch(false);
