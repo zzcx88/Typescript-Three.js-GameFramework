@@ -238,12 +238,14 @@ public:
 			if ((xmfAxis > 0.9f || xmfAxis < -0.9f) && xmfAxis > 0.f)
 			{
 				pObj->m_bAiLockOn = true;
+				GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player_ui13_warning", OBJ_FIGHT_UI1)->SetIsRender(true);
 				return true;
 			}
 		}
 		else
 		{
 			pObj->m_bAiLockOn = false;
+			GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player_ui13_warning", OBJ_FIGHT_UI1)->SetIsRender(false);
 			return false;
 		}
 	}

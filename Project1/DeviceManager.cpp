@@ -507,6 +507,7 @@ void CDeviceManager::SceneChangeInput(bool bCleard)
 							}
 						}
 					}
+					GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player_ui23_fog", OBJ_FILTER)->SetIsRender(true);
 				}
 				break;
 			case 1:

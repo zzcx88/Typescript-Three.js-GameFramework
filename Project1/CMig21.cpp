@@ -254,6 +254,7 @@ void CMig21::CollisionActivate(CGameObject* collideTarget)
 				m_bDestroyed = true;
 				m_pMUI->m_bDestroyed = true;
 				m_pLockOnUI->m_bDestroyed = true;
+				m_bAiLockOn = false;
 			}
 		}
 	}

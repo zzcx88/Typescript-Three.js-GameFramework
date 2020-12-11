@@ -627,7 +627,7 @@ void CTestScene::AnimateObjects(float fTimeElapsed)
 				m_ppGameObjects[14]->SetIsRender(false);
 			}
 
-			if (obj.second->m_bAiLockOn == true)
+			/*if (obj.second->m_bAiLockOn == true)
 			{
 				m_ppGameObjects[12]->SetIsRender(true);
 				m_fElapsedTime += fTimeElapsed;
@@ -641,7 +641,7 @@ void CTestScene::AnimateObjects(float fTimeElapsed)
 			else
 			{
 				m_ppGameObjects[12]->SetIsRender(false);
-			}
+			}*/
 
 			if (m_pPlayer->m_AiMissleAssert == true)
 			{

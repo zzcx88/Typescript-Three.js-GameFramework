@@ -90,6 +90,7 @@ void CFlare::Animate(float fTimeElapsed)
 		xmf3Shift = Vector3::Add(xmf3Shift, m_xmf3Up, -50 * fTimeElapsed);
 		Move(xmf3Shift, false);
 		SetLookAt(m_pCamera->GetPosition());
+		CGameObject::Animate(fTimeElapsed);
 		Deceptioning();
 	}
 }
@@ -128,9 +129,7 @@ void CFlare::Deceptioning()
 				CMissle* pMissile = (CMissle*)obj.second;
 				if (pMissile->m_xmfTarget != NULL)
 				{
-					pMissile->m_xmfTarget->x = m_xmf3Position.x;
-					pMissile->m_xmfTarget->y = m_xmf3Position.y;
-					pMissile->m_xmfTarget->z = m_xmf3Position.z;
+					pMissile->m_xmfTarget = GetPositionForMissle();
 				}
 			}
 		}
@@ -147,7 +146,10 @@ void CFlare::Deceptioning()
 			if (LenthToMissile < 1200)
 			{
 				CMissle* pMissile = (CMissle*)obj.second;
-				pMissile->m_xmfTarget = &GetPosition();
+				if (pMissile->m_xmfTarget != NULL)
+				{
+					pMissile->m_xmfTarget = GetPositionForMissle();
+				}
 			}
 		}
 	}
