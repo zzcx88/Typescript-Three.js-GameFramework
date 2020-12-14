@@ -255,6 +255,7 @@ void CMig21::CollisionActivate(CGameObject* collideTarget)
 				m_pMUI->m_bDestroyed = true;
 				m_pLockOnUI->m_bDestroyed = true;
 				m_bAiLockOn = false;
+				GET_MANAGER<ObjectManager>()->GetObjFromTag(L"player_ui13_warning", OBJ_FIGHT_UI1)->SetIsRender(false);
 			}
 		}
 	}
