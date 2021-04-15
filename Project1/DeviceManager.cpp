@@ -705,7 +705,7 @@ void CDeviceManager::FrameAdvance()
 
 	m_pd3dCommandList->OMSetRenderTargets(1, &d3dRtvCPUDescriptorHandle, TRUE, &d3dDsvCPUDescriptorHandle);
 
-	m_pd3dCommandList->SetGraphicsRootSignature(m_pRootSignature);
+	//m_pd3dCommandList->SetGraphicsRootSignature(m_pRootSignature);
 
 	GET_MANAGER<SceneManager>()->OnPrepareRender(m_pd3dCommandList);
 	m_pSceneManager->Render(m_pd3dCommandList, m_pCamera);
