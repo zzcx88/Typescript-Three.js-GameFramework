@@ -1,0 +1,6 @@
+C:\Users\Gyro\Desktop\test\prac\typescriptTEST\typescriptTEST\bin\TypeScriptHTMLApp1.dll.config
+C:\Users\Gyro\Desktop\test\prac\typescriptTEST\typescriptTEST\bin\TypeScriptHTMLApp1.dll
+C:\Users\Gyro\Desktop\test\prac\typescriptTEST\typescriptTEST\bin\TypeScriptHTMLApp1.pdb
+C:\Users\Gyro\Desktop\test\prac\typescriptTEST\typescriptTEST\obj\Release\typescriptTEST.csproj.CoreCompileInputs.cache
+C:\Users\Gyro\Desktop\test\prac\typescriptTEST\typescriptTEST\obj\Release\TypeScriptHTMLApp1.dll
+C:\Users\Gyro\Desktop\test\prac\typescriptTEST\typescriptTEST\obj\Release\TypeScriptHTMLApp1.pdb

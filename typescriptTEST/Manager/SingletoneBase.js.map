@@ -1,0 +1,1 @@
+{"version":3,"file":"SingletoneBase.js","sourceRoot":"","sources":["SingletoneBase.ts"],"names":[],"mappings":";;AAAA;IAGI;IACA,CAAC;IAEa,0BAAW,GAAzB;QACI,IAAI,CAAC,IAAI,CAAC,QAAQ,EAAE;YAChB,IAAI,CAAC,QAAQ,GAAG,IAAI,IAAI,CAAC;SAC5B;QACD,OAAO,IAAI,CAAC;IAChB,CAAC;IACL,qBAAC;AAAD,CAAC,AAZD,IAYC;AAZY,wCAAc"}

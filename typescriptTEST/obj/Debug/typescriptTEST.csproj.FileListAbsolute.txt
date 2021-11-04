@@ -1,0 +1,14 @@
+C:\Users\Gyro\Desktop\test\prac\typescriptTEST\typescriptTEST\bin\TypeScriptHTMLApp1.dll.config
+C:\Users\Gyro\Desktop\test\prac\typescriptTEST\typescriptTEST\bin\TypeScriptHTMLApp1.dll
+C:\Users\Gyro\Desktop\test\prac\typescriptTEST\typescriptTEST\bin\TypeScriptHTMLApp1.pdb
+C:\Users\Gyro\Desktop\test\prac\typescriptTEST\typescriptTEST\obj\Debug\typescriptTEST.csproj.CoreCompileInputs.cache
+C:\Users\Gyro\Desktop\test\prac\typescriptTEST\typescriptTEST\obj\Debug\TypeScriptHTMLApp1.dll
+C:\Users\Gyro\Desktop\test\prac\typescriptTEST\typescriptTEST\obj\Debug\TypeScriptHTMLApp1.pdb
+C:\Users\LEEJAEWON\Desktop\study\WebGL\typescriptTEST\typescriptTEST\bin\TypeScriptHTMLApp1.dll.config
+C:\Users\LEEJAEWON\Desktop\study\WebGL\typescriptTEST\typescriptTEST\bin\TypeScriptHTMLApp1.dll
+C:\Users\LEEJAEWON\Desktop\study\WebGL\typescriptTEST\typescriptTEST\bin\TypeScriptHTMLApp1.pdb
+C:\Users\LEEJAEWON\Desktop\study\WebGL\typescriptTEST\typescriptTEST\obj\Debug\typescriptTEST.csproj.CoreCompileInputs.cache
+C:\Users\LEEJAEWON\Desktop\study\WebGL\typescriptTEST\typescriptTEST\obj\Debug\TypeScriptHTMLApp1.dll
+C:\Users\LEEJAEWON\Desktop\study\WebGL\typescriptTEST\typescriptTEST\obj\Debug\TypeScriptHTMLApp1.pdb
+C:\Users\Gyro\Desktop\test\prac\typescriptTEST\typescriptTEST\obj\Debug\typescriptTEST.csprojAssemblyReference.cache
+C:\Users\LEEJAEWON\Desktop\study\WebGL\typescriptTEST\typescriptTEST\obj\Debug\typescriptTEST.csproj.AssemblyReference.cache
