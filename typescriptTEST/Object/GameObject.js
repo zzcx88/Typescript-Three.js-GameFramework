@@ -5,6 +5,7 @@ var JWFramework;
     var GameObject = /** @class */ (function () {
         function GameObject() {
         }
+        GameObject.prototype.InitializeAfterLoad = function () { };
         Object.defineProperty(GameObject.prototype, "Type", {
             get: function () {
                 return this.type;

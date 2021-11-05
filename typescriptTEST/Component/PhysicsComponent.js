@@ -13,6 +13,12 @@ var JWFramework;
         PhysicsComponent.prototype.SetPostionVec3 = function (vec3) {
             this.GameObject.GameObjectInstance.position = vec3;
         };
+        PhysicsComponent.prototype.SetScale = function (x, y, z) {
+            this.GameObject.GameObjectInstance.scale.set(x, y, z);
+        };
+        PhysicsComponent.prototype.SetScaleScalar = function (scalar) {
+            this.GameObject.GameObjectInstance.scale.setScalar(scalar);
+        };
         PhysicsComponent.prototype.MoveFoward = function (distance) {
             this.GameObject.GameObjectInstance.translateOnAxis(this.vec3Look, distance * JWFramework.WorldManager.getInstance().GetDeltaTime());
         };

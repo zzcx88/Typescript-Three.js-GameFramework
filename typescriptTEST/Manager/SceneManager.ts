@@ -1,6 +1,4 @@
-﻿//import { TestScene } from "../Scene/TestScene";
-//import { SceneBase } from "../Scene/SceneBase";
-namespace JWFramework {
+﻿namespace JWFramework {
     export class SceneManager {
 
         private static instance: SceneManager;
@@ -16,6 +14,10 @@ namespace JWFramework {
 
         public get SceneInstance(): THREE.Scene {
             return this.sceneThree;
+        }
+
+        public get CurrentScene(): SceneBase {
+            return this.scene;
         }
 
         public BuildScene() {

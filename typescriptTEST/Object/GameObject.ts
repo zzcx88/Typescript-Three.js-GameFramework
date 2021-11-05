@@ -4,6 +4,8 @@
 namespace JWFramework {
     export class GameObject {
 
+        public InitializeAfterLoad() { }
+
         public get Type(): ObjectType {
             return this.type;
         }

@@ -3,15 +3,14 @@
         constructor(sceneManager: SceneManager) {
             super();
             this.sceneManager = sceneManager;
-            this.testCube = new TestCube();
+            //this.testCube = new TestCube();
             this.light = new Light();
-
             this.BuildObject();
             this.BuildLight();
         }
 
         private BuildObject() {
-            ObjectManager.getInstance().AddObject(this.testCube, "testCube", this.testCube.Type);
+            ModelLoadManager.getInstance().LoadSceneTest();
         }
 
         private BuildLight() {
@@ -23,12 +22,11 @@
         }
 
         public Animate() {
+            if (ModelLoadManager.getInstance().LoadComplete == true)
             ObjectManager.getInstance().Animate();
         }
 
         private sceneManager: SceneManager
-        private testCube: TestCube;
-        private testCube2: TestCube;
         private light: Light;
     }
 }

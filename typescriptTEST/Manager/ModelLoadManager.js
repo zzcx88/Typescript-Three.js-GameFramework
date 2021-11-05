@@ -2,7 +2,10 @@ var JWFramework;
 (function (JWFramework) {
     var ModelLoadManager = /** @class */ (function () {
         function ModelLoadManager() {
-            this.gltfLoader = new THREE.GLTFLoader;
+            this.loadComplete = false;
+            this.loaderManager = new THREE.LoadingManager;
+            this.loaderManager.onLoad = this.SetLoadComplete;
+            this.gltfLoader = new THREE.GLTFLoader(this.loaderManager);
         }
         ModelLoadManager.getInstance = function () {
             if (!ModelLoadManager.instance) {
@@ -10,15 +13,32 @@ var JWFramework;
             }
             return ModelLoadManager.instance;
         };
+        ModelLoadManager.prototype.SetLoadComplete = function () {
+            this.loadComplete = true;
+        };
+        Object.defineProperty(ModelLoadManager.prototype, "LoadComplete", {
+            get: function () {
+                return this.loadComplete;
+            },
+            enumerable: false,
+            configurable: true
+        });
+        ModelLoadManager.prototype.LoadSceneTest = function () {
+            this.modeltList = JWFramework.ModelSceneTest.getInstance().ModelSceneTest;
+            for (var i = 0; i < this.modeltList.length; ++i) {
+                this.LoadModel(this.modeltList[i].url, this.modeltList[i].model);
+            }
+        };
         ModelLoadManager.prototype.LoadModel = function (modelSource, gameObject) {
             var _this = this;
-            this.gameobject = gameObject;
+            //this.gameobject = gameObject;
             this.gltfLoader.load(modelSource, function (gltf) {
                 console.log('success');
                 console.log(gltf);
-                gltf.scene.scale.set(0.5, 0.5, 0.5);
-                _this.gameobject.GameObjectInstance = gltf.scene;
-                JWFramework.SceneManager.getInstance().SceneInstance.add(_this.gameobject.GameObjectInstance);
+                gameObject.GameObjectInstance = gltf.scene;
+                JWFramework.SceneManager.getInstance().SceneInstance.add(gameObject.GameObjectInstance);
+                gameObject.InitializeAfterLoad();
+                _this.SetLoadComplete();
             }, function (progress) {
                 console.log('progress');
                 console.log(progress);

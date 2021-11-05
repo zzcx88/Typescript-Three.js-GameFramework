@@ -1,5 +1,3 @@
-//import { TestScene } from "../Scene/TestScene";
-//import { SceneBase } from "../Scene/SceneBase";
 var JWFramework;
 (function (JWFramework) {
     var SceneManager = /** @class */ (function () {
@@ -14,6 +12,13 @@ var JWFramework;
         Object.defineProperty(SceneManager.prototype, "SceneInstance", {
             get: function () {
                 return this.sceneThree;
+            },
+            enumerable: false,
+            configurable: true
+        });
+        Object.defineProperty(SceneManager.prototype, "CurrentScene", {
+            get: function () {
+                return this.scene;
             },
             enumerable: false,
             configurable: true

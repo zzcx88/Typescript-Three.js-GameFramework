@@ -14,6 +14,14 @@
             this.GameObject.GameObjectInstance.position = vec3;
         }
 
+        public SetScale(x: number, y: number, z: number) {
+            this.GameObject.GameObjectInstance.scale.set(x, y, z);
+        }
+
+        public SetScaleScalar(scalar: number) {
+            this.GameObject.GameObjectInstance.scale.setScalar(scalar);
+        }
+
         public MoveFoward(distance: number) {
             this.GameObject.GameObjectInstance.translateOnAxis(this.vec3Look, distance * WorldManager.getInstance().GetDeltaTime());
         }

@@ -106,6 +106,7 @@
     <TypeScriptCompile Include="Manager\ObjectManager.ts" />
     <TypeScriptCompile Include="Manager\WorldManager.ts" />
     <TypeScriptCompile Include="Object\3DObject\Camera\Camera.ts" />
+    <TypeScriptCompile Include="Object\3DObject\TestObject.ts" />
     <TypeScriptCompile Include="Object\GameObject.ts" />
     <TypeScriptCompile Include="Object\3DObject\TestCube.ts" />
     <TypeScriptCompile Include="Object\Light\Light.ts" />
