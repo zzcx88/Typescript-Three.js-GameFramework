@@ -3,14 +3,15 @@
         constructor(sceneManager: SceneManager) {
             super();
             this.sceneManager = sceneManager;
-            //this.testCube = new TestCube();
             this.light = new Light();
             this.BuildObject();
             this.BuildLight();
+            this.SetPicker();
         }
 
         private BuildObject() {
             ModelLoadManager.getInstance().LoadSceneTest();
+            //this.Picker.ClearPickPosition();
         }
 
         private BuildLight() {
@@ -22,11 +23,14 @@
         }
 
         public Animate() {
-            if (ModelLoadManager.getInstance().LoadComplete == true)
-            ObjectManager.getInstance().Animate();
+            if (ModelLoadManager.getInstance().LoadComplete == true) {
+                ObjectManager.getInstance().Animate();
+                this.Picker.Pick();
+            }
         }
 
         private sceneManager: SceneManager
         private light: Light;
+        
     }
 }

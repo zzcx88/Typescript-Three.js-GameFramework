@@ -4,6 +4,16 @@ var JWFramework;
         function SceneBase() {
         }
         SceneBase.prototype.Animate = function () { };
+        Object.defineProperty(SceneBase.prototype, "Picker", {
+            get: function () {
+                return this.picker;
+            },
+            enumerable: false,
+            configurable: true
+        });
+        SceneBase.prototype.SetPicker = function () {
+            this.picker = new JWFramework.Picker();
+        };
         return SceneBase;
     }());
     JWFramework.SceneBase = SceneBase;

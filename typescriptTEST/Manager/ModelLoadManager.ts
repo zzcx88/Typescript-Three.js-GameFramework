@@ -14,10 +14,14 @@
             this.loaderManager = new THREE.LoadingManager;
             this.loaderManager.onLoad = this.SetLoadComplete;
             this.gltfLoader = new THREE.GLTFLoader(this.loaderManager);
+
+            this.modelNumber = 0;
         }
 
         private SetLoadComplete() {
-            this.loadComplete = true;
+            this.modelNumber++;
+            if (this.modelNumber == ModelSceneTest.getInstance().ModelNumber)
+                this.loadComplete = true;
         }
 
         public get LoadComplete(): boolean {
@@ -33,7 +37,6 @@
         }
 
         private LoadModel(modelSource: string, gameObject: GameObject) {
-            //this.gameobject = gameObject;
             this.gltfLoader.load(modelSource,
                 (gltf) => {
                     console.log('success')
@@ -55,8 +58,8 @@
         }
         private loaderManager: THREE.LoadingManager
         private gltfLoader: THREE.GLTFLoader;
+        private modelNumber: number;
         private loadComplete: boolean = false;
-
 
         private modeltList:  ModelSet[];
     }

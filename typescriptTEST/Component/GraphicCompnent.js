@@ -1,4 +1,3 @@
-//import { GameObject } from "../Object/GameObject";
 var JWFramework;
 (function (JWFramework) {
     var GraphComponent = /** @class */ (function () {

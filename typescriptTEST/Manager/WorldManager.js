@@ -63,6 +63,20 @@ var JWFramework;
         WorldManager.prototype.GetDeltaTime = function () {
             return this.delta;
         };
+        Object.defineProperty(WorldManager.prototype, "Canvas", {
+            get: function () {
+                return this.renderer.domElement;
+            },
+            enumerable: false,
+            configurable: true
+        });
+        Object.defineProperty(WorldManager.prototype, "MainCamera", {
+            get: function () {
+                return this.camera;
+            },
+            enumerable: false,
+            configurable: true
+        });
         WorldManager.prototype.Render = function () {
             this.renderer.render(this.sceneManager.SceneInstance, this.camera.CameraInstance);
         };

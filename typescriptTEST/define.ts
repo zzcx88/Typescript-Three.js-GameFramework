@@ -15,15 +15,23 @@
         }
 
         public constructor() {
-            
+            this.sceneTestModel = [{
+                model: this.helmet, url: 'Model/DamagedHelmet.gltf'
+            }];
+            this.modelNumber = this.sceneTestModel.length;
         }
         public get ModelSceneTest(): ModelSet[] {
             return this.sceneTestModel;
         }
+
+        public get ModelNumber(): number {
+            return this.modelNumber;
+        }
+
         private helmet: TestObject = new TestObject;
-        private sceneTestModel: ModelSet[] = [{
-            model: this.helmet, url: 'Model/DamagedHelmet.gltf'
-        }];
+        private sceneTestModel: ModelSet[] = [];
+
+        private modelNumber: number;
     }
     export interface ModelSet {
         model: GameObject;

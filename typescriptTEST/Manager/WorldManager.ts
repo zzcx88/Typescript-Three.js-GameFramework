@@ -76,6 +76,14 @@
             return this.delta;
         }
 
+        public get Canvas(): HTMLCanvasElement {
+            return this.renderer.domElement;
+        }
+
+        public get MainCamera(): Camera {
+            return this.camera;
+        }
+
         public Render() {
             this.renderer.render(this.sceneManager.SceneInstance, this.camera.CameraInstance);
         }

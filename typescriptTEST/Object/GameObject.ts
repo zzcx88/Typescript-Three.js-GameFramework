@@ -1,7 +1,4 @@
-﻿//Component Pattern?
-//import *  as THREE from "three"
-
-namespace JWFramework {
+﻿namespace JWFramework {
     export class GameObject {
 
         public InitializeAfterLoad() { }

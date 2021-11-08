@@ -1,5 +1,3 @@
-//Component Pattern?
-//import *  as THREE from "three"
 var JWFramework;
 (function (JWFramework) {
     var GameObject = /** @class */ (function () {

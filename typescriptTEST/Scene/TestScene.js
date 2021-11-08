@@ -20,14 +20,15 @@ var JWFramework;
         function TestScene(sceneManager) {
             var _this = _super.call(this) || this;
             _this.sceneManager = sceneManager;
-            //this.testCube = new TestCube();
             _this.light = new JWFramework.Light();
             _this.BuildObject();
             _this.BuildLight();
+            _this.SetPicker();
             return _this;
         }
         TestScene.prototype.BuildObject = function () {
             JWFramework.ModelLoadManager.getInstance().LoadSceneTest();
+            //this.Picker.ClearPickPosition();
         };
         TestScene.prototype.BuildLight = function () {
             this.light.SetColor(0xFFFFFF);
@@ -36,8 +37,10 @@ var JWFramework;
             this.sceneManager.SceneInstance.add(this.light.GameObjectInstance);
         };
         TestScene.prototype.Animate = function () {
-            if (JWFramework.ModelLoadManager.getInstance().LoadComplete == true)
+            if (JWFramework.ModelLoadManager.getInstance().LoadComplete == true) {
                 JWFramework.ObjectManager.getInstance().Animate();
+                this.Picker.Pick();
+            }
         };
         return TestScene;
     }(JWFramework.SceneBase));

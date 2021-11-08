@@ -69,6 +69,8 @@
     <TypeScriptSourceRoot />
   </PropertyGroup>
   <ItemGroup>
+    <Content Include="Libs\GUI\dat.gui.js" />
+    <Content Include="Libs\GUI\dat.gui.min.js" />
     <Content Include="Model\DamagedHelmet.gltf" />
     <Content Include="Model\Flower.glb" />
     <None Include="Web.Debug.config">
@@ -81,12 +83,12 @@
   <ItemGroup>
     <Content Include="app.css" />
     <Content Include="index.html" />
-    <Content Include="Libs\DDSLoader.js" />
-    <Content Include="Libs\DRACOLoader.js" />
-    <Content Include="Libs\GLTFLoader.js" />
-    <Content Include="Libs\three.js" />
-    <Content Include="Libs\three.min.js" />
-    <Content Include="Libs\three.module.js" />
+    <Content Include="Libs\GLTFLoader\DDSLoader.js" />
+    <Content Include="Libs\GLTFLoader\DRACOLoader.js" />
+    <Content Include="Libs\GLTFLoader\GLTFLoader.js" />
+    <Content Include="Libs\Three\three.js" />
+    <Content Include="Libs\Three\three.min.js" />
+    <Content Include="Libs\Three\three.module.js" />
     <Content Include="Web.config" />
   </ItemGroup>
   <ItemGroup>
@@ -95,11 +97,13 @@
     <TypeScriptCompile Include="Component\PhysicsComponent.ts" />
     <TypeScriptCompile Include="define.ts" />
     <TypeScriptCompile Include="enum.ts" />
-    <TypeScriptCompile Include="Libs\DDSLoader.d.ts" />
-    <TypeScriptCompile Include="Libs\DRACOLoader.d.ts" />
-    <TypeScriptCompile Include="Libs\GLTFLoader.d.ts" />
+    <TypeScriptCompile Include="Libs\GLTFLoader\DDSLoader.d.ts" />
+    <TypeScriptCompile Include="Libs\GLTFLoader\DRACOLoader.d.ts" />
+    <TypeScriptCompile Include="Libs\GLTFLoader\GLTFLoader.d.ts" />
+    <TypeScriptCompile Include="Libs\GUI\dat.gui.d.ts" />
     <TypeScriptCompile Include="main.ts" />
-    <TypeScriptCompile Include="Libs\three.d.ts" />
+    <TypeScriptCompile Include="Libs\Three\three.d.ts" />
+    <TypeScriptCompile Include="Manager\GUIManager.ts" />
     <TypeScriptCompile Include="Manager\InputManager.ts" />
     <TypeScriptCompile Include="Manager\ModelLoadManager.ts" />
     <TypeScriptCompile Include="Manager\SceneManager.ts" />
@@ -109,6 +113,8 @@
     <TypeScriptCompile Include="Object\3DObject\TestObject.ts" />
     <TypeScriptCompile Include="Object\GameObject.ts" />
     <TypeScriptCompile Include="Object\3DObject\TestCube.ts" />
+    <TypeScriptCompile Include="Object\GUIControls\GUI_SRT.ts" />
+    <TypeScriptCompile Include="Object\GUIControls\Picker\Picker.ts" />
     <TypeScriptCompile Include="Object\Light\Light.ts" />
     <TypeScriptCompile Include="Scene\SceneBase.ts" />
     <TypeScriptCompile Include="Scene\TestScene.ts" />

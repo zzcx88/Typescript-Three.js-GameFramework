@@ -11,9 +11,11 @@ var JWFramework;
     var ModelSceneTest = /** @class */ (function () {
         function ModelSceneTest() {
             this.helmet = new JWFramework.TestObject;
+            this.sceneTestModel = [];
             this.sceneTestModel = [{
                     model: this.helmet, url: 'Model/DamagedHelmet.gltf'
                 }];
+            this.modelNumber = this.sceneTestModel.length;
         }
         ModelSceneTest.getInstance = function () {
             if (!ModelSceneTest.instance) {
@@ -24,6 +26,13 @@ var JWFramework;
         Object.defineProperty(ModelSceneTest.prototype, "ModelSceneTest", {
             get: function () {
                 return this.sceneTestModel;
+            },
+            enumerable: false,
+            configurable: true
+        });
+        Object.defineProperty(ModelSceneTest.prototype, "ModelNumber", {
+            get: function () {
+                return this.modelNumber;
             },
             enumerable: false,
             configurable: true

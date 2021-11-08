@@ -6,6 +6,7 @@ var JWFramework;
             this.loaderManager = new THREE.LoadingManager;
             this.loaderManager.onLoad = this.SetLoadComplete;
             this.gltfLoader = new THREE.GLTFLoader(this.loaderManager);
+            this.modelNumber = 0;
         }
         ModelLoadManager.getInstance = function () {
             if (!ModelLoadManager.instance) {
@@ -14,7 +15,9 @@ var JWFramework;
             return ModelLoadManager.instance;
         };
         ModelLoadManager.prototype.SetLoadComplete = function () {
-            this.loadComplete = true;
+            this.modelNumber++;
+            if (this.modelNumber == JWFramework.ModelSceneTest.getInstance().ModelNumber)
+                this.loadComplete = true;
         };
         Object.defineProperty(ModelLoadManager.prototype, "LoadComplete", {
             get: function () {
@@ -31,7 +34,6 @@ var JWFramework;
         };
         ModelLoadManager.prototype.LoadModel = function (modelSource, gameObject) {
             var _this = this;
-            //this.gameobject = gameObject;
             this.gltfLoader.load(modelSource, function (gltf) {
                 console.log('success');
                 console.log(gltf);

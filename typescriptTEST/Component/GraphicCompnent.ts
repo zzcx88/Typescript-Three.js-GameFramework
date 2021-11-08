@@ -1,6 +1,4 @@
-﻿//import { GameObject } from "../Object/GameObject";
-
-namespace JWFramework {
+﻿namespace JWFramework {
     export class GraphComponent {
         constructor(gameObject: GameObject) {
             this.GameObject = gameObject;
