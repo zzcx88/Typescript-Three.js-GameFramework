@@ -13,11 +13,18 @@
         }
 
         public GetObjectsFromType() { }
-        public GetObjectFromName() { }
+        public GetObjectFromName(name: string): GameObject {
+            for (let i = 0; i < this.objectList.length; ++i) {
+                if (name == this.objectList[i].GameObject.Name) {
+                    return this.objectList[i].GameObject;
+                }
+            }
+            return null;
+        }
         public GetObjectAll() { }
 
         public AddObject(gameObject: GameObject, name: string, type: ObjectType) {
-            this.objectList.push({ GameObject: gameObject, Name: name } );
+            this.objectList.push({ GameObject: gameObject, Name: name });
         }
 
         private DeleteObject() { }

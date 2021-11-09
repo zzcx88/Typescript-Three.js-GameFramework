@@ -5,41 +5,44 @@
             this.type = ObjectType.OBJ_OBJECT3D;
             this.physicsComponent = new PhysicsComponent(this);
             this.graphicComponent = new GraphComponent(this);
+            this.name = "Ref_helmet";
         }
 
         public InitializeAfterLoad() {
             let axisY: THREE.Vector3 = new THREE.Vector3(0, 1, 0);
             this.PhysicsComponent.SetScaleScalar(0.5);
-            this.PhysicsComponent.RotateVec3(axisY, 180);
+            this.PhysicsComponent.Rotate(0, 180, 0);
 
-            ObjectManager.getInstance().AddObject(this, "Ref_helmet", this.Type);
-        }
+            this.GameObjectInstance.name = this.name;
+            console.log(this.GameObjectInstance.children[0].name);
 
-        public get PhysicsComponent(): PhysicsComponent {
-            return this.physicsComponent;
-        }
+            ObjectManager.getInstance().AddObject(this, this.name, this.Type);
 
-        public get GraphComponent(): GraphComponent {
-            return this.graphicComponent;
+            if (SceneManager.getInstance().SceneType == SceneType.SCENE_TEST) {
+                this.guiComponent = new GUIComponent(this);
+            }
         }
 
         public Animate() {
             if (InputManager.getInstance().GetKeyState('left')) {
-                this.y = -1;
+                this.y = 1;
                 this.PhysicsComponent.Rotate(0, this.y, 0);
             }
             if (InputManager.getInstance().GetKeyState('right')) {
-                this.y = 1;
+                this.y = -1;
                 this.PhysicsComponent.Rotate(0, this.y, 0);
             }
             if (InputManager.getInstance().GetKeyState('up')) {
                 this.PhysicsComponent.MoveFoward(1);
             }
+            if (SceneManager.getInstance().SceneType == SceneType.SCENE_TEST && this.Picked == true) {
+                this.guiComponent.ShowGUI(false);
+            }
+            if (SceneManager.getInstance().SceneType == SceneType.SCENE_TEST && this.Picked == false)
+                this.guiComponent.ShowGUI(true);
 
         }
 
         private y: number = 0;
-        private physicsComponent: PhysicsComponent;
-        private graphicComponent: GraphComponent;
     }
 }

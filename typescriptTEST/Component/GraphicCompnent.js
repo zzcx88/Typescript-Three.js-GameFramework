@@ -3,6 +3,7 @@ var JWFramework;
     var GraphComponent = /** @class */ (function () {
         function GraphComponent(gameObject) {
             this.GameObject = gameObject;
+            this.GameObject.GraphicCompIncluded = true;
             this.renderSwitch = true;
         }
         GraphComponent.prototype.SetRenderOnOff = function (renderSwitch) {

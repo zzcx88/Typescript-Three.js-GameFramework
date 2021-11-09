@@ -45,7 +45,7 @@ var JWFramework;
             this.camera.Aspect = JWFramework.Define.SCREEN_WIDTH / JWFramework.Define.SCREEN_HEIGHT;
             this.camera.Near = 0.1;
             this.camera.Far = 1000;
-            this.camera.PhysicsComponent.SetPostion(0, 0, 1);
+            this.camera.PhysicsComponent.SetPostion(0, 0, 2);
         };
         WorldManager.prototype.CreateScene = function () {
             this.sceneManager = JWFramework.SceneManager.getInstance();

@@ -94,6 +94,7 @@
   <ItemGroup>
     <TypeScriptCompile Include="Component\Component.ts" />
     <TypeScriptCompile Include="Component\GraphicCompnent.ts" />
+    <TypeScriptCompile Include="Component\GUIComponent.ts" />
     <TypeScriptCompile Include="Component\PhysicsComponent.ts" />
     <TypeScriptCompile Include="define.ts" />
     <TypeScriptCompile Include="enum.ts" />
@@ -113,6 +114,7 @@
     <TypeScriptCompile Include="Object\3DObject\TestObject.ts" />
     <TypeScriptCompile Include="Object\GameObject.ts" />
     <TypeScriptCompile Include="Object\3DObject\TestCube.ts" />
+    <TypeScriptCompile Include="Object\GUIControls\GUI_Base.ts" />
     <TypeScriptCompile Include="Object\GUIControls\GUI_SRT.ts" />
     <TypeScriptCompile Include="Object\GUIControls\Picker\Picker.ts" />
     <TypeScriptCompile Include="Object\Light\Light.ts" />

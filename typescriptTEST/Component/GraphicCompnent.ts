@@ -2,6 +2,7 @@
     export class GraphComponent {
         constructor(gameObject: GameObject) {
             this.GameObject = gameObject;
+            this.GameObject.GraphicCompIncluded = true;
             this.renderSwitch = true;
         }
 

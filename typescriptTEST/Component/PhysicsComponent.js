@@ -4,6 +4,7 @@ var JWFramework;
         function PhysicsComponent(gameObject) {
             this.vec3Look = new THREE.Vector3(0, 0, 1);
             this.GameObject = gameObject;
+            this.GameObject.PhysicsCompIncluded = true;
         }
         PhysicsComponent.prototype.SetPostion = function (x, y, z) {
             this.GameObject.GameObjectInstance.position.x = x;
@@ -21,6 +22,9 @@ var JWFramework;
         };
         PhysicsComponent.prototype.MoveFoward = function (distance) {
             this.GameObject.GameObjectInstance.translateOnAxis(this.vec3Look, distance * JWFramework.WorldManager.getInstance().GetDeltaTime());
+        };
+        PhysicsComponent.prototype.GetRotateEuler = function () {
+            return this.GameObject.GameObjectInstance.rotation;
         };
         PhysicsComponent.prototype.Rotate = function (x, y, z) {
             this.GameObject.GameObjectInstance.rotation.x += (x * JWFramework.WorldManager.getInstance().GetDeltaTime());

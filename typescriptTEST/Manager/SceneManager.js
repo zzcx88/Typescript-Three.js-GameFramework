@@ -23,6 +23,13 @@ var JWFramework;
             enumerable: false,
             configurable: true
         });
+        Object.defineProperty(SceneManager.prototype, "SceneType", {
+            get: function () {
+                return this.sceneType;
+            },
+            enumerable: false,
+            configurable: true
+        });
         SceneManager.prototype.BuildScene = function () {
             this.sceneThree = new THREE.Scene();
             this.sceneType = JWFramework.SceneType.SCENE_TEST;

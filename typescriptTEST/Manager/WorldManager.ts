@@ -53,7 +53,7 @@
             this.camera.Aspect = Define.SCREEN_WIDTH / Define.SCREEN_HEIGHT;
             this.camera.Near = 0.1;
             this.camera.Far = 1000;
-            this.camera.PhysicsComponent.SetPostion(0, 0, 1);
+            this.camera.PhysicsComponent.SetPostion(0, 0, 2);
         }
 
         private CreateScene() {

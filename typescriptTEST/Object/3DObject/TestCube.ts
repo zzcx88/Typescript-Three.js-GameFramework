@@ -36,7 +36,5 @@
         }
 
         private y: number = 0;
-        private physicsComponent: PhysicsComponent;
-        private graphicComponent: GraphComponent;
     }
 }

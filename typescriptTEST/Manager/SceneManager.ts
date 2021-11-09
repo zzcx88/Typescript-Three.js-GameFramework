@@ -20,6 +20,10 @@
             return this.scene;
         }
 
+        public get SceneType(): SceneType {
+            return this.sceneType;
+        }
+
         public BuildScene() {
             this.sceneThree = new THREE.Scene();
             this.sceneType = SceneType.SCENE_TEST;

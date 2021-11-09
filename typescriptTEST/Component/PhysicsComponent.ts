@@ -2,6 +2,7 @@
     export class PhysicsComponent {
         constructor(gameObject: JWFramework.GameObject) {
             this.GameObject = gameObject;
+            this.GameObject.PhysicsCompIncluded = true;
         }
 
         public SetPostion(x: number, y: number, z: number): void {
@@ -24,6 +25,10 @@
 
         public MoveFoward(distance: number) {
             this.GameObject.GameObjectInstance.translateOnAxis(this.vec3Look, distance * WorldManager.getInstance().GetDeltaTime());
+        }
+
+        public GetRotateEuler(): THREE.Euler {
+            return this.GameObject.GameObjectInstance.rotation;
         }
 
         public Rotate(x: number, y: number, z: number): void {

@@ -11,7 +11,14 @@ var JWFramework;
             return ObjectManager.instance;
         };
         ObjectManager.prototype.GetObjectsFromType = function () { };
-        ObjectManager.prototype.GetObjectFromName = function () { };
+        ObjectManager.prototype.GetObjectFromName = function (name) {
+            for (var i = 0; i < this.objectList.length; ++i) {
+                if (name == this.objectList[i].GameObject.Name) {
+                    return this.objectList[i].GameObject;
+                }
+            }
+            return null;
+        };
         ObjectManager.prototype.GetObjectAll = function () { };
         ObjectManager.prototype.AddObject = function (gameObject, name, type) {
             this.objectList.push({ GameObject: gameObject, Name: name });

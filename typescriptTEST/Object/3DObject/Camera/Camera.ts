@@ -65,7 +65,5 @@
         private near: number;
         private far: number;
         private cameraInstance: THREE.PerspectiveCamera;
-
-        private physicsComponent: PhysicsComponent;
     }
 }

@@ -7,8 +7,40 @@
             return this.type;
         }
 
-        public get Mesh(): any {
-            return this.mesh;
+        public get Name(): string {
+            return this.name;
+        }
+
+        public get PhysicsComponent(): PhysicsComponent {
+            return this.physicsComponent;
+        }
+
+        public get GraphicComponent(): GraphComponent {
+            return this.graphicComponent;
+        }
+
+        public get PhysicsCompIncluded() {
+            return this.physicsCompIncluded;
+        }
+
+        public get GraphicCompIncluded() {
+            return this.graphicCompIncluded;
+        }
+
+        public set Picked(picked: boolean) {
+            this.picked = picked;
+        }
+
+        public get Picked(): boolean {
+            return this.picked;
+        }
+
+        public set PhysicsCompIncluded(isIncluded: boolean) {
+            this.physicsCompIncluded = isIncluded;
+        }
+
+        public set GraphicCompIncluded(isIncluded: boolean) {
+            this.graphicCompIncluded = isIncluded;
         }
 
         public get GameObjectInstance(): THREE.Group {
@@ -24,9 +56,16 @@
         private DeleteObject() { }
 
         protected gameObjectInstance;
-        protected geometry;
-        protected material;
-        protected mesh;
         protected type: ObjectType;
+        protected name: string;
+
+        protected physicsComponent: PhysicsComponent;
+        protected graphicComponent: GraphComponent;
+        protected guiComponent: GUIComponent;
+
+        private physicsCompIncluded: boolean = false;
+        private graphicCompIncluded: boolean = false;
+
+        private picked: boolean = false;
     }
 }
