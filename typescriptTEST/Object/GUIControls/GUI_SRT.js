@@ -19,6 +19,7 @@ var JWFramework;
         __extends(GUI_SRT, _super);
         function GUI_SRT(gameObject) {
             var _this = _super.call(this) || this;
+            _this.toggle = true;
             _this.datGui = new dat.GUI;
             _this.gameObject = gameObject;
             _this.CreateFolder();
@@ -48,7 +49,14 @@ var JWFramework;
             this.datGui.updateDisplay();
         };
         GUI_SRT.prototype.ShowGUI = function (show) {
-            this.datGui.closed = show;
+            this.datGui.width = JWFramework.WorldManager.getInstance().Canvas.width / 8;
+            if (show == this.toggle) {
+                return;
+            }
+            else {
+                this.toggle = show;
+                dat.GUI.toggleHide();
+            }
         };
         return GUI_SRT;
     }(JWFramework.GUI_Base));

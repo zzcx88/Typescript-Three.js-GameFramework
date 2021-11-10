@@ -37,7 +37,14 @@ var JWFramework;
             document.body.appendChild(this.renderer.domElement);
         };
         WorldManager.prototype.ResizeView = function () {
-            this.renderer.setSize(JWFramework.Define.SCREEN_WIDTH / 2, JWFramework.Define.SCREEN_HEIGHT / 2);
+            var width = this.Canvas.clientWidth;
+            var height = this.Canvas.clientHeight;
+            var needResize = this.Canvas.width !== width || this.Canvas.height !== height;
+            if (needResize) {
+                this.renderer.setSize(width, height, false);
+            }
+            return needResize;
+            //this.renderer.setSize(Define.SCREEN_WIDTH, Define.SCREEN_HEIGHT);
         };
         WorldManager.prototype.CreateMainCamera = function () {
             this.camera = new JWFramework.Camera();
@@ -57,6 +64,10 @@ var JWFramework;
             this.delta = 0;
         };
         WorldManager.prototype.Animate = function () {
+            if (this.ResizeView()) {
+                this.camera.Aspect = this.Canvas.clientWidth / this.Canvas.clientHeight;
+                this.camera.CameraInstance.updateProjectionMatrix();
+            }
             this.delta = this.clock.getDelta();
             this.sceneManager.Animate();
         };

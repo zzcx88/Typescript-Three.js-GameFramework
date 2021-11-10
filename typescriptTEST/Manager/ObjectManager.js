@@ -19,7 +19,13 @@ var JWFramework;
             }
             return null;
         };
-        ObjectManager.prototype.GetObjectAll = function () { };
+        Object.defineProperty(ObjectManager.prototype, "GetObjectList", {
+            get: function () {
+                return this.objectList;
+            },
+            enumerable: false,
+            configurable: true
+        });
         ObjectManager.prototype.AddObject = function (gameObject, name, type) {
             this.objectList.push({ GameObject: gameObject, Name: name });
         };

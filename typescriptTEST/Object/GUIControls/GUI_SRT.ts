@@ -31,8 +31,6 @@
             this.scaleFolder.add(this.gameObject.GameObjectInstance.scale, 'y', 0, 10).step(0.01).listen();
             this.scaleFolder.add(this.gameObject.GameObjectInstance.scale, 'z', 0, 10).step(0.01).listen();
             this.scaleFolder.open();
-
-            
         }
 
         public UpdateDisplay() {
@@ -40,14 +38,20 @@
         }
 
         public ShowGUI(show: boolean) {
-            this.datGui.closed = show;
+            this.datGui.width = WorldManager.getInstance().Canvas.width / 8;
+            if (show == this.toggle) {
+                return;
+            }
+            else {
+                this.toggle = show;
+                dat.GUI.toggleHide();
+            }
         }
 
 
         private datGui: dat.GUI;
         private gameObject: GameObject;
-
-        private SRTFolder: dat.GUI;
+        private toggle: boolean = true;
         private positionFolder: dat.GUI;
         private rotateFolder: dat.GUI;
         private scaleFolder: dat.GUI;

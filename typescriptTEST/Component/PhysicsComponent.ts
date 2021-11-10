@@ -9,22 +9,27 @@
             this.GameObject.GameObjectInstance.position.x = x;
             this.GameObject.GameObjectInstance.position.y = y;
             this.GameObject.GameObjectInstance.position.z = z;
+            this.LocalToWorldMatrix();
         }
 
         public SetPostionVec3(vec3: THREE.Vector3): void {
             this.GameObject.GameObjectInstance.position = vec3;
+            this.LocalToWorldMatrix();
         }
 
         public SetScale(x: number, y: number, z: number) {
             this.GameObject.GameObjectInstance.scale.set(x, y, z);
+            this.LocalToWorldMatrix();
         }
 
         public SetScaleScalar(scalar: number) {
             this.GameObject.GameObjectInstance.scale.setScalar(scalar);
+            this.LocalToWorldMatrix();
         }
 
         public MoveFoward(distance: number) {
             this.GameObject.GameObjectInstance.translateOnAxis(this.vec3Look, distance * WorldManager.getInstance().GetDeltaTime());
+            this.LocalToWorldMatrix();
         }
 
         public GetRotateEuler(): THREE.Euler {
@@ -35,11 +40,17 @@
             this.GameObject.GameObjectInstance.rotation.x += (x * WorldManager.getInstance().GetDeltaTime());
             this.GameObject.GameObjectInstance.rotation.y += (y * WorldManager.getInstance().GetDeltaTime());
             this.GameObject.GameObjectInstance.rotation.z += (z * WorldManager.getInstance().GetDeltaTime());
+            this.LocalToWorldMatrix();
         }
 
         public RotateVec3(axis: THREE.Vector3, angle: number): void {
             this.GameObject.GameObjectInstance.rotateOnAxis(axis, angle * WorldManager.getInstance().GetDeltaTime());
             this.GameObject.GameObjectInstance.updateMatrix();
+            this.LocalToWorldMatrix();
+        }
+
+        private LocalToWorldMatrix() {
+            this.GameObject.GameObjectInstance.updateMatrixWorld(true);
         }
 
         private vec3Look: THREE.Vector3 = new THREE.Vector3(0, 0, 1);

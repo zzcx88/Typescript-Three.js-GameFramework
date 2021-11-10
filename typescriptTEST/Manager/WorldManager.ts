@@ -44,7 +44,14 @@
         }
 
         private ResizeView() {
-            this.renderer.setSize(Define.SCREEN_WIDTH/2, Define.SCREEN_HEIGHT/2);
+            const width = this.Canvas.clientWidth;
+            const height = this.Canvas.clientHeight;
+            const needResize = this.Canvas.width !== width || this.Canvas.height !== height;
+            if (needResize) {
+                this.renderer.setSize(width, height, false);
+            }
+            return needResize;
+            //this.renderer.setSize(Define.SCREEN_WIDTH, Define.SCREEN_HEIGHT);
         }
 
         private CreateMainCamera() {
@@ -68,6 +75,10 @@
         }
 
         public Animate() {
+            if (this.ResizeView()) {
+                this.camera.Aspect = this.Canvas.clientWidth / this.Canvas.clientHeight;
+                this.camera.CameraInstance.updateProjectionMatrix();
+            }
             this.delta = this.clock.getDelta();
             this.sceneManager.Animate();
         }

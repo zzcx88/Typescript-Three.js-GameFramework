@@ -16,8 +16,11 @@
 
         public constructor() {
             this.sceneTestModel = [{
-                model: this.helmet, url: 'Model/DamagedHelmet.gltf'
-            }];
+                model: this.F16, url: 'Model/F-16D/F-16D.gltf'
+            }, 
+                {
+                    model: this.helmet, url: 'Model/DamagedHelmet.gltf'
+                }];
             this.modelNumber = this.sceneTestModel.length;
         }
         public get ModelSceneTest(): ModelSet[] {
@@ -29,6 +32,7 @@
         }
 
         private helmet: TestObject = new TestObject;
+        private F16: TestObject = new TestObject;
         private sceneTestModel: ModelSet[] = [];
 
         private modelNumber: number;

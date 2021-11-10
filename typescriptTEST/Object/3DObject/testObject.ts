@@ -10,11 +10,10 @@
 
         public InitializeAfterLoad() {
             let axisY: THREE.Vector3 = new THREE.Vector3(0, 1, 0);
-            this.PhysicsComponent.SetScaleScalar(0.5);
+            this.PhysicsComponent.SetScaleScalar(0.1);
             this.PhysicsComponent.Rotate(0, 180, 0);
 
             this.GameObjectInstance.name = this.name;
-            console.log(this.GameObjectInstance.children[0].name);
 
             ObjectManager.getInstance().AddObject(this, this.name, this.Type);
 
@@ -24,22 +23,26 @@
         }
 
         public Animate() {
-            if (InputManager.getInstance().GetKeyState('left')) {
-                this.y = 1;
-                this.PhysicsComponent.Rotate(0, this.y, 0);
-            }
-            if (InputManager.getInstance().GetKeyState('right')) {
-                this.y = -1;
-                this.PhysicsComponent.Rotate(0, this.y, 0);
-            }
-            if (InputManager.getInstance().GetKeyState('up')) {
-                this.PhysicsComponent.MoveFoward(1);
+            if (this.Picked == true) {
+                console.log(this.name, this.Picked);
+                if (InputManager.getInstance().GetKeyState('left')) {
+                    this.y = 1;
+                    this.PhysicsComponent.Rotate(0, this.y, 0);
+                }
+                if (InputManager.getInstance().GetKeyState('right')) {
+                    this.y = -1;
+                    this.PhysicsComponent.Rotate(0, this.y, 0);
+                }
+                if (InputManager.getInstance().GetKeyState('up')) {
+                    this.PhysicsComponent.MoveFoward(1);
+                }
             }
             if (SceneManager.getInstance().SceneType == SceneType.SCENE_TEST && this.Picked == true) {
+                this.guiComponent.ShowGUI(true);
+            }
+            if (SceneManager.getInstance().SceneType == SceneType.SCENE_TEST && this.Picked == false) {
                 this.guiComponent.ShowGUI(false);
             }
-            if (SceneManager.getInstance().SceneType == SceneType.SCENE_TEST && this.Picked == false)
-                this.guiComponent.ShowGUI(true);
 
         }
 

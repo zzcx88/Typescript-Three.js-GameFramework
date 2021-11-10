@@ -73,6 +73,7 @@
     <Content Include="Libs\GUI\dat.gui.min.js" />
     <Content Include="Model\DamagedHelmet.gltf" />
     <Content Include="Model\Flower.glb" />
+    <Content Include="Model\F-16D\F-16D.gltf" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

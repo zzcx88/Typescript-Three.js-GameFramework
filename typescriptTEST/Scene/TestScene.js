@@ -39,7 +39,7 @@ var JWFramework;
         TestScene.prototype.Animate = function () {
             if (JWFramework.ModelLoadManager.getInstance().LoadComplete == true) {
                 JWFramework.ObjectManager.getInstance().Animate();
-                this.Picker.Pick();
+                //this.Picker.Pick();
             }
         };
         return TestScene;

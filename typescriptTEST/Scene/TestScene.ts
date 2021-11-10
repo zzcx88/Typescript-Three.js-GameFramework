@@ -25,7 +25,7 @@
         public Animate() {
             if (ModelLoadManager.getInstance().LoadComplete == true) {
                 ObjectManager.getInstance().Animate();
-                this.Picker.Pick();
+                //this.Picker.Pick();
             }
         }
 

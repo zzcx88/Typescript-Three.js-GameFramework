@@ -21,7 +21,9 @@
             }
             return null;
         }
-        public GetObjectAll() { }
+        public get GetObjectList() {
+            return this.objectList;
+        }
 
         public AddObject(gameObject: GameObject, name: string, type: ObjectType) {
             this.objectList.push({ GameObject: gameObject, Name: name });

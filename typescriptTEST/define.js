@@ -11,8 +11,12 @@ var JWFramework;
     var ModelSceneTest = /** @class */ (function () {
         function ModelSceneTest() {
             this.helmet = new JWFramework.TestObject;
+            this.F16 = new JWFramework.TestObject;
             this.sceneTestModel = [];
             this.sceneTestModel = [{
+                    model: this.F16, url: 'Model/F-16D/F-16D.gltf'
+                },
+                {
                     model: this.helmet, url: 'Model/DamagedHelmet.gltf'
                 }];
             this.modelNumber = this.sceneTestModel.length;
