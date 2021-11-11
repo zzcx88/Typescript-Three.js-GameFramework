@@ -5,13 +5,11 @@
             this.type = ObjectType.OBJ_OBJECT3D;
             this.physicsComponent = new PhysicsComponent(this);
             this.graphicComponent = new GraphComponent(this);
-            this.name = "Ref_helmet";
         }
 
         public InitializeAfterLoad() {
-            let axisY: THREE.Vector3 = new THREE.Vector3(0, 1, 0);
             this.PhysicsComponent.SetScaleScalar(0.1);
-            this.PhysicsComponent.Rotate(0, 180, 0);
+            //this.PhysicsComponent.Rotate(0, 180, 0);
 
             this.GameObjectInstance.name = this.name;
 
@@ -24,7 +22,6 @@
 
         public Animate() {
             if (this.Picked == true) {
-                console.log(this.name, this.Picked);
                 if (InputManager.getInstance().GetKeyState('left')) {
                     this.y = 1;
                     this.PhysicsComponent.Rotate(0, this.y, 0);
@@ -43,7 +40,6 @@
             if (SceneManager.getInstance().SceneType == SceneType.SCENE_TEST && this.Picked == false) {
                 this.guiComponent.ShowGUI(false);
             }
-
         }
 
         private y: number = 0;

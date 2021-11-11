@@ -57,7 +57,7 @@
         private CreateMainCamera() {
             this.camera = new Camera();
             this.camera.Fov = 75;
-            this.camera.Aspect = Define.SCREEN_WIDTH / Define.SCREEN_HEIGHT;
+            this.camera.Aspect = this.Canvas.clientWidth / this.Canvas.clientHeight;
             this.camera.Near = 0.1;
             this.camera.Far = 1000;
             this.camera.PhysicsComponent.SetPostion(0, 0, 2);
@@ -79,6 +79,7 @@
                 this.camera.Aspect = this.Canvas.clientWidth / this.Canvas.clientHeight;
                 this.camera.CameraInstance.updateProjectionMatrix();
             }
+            //this.camera.Animate();
             this.delta = this.clock.getDelta();
             this.sceneManager.Animate();
         }

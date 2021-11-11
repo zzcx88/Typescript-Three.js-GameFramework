@@ -49,7 +49,7 @@ var JWFramework;
         WorldManager.prototype.CreateMainCamera = function () {
             this.camera = new JWFramework.Camera();
             this.camera.Fov = 75;
-            this.camera.Aspect = JWFramework.Define.SCREEN_WIDTH / JWFramework.Define.SCREEN_HEIGHT;
+            this.camera.Aspect = this.Canvas.clientWidth / this.Canvas.clientHeight;
             this.camera.Near = 0.1;
             this.camera.Far = 1000;
             this.camera.PhysicsComponent.SetPostion(0, 0, 2);
@@ -68,6 +68,7 @@ var JWFramework;
                 this.camera.Aspect = this.Canvas.clientWidth / this.Canvas.clientHeight;
                 this.camera.CameraInstance.updateProjectionMatrix();
             }
+            //this.camera.Animate();
             this.delta = this.clock.getDelta();
             this.sceneManager.Animate();
         };

@@ -71,6 +71,7 @@
   <ItemGroup>
     <Content Include="Libs\GUI\dat.gui.js" />
     <Content Include="Libs\GUI\dat.gui.min.js" />
+    <Content Include="Libs\Three\Controls\OrbitControls.js" />
     <Content Include="Model\DamagedHelmet.gltf" />
     <Content Include="Model\Flower.glb" />
     <Content Include="Model\F-16D\F-16D.gltf" />
@@ -103,6 +104,7 @@
     <TypeScriptCompile Include="Libs\GLTFLoader\DRACOLoader.d.ts" />
     <TypeScriptCompile Include="Libs\GLTFLoader\GLTFLoader.d.ts" />
     <TypeScriptCompile Include="Libs\GUI\dat.gui.d.ts" />
+    <TypeScriptCompile Include="Libs\Three\Controls\OrbitControls.d.ts" />
     <TypeScriptCompile Include="main.ts" />
     <TypeScriptCompile Include="Libs\Three\three.d.ts" />
     <TypeScriptCompile Include="Manager\GUIManager.ts" />

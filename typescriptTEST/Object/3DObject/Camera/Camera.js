@@ -19,6 +19,7 @@ var JWFramework;
         __extends(Camera, _super);
         function Camera() {
             var _this = _super.call(this) || this;
+            _this.y = 0;
             _this.type = JWFramework.ObjectType.OBJ_CAMERA;
             _this.fov = 75;
             _this.aspect = JWFramework.Define.SCREEN_WIDTH / JWFramework.Define.SCREEN_HEIGHT;
@@ -86,6 +87,19 @@ var JWFramework;
             this.cameraInstance.near = this.near;
             this.cameraInstance.far = this.far;
             this.cameraInstance.updateProjectionMatrix();
+        };
+        Camera.prototype.Animate = function () {
+            //if (InputManager.getInstance().GetKeyState('left')) {
+            //    this.y = 1;
+            //    this.PhysicsComponent.Rotate(0, this.y, 0);
+            //}
+            //if (InputManager.getInstance().GetKeyState('right')) {
+            //    this.y = -1;
+            //    this.PhysicsComponent.Rotate(0, this.y, 0);
+            //}
+            //if (InputManager.getInstance().GetKeyState('up')) {
+            //    this.PhysicsComponent.MoveFoward(-1);
+            //}
         };
         Object.defineProperty(Camera.prototype, "PhysicsComponent", {
             get: function () {

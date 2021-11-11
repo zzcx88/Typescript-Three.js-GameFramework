@@ -11,6 +11,10 @@
             return this.name;
         }
 
+        public set Name(name: string) {
+            this.name = name;
+        }
+
         public get PhysicsComponent(): PhysicsComponent {
             return this.physicsComponent;
         }

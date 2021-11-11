@@ -40,8 +40,9 @@
             this.gltfLoader.load(modelSource,
                 (gltf) => {
                     console.log('success')
-                    console.log(gltf)
+                    console.log(gltf);
                     gameObject.GameObjectInstance = gltf.scene;
+
                     SceneManager.getInstance().SceneInstance.add(gameObject.GameObjectInstance);
                     gameObject.InitializeAfterLoad();
                     this.SetLoadComplete();

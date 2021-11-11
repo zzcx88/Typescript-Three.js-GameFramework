@@ -11,7 +11,6 @@
 
         private BuildObject() {
             ModelLoadManager.getInstance().LoadSceneTest();
-            //this.Picker.ClearPickPosition();
         }
 
         private BuildLight() {
@@ -28,7 +27,6 @@
                 //this.Picker.Pick();
             }
         }
-
         private sceneManager: SceneManager
         private light: Light;
         

@@ -7,6 +7,7 @@ var JWFramework;
             this.raycaster = new THREE.Raycaster();
             this.pickedObject = null;
             this.pickedObjectSavedColor = 0;
+            this.orbitControl = new THREE.OrbitControls(JWFramework.WorldManager.getInstance().MainCamera.CameraInstance, JWFramework.WorldManager.getInstance().Canvas);
             window.addEventListener('mousedown', function (e) {
                 JWFramework.SceneManager.getInstance().CurrentScene.Picker.SetPickPosition(e);
             });
@@ -18,7 +19,7 @@ var JWFramework;
             });
         }
         Picker.prototype.GetParentName = function (intersectedObjects) {
-            if (intersectedObjects.parent.name) {
+            if (intersectedObjects.type != "Group") {
                 this.GetParentName(intersectedObjects.parent);
             }
             else {
@@ -35,23 +36,22 @@ var JWFramework;
         Picker.prototype.Pick = function () {
             if (this.pickedObject) {
                 if (this.pickPositionX < 0.75) {
-                    //Pick을 하나만 켜지게 한다?
                     this.PickOffObject();
-                    //this.pickedParent.Picked = false;
-                    //this.pickedObject.material.emissive.setHex(this.pickedObjectSavedColor);
-                    //this.pickedObject = undefined;
+                    this.pickedObject = undefined;
                 }
             }
             this.raycaster.setFromCamera({ x: this.pickPositionX, y: this.pickPositionY }, JWFramework.WorldManager.getInstance().MainCamera.CameraInstance);
+            //this.raycaster.ray.origin = WorldManager.getInstance().MainCamera.CameraInstance.position;
+            //let vec3 = WorldManager.getInstance().MainCamera.CameraInstance.matrixWorld.elements;
+            //let look = new THREE.Vector3(-vec3[8], -vec3[9], -vec3[10]).normalize();
+            //console.log(look);
+            //console.log(this.raycaster.ray.direction);
+            //this.raycaster.ray.direction = look;
             var intersectedObjects = this.raycaster.intersectObjects(JWFramework.SceneManager.getInstance().SceneInstance.children);
-            console.log(intersectedObjects[0].object.name);
             if (intersectedObjects.length) {
                 this.GetParentName(intersectedObjects[0].object);
                 this.pickedParent = JWFramework.ObjectManager.getInstance().GetObjectFromName(this.pickedParentName);
                 this.pickedParent.Picked = true;
-                //this.pickedObject = intersectedObjects[0].object;
-                //this.pickedObjectSavedColor = this.pickedObject.material.emissive.getHex();
-                //this.pickedObject.material.emissive.setHex(0x000000);
             }
         };
         Picker.prototype.GetCanvasReleativePosition = function (event) {
@@ -62,9 +62,11 @@ var JWFramework;
             };
         };
         Picker.prototype.SetPickPosition = function (event) {
-            var pos = this.GetCanvasReleativePosition(event);
-            this.pickPositionX = (pos.x / JWFramework.WorldManager.getInstance().Canvas.width) * 2 - 1;
-            this.pickPositionY = (pos.y / JWFramework.WorldManager.getInstance().Canvas.height) * 2 - 1;
+            //let pos = this.GetCanvasReleativePosition(event);
+            //this.pickPositionX = (pos.x / WorldManager.getInstance().Canvas.width) * 2 - 1;
+            //this.pickPositionY = (pos.y / WorldManager.getInstance().Canvas.height) * 2 - 1;
+            this.pickPositionX = (event.clientX / window.innerWidth) * 2 - 1;
+            this.pickPositionY = -(event.clientY / window.innerHeight) * 2 + 1;
             this.Pick();
         };
         Picker.prototype.ClearPickPosition = function () {

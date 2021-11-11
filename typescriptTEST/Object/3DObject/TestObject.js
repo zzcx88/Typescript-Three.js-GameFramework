@@ -23,13 +23,11 @@ var JWFramework;
             _this.type = JWFramework.ObjectType.OBJ_OBJECT3D;
             _this.physicsComponent = new JWFramework.PhysicsComponent(_this);
             _this.graphicComponent = new JWFramework.GraphComponent(_this);
-            _this.name = "Ref_helmet";
             return _this;
         }
         TestObject.prototype.InitializeAfterLoad = function () {
-            var axisY = new THREE.Vector3(0, 1, 0);
             this.PhysicsComponent.SetScaleScalar(0.1);
-            this.PhysicsComponent.Rotate(0, 180, 0);
+            //this.PhysicsComponent.Rotate(0, 180, 0);
             this.GameObjectInstance.name = this.name;
             JWFramework.ObjectManager.getInstance().AddObject(this, this.name, this.Type);
             if (JWFramework.SceneManager.getInstance().SceneType == JWFramework.SceneType.SCENE_TEST) {
@@ -38,7 +36,6 @@ var JWFramework;
         };
         TestObject.prototype.Animate = function () {
             if (this.Picked == true) {
-                console.log(this.name, this.Picked);
                 if (JWFramework.InputManager.getInstance().GetKeyState('left')) {
                     this.y = 1;
                     this.PhysicsComponent.Rotate(0, this.y, 0);

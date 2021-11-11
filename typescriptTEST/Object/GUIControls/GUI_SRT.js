@@ -19,11 +19,12 @@ var JWFramework;
         __extends(GUI_SRT, _super);
         function GUI_SRT(gameObject) {
             var _this = _super.call(this) || this;
-            _this.toggle = true;
+            _this.toggle = false;
             _this.datGui = new dat.GUI;
             _this.gameObject = gameObject;
             _this.CreateFolder();
             _this.AddElement();
+            _this.datGui.width = JWFramework.WorldManager.getInstance().Canvas.width / 8;
             return _this;
         }
         GUI_SRT.prototype.CreateFolder = function () {
@@ -49,13 +50,11 @@ var JWFramework;
             this.datGui.updateDisplay();
         };
         GUI_SRT.prototype.ShowGUI = function (show) {
-            this.datGui.width = JWFramework.WorldManager.getInstance().Canvas.width / 8;
-            if (show == this.toggle) {
-                return;
+            if (show == true) {
+                this.datGui.open();
             }
             else {
-                this.toggle = show;
-                dat.GUI.toggleHide();
+                this.datGui.close();
             }
         };
         return GUI_SRT;

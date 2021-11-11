@@ -8,6 +8,7 @@
 
             this.CreateFolder();
             this.AddElement();
+            this.datGui.width = WorldManager.getInstance().Canvas.width / 8;
         }
 
         protected CreateFolder() {
@@ -38,20 +39,19 @@
         }
 
         public ShowGUI(show: boolean) {
-            this.datGui.width = WorldManager.getInstance().Canvas.width / 8;
-            if (show == this.toggle) {
-                return;
+            if (show == true) {
+                this.datGui.open();
             }
             else {
-                this.toggle = show;
-                dat.GUI.toggleHide();
+                this.datGui.close();
             }
+
         }
 
 
         private datGui: dat.GUI;
         private gameObject: GameObject;
-        private toggle: boolean = true;
+        private toggle: boolean = false;
         private positionFolder: dat.GUI;
         private rotateFolder: dat.GUI;
         private scaleFolder: dat.GUI;

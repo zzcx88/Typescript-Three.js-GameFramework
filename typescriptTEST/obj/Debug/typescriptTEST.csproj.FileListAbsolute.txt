@@ -17,4 +17,4 @@ C:\Users\LEEJAEWON\Desktop\study\WebGL\typescriptTEST\ThreeJS_with_typescript\ty
 C:\Users\LEEJAEWON\Desktop\study\WebGL\typescriptTEST\ThreeJS_with_typescript\typescriptTEST\obj\Debug\typescriptTEST.csproj.CoreCompileInputs.cache
 C:\Users\LEEJAEWON\Desktop\study\WebGL\typescriptTEST\ThreeJS_with_typescript\typescriptTEST\obj\Debug\TypeScriptHTMLApp1.dll
 C:\Users\LEEJAEWON\Desktop\study\WebGL\typescriptTEST\ThreeJS_with_typescript\typescriptTEST\obj\Debug\TypeScriptHTMLApp1.pdb
-C:\Users\Gyro\Desktop\test\prac\typescriptTEST\typescriptTEST\obj\Debug\typescriptTEST.csproj.AssemblyReference.cache
+C:\Users\Gyro\Desktop\test\prac\typescriptTEST\typescriptTEST\obj\Debug\typescriptTEST.csprojAssemblyReference.cache

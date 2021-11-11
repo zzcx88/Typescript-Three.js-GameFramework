@@ -28,7 +28,6 @@ var JWFramework;
         }
         TestScene.prototype.BuildObject = function () {
             JWFramework.ModelLoadManager.getInstance().LoadSceneTest();
-            //this.Picker.ClearPickPosition();
         };
         TestScene.prototype.BuildLight = function () {
             this.light.SetColor(0xFFFFFF);

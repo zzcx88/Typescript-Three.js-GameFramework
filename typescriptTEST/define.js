@@ -13,12 +13,15 @@ var JWFramework;
             this.helmet = new JWFramework.TestObject;
             this.F16 = new JWFramework.TestObject;
             this.sceneTestModel = [];
+            this.F16.Name = "F-16";
+            this.helmet.Name = "helmet";
             this.sceneTestModel = [{
                     model: this.F16, url: 'Model/F-16D/F-16D.gltf'
                 },
                 {
                     model: this.helmet, url: 'Model/DamagedHelmet.gltf'
-                }];
+                }
+            ];
             this.modelNumber = this.sceneTestModel.length;
         }
         ModelSceneTest.getInstance = function () {

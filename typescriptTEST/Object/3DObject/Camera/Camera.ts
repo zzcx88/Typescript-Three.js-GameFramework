@@ -56,9 +56,25 @@
             this.cameraInstance.updateProjectionMatrix();
         }
 
+        public Animate() {
+            //if (InputManager.getInstance().GetKeyState('left')) {
+            //    this.y = 1;
+            //    this.PhysicsComponent.Rotate(0, this.y, 0);
+            //}
+            //if (InputManager.getInstance().GetKeyState('right')) {
+            //    this.y = -1;
+            //    this.PhysicsComponent.Rotate(0, this.y, 0);
+            //}
+            //if (InputManager.getInstance().GetKeyState('up')) {
+            //    this.PhysicsComponent.MoveFoward(-1);
+            //}
+        }
+
         public get PhysicsComponent(): PhysicsComponent {
             return this.physicsComponent;
         }
+
+        private y = 0;
 
         private fov: number;
         private aspect: number;
