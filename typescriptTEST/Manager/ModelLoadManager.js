@@ -37,7 +37,19 @@ var JWFramework;
             this.gltfLoader.load(modelSource, function (gltf) {
                 console.log('success');
                 console.log(gltf);
+                //gameObject.GameObjectInstance = gltf.scene;
                 gameObject.GameObjectInstance = gltf.scene;
+                //gameObject.GameObjectInstance.traverse(n => {
+                //    if (n.isMesh) {
+                //        n.castShadow = true;
+                //        n.receiveShadow = true;
+                //        if (n.material.map) n.material.map.anisotropy = 1;
+                //        console.log(n.material);
+                //        n.material.opacity = 0.5;
+                //        n.material.alphaToCoverage = true;
+                //        n.material.transparent = true;
+                //    }
+                //});
                 JWFramework.SceneManager.getInstance().SceneInstance.add(gameObject.GameObjectInstance);
                 gameObject.InitializeAfterLoad();
                 _this.SetLoadComplete();

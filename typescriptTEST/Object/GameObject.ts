@@ -47,7 +47,7 @@
             this.graphicCompIncluded = isIncluded;
         }
 
-        public get GameObjectInstance(): THREE.Group {
+        public get GameObjectInstance() {
             return this.gameObjectInstance;
         }
 
