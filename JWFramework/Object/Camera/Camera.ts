@@ -10,6 +10,7 @@
             this.cameraInstance = new THREE.PerspectiveCamera(this.fov, this.aspect, this.near, this.far);
             this.GameObjectInstance = this.CameraInstance;
             this.physicsComponent = new PhysicsComponent(this)
+            this.GameObjectInstance.matrixAutoUpdate = true;
         }
 
         public get Fov(): number {
@@ -68,6 +69,7 @@
             //if (InputManager.getInstance().GetKeyState('up')) {
             //    this.PhysicsComponent.MoveFoward(-1);
             //}
+            this.PhysicsComponent.UpdateMatrix();
         }
 
         public get PhysicsComponent(): PhysicsComponent {

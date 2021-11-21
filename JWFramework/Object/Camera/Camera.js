@@ -12,6 +12,7 @@ var JWFramework;
             this.cameraInstance = new THREE.PerspectiveCamera(this.fov, this.aspect, this.near, this.far);
             this.GameObjectInstance = this.CameraInstance;
             this.physicsComponent = new JWFramework.PhysicsComponent(this);
+            this.GameObjectInstance.matrixAutoUpdate = true;
         }
         get Fov() {
             return this.fov;
@@ -63,6 +64,7 @@ var JWFramework;
             //if (InputManager.getInstance().GetKeyState('up')) {
             //    this.PhysicsComponent.MoveFoward(-1);
             //}
+            this.PhysicsComponent.UpdateMatrix();
         }
         get PhysicsComponent() {
             return this.physicsComponent;

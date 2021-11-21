@@ -47,10 +47,7 @@ var JWFramework;
             this.camera.Aspect = this.Canvas.clientWidth / this.Canvas.clientHeight;
             this.camera.Near = 0.1;
             this.camera.Far = 1000;
-            this.camera.CameraInstance.rotation.x = 0;
-            this.camera.CameraInstance.rotation.y = 0;
-            this.camera.CameraInstance.rotation.z = 0;
-            this.camera.PhysicsComponent.SetPostion(0, 10, 2);
+            this.camera.PhysicsComponent.SetPostion(0, 22, 0);
             //this.camera.CameraInstance.position.z = 2;
         }
         CreateScene() {

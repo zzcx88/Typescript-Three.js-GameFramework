@@ -9,14 +9,16 @@ var JWFramework;
             this.graphicComponent = new JWFramework.GraphComponent(this);
         }
         InitializeAfterLoad() {
-            this.GameObjectInstance.matrixAutoUpdate = false;
-            this.PhysicsComponent.SetScaleScalar(0.1);
-            this.PhysicsComponent.SetPostion(0, 0, -20);
+            this.GameObjectInstance.matrixAutoUpdate = true;
+            this.PhysicsComponent.SetScaleScalar(0.5);
+            this.PhysicsComponent.SetPostion(0, 20, 0);
             this.gameObjectInstance.rotation.x = 0;
             this.gameObjectInstance.rotation.y = 0;
             this.gameObjectInstance.rotation.z = 0;
             //this.PhysicsComponent.Rotate(0, 180, 0);
             this.GameObjectInstance.name = this.name;
+            //if (this.name == "F-16")
+            //    this.GameObjectInstance.add(WorldManager.getInstance().MainCamera.CameraInstance);
             JWFramework.ObjectManager.getInstance().AddObject(this, this.name, this.Type);
             if (JWFramework.SceneManager.getInstance().SceneType == JWFramework.SceneType.SCENE_TEST) {
                 this.axisHelper = new THREE.AxesHelper(10);
@@ -25,6 +27,8 @@ var JWFramework;
             }
         }
         Animate() {
+            //if (this.name == "F-16")
+            //    this.Picked = true;
             if (this.Picked == true) {
                 if (JWFramework.InputManager.getInstance().GetKeyState('left')) {
                     this.PhysicsComponent.Rotate(0, 0, -1);
@@ -39,7 +43,7 @@ var JWFramework;
                     this.PhysicsComponent.Rotate(1, 0, 0);
                 }
                 if (JWFramework.InputManager.getInstance().GetKeyState('w')) {
-                    this.PhysicsComponent.MoveFoward(1);
+                    this.PhysicsComponent.MoveFoward(50);
                 }
             }
             if (JWFramework.SceneManager.getInstance().SceneType == JWFramework.SceneType.SCENE_TEST && this.Picked == true) {

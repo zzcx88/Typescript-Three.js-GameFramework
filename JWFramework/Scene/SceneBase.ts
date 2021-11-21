@@ -5,6 +5,14 @@
 
         public Animate() { }
 
+        public get Terrain(): HeightmapTerrain {
+            return this.heightmapTerrain;
+        }
+
+        public set Terrain(terrain: HeightmapTerrain) {
+            this.heightmapTerrain = terrain;
+        }
+
         public get Picker(): Picker {
 
             return this.picker;
@@ -15,5 +23,6 @@
         }
 
         private picker: Picker;
+        private heightmapTerrain: HeightmapTerrain;
     }
 }

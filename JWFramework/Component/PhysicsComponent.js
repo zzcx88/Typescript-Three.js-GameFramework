@@ -18,6 +18,15 @@ var JWFramework;
         get Look() {
             return this.vec3Look;
         }
+        set Up(vec3Up) {
+            this.vec3Up = vec3Up;
+        }
+        set Right(vec3Right) {
+            this.vec3Right = vec3Right;
+        }
+        set Look(vec3Look) {
+            this.vec3Look = vec3Look;
+        }
         SetPostion(x, y, z) {
             this.GameObject.GameObjectInstance.position.x = x;
             this.GameObject.GameObjectInstance.position.y = y;
@@ -58,13 +67,24 @@ var JWFramework;
         }
         UpdateMatrix() {
             this.vec3Position = this.GameObject.GameObjectInstance.position;
-            this.vec3Look = this.vec3Look.crossVectors(this.vec3Right, this.vec3Up);
-            this.vec3Right = this.vec3Right.crossVectors(this.vec3Up, this.vec3Look);
-            this.vec3Up = this.vec3Up.crossVectors(this.vec3Look, this.vec3Right);
-            this.vec3Look = this.vec3Look.crossVectors(this.vec3Right, this.vec3Up);
-            this.GameObject.GameObjectInstance.matrix.set(this.vec3Right.x, this.vec3Right.y, this.vec3Right.z, 0, this.vec3Up.x, this.vec3Up.y, this.vec3Up.z, 0, this.vec3Look.x, this.vec3Look.y, this.vec3Look.z, 0, this.vec3Position.x, this.vec3Position.y, this.vec3Position.z, 0);
-            this.GameObject.GameObjectInstance.updateMatrix();
-            this.GameObject.GameObjectInstance.updateMatrixWorld(true);
+            //this.vec3Look = this.vec3Look.crossVectors(this.vec3Right, this.vec3Up);
+            //this.vec3Right = this.vec3Right.crossVectors(this.vec3Up, this.vec3Look);
+            //this.vec3Up = this.vec3Up.crossVectors(this.vec3Look, this.vec3Right);
+            //this.vec3Look = this.vec3Look.crossVectors(this.vec3Right, this.vec3Up);
+            if (this.GameObject.Name == "F-16")
+                console.log(this.vec3Look);
+            //this.gameince.matrix.elements[]
+            //this.vec3Right.set(this.GameObject.GameObjectInstance.matrix.elements[0], this.GameObject.GameObjectInstance.matrix.elements[1], this.GameObject.GameObjectInstance.matrix.elements[2]);
+            //this.vec3Up.set(this.GameObject.GameObjectInstance.matrix.elements[4], this.GameObject.GameObjectInstance.matrix.elements[5], this.GameObject.GameObjectInstance.matrix.elements[6]);
+            //this.vec3Look.set(this.GameObject.GameObjectInstance.matrix.elements[8], this.GameObject.GameObjectInstance.matrix.elements[9], this.GameObject.GameObjectInstance.matrix.elements[10]);
+            //this.GameObject.GameObjectInstance.matrix.set(
+            //    this.vec3Right.x, this.vec3Right.y, this.vec3Right.z, 0,
+            //    this.vec3Up.x, this.vec3Up.y, this.vec3Up.z, 0,
+            //    this.vec3Look.x, this.vec3Look.y, this.vec3Look.z,  0,
+            //    this.vec3Position.x, this.vec3Position.y, this.vec3Position.z, 0
+            //);
+            //this.GameObject.GameObjectInstance.updateMatrix();
+            //this.GameObject.GameObjectInstance.updateMatrixWorld(true);
         }
     }
     JWFramework.PhysicsComponent = PhysicsComponent;

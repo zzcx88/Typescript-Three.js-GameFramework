@@ -19,9 +19,9 @@
         }
 
         protected AddElement() {
-            this.positionFolder.add(this.gameObject.GameObjectInstance.position, 'x', -10, 10).step(0.01).listen();
-            this.positionFolder.add(this.gameObject.GameObjectInstance.position, 'y', -10, 10).step(0.01).listen();
-            this.positionFolder.add(this.gameObject.GameObjectInstance.position, 'z', -10, 10).step(0.01).listen();
+            this.positionFolder.add(this.gameObject.GameObjectInstance.position, 'x').step(0.01).listen();
+            this.positionFolder.add(this.gameObject.GameObjectInstance.position, 'y').step(0.01).listen();
+            this.positionFolder.add(this.gameObject.GameObjectInstance.position, 'z').step(0.01).listen();
             this.positionFolder.open();
 
             this.rotateFolder.add(this.gameObject.GameObjectInstance.rotation, 'x', 0, Math.PI * 2).listen();
@@ -29,9 +29,9 @@
             this.rotateFolder.add(this.gameObject.GameObjectInstance.rotation, 'z', 0, Math.PI * 2).listen();
             this.rotateFolder.open();
 
-            this.scaleFolder.add(this.gameObject.GameObjectInstance.scale, 'x', 0, 10).step(0.01).listen();
-            this.scaleFolder.add(this.gameObject.GameObjectInstance.scale, 'y', 0, 10).step(0.01).listen();
-            this.scaleFolder.add(this.gameObject.GameObjectInstance.scale, 'z', 0, 10).step(0.01).listen();
+            this.scaleFolder.add(this.gameObject.GameObjectInstance.scale, 'x', 0).step(0.01).listen();
+            this.scaleFolder.add(this.gameObject.GameObjectInstance.scale, 'y', 0).step(0.01).listen();
+            this.scaleFolder.add(this.gameObject.GameObjectInstance.scale, 'z', 0).step(0.01).listen();
             this.scaleFolder.open();
         }
 
@@ -46,7 +46,7 @@
             else {
                 this.datGui.close();
             }
-
+            this.gameObject.PhysicsComponent.UpdateMatrix();
         }
 
 

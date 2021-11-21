@@ -49,14 +49,10 @@ var JWFramework;
             //this.raycaster.ray.direction = look;
             let intersectedObjects = this.raycaster.intersectObjects(JWFramework.SceneManager.getInstance().SceneInstance.children);
             if (intersectedObjects.length) {
-                if (intersectedObjects[0].object.name == "Terrain") {
-                    JWFramework.ObjectManager.getInstance().GetObjectFromName("Terrain").Picked = true;
-                }
-                else {
-                    this.GetParentName(intersectedObjects[0].object);
-                    this.pickedParent = JWFramework.ObjectManager.getInstance().GetObjectFromName(this.pickedParentName);
-                    this.pickedParent.Picked = true;
-                }
+                this.GetParentName(intersectedObjects[0].object);
+                this.pickedParent = JWFramework.ObjectManager.getInstance().GetObjectFromName(this.pickedParentName);
+                console.log(this.pickedParentName);
+                this.pickedParent.Picked = true;
             }
         }
         GetCanvasReleativePosition(event) {

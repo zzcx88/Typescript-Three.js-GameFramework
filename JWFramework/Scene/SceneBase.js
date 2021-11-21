@@ -3,6 +3,12 @@ var JWFramework;
     class SceneBase {
         constructor() { }
         Animate() { }
+        get Terrain() {
+            return this.heightmapTerrain;
+        }
+        set Terrain(terrain) {
+            this.heightmapTerrain = terrain;
+        }
         get Picker() {
             return this.picker;
         }
