@@ -59,15 +59,6 @@ var JWFramework;
             this.clock = new THREE.Clock();
             this.delta = 0;
         }
-        Animate() {
-            if (this.ResizeView()) {
-                this.camera.Aspect = this.Canvas.clientWidth / this.Canvas.clientHeight;
-                this.camera.CameraInstance.updateProjectionMatrix();
-            }
-            //this.camera.Animate();
-            this.delta = this.clock.getDelta();
-            this.sceneManager.Animate();
-        }
         GetDeltaTime() {
             return this.delta;
         }
@@ -76,6 +67,15 @@ var JWFramework;
         }
         get MainCamera() {
             return this.camera;
+        }
+        Animate() {
+            if (this.ResizeView()) {
+                this.camera.Aspect = this.Canvas.clientWidth / this.Canvas.clientHeight;
+                this.camera.CameraInstance.updateProjectionMatrix();
+            }
+            //this.camera.Animate();
+            this.delta = this.clock.getDelta();
+            this.sceneManager.Animate();
         }
         Render() {
             this.renderer.render(this.sceneManager.SceneInstance, this.camera.CameraInstance);

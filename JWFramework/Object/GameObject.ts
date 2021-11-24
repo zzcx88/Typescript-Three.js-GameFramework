@@ -15,12 +15,24 @@
             this.name = name;
         }
 
+        public get IsClone(): boolean {
+            return this.isClone;
+        }
+
+        public set IsClone(isClone: boolean) {
+            this.isClone = isClone;
+        }
+
         public get PhysicsComponent(): PhysicsComponent {
             return this.physicsComponent;
         }
 
         public get GraphicComponent(): GraphComponent {
             return this.graphicComponent;
+        }
+
+        public get GUIComponent(): GUIComponent {
+            return this.guiComponent;
         }
 
         public get PhysicsCompIncluded() {
@@ -62,6 +74,7 @@
         protected gameObjectInstance;
         protected type: ObjectType;
         protected name: string;
+        protected isClone: boolean = false;
 
         protected physicsComponent: PhysicsComponent;
         protected graphicComponent: GraphComponent;

@@ -1,137 +1,45 @@
-//var heightmapImage: HTMLImageElement;
-//var size: number;
-//var data: Float32Array;
-//var canvas: HTMLCanvasElement;
-//var context: CanvasRenderingContext2D;
-//var imageData;
 var JWFramework;
 (function (JWFramework) {
     class HeightmapTerrain extends JWFramework.GameObject {
-        constructor(width, height) {
+        constructor() {
             super();
-            this.width = width;
-            this.height = height;
+            this.name = "Terrain";
             this.CreateTerrainMesh();
             this.type = JWFramework.ObjectType.OBJ_OBJECT3D;
             this.physicsComponent = new JWFramework.PhysicsComponent(this);
             this.graphicComponent = new JWFramework.GraphComponent(this);
         }
         InitializeAfterLoad() {
-            this.name = "Terrain";
-            this.GameObjectInstance.name = this.name;
-            this.scaleY = 100;
-            this.GameObjectInstance.scale.y = this.scaleY;
-            this.GameObjectInstance.position.x = this.width / 2;
-            this.GameObjectInstance.position.z = this.height / 2;
-            JWFramework.ObjectManager.getInstance().AddObject(this, this.name, this.Type);
-            //if (SceneManager.getInstance().SceneType == SceneType.SCENE_TEST) {
-            //    this.axisHelper = new THREE.AxesHelper(10);
-            //    this.GameObjectInstance.add(this.axisHelper);
-            //    this.guiComponent = new GUIComponent(this);
-            //}
-        }
-        static FromImage() {
-            return new Promise(function (resolve, reject) {
-                let heightmapImage = new Image();
-                heightmapImage.onload = function () {
-                    let canvas = document.createElement('canvas');
-                    canvas.width = heightmapImage.width;
-                    canvas.height = heightmapImage.height;
-                    let context = canvas.getContext('2d');
-                    let size = heightmapImage.width * heightmapImage.height;
-                    context.drawImage(heightmapImage, 0, 0);
-                    let pixels = context.getImageData(0, 0, heightmapImage.width, heightmapImage.height).data;
-                    let terrain = new HeightmapTerrain(heightmapImage.width, heightmapImage.height);
-                    for (let i = 0; i < size; i++) {
-                        terrain.array[i * 3 + 1] = pixels[i * 4] / 256;
-                    }
-                    resolve(terrain);
-                };
-                heightmapImage.onabort = reject;
-                heightmapImage.onerror = reject;
-                heightmapImage.src = "Model/Heightmap/IslandHeightmap.png";
-            });
+            //for (let i = 0; i < this.planeGeomatry.getAttribute('position').array.length / 3; ++i)
+            //    if (i % 2 == 0)
+            //        this.planeGeomatry.getAttribute('position').setY(i, 10);
+            JWFramework.SceneManager.getInstance().SceneInstance.add(this.gameObjectInstance);
+            JWFramework.ObjectManager.getInstance().AddObject(this, this.name, this.type);
         }
         CreateTerrainMesh() {
-            //this.planeGeomatry = new THREE.PlaneGeometry(300, 300, 30, 30);
-            //this.material = new THREE.MeshStandardMaterial();
-            //this.texture = new THREE.TextureLoader().load(this.heightmapImage.src);
+            this.planeGeomatry = new THREE.PlaneGeometry(300, 300, 64, 64);
+            this.material = new THREE.MeshStandardMaterial();
+            this.texture = new THREE.TextureLoader().load("Model/Heightmap/IslandHeightmap.png");
             //this.material.displacementMap = this.texture;
-            //this.material.map = this.texture;
+            this.material.map = this.texture;
             //this.material.displacementScale = 50;
-            //this.plane = new THREE.Mesh(this.planeGeomatry, this.material);
-            //this.gameObjectInstance = this.plane;
-            //this.plane.rotation.x = -90;
-            //this.GameObjectInstance.name = this.name;
-            this.planeGeomatry = new THREE.PlaneGeometry(this.width, this.height, this.width - 1, this.height - 1);
+            this.material.wireframe = false;
             let rotation = new THREE.Matrix4().makeRotationX(-Math.PI / 2);
             this.planeGeomatry.applyMatrix4(rotation);
-            this.array = this.planeGeomatry.getAttribute("position").array;
             this.planeGeomatry.computeBoundingSphere();
             this.planeGeomatry.computeVertexNormals();
-            this.texture = new THREE.TextureLoader().load("Model/Heightmap/IslandHeightmap.png");
-            this.material = new THREE.MeshStandardMaterial();
-            this.material.map = this.texture;
+            this.planeGeomatry.attributes.position.array;
             this.planeMesh = new THREE.Mesh(this.planeGeomatry, this.material);
-            //픽킹을 위해 그룹으로 감싼다.
-            this.plane = new THREE.Group();
-            this.plane.add(this.planeMesh);
-            this.GameObjectInstance = this.plane;
-            JWFramework.SceneManager.getInstance().SceneInstance.add(this.GameObjectInstance);
+            this.gameObjectInstance = this.planeMesh;
+            this.GameObjectInstance.name = this.name;
             this.InitializeAfterLoad();
         }
-        GetHeight(positionX, positionZ) {
-            let width = this.width;
-            let height = this.height;
-            //if (positionX < 0 || positionX >= width || positionZ < 0 || positionZ >= height) {
-            //    throw new Error('point outside of terrain boundary');
-            //}
-            // Get integer floor of x, z
-            let ix = Math.floor(positionX);
-            let iz = Math.floor(positionZ);
-            // Get real (fractional) component of x, z
-            // This is the amount of each into the cell
-            let rx = positionX - ix;
-            let rz = positionZ - iz;
-            // Edges of cell
-            let a = this.array[(iz * width + ix) * 3 + 1];
-            let b = this.array[(iz * width + (ix + 1)) * 3 + 1];
-            let c = this.array[((iz + 1) * width + (ix + 1)) * 3 + 1];
-            let d = this.array[((iz + 1) * width + ix) * 3 + 1];
-            // Interpolate top edge (left and right)
-            let e = (a * (1 - rx) + b * rx);
-            // Interpolate bottom edge (left and right)
-            let f = (c * rx + d * (1 - rx));
-            // Interpolate between top and bottom
-            let y = (e * (1 - rz) + f * rz);
-            return (y * this.scaleY);
+        SetHeight(inedx) {
+            this.planeGeomatry.getAttribute('position').needsUpdate = true;
+            let height = this.planeGeomatry.getAttribute('position').getY(inedx);
+            this.planeGeomatry.getAttribute('position').setY(inedx, height += 3);
         }
         Animate() {
-            //if (this.Picked == true) {
-            //    if (InputManager.getInstance().GetKeyState('left')) {
-            //        this.PhysicsComponent.Rotate(0, 0, -1);
-            //    }
-            //    if (InputManager.getInstance().GetKeyState('right')) {
-            //        this.PhysicsComponent.Rotate(0, 0, 1);
-            //    }
-            //    if (InputManager.getInstance().GetKeyState('down')) {
-            //        this.PhysicsComponent.Rotate(-1, 0, 0);
-            //    }
-            //    if (InputManager.getInstance().GetKeyState('up')) {
-            //        this.PhysicsComponent.Rotate(1, 0, 0);
-            //    }
-            //    if (InputManager.getInstance().GetKeyState('w')) {
-            //        this.PhysicsComponent.MoveFoward(1);
-            //    }
-            //}
-            //if (SceneManager.getInstance().SceneType == SceneType.SCENE_TEST && this.Picked == true) {
-            //    this.guiComponent.ShowGUI(true);
-            //    this.axisHelper.visible = true;
-            //}
-            //if (SceneManager.getInstance().SceneType == SceneType.SCENE_TEST && this.Picked == false) {
-            //    this.guiComponent.ShowGUI(false);
-            //    this.axisHelper.visible = false;
-            //}
         }
     }
     JWFramework.HeightmapTerrain = HeightmapTerrain;

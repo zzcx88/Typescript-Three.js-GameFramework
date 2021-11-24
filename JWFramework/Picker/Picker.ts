@@ -3,11 +3,12 @@
         public constructor() {
             this.raycaster = new THREE.Raycaster();
             this.pickedObject = null;
-            this.pickedObjectSavedColor = 0;
+
+            this.pickMode = PickMode.Pick_Modify;
 
             this.orbitControl = new THREE.OrbitControls(WorldManager.getInstance().MainCamera.CameraInstance, WorldManager.getInstance().Canvas);
 
-            window.addEventListener('mousedown', function (e) {
+            window.addEventListener('click', function (e) {
                 SceneManager.getInstance().CurrentScene.Picker.SetPickPosition(e);
             });
             window.addEventListener('mouseout', function (e) {
@@ -44,18 +45,35 @@
             }
             this.raycaster.setFromCamera({ x: this.pickPositionX, y: this.pickPositionY }, WorldManager.getInstance().MainCamera.CameraInstance);
 
-            //this.raycaster.ray.origin = WorldManager.getInstance().MainCamera.CameraInstance.position;
-            //let vec3 = WorldManager.getInstance().MainCamera.CameraInstance.matrixWorld.elements;
-            //let look = new THREE.Vector3(-vec3[8], -vec3[9], -vec3[10]).normalize();
-            //console.log(look);
-            //console.log(this.raycaster.ray.direction);
-            //this.raycaster.ray.direction = look;
-            let intersectedObjects = this.raycaster.intersectObjects(SceneManager.getInstance().SceneInstance.children);
-            if (intersectedObjects.length) {
-                this.GetParentName(intersectedObjects[0].object);
-                this.pickedParent = ObjectManager.getInstance().GetObjectFromName(this.pickedParentName);
-                console.log(this.pickedParentName);
-                this.pickedParent.Picked = true;
+            if (this.pickMode == PickMode.Pick_Clone) {
+                let objectManager = ObjectManager.getInstance();
+                let intersectedObject = this.raycaster.intersectObject(objectManager.GetObjectFromName("Terrain").GameObjectInstance, true);
+
+                //클론된 오브젝트를 생성한다.
+                let cloneObject = objectManager.MakeClone(objectManager.GetObjectFromName(GUIManager.getInstance().GUI_Select.GetSelectObjectName()));
+                cloneObject.GameObjectInstance.position.set(0, 0, 0);
+                cloneObject.GameObjectInstance.position.copy(intersectedObject[0].point);
+
+                SceneManager.getInstance().SceneInstance.add(cloneObject.GameObjectInstance);
+                objectManager.AddObject(cloneObject, cloneObject.Name, cloneObject.Type);
+
+            }
+            else if (this.pickMode == PickMode.Pick_Terrain) {
+                let objectManager = ObjectManager.getInstance();
+                let intersectedObject = this.raycaster.intersectObject(objectManager.GetObjectFromName("Terrain").GameObjectInstance, true);
+
+                let terrain = objectManager.GetObjectFromName("Terrain");
+                (terrain as unknown as HeightmapTerrain).SetHeight(intersectedObject[0].face.a);
+            }
+            else {
+                let intersectedObjects = this.raycaster.intersectObjects(SceneManager.getInstance().SceneInstance.children);
+                if (intersectedObjects.length) {
+                    this.GetParentName(intersectedObjects[0].object);
+                    this.pickedParent = ObjectManager.getInstance().GetObjectFromName(this.pickedParentName);
+                    console.log(this.pickedParentName);
+                    this.pickedParent.Picked = true;
+                    GUIManager.getInstance().GUI_SRT.SetGameObject(this.pickedParent);
+                }
             }
         }
 
@@ -68,9 +86,6 @@
         }
 
         public SetPickPosition(event) {
-            //let pos = this.GetCanvasReleativePosition(event);
-            //this.pickPositionX = (pos.x / WorldManager.getInstance().Canvas.width) * 2 - 1;
-            //this.pickPositionY = (pos.y / WorldManager.getInstance().Canvas.height) * 2 - 1;
             this.pickPositionX = (event.clientX / window.innerWidth) * 2 - 1;
             this.pickPositionY = - (event.clientY / window.innerHeight) * 2 + 1;
             this.Pick();
@@ -81,9 +96,22 @@
             this.pickPositionY = -10000;
         }
 
+        public ChangePickModeModify() {
+            this.pickMode = PickMode.Pick_Modify;
+        }
+
+        public ChangePickModeClone() {
+            this.pickMode = PickMode.Pick_Clone;
+        }
+
+        public ChangePickModeTerrain() {
+            this.pickMode = PickMode.Pick_Terrain;
+        }
+
+        private pickMode: PickMode;
+
         private raycaster: THREE.Raycaster;
         private pickedObject;
-        private pickedObjectSavedColor: number;
         private pickedParent: GameObject;
         private pickPositionX = 0;
         private pickPositionY = 0;

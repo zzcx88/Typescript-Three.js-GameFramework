@@ -20,6 +20,9 @@ var JWFramework;
                 this.loadComplete = true;
         }
         get LoadComplete() {
+            if (this.loadComplete == true) {
+                JWFramework.GUIManager.getInstance().GUI_Select;
+            }
             return this.loadComplete;
         }
         LoadSceneTest() {

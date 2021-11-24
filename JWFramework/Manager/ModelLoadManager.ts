@@ -25,6 +25,9 @@
         }
 
         public get LoadComplete(): boolean {
+            if (this.loadComplete == true) {
+                GUIManager.getInstance().GUI_Select;
+            }
             return this.loadComplete;
         }
 

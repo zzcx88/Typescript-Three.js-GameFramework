@@ -4,15 +4,16 @@ var JWFramework;
         static getInstance() {
             if (!GUIManager.instance) {
                 GUIManager.instance = new GUIManager;
+                GUIManager.instance.gui_Select = new JWFramework.GUI_Select();
+                GUIManager.instance.gui_SRT = new JWFramework.GUI_SRT(JWFramework.ObjectManager.getInstance().GetObjectFromName("flower"));
             }
             return GUIManager.instance;
         }
-        get GuiInstance() {
-            let guiInstance = new dat.GUI;
-            return guiInstance;
+        get GUI_Select() {
+            return this.gui_Select;
         }
-        CreateFolder(guiInstance, name) {
-            guiInstance.addFolder(name);
+        get GUI_SRT() {
+            return this.gui_SRT;
         }
     }
     JWFramework.GUIManager = GUIManager;

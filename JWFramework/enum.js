@@ -14,5 +14,11 @@ var JWFramework;
         ObjectType[ObjectType["OBJ_CAMERA"] = 2] = "OBJ_CAMERA";
         ObjectType[ObjectType["OBJ_END"] = 3] = "OBJ_END";
     })(ObjectType = JWFramework.ObjectType || (JWFramework.ObjectType = {}));
+    let PickMode;
+    (function (PickMode) {
+        PickMode[PickMode["Pick_Modify"] = 0] = "Pick_Modify";
+        PickMode[PickMode["Pick_Clone"] = 1] = "Pick_Clone";
+        PickMode[PickMode["Pick_Terrain"] = 2] = "Pick_Terrain";
+    })(PickMode = JWFramework.PickMode || (JWFramework.PickMode = {}));
 })(JWFramework || (JWFramework = {}));
 //# sourceMappingURL=enum.js.map

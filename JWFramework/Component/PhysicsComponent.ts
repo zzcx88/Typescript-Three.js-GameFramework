@@ -84,9 +84,6 @@
             //this.vec3Up = this.vec3Up.crossVectors(this.vec3Look, this.vec3Right);
             //this.vec3Look = this.vec3Look.crossVectors(this.vec3Right, this.vec3Up);
 
-            if (this.GameObject.Name == "F-16")
-                console.log(this.vec3Look);
-
             //this.gameince.matrix.elements[]
 
             //this.vec3Right.set(this.GameObject.GameObjectInstance.matrix.elements[0], this.GameObject.GameObjectInstance.matrix.elements[1], this.GameObject.GameObjectInstance.matrix.elements[2]);

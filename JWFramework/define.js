@@ -15,15 +15,9 @@ var JWFramework;
             this.helmet.Name = "helmet";
             this.flower.Name = "flower";
             this.sceneTestModel = [
-                {
-                    model: this.F16, url: 'Model/F-16D/F-16D.gltf'
-                },
-                {
-                    model: this.helmet, url: 'Model/DamagedHelmet.gltf'
-                },
-                {
-                    model: this.flower, url: 'Model/Flower.glb'
-                }
+                { model: this.F16, url: 'Model/F-16D/F-16D.gltf' },
+                { model: this.helmet, url: 'Model/DamagedHelmet.gltf' },
+                { model: this.flower, url: 'Model/Flower.glb' }
             ];
             this.modelNumber = this.sceneTestModel.length;
         }

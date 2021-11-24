@@ -102,9 +102,11 @@
     <TypeScriptCompile Include="define.ts" />
     <TypeScriptCompile Include="enum.ts" />
     <TypeScriptCompile Include="GUI\GUIControls\GUI_Base.ts" />
+    <TypeScriptCompile Include="GUI\GUIControls\GUI_Select.ts" />
     <TypeScriptCompile Include="GUI\GUIControls\GUI_SRT.ts" />
     <TypeScriptCompile Include="Lib\datGUI\dat.gui.d.ts" />
     <TypeScriptCompile Include="Main.ts" />
+    <TypeScriptCompile Include="Manager\CameraManager.ts" />
     <TypeScriptCompile Include="Manager\GUIManager.ts" />
     <TypeScriptCompile Include="Manager\InputManager.ts" />
     <TypeScriptCompile Include="Manager\ModelLoadManager.ts" />

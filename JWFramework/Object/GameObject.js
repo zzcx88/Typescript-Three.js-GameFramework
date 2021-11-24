@@ -2,6 +2,7 @@ var JWFramework;
 (function (JWFramework) {
     class GameObject {
         constructor() {
+            this.isClone = false;
             this.physicsCompIncluded = false;
             this.graphicCompIncluded = false;
             this.picked = false;
@@ -16,11 +17,20 @@ var JWFramework;
         set Name(name) {
             this.name = name;
         }
+        get IsClone() {
+            return this.isClone;
+        }
+        set IsClone(isClone) {
+            this.isClone = isClone;
+        }
         get PhysicsComponent() {
             return this.physicsComponent;
         }
         get GraphicComponent() {
             return this.graphicComponent;
+        }
+        get GUIComponent() {
+            return this.guiComponent;
         }
         get PhysicsCompIncluded() {
             return this.physicsCompIncluded;

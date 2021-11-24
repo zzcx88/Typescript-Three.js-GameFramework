@@ -4,7 +4,7 @@ var JWFramework;
         constructor(gameObject) {
             super();
             this.datGui = new dat.GUI;
-            this.datGui.close();
+            this.datGui.open();
             this.gameObject = gameObject;
             this.CreateFolder();
             this.AddElement();
@@ -28,6 +28,14 @@ var JWFramework;
             this.scaleFolder.add(this.gameObject.GameObjectInstance.scale, 'y', 0).step(0.01).listen();
             this.scaleFolder.add(this.gameObject.GameObjectInstance.scale, 'z', 0).step(0.01).listen();
             this.scaleFolder.open();
+        }
+        SetGameObject(gameObject) {
+            this.gameObject = gameObject;
+            this.datGui.removeFolder(this.positionFolder);
+            this.datGui.removeFolder(this.rotateFolder);
+            this.datGui.removeFolder(this.scaleFolder);
+            this.CreateFolder();
+            this.AddElement();
         }
         UpdateDisplay() {
             this.datGui.updateDisplay();

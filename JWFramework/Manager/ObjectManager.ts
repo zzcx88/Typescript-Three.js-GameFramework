@@ -29,6 +29,15 @@
             this.objectList.push({ GameObject: gameObject, Name: name });
         }
 
+        public MakeClone(selectObject: GameObject): GameObject {
+            let cloneObject: TestObject = new TestObject;
+            cloneObject.IsClone = true;
+            cloneObject.Name = selectObject.Name + "Clone" + ObjectManager.getInstance().GetObjectList.length.toString();
+            cloneObject.GameObjectInstance = selectObject.GameObjectInstance.clone();
+            cloneObject.InitializeAfterLoad();
+            return cloneObject;
+        }
+
         public DeleteObject() {
             for (let i = 0; i < this.objectList.length; ++i) {
                 SceneManager.getInstance().SceneInstance.remove(this.objectList[i].GameObject.GameObjectInstance);

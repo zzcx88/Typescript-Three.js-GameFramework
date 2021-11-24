@@ -4,7 +4,7 @@
         constructor(gameObject: GameObject) {
             super();
             this.datGui = new dat.GUI;
-            this.datGui.close();
+            this.datGui.open();
             this.gameObject = gameObject;
 
             this.CreateFolder();
@@ -19,6 +19,7 @@
         }
 
         protected AddElement() {
+
             this.positionFolder.add(this.gameObject.GameObjectInstance.position, 'x').step(0.01).listen();
             this.positionFolder.add(this.gameObject.GameObjectInstance.position, 'y').step(0.01).listen();
             this.positionFolder.add(this.gameObject.GameObjectInstance.position, 'z').step(0.01).listen();
@@ -35,6 +36,17 @@
             this.scaleFolder.open();
         }
 
+        public SetGameObject(gameObject: GameObject) {
+            this.gameObject = gameObject;
+
+            this.datGui.removeFolder(this.positionFolder);
+            this.datGui.removeFolder(this.rotateFolder);
+            this.datGui.removeFolder(this.scaleFolder);
+
+            this.CreateFolder()
+            this.AddElement();
+        }
+
         public UpdateDisplay() {
             this.datGui.updateDisplay();
         }
@@ -48,7 +60,6 @@
             }
             this.gameObject.PhysicsComponent.UpdateMatrix();
         }
-
 
         private datGui: dat.GUI;
         private gameObject: GameObject;

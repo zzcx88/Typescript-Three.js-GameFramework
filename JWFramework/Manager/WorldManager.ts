@@ -71,16 +71,6 @@
             this.delta = 0;
         }
 
-        public Animate() {
-            if (this.ResizeView()) {
-                this.camera.Aspect = this.Canvas.clientWidth / this.Canvas.clientHeight;
-                this.camera.CameraInstance.updateProjectionMatrix();
-            }
-            //this.camera.Animate();
-            this.delta = this.clock.getDelta();
-            this.sceneManager.Animate();
-        }
-
         public GetDeltaTime(): number {
             return this.delta;
         }
@@ -91,6 +81,16 @@
 
         public get MainCamera(): Camera {
             return this.camera;
+        }
+
+        public Animate() {
+            if (this.ResizeView()) {
+                this.camera.Aspect = this.Canvas.clientWidth / this.Canvas.clientHeight;
+                this.camera.CameraInstance.updateProjectionMatrix();
+            }
+            //this.camera.Animate();
+            this.delta = this.clock.getDelta();
+            this.sceneManager.Animate();
         }
 
         public Render() {

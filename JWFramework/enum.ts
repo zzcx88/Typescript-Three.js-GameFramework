@@ -13,4 +13,10 @@ namespace JWFramework {
         OBJ_CAMERA,
         OBJ_END
     }
+
+    export enum PickMode {
+        Pick_Modify,
+        Pick_Clone,
+        Pick_Terrain
+    }
 }

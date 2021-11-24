@@ -6,19 +6,21 @@
         static getInstance() {
             if (!GUIManager.instance) {
                 GUIManager.instance = new GUIManager;
+                GUIManager.instance.gui_Select = new GUI_Select();
+                GUIManager.instance.gui_SRT = new GUI_SRT(ObjectManager.getInstance().GetObjectFromName("flower"));
             }
             return GUIManager.instance;
         }
 
-        public get GuiInstance(): dat.GUI {
-            let guiInstance = new dat.GUI;
-            return guiInstance;
+        public get GUI_Select(): GUI_Select {
+            return this.gui_Select;
         }
 
-        public CreateFolder(guiInstance: dat.GUI, name: string) {
-            guiInstance.addFolder(name);
+        public get GUI_SRT(): GUI_SRT {
+            return this.gui_SRT;
         }
 
-
+        private gui_Select: GUI_Select;
+        private gui_SRT: GUI_SRT;
     }
 }

@@ -6,9 +6,9 @@ var JWFramework;
             this.pickPositionY = 0;
             this.raycaster = new THREE.Raycaster();
             this.pickedObject = null;
-            this.pickedObjectSavedColor = 0;
+            this.pickMode = JWFramework.PickMode.Pick_Modify;
             this.orbitControl = new THREE.OrbitControls(JWFramework.WorldManager.getInstance().MainCamera.CameraInstance, JWFramework.WorldManager.getInstance().Canvas);
-            window.addEventListener('mousedown', function (e) {
+            window.addEventListener('click', function (e) {
                 JWFramework.SceneManager.getInstance().CurrentScene.Picker.SetPickPosition(e);
             });
             window.addEventListener('mouseout', function (e) {
@@ -41,18 +41,31 @@ var JWFramework;
                 }
             }
             this.raycaster.setFromCamera({ x: this.pickPositionX, y: this.pickPositionY }, JWFramework.WorldManager.getInstance().MainCamera.CameraInstance);
-            //this.raycaster.ray.origin = WorldManager.getInstance().MainCamera.CameraInstance.position;
-            //let vec3 = WorldManager.getInstance().MainCamera.CameraInstance.matrixWorld.elements;
-            //let look = new THREE.Vector3(-vec3[8], -vec3[9], -vec3[10]).normalize();
-            //console.log(look);
-            //console.log(this.raycaster.ray.direction);
-            //this.raycaster.ray.direction = look;
-            let intersectedObjects = this.raycaster.intersectObjects(JWFramework.SceneManager.getInstance().SceneInstance.children);
-            if (intersectedObjects.length) {
-                this.GetParentName(intersectedObjects[0].object);
-                this.pickedParent = JWFramework.ObjectManager.getInstance().GetObjectFromName(this.pickedParentName);
-                console.log(this.pickedParentName);
-                this.pickedParent.Picked = true;
+            if (this.pickMode == JWFramework.PickMode.Pick_Clone) {
+                let objectManager = JWFramework.ObjectManager.getInstance();
+                let intersectedObject = this.raycaster.intersectObject(objectManager.GetObjectFromName("Terrain").GameObjectInstance, true);
+                //클론된 오브젝트를 생성한다.
+                let cloneObject = objectManager.MakeClone(objectManager.GetObjectFromName(JWFramework.GUIManager.getInstance().GUI_Select.GetSelectObjectName()));
+                cloneObject.GameObjectInstance.position.set(0, 0, 0);
+                cloneObject.GameObjectInstance.position.copy(intersectedObject[0].point);
+                JWFramework.SceneManager.getInstance().SceneInstance.add(cloneObject.GameObjectInstance);
+                objectManager.AddObject(cloneObject, cloneObject.Name, cloneObject.Type);
+            }
+            else if (this.pickMode == JWFramework.PickMode.Pick_Terrain) {
+                let objectManager = JWFramework.ObjectManager.getInstance();
+                let intersectedObject = this.raycaster.intersectObject(objectManager.GetObjectFromName("Terrain").GameObjectInstance, true);
+                let terrain = objectManager.GetObjectFromName("Terrain");
+                terrain.SetHeight(intersectedObject[0].face.a);
+            }
+            else {
+                let intersectedObjects = this.raycaster.intersectObjects(JWFramework.SceneManager.getInstance().SceneInstance.children);
+                if (intersectedObjects.length) {
+                    this.GetParentName(intersectedObjects[0].object);
+                    this.pickedParent = JWFramework.ObjectManager.getInstance().GetObjectFromName(this.pickedParentName);
+                    console.log(this.pickedParentName);
+                    this.pickedParent.Picked = true;
+                    JWFramework.GUIManager.getInstance().GUI_SRT.SetGameObject(this.pickedParent);
+                }
             }
         }
         GetCanvasReleativePosition(event) {
@@ -63,9 +76,6 @@ var JWFramework;
             };
         }
         SetPickPosition(event) {
-            //let pos = this.GetCanvasReleativePosition(event);
-            //this.pickPositionX = (pos.x / WorldManager.getInstance().Canvas.width) * 2 - 1;
-            //this.pickPositionY = (pos.y / WorldManager.getInstance().Canvas.height) * 2 - 1;
             this.pickPositionX = (event.clientX / window.innerWidth) * 2 - 1;
             this.pickPositionY = -(event.clientY / window.innerHeight) * 2 + 1;
             this.Pick();
@@ -73,6 +83,15 @@ var JWFramework;
         ClearPickPosition() {
             this.pickPositionX = -10000;
             this.pickPositionY = -10000;
+        }
+        ChangePickModeModify() {
+            this.pickMode = JWFramework.PickMode.Pick_Modify;
+        }
+        ChangePickModeClone() {
+            this.pickMode = JWFramework.PickMode.Pick_Clone;
+        }
+        ChangePickModeTerrain() {
+            this.pickMode = JWFramework.PickMode.Pick_Terrain;
         }
     }
     JWFramework.Picker = Picker;

@@ -25,6 +25,14 @@ var JWFramework;
         AddObject(gameObject, name, type) {
             this.objectList.push({ GameObject: gameObject, Name: name });
         }
+        MakeClone(selectObject) {
+            let cloneObject = new JWFramework.TestObject;
+            cloneObject.IsClone = true;
+            cloneObject.Name = selectObject.Name + "Clone" + ObjectManager.getInstance().GetObjectList.length.toString();
+            cloneObject.GameObjectInstance = selectObject.GameObjectInstance.clone();
+            cloneObject.InitializeAfterLoad();
+            return cloneObject;
+        }
         DeleteObject() {
             for (let i = 0; i < this.objectList.length; ++i) {
                 JWFramework.SceneManager.getInstance().SceneInstance.remove(this.objectList[i].GameObject.GameObjectInstance);
