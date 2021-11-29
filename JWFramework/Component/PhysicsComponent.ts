@@ -37,7 +37,9 @@
         }
 
         public SetPostionVec3(vec3: THREE.Vector3): void {
-            this.GameObject.GameObjectInstance.position = vec3;
+            this.GameObject.GameObjectInstance.position.x = vec3.x;
+            this.GameObject.GameObjectInstance.position.y = vec3.y;
+            this.GameObject.GameObjectInstance.position.z = vec3.z;
             this.UpdateMatrix();
         }
 
@@ -52,18 +54,24 @@
         }
 
         public MoveFoward(distance: number) {
-            this.GameObject.GameObjectInstance.translateOnAxis(this.vec3Look, distance * WorldManager.getInstance().GetDeltaTime());
+            let Look = new THREE.Vector3(0, 0, 1);
+            this.GameObject.GameObjectInstance.translateOnAxis(Look, distance * WorldManager.getInstance().GetDeltaTime());
             this.UpdateMatrix();
         }
 
         public GetPosition(): THREE.Vector3{
-            return this.vec3Position;
+            return this.GameObject.GameObjectInstance.position;
         }
 
         public GetRotateEuler(): THREE.Euler {
             return this.GameObject.GameObjectInstance.rotation;
         }
 
+        public GetScale(): THREE.Vector3 {
+            return this.GameObject.GameObjectInstance.scale;
+        }
+
+        //Object스페이스 축 기준 회전
         public Rotate(x: number, y: number, z: number): void {
             this.GameObject.GameObjectInstance.rotateX(x * WorldManager.getInstance().GetDeltaTime());
             this.GameObject.GameObjectInstance.rotateY(y * WorldManager.getInstance().GetDeltaTime());
@@ -71,33 +79,35 @@
             this.UpdateMatrix();
         }
 
+        //월드 스페이스 축 기준 회전
         public RotateVec3(axis: THREE.Vector3, angle: number): void {
-            this.GameObject.GameObjectInstance.setRotationFromAxisAngle(axis, angle * WorldManager.getInstance().GetDeltaTime());
+            this.GameObject.GameObjectInstance.rotateOnWorldAxis(axis, angle * WorldManager.getInstance().GetDeltaTime());
             this.UpdateMatrix();
         }
 
         public UpdateMatrix() {
-            this.vec3Position = this.GameObject.GameObjectInstance.position;
+            if (this.GameObject.Name != "MainCamera" && CameraManager.getInstance().CameraMode != CameraMode.CAMERA_3RD) {
+                this.GameObject.GameObjectInstance.getWorldPosition(this.vec3Position);
+            }
+            else {
+                this.vec3Position = this.GameObject.GameObjectInstance.position;
+            }
 
-            //this.vec3Look = this.vec3Look.crossVectors(this.vec3Right, this.vec3Up);
-            //this.vec3Right = this.vec3Right.crossVectors(this.vec3Up, this.vec3Look);
-            //this.vec3Up = this.vec3Up.crossVectors(this.vec3Look, this.vec3Right);
-            //this.vec3Look = this.vec3Look.crossVectors(this.vec3Right, this.vec3Up);
+            this.GameObject.GameObjectInstance.getWorldDirection(this.vec3Look);
+            this.vec3Look = this.vec3Look.normalize();
+            this.vec3Up.set(this.GameObject.GameObjectInstance.matrix.elements[4], this.GameObject.GameObjectInstance.matrix.elements[5], this.GameObject.GameObjectInstance.matrix.elements[6]);
+            this.vec3Up = this.vec3Up.normalize();
+            this.vec3Right = this.vec3Right.crossVectors(this.vec3Up, this.vec3Look);
+            this.vec3Right = this.vec3Right.normalize();
 
-            //this.gameince.matrix.elements[]
 
-            //this.vec3Right.set(this.GameObject.GameObjectInstance.matrix.elements[0], this.GameObject.GameObjectInstance.matrix.elements[1], this.GameObject.GameObjectInstance.matrix.elements[2]);
-            //this.vec3Up.set(this.GameObject.GameObjectInstance.matrix.elements[4], this.GameObject.GameObjectInstance.matrix.elements[5], this.GameObject.GameObjectInstance.matrix.elements[6]);
-            //this.vec3Look.set(this.GameObject.GameObjectInstance.matrix.elements[8], this.GameObject.GameObjectInstance.matrix.elements[9], this.GameObject.GameObjectInstance.matrix.elements[10]);
-            //this.GameObject.GameObjectInstance.matrix.set(
-            //    this.vec3Right.x, this.vec3Right.y, this.vec3Right.z, 0,
-            //    this.vec3Up.x, this.vec3Up.y, this.vec3Up.z, 0,
-            //    this.vec3Look.x, this.vec3Look.y, this.vec3Look.z,  0,
-            //    this.vec3Position.x, this.vec3Position.y, this.vec3Position.z, 0
-            //);
+            //외적하여 나온 방향으로 일정각도 회전한 축을 구할때
+            //1. 저장된 벡터와 상대 벡터를 외적한다.
+            //2. 외적하여 나온 축에 라디안 값을 곱한다.
+            //3. 완성...?
 
             //this.GameObject.GameObjectInstance.updateMatrix();
-            //this.GameObject.GameObjectInstance.updateMatrixWorld(true);
+            //this.GameObject.GameObjectInstance.updateMatrixWorld(true, true);
         }
 
         private gameince: THREE.Object3D;

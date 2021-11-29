@@ -4,9 +4,11 @@
             this.raycaster = new THREE.Raycaster();
             this.pickedObject = null;
 
-            this.pickMode = PickMode.Pick_Modify;
+            this.pickMode = PickMode.PICK_MODIFY;
 
             this.orbitControl = new THREE.OrbitControls(WorldManager.getInstance().MainCamera.CameraInstance, WorldManager.getInstance().Canvas);
+            this.orbitControl.maxDistance = 200;
+            this.orbitControl.minDistance = 0;
 
             window.addEventListener('click', function (e) {
                 SceneManager.getInstance().CurrentScene.Picker.SetPickPosition(e);
@@ -45,7 +47,7 @@
             }
             this.raycaster.setFromCamera({ x: this.pickPositionX, y: this.pickPositionY }, WorldManager.getInstance().MainCamera.CameraInstance);
 
-            if (this.pickMode == PickMode.Pick_Clone) {
+            if (this.pickMode == PickMode.PICK_CLONE) {
                 let objectManager = ObjectManager.getInstance();
                 let intersectedObject = this.raycaster.intersectObject(objectManager.GetObjectFromName("Terrain").GameObjectInstance, true);
 
@@ -58,12 +60,23 @@
                 objectManager.AddObject(cloneObject, cloneObject.Name, cloneObject.Type);
 
             }
-            else if (this.pickMode == PickMode.Pick_Terrain) {
+            else if (this.pickMode == PickMode.PICK_TERRAIN) {
                 let objectManager = ObjectManager.getInstance();
                 let intersectedObject = this.raycaster.intersectObject(objectManager.GetObjectFromName("Terrain").GameObjectInstance, true);
 
                 let terrain = objectManager.GetObjectFromName("Terrain");
                 (terrain as unknown as HeightmapTerrain).SetHeight(intersectedObject[0].face.a);
+                (terrain as unknown as HeightmapTerrain).SetHeight(intersectedObject[0].face.b);
+                (terrain as unknown as HeightmapTerrain).SetHeight(intersectedObject[0].face.c);
+            }
+            else if (this.pickMode == PickMode.PICK_REMOVE) {
+                let intersectedObjects = this.raycaster.intersectObjects(SceneManager.getInstance().SceneInstance.children);
+                if (intersectedObjects.length) {
+                    this.GetParentName(intersectedObjects[0].object);
+                    this.pickedParent = ObjectManager.getInstance().GetObjectFromName(this.pickedParentName);
+                    console.log(this.pickedParentName);
+                    this.pickedParent.DeleteObject();
+                }
             }
             else {
                 let intersectedObjects = this.raycaster.intersectObjects(SceneManager.getInstance().SceneInstance.children);
@@ -97,15 +110,23 @@
         }
 
         public ChangePickModeModify() {
-            this.pickMode = PickMode.Pick_Modify;
+            this.pickMode = PickMode.PICK_MODIFY;
         }
 
         public ChangePickModeClone() {
-            this.pickMode = PickMode.Pick_Clone;
+            this.pickMode = PickMode.PICK_CLONE;
         }
 
         public ChangePickModeTerrain() {
-            this.pickMode = PickMode.Pick_Terrain;
+            this.pickMode = PickMode.PICK_TERRAIN;
+        }
+
+        public ChangePickModeRemove() {
+            this.pickMode = PickMode.PICK_REMOVE;
+        }
+
+        public get OrbitControl(): THREE.OrbitControls {
+            return this.orbitControl;
         }
 
         private pickMode: PickMode;

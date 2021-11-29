@@ -5,10 +5,11 @@
             this.type = ObjectType.OBJ_OBJECT3D;
             this.physicsComponent = new PhysicsComponent(this);
             this.graphicComponent = new GraphComponent(this);
+            this.exportComponent = new ExportComponent(this);
         }
 
         public InitializeAfterLoad() {
-            //클론은 게임오브젝트 인스턴스를 하고 씬에 add한다.
+            //클론은 게임오브젝트인스턴스를 씬에 add한다.
             this.GameObjectInstance.matrixAutoUpdate = true;
             this.PhysicsComponent.SetScaleScalar(0.5);
             this.PhysicsComponent.SetPostion(0, 20, 0);
@@ -33,16 +34,16 @@
             //    this.Picked = true;
             if (this.Picked == true) {
                 if (InputManager.getInstance().GetKeyState('left')) {
-                    this.PhysicsComponent.Rotate(0, 0, -1);
+                    this.PhysicsComponent.RotateVec3(this.PhysicsComponent.Look, -1);
                 }
                 if (InputManager.getInstance().GetKeyState('right')) {
-                    this.PhysicsComponent.Rotate(0, 0, 1);
+                    this.PhysicsComponent.RotateVec3(this.PhysicsComponent.Look, 1);
                 }
                 if (InputManager.getInstance().GetKeyState('down')) {
-                    this.PhysicsComponent.Rotate(-1, 0, 0);
+                    this.PhysicsComponent.RotateVec3(this.PhysicsComponent.Right, -1);
                 }
                 if (InputManager.getInstance().GetKeyState('up')) {
-                    this.PhysicsComponent.Rotate(1, 0, 0);
+                    this.PhysicsComponent.RotateVec3(this.PhysicsComponent.Right, 1);
                 }
                 if (InputManager.getInstance().GetKeyState('w')) {
                     this.PhysicsComponent.MoveFoward(50);
@@ -59,7 +60,6 @@
             }
         }
 
-        private distance = 0;
         private axisHelper: THREE.AxesHelper;
     }
 }

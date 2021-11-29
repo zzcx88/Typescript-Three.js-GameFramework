@@ -1,7 +1,7 @@
 ﻿namespace JWFramework {
     export class Define {
-        static SCREEN_WIDTH: number = window.innerWidth;
-        static SCREEN_HEIGHT: number = window.innerHeight;
+        static readonly SCREEN_WIDTH: number = window.innerWidth;
+        static readonly SCREEN_HEIGHT: number = window.innerHeight;
     }
 
     export class ModelSceneTest {

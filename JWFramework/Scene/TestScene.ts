@@ -29,6 +29,7 @@
                 ObjectManager.getInstance().Animate();
 
                 //CameraManager.getInstance().SetCameraSavedPosition();
+                //this.Picker.OrbitControl.enabled = false;
 
                 if (InputManager.getInstance().GetKeyState('1')) {
                     this.Picker.ChangePickModeModify();
@@ -38,6 +39,9 @@
                 }
                 if (InputManager.getInstance().GetKeyState('3')) {
                     this.Picker.ChangePickModeTerrain();
+                }
+                if (InputManager.getInstance().GetKeyState('4')) {
+                    this.Picker.ChangePickModeRemove();
                 }
             }
         }

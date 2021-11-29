@@ -14,6 +14,7 @@ var JWFramework;
         }
         CreateFolder() {
             this.objectListFolder = this.datGui.addFolder('ObjectList');
+            this.exportButtonFolder = this.datGui.addFolder('Output');
         }
         AddElement() {
             let item = [];
@@ -23,6 +24,12 @@ var JWFramework;
             }
             this.objectListFolder.add(this.List, 'ObjectList', item);
             this.objectListFolder.open();
+            this.makeJson = function () {
+                this.ExportData = function () { JWFramework.SceneManager.getInstance().MakeJSON(); };
+            };
+            this.makeJson = new this.makeJson();
+            this.exportButtonFolder.add(this.makeJson, 'ExportData');
+            this.exportButtonFolder.open();
         }
         GetSelectObjectName() {
             return this.List.ObjectList;

@@ -17,6 +17,9 @@ var JWFramework;
         get SceneType() {
             return this.sceneType;
         }
+        MakeJSON() {
+            JWFramework.ObjectManager.getInstance().MakeJSONArray();
+        }
         BuildScene() {
             this.sceneThree = new THREE.Scene();
             this.sceneType = JWFramework.SceneType.SCENE_TEST;

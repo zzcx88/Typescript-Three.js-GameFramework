@@ -1,5 +1,4 @@
-﻿
-namespace JWFramework {
+﻿namespace JWFramework {
     export enum SceneType {
         SCENE_TEST,
         SCENE_START,
@@ -15,8 +14,14 @@ namespace JWFramework {
     }
 
     export enum PickMode {
-        Pick_Modify,
-        Pick_Clone,
-        Pick_Terrain
+        PICK_MODIFY,
+        PICK_CLONE,
+        PICK_TERRAIN,
+        PICK_REMOVE
+    }
+
+    export enum CameraMode {
+        CAMERA_ORBIT,
+        CAMERA_3RD
     }
 }

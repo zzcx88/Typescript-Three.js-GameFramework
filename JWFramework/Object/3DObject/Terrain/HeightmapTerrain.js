@@ -8,6 +8,7 @@ var JWFramework;
             this.type = JWFramework.ObjectType.OBJ_OBJECT3D;
             this.physicsComponent = new JWFramework.PhysicsComponent(this);
             this.graphicComponent = new JWFramework.GraphComponent(this);
+            this.exportComponent = new JWFramework.ExportComponent(this);
         }
         InitializeAfterLoad() {
             //for (let i = 0; i < this.planeGeomatry.getAttribute('position').array.length / 3; ++i)

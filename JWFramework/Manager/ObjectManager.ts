@@ -13,6 +13,7 @@
         }
 
         public GetObjectsFromType() { }
+
         public GetObjectFromName(name: string): GameObject {
             for (let i = 0; i < this.objectList.length; ++i) {
                 if (name == this.objectList[i].GameObject.Name) {
@@ -38,24 +39,53 @@
             return cloneObject;
         }
 
-        public DeleteObject() {
+        public ClearExportObjectList() {
+            this.exportObjectList = [];
+            this.exportObjectList.length = 0;
+        }
+
+        public MakeJSONArray() {
             for (let i = 0; i < this.objectList.length; ++i) {
-                SceneManager.getInstance().SceneInstance.remove(this.objectList[i].GameObject.GameObjectInstance);
-                this.objectList[i].GameObject.GameObjectInstance.traverse(node => {
-                    if (node.isMesh) {
-                        if (node.geometry) {
-                            node.geometry.dispose();
-                        }
-                        if (node.material)
-                            if (Array.isArray(node.material)) {
-                                for (let i = 0; i < node.material.length; ++i)
-                                    node.material[i].dispose();
-                            }
-                            else {
-                                node.material.dispose();
-                            }
-                    }
-                });
+                this.exportObjectList.push(this.objectList[i].GameObject.ExportComponent.MakeJsonObject())
+            }
+            const a = document.createElement("a");
+            a.href = URL.createObjectURL(new Blob([JSON.stringify(this.exportObjectList, null, 3)], {
+                type: "text/plain"
+            }));
+            a.setAttribute("download", "data.json");
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            this.ClearExportObjectList();
+        }
+
+        public DeleteObject() {
+
+        }
+
+        public DeleteAllObject() {
+            for (let i = 0; i < this.objectList.length; ++i) {
+                if (this.objectList[i].GameObject.Name != "Terrain") {
+                    this.objectList[i].GameObject.DeleteObject();
+                    delete this.objectList[i];
+                }
+                this.ClearExportObjectList();
+                //SceneManager.getInstance().SceneInstance.remove(this.objectList[i].GameObject.GameObjectInstance);
+                //this.objectList[i].GameObject.GameObjectInstance.traverse(node => {
+                //    if (node.isMesh) {
+                //        if (node.geometry) {
+                //            node.geometry.dispose();
+                //        }
+                //        if (node.material)
+                //            if (Array.isArray(node.material)) {
+                //                for (let i = 0; i < node.material.length; ++i)
+                //                    node.material[i].dispose();
+                //            }
+                //            else {
+                //                node.material.dispose();
+                //            }
+                //    }
+                //});
             }
         }
         private RenderOffObject() { }
@@ -70,7 +100,7 @@
         public Render() { }
 
         private objectList: ObjectSet[] = [];
-          
+        private exportObjectList = [];
     }
     interface ObjectSet {
         GameObject: GameObject;

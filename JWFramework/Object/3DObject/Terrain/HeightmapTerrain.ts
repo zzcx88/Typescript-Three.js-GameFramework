@@ -8,6 +8,7 @@
             this.type = ObjectType.OBJ_OBJECT3D;
             this.physicsComponent = new PhysicsComponent(this);
             this.graphicComponent = new GraphComponent(this);
+            this.exportComponent = new ExportComponent(this);
         }
 
         public InitializeAfterLoad() {

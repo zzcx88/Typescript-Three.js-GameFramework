@@ -72,6 +72,13 @@
     <Content Include="Lib\datGUI\dat.gui.js" />
     <Content Include="Lib\GLTFLoader\GLTFLoader.js" />
     <Content Include="Lib\Three\Controls\OrbitControls.js" />
+    <Content Include="Lib\Three\Shader\BlendShader.js" />
+    <Content Include="Lib\Three\Shader\CopyShader.js" />
+    <Content Include="Lib\Three\Shader\EffectComposer.js" />
+    <Content Include="Lib\Three\Shader\Pass.js" />
+    <Content Include="Lib\Three\Shader\RenderPass.js" />
+    <Content Include="Lib\Three\Shader\SavePass.js" />
+    <Content Include="Lib\Three\Shader\ShaderPass.js" />
     <Content Include="Model\F-16D\F-16D.gltf" />
     <Content Include="Model\DamagedHelmet.gltf" />
     <Content Include="Model\Flower.glb" />
@@ -96,6 +103,7 @@
     <Folder Include="Properties\" />
   </ItemGroup>
   <ItemGroup>
+    <TypeScriptCompile Include="Component\ExportComponent.ts" />
     <TypeScriptCompile Include="Component\GraphicCompnent.ts" />
     <TypeScriptCompile Include="Component\GUIComponent.ts" />
     <TypeScriptCompile Include="Component\PhysicsComponent.ts" />
@@ -112,6 +120,7 @@
     <TypeScriptCompile Include="Manager\ModelLoadManager.ts" />
     <TypeScriptCompile Include="Manager\ObjectManager.ts" />
     <TypeScriptCompile Include="Manager\SceneManager.ts" />
+    <TypeScriptCompile Include="Manager\ShaderManager.ts" />
     <TypeScriptCompile Include="Manager\WorldManager.ts" />
     <TypeScriptCompile Include="Object\3DObject\Terrain\HeightmapTerrain.ts" />
     <TypeScriptCompile Include="Object\3DObject\TestCube.ts" />

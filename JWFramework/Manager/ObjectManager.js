@@ -3,6 +3,7 @@ var JWFramework;
     class ObjectManager {
         constructor() {
             this.objectList = [];
+            this.exportObjectList = [];
         }
         static getInstance() {
             if (!ObjectManager.instance) {
@@ -33,24 +34,49 @@ var JWFramework;
             cloneObject.InitializeAfterLoad();
             return cloneObject;
         }
-        DeleteObject() {
+        ClearExportObjectList() {
+            this.exportObjectList = [];
+            this.exportObjectList.length = 0;
+        }
+        MakeJSONArray() {
             for (let i = 0; i < this.objectList.length; ++i) {
-                JWFramework.SceneManager.getInstance().SceneInstance.remove(this.objectList[i].GameObject.GameObjectInstance);
-                this.objectList[i].GameObject.GameObjectInstance.traverse(node => {
-                    if (node.isMesh) {
-                        if (node.geometry) {
-                            node.geometry.dispose();
-                        }
-                        if (node.material)
-                            if (Array.isArray(node.material)) {
-                                for (let i = 0; i < node.material.length; ++i)
-                                    node.material[i].dispose();
-                            }
-                            else {
-                                node.material.dispose();
-                            }
-                    }
-                });
+                this.exportObjectList.push(this.objectList[i].GameObject.ExportComponent.MakeJsonObject());
+            }
+            const a = document.createElement("a");
+            a.href = URL.createObjectURL(new Blob([JSON.stringify(this.exportObjectList, null, 3)], {
+                type: "text/plain"
+            }));
+            a.setAttribute("download", "data.json");
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            this.ClearExportObjectList();
+        }
+        DeleteObject() {
+        }
+        DeleteAllObject() {
+            for (let i = 0; i < this.objectList.length; ++i) {
+                if (this.objectList[i].GameObject.Name != "Terrain") {
+                    this.objectList[i].GameObject.DeleteObject();
+                    delete this.objectList[i];
+                }
+                this.ClearExportObjectList();
+                //SceneManager.getInstance().SceneInstance.remove(this.objectList[i].GameObject.GameObjectInstance);
+                //this.objectList[i].GameObject.GameObjectInstance.traverse(node => {
+                //    if (node.isMesh) {
+                //        if (node.geometry) {
+                //            node.geometry.dispose();
+                //        }
+                //        if (node.material)
+                //            if (Array.isArray(node.material)) {
+                //                for (let i = 0; i < node.material.length; ++i)
+                //                    node.material[i].dispose();
+                //            }
+                //            else {
+                //                node.material.dispose();
+                //            }
+                //    }
+                //});
             }
         }
         RenderOffObject() { }

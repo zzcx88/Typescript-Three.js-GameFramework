@@ -16,9 +16,15 @@ var JWFramework;
     })(ObjectType = JWFramework.ObjectType || (JWFramework.ObjectType = {}));
     let PickMode;
     (function (PickMode) {
-        PickMode[PickMode["Pick_Modify"] = 0] = "Pick_Modify";
-        PickMode[PickMode["Pick_Clone"] = 1] = "Pick_Clone";
-        PickMode[PickMode["Pick_Terrain"] = 2] = "Pick_Terrain";
+        PickMode[PickMode["PICK_MODIFY"] = 0] = "PICK_MODIFY";
+        PickMode[PickMode["PICK_CLONE"] = 1] = "PICK_CLONE";
+        PickMode[PickMode["PICK_TERRAIN"] = 2] = "PICK_TERRAIN";
+        PickMode[PickMode["PICK_REMOVE"] = 3] = "PICK_REMOVE";
     })(PickMode = JWFramework.PickMode || (JWFramework.PickMode = {}));
+    let CameraMode;
+    (function (CameraMode) {
+        CameraMode[CameraMode["CAMERA_ORBIT"] = 0] = "CAMERA_ORBIT";
+        CameraMode[CameraMode["CAMERA_3RD"] = 1] = "CAMERA_3RD";
+    })(CameraMode = JWFramework.CameraMode || (JWFramework.CameraMode = {}));
 })(JWFramework || (JWFramework = {}));
 //# sourceMappingURL=enum.js.map

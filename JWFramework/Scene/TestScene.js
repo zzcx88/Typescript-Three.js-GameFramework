@@ -25,6 +25,7 @@ var JWFramework;
             if (JWFramework.ModelLoadManager.getInstance().LoadComplete == true) {
                 JWFramework.ObjectManager.getInstance().Animate();
                 //CameraManager.getInstance().SetCameraSavedPosition();
+                //this.Picker.OrbitControl.enabled = false;
                 if (JWFramework.InputManager.getInstance().GetKeyState('1')) {
                     this.Picker.ChangePickModeModify();
                 }
@@ -33,6 +34,9 @@ var JWFramework;
                 }
                 if (JWFramework.InputManager.getInstance().GetKeyState('3')) {
                     this.Picker.ChangePickModeTerrain();
+                }
+                if (JWFramework.InputManager.getInstance().GetKeyState('4')) {
+                    this.Picker.ChangePickModeRemove();
                 }
             }
         }

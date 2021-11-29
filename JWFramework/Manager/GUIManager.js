@@ -4,8 +4,8 @@ var JWFramework;
         static getInstance() {
             if (!GUIManager.instance) {
                 GUIManager.instance = new GUIManager;
-                GUIManager.instance.gui_Select = new JWFramework.GUI_Select();
                 GUIManager.instance.gui_SRT = new JWFramework.GUI_SRT(JWFramework.ObjectManager.getInstance().GetObjectFromName("flower"));
+                GUIManager.instance.gui_Select = new JWFramework.GUI_Select();
             }
             return GUIManager.instance;
         }

@@ -6,8 +6,10 @@ var JWFramework;
             this.pickPositionY = 0;
             this.raycaster = new THREE.Raycaster();
             this.pickedObject = null;
-            this.pickMode = JWFramework.PickMode.Pick_Modify;
+            this.pickMode = JWFramework.PickMode.PICK_MODIFY;
             this.orbitControl = new THREE.OrbitControls(JWFramework.WorldManager.getInstance().MainCamera.CameraInstance, JWFramework.WorldManager.getInstance().Canvas);
+            this.orbitControl.maxDistance = 200;
+            this.orbitControl.minDistance = 0;
             window.addEventListener('click', function (e) {
                 JWFramework.SceneManager.getInstance().CurrentScene.Picker.SetPickPosition(e);
             });
@@ -41,7 +43,7 @@ var JWFramework;
                 }
             }
             this.raycaster.setFromCamera({ x: this.pickPositionX, y: this.pickPositionY }, JWFramework.WorldManager.getInstance().MainCamera.CameraInstance);
-            if (this.pickMode == JWFramework.PickMode.Pick_Clone) {
+            if (this.pickMode == JWFramework.PickMode.PICK_CLONE) {
                 let objectManager = JWFramework.ObjectManager.getInstance();
                 let intersectedObject = this.raycaster.intersectObject(objectManager.GetObjectFromName("Terrain").GameObjectInstance, true);
                 //클론된 오브젝트를 생성한다.
@@ -51,11 +53,22 @@ var JWFramework;
                 JWFramework.SceneManager.getInstance().SceneInstance.add(cloneObject.GameObjectInstance);
                 objectManager.AddObject(cloneObject, cloneObject.Name, cloneObject.Type);
             }
-            else if (this.pickMode == JWFramework.PickMode.Pick_Terrain) {
+            else if (this.pickMode == JWFramework.PickMode.PICK_TERRAIN) {
                 let objectManager = JWFramework.ObjectManager.getInstance();
                 let intersectedObject = this.raycaster.intersectObject(objectManager.GetObjectFromName("Terrain").GameObjectInstance, true);
                 let terrain = objectManager.GetObjectFromName("Terrain");
                 terrain.SetHeight(intersectedObject[0].face.a);
+                terrain.SetHeight(intersectedObject[0].face.b);
+                terrain.SetHeight(intersectedObject[0].face.c);
+            }
+            else if (this.pickMode == JWFramework.PickMode.PICK_REMOVE) {
+                let intersectedObjects = this.raycaster.intersectObjects(JWFramework.SceneManager.getInstance().SceneInstance.children);
+                if (intersectedObjects.length) {
+                    this.GetParentName(intersectedObjects[0].object);
+                    this.pickedParent = JWFramework.ObjectManager.getInstance().GetObjectFromName(this.pickedParentName);
+                    console.log(this.pickedParentName);
+                    this.pickedParent.DeleteObject();
+                }
             }
             else {
                 let intersectedObjects = this.raycaster.intersectObjects(JWFramework.SceneManager.getInstance().SceneInstance.children);
@@ -85,13 +98,19 @@ var JWFramework;
             this.pickPositionY = -10000;
         }
         ChangePickModeModify() {
-            this.pickMode = JWFramework.PickMode.Pick_Modify;
+            this.pickMode = JWFramework.PickMode.PICK_MODIFY;
         }
         ChangePickModeClone() {
-            this.pickMode = JWFramework.PickMode.Pick_Clone;
+            this.pickMode = JWFramework.PickMode.PICK_CLONE;
         }
         ChangePickModeTerrain() {
-            this.pickMode = JWFramework.PickMode.Pick_Terrain;
+            this.pickMode = JWFramework.PickMode.PICK_TERRAIN;
+        }
+        ChangePickModeRemove() {
+            this.pickMode = JWFramework.PickMode.PICK_REMOVE;
+        }
+        get OrbitControl() {
+            return this.orbitControl;
         }
     }
     JWFramework.Picker = Picker;

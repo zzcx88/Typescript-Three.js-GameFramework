@@ -12,6 +12,7 @@
 
         protected CreateFolder() {
             this.objectListFolder = this.datGui.addFolder('ObjectList');
+            this.exportButtonFolder = this.datGui.addFolder('Output');
         }
 
         protected AddElement() {
@@ -22,6 +23,14 @@
             }
             this.objectListFolder.add(this.List, 'ObjectList', item);
             this.objectListFolder.open();
+
+            this.makeJson = function () {
+                this.ExportData = function () { SceneManager.getInstance().MakeJSON(); }
+            }
+            this.makeJson = new this.makeJson();
+
+            this.exportButtonFolder.add(this.makeJson, 'ExportData');
+            this.exportButtonFolder.open();
         }
 
         public GetSelectObjectName() {
@@ -31,6 +40,9 @@
 
         private datGui: dat.GUI;
         private objectListFolder: dat.GUI;
+        private exportButtonFolder: dat.GUI;
+        private ExportData;
+        private makeJson;
         private List = {
             ObjectList: "None"
         };

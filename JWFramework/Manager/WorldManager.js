@@ -43,6 +43,7 @@ var JWFramework;
         }
         CreateMainCamera() {
             this.camera = new JWFramework.Camera();
+            this.camera.Name = "MainCamera";
             this.camera.Fov = 75;
             this.camera.Aspect = this.Canvas.clientWidth / this.Canvas.clientHeight;
             this.camera.Near = 0.1;
@@ -68,6 +69,9 @@ var JWFramework;
         get MainCamera() {
             return this.camera;
         }
+        get Renderer() {
+            return this.renderer;
+        }
         Animate() {
             if (this.ResizeView()) {
                 this.camera.Aspect = this.Canvas.clientWidth / this.Canvas.clientHeight;
@@ -78,7 +82,10 @@ var JWFramework;
             this.sceneManager.Animate();
         }
         Render() {
-            this.renderer.render(this.sceneManager.SceneInstance, this.camera.CameraInstance);
+            //NormalRender
+            //this.renderer.render(this.sceneManager.SceneInstance, this.camera.CameraInstance);
+            //MotionBlurRender
+            JWFramework.ShaderManager.getInstance().ShadedRender();
         }
     }
     JWFramework.WorldManager = WorldManager;

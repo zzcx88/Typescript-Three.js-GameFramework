@@ -24,6 +24,10 @@
             return this.sceneType;
         }
 
+        public MakeJSON() {
+            ObjectManager.getInstance().MakeJSONArray();
+        }
+
         public BuildScene() {
             this.sceneThree = new THREE.Scene();
             this.sceneType = SceneType.SCENE_TEST;

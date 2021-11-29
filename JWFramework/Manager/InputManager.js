@@ -16,11 +16,14 @@ var JWFramework;
             this.AddKey(39, 'right');
             this.AddKey(38, 'up');
             this.AddKey(40, 'down');
+            this.AddKey(32, 'space');
             this.AddKey(87, 'w');
             this.AddKey(70, 'f');
             this.AddKey(49, '1');
             this.AddKey(50, '2');
             this.AddKey(51, '3');
+            this.AddKey(52, '4');
+            this.AddKey(53, '5');
         }
         static getInstance() {
             if (!InputManager.instance) {

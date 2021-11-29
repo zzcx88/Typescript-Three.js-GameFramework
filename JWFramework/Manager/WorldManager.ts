@@ -52,6 +52,7 @@
 
         private CreateMainCamera() {
             this.camera = new Camera();
+            this.camera.Name = "MainCamera";
             this.camera.Fov = 75;
             this.camera.Aspect = this.Canvas.clientWidth / this.Canvas.clientHeight;
             this.camera.Near = 0.1;
@@ -83,6 +84,10 @@
             return this.camera;
         }
 
+        public get Renderer(): THREE.WebGLRenderer {
+            return this.renderer;
+        }
+
         public Animate() {
             if (this.ResizeView()) {
                 this.camera.Aspect = this.Canvas.clientWidth / this.Canvas.clientHeight;
@@ -94,7 +99,10 @@
         }
 
         public Render() {
-            this.renderer.render(this.sceneManager.SceneInstance, this.camera.CameraInstance);
+            //NormalRender
+            //this.renderer.render(this.sceneManager.SceneInstance, this.camera.CameraInstance);
+            //MotionBlurRender
+            ShaderManager.getInstance().ShadedRender();
         }
 
         private renderer: THREE.WebGLRenderer;

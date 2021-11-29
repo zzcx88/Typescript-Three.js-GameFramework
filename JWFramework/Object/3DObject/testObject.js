@@ -3,13 +3,13 @@ var JWFramework;
     class TestObject extends JWFramework.GameObject {
         constructor() {
             super();
-            this.distance = 0;
             this.type = JWFramework.ObjectType.OBJ_OBJECT3D;
             this.physicsComponent = new JWFramework.PhysicsComponent(this);
             this.graphicComponent = new JWFramework.GraphComponent(this);
+            this.exportComponent = new JWFramework.ExportComponent(this);
         }
         InitializeAfterLoad() {
-            //클론은 게임오브젝트 인스턴스를 하고 씬에 add한다.
+            //클론은 게임오브젝트인스턴스를 씬에 add한다.
             this.GameObjectInstance.matrixAutoUpdate = true;
             this.PhysicsComponent.SetScaleScalar(0.5);
             this.PhysicsComponent.SetPostion(0, 20, 0);
@@ -30,16 +30,16 @@ var JWFramework;
             //    this.Picked = true;
             if (this.Picked == true) {
                 if (JWFramework.InputManager.getInstance().GetKeyState('left')) {
-                    this.PhysicsComponent.Rotate(0, 0, -1);
+                    this.PhysicsComponent.RotateVec3(this.PhysicsComponent.Look, -1);
                 }
                 if (JWFramework.InputManager.getInstance().GetKeyState('right')) {
-                    this.PhysicsComponent.Rotate(0, 0, 1);
+                    this.PhysicsComponent.RotateVec3(this.PhysicsComponent.Look, 1);
                 }
                 if (JWFramework.InputManager.getInstance().GetKeyState('down')) {
-                    this.PhysicsComponent.Rotate(-1, 0, 0);
+                    this.PhysicsComponent.RotateVec3(this.PhysicsComponent.Right, -1);
                 }
                 if (JWFramework.InputManager.getInstance().GetKeyState('up')) {
-                    this.PhysicsComponent.Rotate(1, 0, 0);
+                    this.PhysicsComponent.RotateVec3(this.PhysicsComponent.Right, 1);
                 }
                 if (JWFramework.InputManager.getInstance().GetKeyState('w')) {
                     this.PhysicsComponent.MoveFoward(50);
