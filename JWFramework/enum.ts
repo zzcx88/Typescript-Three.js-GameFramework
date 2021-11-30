@@ -7,6 +7,7 @@
     }
 
     export enum ObjectType {
+        OBJ_TERRAIN,
         OBJ_OBJECT3D,
         OBJ_OBJECT2D,
         OBJ_CAMERA,

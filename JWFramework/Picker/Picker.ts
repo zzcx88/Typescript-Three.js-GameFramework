@@ -39,12 +39,12 @@
         }
 
         public Pick() {
-            if (this.pickedObject) {
-                if (this.pickPositionX < 0.75) {
-                    this.PickOffObject();
-                    this.pickedObject = undefined;
-                }
+            if (this.pickPositionX > 0.75 || this.pickPositionX == -1) {
+                return;
             }
+            this.PickOffObject();
+            this.pickedObject = undefined;
+
             this.raycaster.setFromCamera({ x: this.pickPositionX, y: this.pickPositionY }, WorldManager.getInstance().MainCamera.CameraInstance);
 
             if (this.pickMode == PickMode.PICK_CLONE) {
@@ -60,6 +60,7 @@
                 objectManager.AddObject(cloneObject, cloneObject.Name, cloneObject.Type);
 
             }
+            //터레인은 키보드 입력으로 높낮이 조절 가능하게 할것
             else if (this.pickMode == PickMode.PICK_TERRAIN) {
                 let objectManager = ObjectManager.getInstance();
                 let intersectedObject = this.raycaster.intersectObject(objectManager.GetObjectFromName("Terrain").GameObjectInstance, true);

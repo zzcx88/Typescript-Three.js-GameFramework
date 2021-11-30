@@ -9,10 +9,11 @@ var JWFramework;
     })(SceneType = JWFramework.SceneType || (JWFramework.SceneType = {}));
     let ObjectType;
     (function (ObjectType) {
-        ObjectType[ObjectType["OBJ_OBJECT3D"] = 0] = "OBJ_OBJECT3D";
-        ObjectType[ObjectType["OBJ_OBJECT2D"] = 1] = "OBJ_OBJECT2D";
-        ObjectType[ObjectType["OBJ_CAMERA"] = 2] = "OBJ_CAMERA";
-        ObjectType[ObjectType["OBJ_END"] = 3] = "OBJ_END";
+        ObjectType[ObjectType["OBJ_TERRAIN"] = 0] = "OBJ_TERRAIN";
+        ObjectType[ObjectType["OBJ_OBJECT3D"] = 1] = "OBJ_OBJECT3D";
+        ObjectType[ObjectType["OBJ_OBJECT2D"] = 2] = "OBJ_OBJECT2D";
+        ObjectType[ObjectType["OBJ_CAMERA"] = 3] = "OBJ_CAMERA";
+        ObjectType[ObjectType["OBJ_END"] = 4] = "OBJ_END";
     })(ObjectType = JWFramework.ObjectType || (JWFramework.ObjectType = {}));
     let PickMode;
     (function (PickMode) {

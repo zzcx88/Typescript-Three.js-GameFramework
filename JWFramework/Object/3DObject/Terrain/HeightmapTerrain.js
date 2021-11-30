@@ -3,9 +3,11 @@ var JWFramework;
     class HeightmapTerrain extends JWFramework.GameObject {
         constructor() {
             super();
+            this.heigtIndexBuffer = [];
+            this.heigtBuffer = [];
             this.name = "Terrain";
             this.CreateTerrainMesh();
-            this.type = JWFramework.ObjectType.OBJ_OBJECT3D;
+            this.type = JWFramework.ObjectType.OBJ_TERRAIN;
             this.physicsComponent = new JWFramework.PhysicsComponent(this);
             this.graphicComponent = new JWFramework.GraphComponent(this);
             this.exportComponent = new JWFramework.ExportComponent(this);
@@ -18,9 +20,12 @@ var JWFramework;
             JWFramework.ObjectManager.getInstance().AddObject(this, this.name, this.type);
         }
         CreateTerrainMesh() {
-            this.planeGeomatry = new THREE.PlaneGeometry(300, 300, 64, 64);
+            this.planeGeomatry = new THREE.PlaneGeometry(3000, 3000, 640, 640);
             this.material = new THREE.MeshStandardMaterial();
-            this.texture = new THREE.TextureLoader().load("Model/Heightmap/IslandHeightmap.png");
+            this.texture = new THREE.TextureLoader().load("Model/Heightmap/TerrainTexture.jpg");
+            this.texture.wrapS = THREE.RepeatWrapping;
+            this.texture.wrapT = THREE.RepeatWrapping;
+            this.texture.repeat.set(300, 300);
             //this.material.displacementMap = this.texture;
             this.material.map = this.texture;
             //this.material.displacementScale = 50;
@@ -35,10 +40,21 @@ var JWFramework;
             this.GameObjectInstance.name = this.name;
             this.InitializeAfterLoad();
         }
-        SetHeight(inedx) {
+        get HeightIndexBuffer() {
+            return this.heigtIndexBuffer;
+        }
+        get HeightBuffer() {
+            this.heigtIndexBuffer.forEach(element => this.heigtBuffer.push(this.planeGeomatry.getAttribute('position').getY(element)));
+            return this.heigtBuffer;
+        }
+        SetHeight(index) {
             this.planeGeomatry.getAttribute('position').needsUpdate = true;
-            let height = this.planeGeomatry.getAttribute('position').getY(inedx);
-            this.planeGeomatry.getAttribute('position').setY(inedx, height += 3);
+            //console.log(this.planeGeomatry.getAttribute('position').array.length);
+            let height = this.planeGeomatry.getAttribute('position').getY(index);
+            this.planeGeomatry.getAttribute('position').setY(index, height += 3);
+            if (this.heigtIndexBuffer.indexOf(index) == -1)
+                this.heigtIndexBuffer.push(index);
+            console.log(this.heigtIndexBuffer);
         }
         Animate() {
         }

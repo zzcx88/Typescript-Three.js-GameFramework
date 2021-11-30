@@ -10,15 +10,15 @@ var JWFramework;
         get CameraMode() {
             return this.cameraMode;
         }
-        SetCameraSavedPosition() {
+        SetCameraSavedPosition(gameObject) {
             this.cameraMode = JWFramework.CameraMode.CAMERA_3RD;
-            let gameObject = JWFramework.ObjectManager.getInstance().GetObjectFromName("F-16");
-            gameObject.GameObjectInstance.add(JWFramework.WorldManager.getInstance().MainCamera.CameraInstance);
+            let gameObjectForCamera = gameObject;
+            gameObjectForCamera.GameObjectInstance.add(JWFramework.WorldManager.getInstance().MainCamera.CameraInstance);
             JWFramework.WorldManager.getInstance().MainCamera.CameraInstance.lookAt(gameObject.PhysicsComponent.GetPosition());
             JWFramework.WorldManager.getInstance().MainCamera.PhysicsComponent.SetPostion(0, 0, 0);
             let Up = new THREE.Vector3(0, 1, 0);
             let Look = new THREE.Vector3(0, 0, 1);
-            JWFramework.WorldManager.getInstance().MainCamera.PhysicsComponent.SetPostion(JWFramework.WorldManager.getInstance().MainCamera.PhysicsComponent.GetPosition().x + Up.x * 3, JWFramework.WorldManager.getInstance().MainCamera.PhysicsComponent.GetPosition().y + Up.y * 3, JWFramework.WorldManager.getInstance().MainCamera.PhysicsComponent.GetPosition().z + Up.z * 3);
+            JWFramework.WorldManager.getInstance().MainCamera.PhysicsComponent.SetPostion(JWFramework.WorldManager.getInstance().MainCamera.PhysicsComponent.GetPosition().x + Up.x * 3.5, JWFramework.WorldManager.getInstance().MainCamera.PhysicsComponent.GetPosition().y + Up.y * 3.5, JWFramework.WorldManager.getInstance().MainCamera.PhysicsComponent.GetPosition().z + Up.z * 3.5);
             JWFramework.WorldManager.getInstance().MainCamera.PhysicsComponent.SetPostion(JWFramework.WorldManager.getInstance().MainCamera.PhysicsComponent.GetPosition().x + Look.x * -13, JWFramework.WorldManager.getInstance().MainCamera.PhysicsComponent.GetPosition().y + Look.y * -13, JWFramework.WorldManager.getInstance().MainCamera.PhysicsComponent.GetPosition().z + Look.z * -13);
             //WorldManager.getInstance().MainCamera.Animate();
         }

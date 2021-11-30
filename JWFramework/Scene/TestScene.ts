@@ -3,9 +3,9 @@
         constructor(sceneManager: SceneManager) {
             super();
             this.sceneManager = sceneManager;
-            this.light = new Light();
             this.BuildObject();
             this.BuildLight();
+            this.BuildFog();
             this.SetPicker();
         }
 
@@ -17,19 +17,28 @@
         }
 
         private BuildLight() {
+            this.light = new Light();
             this.light.SetColor(0xFFFFFF);
-            this.light.Intensity = 3;
-            this.light.GameObjectInstance.position.set(0,  30, 0);
+            this.light.Intensity = 1.5;
+            this.light.GameObjectInstance.position.set(10000, 10000, 0);
+
+            this.light2 = new Light();
+            this.light2.SetColor(0xFFFFFF);
+            this.light2.Intensity = 0.7;
+            this.light2.GameObjectInstance.position.set(-10000, -10000, 0);
 
             this.sceneManager.SceneInstance.add(this.light.GameObjectInstance);
+            this.sceneManager.SceneInstance.add(this.light2.GameObjectInstance);
+        }
+        private BuildFog() {
+            let sceneInstance = this.sceneManager.SceneInstance;
+            let color = 0xdefdff;
+            sceneInstance.fog = new THREE.Fog(color, 10, 1000);
         }
 
         public Animate() {
             if (ModelLoadManager.getInstance().LoadComplete == true) {
                 ObjectManager.getInstance().Animate();
-
-                //CameraManager.getInstance().SetCameraSavedPosition();
-                //this.Picker.OrbitControl.enabled = false;
 
                 if (InputManager.getInstance().GetKeyState('1')) {
                     this.Picker.ChangePickModeModify();
@@ -47,6 +56,7 @@
         }
         private sceneManager: SceneManager
         private light: Light;
+        private light2: Light;
         private terrain;
     }
 }

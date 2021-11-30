@@ -36,12 +36,11 @@ var JWFramework;
             }
         }
         Pick() {
-            if (this.pickedObject) {
-                if (this.pickPositionX < 0.75) {
-                    this.PickOffObject();
-                    this.pickedObject = undefined;
-                }
+            if (this.pickPositionX > 0.75 || this.pickPositionX == -1) {
+                return;
             }
+            this.PickOffObject();
+            this.pickedObject = undefined;
             this.raycaster.setFromCamera({ x: this.pickPositionX, y: this.pickPositionY }, JWFramework.WorldManager.getInstance().MainCamera.CameraInstance);
             if (this.pickMode == JWFramework.PickMode.PICK_CLONE) {
                 let objectManager = JWFramework.ObjectManager.getInstance();
@@ -53,6 +52,7 @@ var JWFramework;
                 JWFramework.SceneManager.getInstance().SceneInstance.add(cloneObject.GameObjectInstance);
                 objectManager.AddObject(cloneObject, cloneObject.Name, cloneObject.Type);
             }
+            //터레인은 키보드 입력으로 높낮이 조절 가능하게 할것
             else if (this.pickMode == JWFramework.PickMode.PICK_TERRAIN) {
                 let objectManager = JWFramework.ObjectManager.getInstance();
                 let intersectedObject = this.raycaster.intersectObject(objectManager.GetObjectFromName("Terrain").GameObjectInstance, true);

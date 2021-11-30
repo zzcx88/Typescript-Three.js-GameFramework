@@ -14,11 +14,11 @@
             return this.cameraMode;
         }
 
-        public SetCameraSavedPosition() {
+        public SetCameraSavedPosition(gameObject: GameObject) {
             this.cameraMode = CameraMode.CAMERA_3RD;
 
-            let gameObject = ObjectManager.getInstance().GetObjectFromName("F-16");
-            gameObject.GameObjectInstance.add(WorldManager.getInstance().MainCamera.CameraInstance);
+            let gameObjectForCamera = gameObject;
+            gameObjectForCamera.GameObjectInstance.add(WorldManager.getInstance().MainCamera.CameraInstance);
 
             WorldManager.getInstance().MainCamera.CameraInstance.lookAt(gameObject.PhysicsComponent.GetPosition());
 
@@ -28,9 +28,9 @@
             let Look = new THREE.Vector3(0, 0, 1);
 
             WorldManager.getInstance().MainCamera.PhysicsComponent.SetPostion(
-                WorldManager.getInstance().MainCamera.PhysicsComponent.GetPosition().x + Up.x * 3,
-                WorldManager.getInstance().MainCamera.PhysicsComponent.GetPosition().y + Up.y * 3,
-                WorldManager.getInstance().MainCamera.PhysicsComponent.GetPosition().z + Up.z * 3
+                WorldManager.getInstance().MainCamera.PhysicsComponent.GetPosition().x + Up.x * 3.5,
+                WorldManager.getInstance().MainCamera.PhysicsComponent.GetPosition().y + Up.y * 3.5,
+                WorldManager.getInstance().MainCamera.PhysicsComponent.GetPosition().z + Up.z * 3.5
                 );
 
             WorldManager.getInstance().MainCamera.PhysicsComponent.SetPostion(

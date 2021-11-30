@@ -11,8 +11,8 @@ var JWFramework;
         InitializeAfterLoad() {
             //클론은 게임오브젝트인스턴스를 씬에 add한다.
             this.GameObjectInstance.matrixAutoUpdate = true;
-            this.PhysicsComponent.SetScaleScalar(0.5);
-            this.PhysicsComponent.SetPostion(0, 20, 0);
+            this.PhysicsComponent.SetScaleScalar(1);
+            this.PhysicsComponent.SetPostion(0, 0, 0);
             this.GameObjectInstance.rotation.x = 0;
             this.GameObjectInstance.rotation.y = 0;
             this.GameObjectInstance.rotation.z = 0;
@@ -43,6 +43,10 @@ var JWFramework;
                 }
                 if (JWFramework.InputManager.getInstance().GetKeyState('w')) {
                     this.PhysicsComponent.MoveFoward(50);
+                }
+                if (JWFramework.InputManager.getInstance().GetKeyState('f')) {
+                    JWFramework.CameraManager.getInstance().SetCameraSavedPosition(this);
+                    JWFramework.SceneManager.getInstance().CurrentScene.Picker.OrbitControl.enabled = false;
                 }
             }
             if (JWFramework.SceneManager.getInstance().SceneType == JWFramework.SceneType.SCENE_TEST && this.Picked == true) {

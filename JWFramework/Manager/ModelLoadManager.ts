@@ -59,7 +59,7 @@
                     //});
 
 
-                    SceneManager.getInstance().SceneInstance.add(gameObject.GameObjectInstance);
+                    //SceneManager.getInstance().SceneInstance.add(gameObject.GameObjectInstance);
                     gameObject.InitializeAfterLoad();
                     this.SetLoadComplete();
                 },

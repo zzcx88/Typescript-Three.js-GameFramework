@@ -5,7 +5,7 @@
             this.name = "Terrain";
             this.CreateTerrainMesh();
 
-            this.type = ObjectType.OBJ_OBJECT3D;
+            this.type = ObjectType.OBJ_TERRAIN;
             this.physicsComponent = new PhysicsComponent(this);
             this.graphicComponent = new GraphComponent(this);
             this.exportComponent = new ExportComponent(this);
@@ -21,9 +21,12 @@
         }
 
         public CreateTerrainMesh() {
-            this.planeGeomatry = new THREE.PlaneGeometry(300, 300, 64, 64);
+            this.planeGeomatry = new THREE.PlaneGeometry(3000, 3000, 640, 640);
             this.material = new THREE.MeshStandardMaterial();
-            this.texture = new THREE.TextureLoader().load("Model/Heightmap/IslandHeightmap.png");
+            this.texture = new THREE.TextureLoader().load("Model/Heightmap/TerrainTexture.jpg");
+            this.texture.wrapS = THREE.RepeatWrapping;
+            this.texture.wrapT = THREE.RepeatWrapping;
+            this.texture.repeat.set(300, 300);
             //this.material.displacementMap = this.texture;
             this.material.map = this.texture;
             //this.material.displacementScale = 50;
@@ -45,11 +48,25 @@
             this.InitializeAfterLoad();
         }
 
+        public get HeightIndexBuffer(): number[] {
+            return this.heigtIndexBuffer;
+        }
 
-        public SetHeight(inedx: number) {
+        public get HeightBuffer(): number[] {
+            this.heigtIndexBuffer.forEach(element =>
+                this.heigtBuffer.push(this.planeGeomatry.getAttribute('position').getY(element)));
+            return this.heigtBuffer;
+        }
+
+        public SetHeight(index: number) {
             this.planeGeomatry.getAttribute('position').needsUpdate = true;
-            let height: number = this.planeGeomatry.getAttribute('position').getY(inedx);
-            this.planeGeomatry.getAttribute('position').setY(inedx, height += 3);
+            //console.log(this.planeGeomatry.getAttribute('position').array.length);
+            let height: number = this.planeGeomatry.getAttribute('position').getY(index);
+            this.planeGeomatry.getAttribute('position').setY(index, height += 3);
+
+            if (this.heigtIndexBuffer.indexOf(index) == -1)
+                this.heigtIndexBuffer.push(index);
+            console.log(this.heigtIndexBuffer);
         }
 
         public Animate() {
@@ -60,6 +77,9 @@
         private planeGeomatry: THREE.PlaneGeometry;
         private material: THREE.MeshStandardMaterial;
         private texture: THREE.Texture;
+
+        private heigtIndexBuffer: number[] = [];
+        private heigtBuffer: number[] = [];
 
         private scaleY: number
 

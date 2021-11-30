@@ -48,7 +48,7 @@ var JWFramework;
                 //        console.log(n.material);
                 //    }
                 //});
-                JWFramework.SceneManager.getInstance().SceneInstance.add(gameObject.GameObjectInstance);
+                //SceneManager.getInstance().SceneInstance.add(gameObject.GameObjectInstance);
                 gameObject.InitializeAfterLoad();
                 this.SetLoadComplete();
             }, (progress) => {

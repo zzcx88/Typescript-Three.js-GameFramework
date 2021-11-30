@@ -47,14 +47,24 @@ var JWFramework;
             this.camera.Fov = 75;
             this.camera.Aspect = this.Canvas.clientWidth / this.Canvas.clientHeight;
             this.camera.Near = 0.1;
-            this.camera.Far = 1000;
+            this.camera.Far = 900;
             this.camera.PhysicsComponent.SetPostion(0, 22, 0);
             //this.camera.CameraInstance.position.z = 2;
         }
         CreateScene() {
             this.sceneManager = JWFramework.SceneManager.getInstance();
             this.sceneManager.BuildScene();
-            this.sceneManager.SceneInstance.background = new THREE.Color('gray');
+            //씬 빌드하는 작업으로 옮길것
+            this.sceneManager.SceneInstance.background = new THREE.CubeTextureLoader()
+                .setPath('Model/SkyBox/')
+                .load([
+                'Right.bmp',
+                'Left.bmp',
+                'Up.bmp',
+                'Down.bmp',
+                'Front.bmp',
+                'Back.bmp'
+            ]);
         }
         CreateDeltaTime() {
             this.clock = new THREE.Clock();

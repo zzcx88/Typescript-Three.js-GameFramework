@@ -60,26 +60,12 @@ var JWFramework;
         set GameObjectInstance(gameObjectInstance) {
             this.gameObjectInstance = gameObjectInstance;
         }
+        get IsDead() {
+            return this.isDead;
+        }
         Animate() { }
-        //오브젝트 클래스 내에서 폐기 or 오브젝트 매니저에서 폐기?
         DeleteObject() {
-            JWFramework.SceneManager.getInstance().SceneInstance.remove(this.GameObjectInstance);
-            this.GameObjectInstance.traverse(node => {
-                if (node.isMesh) {
-                    if (node.geometry) {
-                        node.geometry.dispose();
-                    }
-                    if (node.material)
-                        if (Array.isArray(node.material)) {
-                            for (let i = 0; i < node.material.length; ++i)
-                                node.material[i].dispose();
-                        }
-                        else {
-                            node.material.dispose();
-                        }
-                }
-            });
-            JWFramework.ObjectManager.getInstance().ClearExportObjectList();
+            this.isDead = true;
         }
     }
     JWFramework.GameObject = GameObject;

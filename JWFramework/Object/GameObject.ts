@@ -71,27 +71,14 @@
             this.gameObjectInstance = gameObjectInstance ;
         }
 
+        public get IsDead(): boolean {
+            return this.isDead;
+        }
+
         public Animate() {}
 
-        //오브젝트 클래스 내에서 폐기 or 오브젝트 매니저에서 폐기?
         public DeleteObject() {
-            SceneManager.getInstance().SceneInstance.remove(this.GameObjectInstance);
-            this.GameObjectInstance.traverse(node => {
-                if (node.isMesh) {
-                    if (node.geometry) {
-                        node.geometry.dispose();
-                    }
-                    if (node.material)
-                        if (Array.isArray(node.material)) {
-                            for (let i = 0; i < node.material.length; ++i)
-                                node.material[i].dispose();
-                        }
-                        else {
-                            node.material.dispose();
-                        }
-                }
-            });
-            ObjectManager.getInstance().ClearExportObjectList();
+            this.isDead = true;
         }
 
         protected gameObjectInstance;

@@ -6,7 +6,8 @@ var JWFramework;
             this.List = {
                 ObjectList: "None"
             };
-            this.datGui = new dat.GUI;
+            this.datGui = new dat.GUI();
+            this.datGui.domElement.id = 'select-gui-container';
             this.datGui.open();
             this.CreateFolder();
             this.AddElement();
