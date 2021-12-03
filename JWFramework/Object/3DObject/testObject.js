@@ -7,6 +7,7 @@ var JWFramework;
             this.physicsComponent = new JWFramework.PhysicsComponent(this);
             this.graphicComponent = new JWFramework.GraphComponent(this);
             this.exportComponent = new JWFramework.ExportComponent(this);
+            this.collisionComponent = new JWFramework.CollisionComponent(this);
         }
         InitializeAfterLoad() {
             //클론은 게임오브젝트인스턴스를 씬에 add한다.
@@ -24,10 +25,20 @@ var JWFramework;
                 this.GameObjectInstance.add(this.axisHelper);
                 //this.guiComponent = new GUIComponent(this);
             }
+            if (this.isClone == true) {
+                this.CreateBoundingBox();
+            }
+        }
+        CreateBoundingBox() {
+            this.CollisionComponet.CreateBoundingBox();
+            this.CollisionComponet.CreateRaycaster();
         }
         Animate() {
             //if (this.name == "F-16")
             //    this.Picked = true;
+            if (this.isClone == true) {
+                this.CollisionComponet.Update();
+            }
             if (this.Picked == true) {
                 if (JWFramework.InputManager.getInstance().GetKeyState('left')) {
                     this.PhysicsComponent.RotateVec3(this.PhysicsComponent.Look, -1);

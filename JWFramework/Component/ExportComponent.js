@@ -2,51 +2,51 @@ var JWFramework;
 (function (JWFramework) {
     class ExportComponent {
         constructor(gameObject) {
-            this.gameObjet = gameObject;
+            this.gameObject = gameObject;
         }
         MakeJsonObject() {
             let obj = new Object();
-            if (this.gameObjet.Type == JWFramework.ObjectType.OBJ_TERRAIN) {
+            if (this.gameObject.Type == JWFramework.ObjectType.OBJ_TERRAIN) {
                 obj = {
-                    type: this.gameObjet.Type,
-                    name: this.gameObjet.Name,
-                    vertexIndex: this.gameObjet.HeightIndexBuffer,
-                    vertexHeight: this.gameObjet.HeightBuffer,
+                    type: this.gameObject.Type,
+                    name: this.gameObject.Name,
+                    vertexIndex: this.gameObject.HeightIndexBuffer,
+                    vertexHeight: this.gameObject.HeightBuffer,
                     scale: {
-                        x: this.gameObjet.PhysicsComponent.GetScale().x,
-                        y: this.gameObjet.PhysicsComponent.GetScale().y,
-                        z: this.gameObjet.PhysicsComponent.GetScale().z,
+                        x: this.gameObject.PhysicsComponent.GetScale().x,
+                        y: this.gameObject.PhysicsComponent.GetScale().y,
+                        z: this.gameObject.PhysicsComponent.GetScale().z,
                     },
                     rotation: {
-                        x: this.gameObjet.PhysicsComponent.GetRotateEuler().x,
-                        y: this.gameObjet.PhysicsComponent.GetRotateEuler().y,
-                        z: this.gameObjet.PhysicsComponent.GetRotateEuler().z
+                        x: this.gameObject.PhysicsComponent.GetRotateEuler().x,
+                        y: this.gameObject.PhysicsComponent.GetRotateEuler().y,
+                        z: this.gameObject.PhysicsComponent.GetRotateEuler().z
                     },
                     position: {
-                        x: this.gameObjet.PhysicsComponent.GetPosition().x,
-                        y: this.gameObjet.PhysicsComponent.GetPosition().y,
-                        z: this.gameObjet.PhysicsComponent.GetPosition().z
+                        x: this.gameObject.PhysicsComponent.GetPosition().x,
+                        y: this.gameObject.PhysicsComponent.GetPosition().y,
+                        z: this.gameObject.PhysicsComponent.GetPosition().z
                     }
                 };
             }
             else {
                 obj = {
-                    type: this.gameObjet.Type,
-                    name: this.gameObjet.Name,
+                    type: this.gameObject.Type,
+                    name: this.gameObject.Name,
                     scale: {
-                        x: this.gameObjet.PhysicsComponent.GetScale().x,
-                        y: this.gameObjet.PhysicsComponent.GetScale().y,
-                        z: this.gameObjet.PhysicsComponent.GetScale().z,
+                        x: this.gameObject.PhysicsComponent.GetScale().x,
+                        y: this.gameObject.PhysicsComponent.GetScale().y,
+                        z: this.gameObject.PhysicsComponent.GetScale().z,
                     },
                     rotation: {
-                        x: this.gameObjet.PhysicsComponent.GetRotateEuler().x,
-                        y: this.gameObjet.PhysicsComponent.GetRotateEuler().y,
-                        z: this.gameObjet.PhysicsComponent.GetRotateEuler().z
+                        x: this.gameObject.PhysicsComponent.GetRotateEuler().x,
+                        y: this.gameObject.PhysicsComponent.GetRotateEuler().y,
+                        z: this.gameObject.PhysicsComponent.GetRotateEuler().z
                     },
                     position: {
-                        x: this.gameObjet.PhysicsComponent.GetPosition().x,
-                        y: this.gameObjet.PhysicsComponent.GetPosition().y,
-                        z: this.gameObjet.PhysicsComponent.GetPosition().z
+                        x: this.gameObject.PhysicsComponent.GetPosition().x,
+                        y: this.gameObject.PhysicsComponent.GetPosition().y,
+                        z: this.gameObject.PhysicsComponent.GetPosition().z
                     }
                 };
             }

@@ -7,6 +7,7 @@
             this.physicsComponent = new PhysicsComponent(this);
             this.graphicComponent = new GraphComponent(this);
             this.exportComponent = new ExportComponent(this);
+            this.collisionComponent = new CollisionComponent(this);
         }
 
         public InitializeAfterLoad() {
@@ -28,11 +29,23 @@
                 this.GameObjectInstance.add(this.axisHelper);
                 //this.guiComponent = new GUIComponent(this);
             }
+            if (this.isClone == true) {
+                this.CreateBoundingBox();
+            }
+        }
+
+        public CreateBoundingBox() {
+            this.CollisionComponet.CreateBoundingBox();
+            this.CollisionComponet.CreateRaycaster();
         }
 
         public Animate() {
             //if (this.name == "F-16")
             //    this.Picked = true;
+            if (this.isClone == true) {
+                this.CollisionComponet.Update();
+            }
+
             if (this.Picked == true) {
                 if (InputManager.getInstance().GetKeyState('left')) {
                     this.PhysicsComponent.RotateVec3(this.PhysicsComponent.Look, -1);
@@ -65,6 +78,10 @@
             }
         }
 
+        private terrainRay: THREE.Raycaster;
         private axisHelper: THREE.AxesHelper;
+
+        private boundingBox: THREE.Box3;
+        private boxHelper: THREE.Box3Helper;
     }
 }

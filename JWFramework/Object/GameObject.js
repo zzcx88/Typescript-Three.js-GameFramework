@@ -36,6 +36,9 @@ var JWFramework;
         get ExportComponent() {
             return this.exportComponent;
         }
+        get CollisionComponet() {
+            return this.collisionComponent;
+        }
         get PhysicsCompIncluded() {
             return this.physicsCompIncluded;
         }

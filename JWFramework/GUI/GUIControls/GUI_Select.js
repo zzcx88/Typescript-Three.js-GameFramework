@@ -19,10 +19,17 @@ var JWFramework;
         }
         AddElement() {
             let item = [];
-            for (let i = 0; i < JWFramework.ObjectManager.getInstance().GetObjectList.length; ++i) {
-                if (JWFramework.ObjectManager.getInstance().GetObjectList[i].Name != "Terrain")
-                    item[i] = JWFramework.ObjectManager.getInstance().GetObjectList[i].Name;
+            let objectList = JWFramework.ObjectManager.getInstance().GetObjectList;
+            for (let TYPE = JWFramework.ObjectType.OBJ_OBJECT3D; TYPE < JWFramework.ObjectType.OBJ_END; ++TYPE) {
+                for (let OBJ = 0; OBJ < objectList[TYPE].length; ++OBJ) {
+                    item.push(objectList[TYPE][OBJ].Name);
+                }
             }
+            ////
+            //for (let i = 0; i < ObjectManager.getInstance().GetObjectList.length; ++i) {
+            //    if (ObjectManager.getInstance().GetObjectList[i].Name != "Terrain")
+            //        item[i] = ObjectManager.getInstance().GetObjectList[i].Name;
+            //}
             this.objectListFolder.add(this.List, 'ObjectList', item);
             this.objectListFolder.open();
             this.makeJson = function () {

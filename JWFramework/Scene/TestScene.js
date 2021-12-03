@@ -3,6 +3,7 @@ var JWFramework;
     class TestScene extends JWFramework.SceneBase {
         constructor(sceneManager) {
             super();
+            this.terrain = [];
             this.sceneManager = sceneManager;
             this.BuildObject();
             this.BuildLight();
@@ -11,7 +12,11 @@ var JWFramework;
         }
         BuildObject() {
             JWFramework.ModelLoadManager.getInstance().LoadSceneTest();
-            this.terrain = new JWFramework.HeightmapTerrain();
+            for (let i = 0; i < 10; ++i) {
+                for (let j = 0; j < 10; ++j) {
+                    this.terrain[i] = new JWFramework.HeightmapTerrain(j * 300, i * 300);
+                }
+            }
             let rotation = new THREE.Matrix4().makeRotationY(-Math.PI);
             JWFramework.WorldManager.getInstance().MainCamera.CameraInstance.applyMatrix4(rotation);
         }

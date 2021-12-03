@@ -39,6 +39,10 @@
             return this.exportComponent;
         }
 
+        public get CollisionComponet(): CollisionComponent {
+            return this.collisionComponent;
+        }
+
         public get PhysicsCompIncluded() {
             return this.physicsCompIncluded;
         }
@@ -91,6 +95,7 @@
         protected graphicComponent: GraphComponent;
         protected guiComponent: GUIComponent;
         protected exportComponent: ExportComponent;
+        protected collisionComponent: CollisionComponent;
 
         private physicsCompIncluded: boolean = false;
         private graphicCompIncluded: boolean = false;
