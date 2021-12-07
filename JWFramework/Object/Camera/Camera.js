@@ -12,6 +12,8 @@ var JWFramework;
             this.cameraInstance = new THREE.PerspectiveCamera(this.fov, this.aspect, this.near, this.far);
             this.GameObjectInstance = this.CameraInstance;
             this.physicsComponent = new JWFramework.PhysicsComponent(this);
+            this.collisionComponent = new JWFramework.CollisionComponent(this);
+            this.CollisionComponent.CreateBoundingBox(1, 1, 1);
             this.GameObjectInstance.matrixAutoUpdate = true;
         }
         get Fov() {
@@ -53,6 +55,7 @@ var JWFramework;
             this.cameraInstance.updateProjectionMatrix();
         }
         Animate() {
+            this.CollisionComponent.Update();
             //if (InputManager.getInstance().GetKeyState('left')) {
             //    this.y = 1;
             //    this.PhysicsComponent.Rotate(0, this.y, 0);

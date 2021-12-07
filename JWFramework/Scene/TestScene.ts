@@ -11,8 +11,12 @@
 
         private BuildObject() {
             ModelLoadManager.getInstance().LoadSceneTest();
-            this.terrain = new HeightmapTerrain();
-            let rotation = new THREE.Matrix4().makeRotationY(-Math.PI);
+            for (let i = 0; i < 10; ++i) {
+                for (let j = 0; j < 10; ++j) {
+                    this.terrain[i] = new HeightmapTerrain(j * 300, i * 300);
+                }
+            }
+                let rotation = new THREE.Matrix4().makeRotationY(-Math.PI);
             WorldManager.getInstance().MainCamera.CameraInstance.applyMatrix4(rotation);
         }
 
@@ -52,11 +56,14 @@
                 if (InputManager.getInstance().GetKeyState('4')) {
                     this.Picker.ChangePickModeRemove();
                 }
+                if (InputManager.getInstance().GetKeyState('delete')) {
+                    ObjectManager.getInstance().DeleteAllObject();
+                }
             }
         }
         private sceneManager: SceneManager
         private light: Light;
         private light2: Light;
-        private terrain;
+        private terrain = [];
     }
 }

@@ -49,7 +49,7 @@ var JWFramework;
             this.camera.Near = 0.1;
             this.camera.Far = 900;
             this.camera.PhysicsComponent.SetPostion(0, 22, 0);
-            //this.camera.CameraInstance.position.z = 2;
+            JWFramework.ObjectManager.getInstance().AddObject(this.camera, this.camera.Name, this.camera.Type);
         }
         CreateScene() {
             this.sceneManager = JWFramework.SceneManager.getInstance();
@@ -89,12 +89,13 @@ var JWFramework;
             }
             //this.camera.Animate();
             this.delta = this.clock.getDelta();
+            this.MainCamera.Animate();
             this.sceneManager.Animate();
         }
         Render() {
-            //NormalRender
+            //--NormalRender
             //this.renderer.render(this.sceneManager.SceneInstance, this.camera.CameraInstance);
-            //MotionBlurRender
+            //--MotionBlurRender
             JWFramework.ShaderManager.getInstance().ShadedRender();
         }
     }

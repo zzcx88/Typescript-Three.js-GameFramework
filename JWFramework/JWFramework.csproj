@@ -54,11 +54,11 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <TypeScriptTarget>ES5</TypeScriptTarget>
+    <TypeScriptTarget>ES2021</TypeScriptTarget>
     <TypeScriptJSXEmit>None</TypeScriptJSXEmit>
     <TypeScriptCompileOnSaveEnabled>True</TypeScriptCompileOnSaveEnabled>
     <TypeScriptNoImplicitAny>False</TypeScriptNoImplicitAny>
-    <TypeScriptModuleKind>CommonJS</TypeScriptModuleKind>
+    <TypeScriptModuleKind>ES6</TypeScriptModuleKind>
     <TypeScriptRemoveComments>True</TypeScriptRemoveComments>
     <TypeScriptOutFile />
     <TypeScriptOutDir />
@@ -106,6 +106,7 @@
     <Folder Include="Properties\" />
   </ItemGroup>
   <ItemGroup>
+    <TypeScriptCompile Include="Component\CollisionComponent.ts" />
     <TypeScriptCompile Include="Component\ExportComponent.ts" />
     <TypeScriptCompile Include="Component\GraphicCompnent.ts" />
     <TypeScriptCompile Include="Component\GUIComponent.ts" />
@@ -118,6 +119,7 @@
     <TypeScriptCompile Include="Lib\datGUI\dat.gui.d.ts" />
     <TypeScriptCompile Include="Main.ts" />
     <TypeScriptCompile Include="Manager\CameraManager.ts" />
+    <TypeScriptCompile Include="Manager\CollisionManager.ts" />
     <TypeScriptCompile Include="Manager\GUIManager.ts" />
     <TypeScriptCompile Include="Manager\InputManager.ts" />
     <TypeScriptCompile Include="Manager\ModelLoadManager.ts" />

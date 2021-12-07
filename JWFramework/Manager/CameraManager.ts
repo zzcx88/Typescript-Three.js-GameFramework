@@ -14,13 +14,27 @@
             return this.cameraMode;
         }
 
-        public SetCameraSavedPosition(gameObject: GameObject) {
+        public SetCameraSavedPosition(cameraMode: CameraMode) {
+            switch (cameraMode) {
+                case CameraMode.CAMERA_3RD:
+                    this.ChangeThridPersonCamera();
+                    break;
+                case CameraMode.CAMERA_ORBIT:
+                    this.ChangeOrbitCamera();
+                    break;
+
+            }
+        }
+
+        private ChangeThridPersonCamera() {
             this.cameraMode = CameraMode.CAMERA_3RD;
 
-            let gameObjectForCamera = gameObject;
+            SceneManager.getInstance().CurrentScene.Picker.OrbitControl.enabled = false;
+
+            let gameObjectForCamera = SceneManager.getInstance().CurrentScene.Picker.GetPickParents();
             gameObjectForCamera.GameObjectInstance.add(WorldManager.getInstance().MainCamera.CameraInstance);
 
-            WorldManager.getInstance().MainCamera.CameraInstance.lookAt(gameObject.PhysicsComponent.GetPosition());
+            WorldManager.getInstance().MainCamera.CameraInstance.lookAt(gameObjectForCamera.PhysicsComponent.GetPosition());
 
             WorldManager.getInstance().MainCamera.PhysicsComponent.SetPostion(0, 0, 0);
 
@@ -31,7 +45,7 @@
                 WorldManager.getInstance().MainCamera.PhysicsComponent.GetPosition().x + Up.x * 3.5,
                 WorldManager.getInstance().MainCamera.PhysicsComponent.GetPosition().y + Up.y * 3.5,
                 WorldManager.getInstance().MainCamera.PhysicsComponent.GetPosition().z + Up.z * 3.5
-                );
+            );
 
             WorldManager.getInstance().MainCamera.PhysicsComponent.SetPostion(
                 WorldManager.getInstance().MainCamera.PhysicsComponent.GetPosition().x + Look.x * -13,
@@ -39,9 +53,21 @@
                 WorldManager.getInstance().MainCamera.PhysicsComponent.GetPosition().z + Look.z * -13
             );
             //WorldManager.getInstance().MainCamera.Animate();
-
         }
 
+
+        private ChangeOrbitCamera() {
+            this.cameraMode = CameraMode.CAMERA_ORBIT;
+            SceneManager.getInstance().CurrentScene.Picker.OrbitControl.enabled = true;
+            let gameObjectForCamera = SceneManager.getInstance().CurrentScene.Picker.GetPickParents();
+            gameObjectForCamera.GameObjectInstance.remove(WorldManager.getInstance().MainCamera.CameraInstance);
+            WorldManager.getInstance().MainCamera.PhysicsComponent.SetPostion(
+                gameObjectForCamera.PhysicsComponent.GetPosition().x,
+                gameObjectForCamera.PhysicsComponent.GetPosition().y + 20,
+                gameObjectForCamera.PhysicsComponent.GetPosition().z
+            );
+            WorldManager.getInstance().MainCamera.CameraInstance.lookAt(gameObjectForCamera.PhysicsComponent.GetPosition());
+        }
         private cameraMode: CameraMode;
     }
 }

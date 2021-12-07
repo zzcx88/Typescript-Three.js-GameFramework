@@ -1,0 +1,7 @@
+C:\Users\Gyro\Desktop\test\prac\JWFramework\obj\Release\JWFramework.csproj.AssemblyReference.cache
+C:\Users\Gyro\Desktop\test\prac\JWFramework\bin\TypeScriptHTMLApp1.dll.config
+C:\Users\Gyro\Desktop\test\prac\JWFramework\bin\TypeScriptHTMLApp1.dll
+C:\Users\Gyro\Desktop\test\prac\JWFramework\bin\TypeScriptHTMLApp1.pdb
+C:\Users\Gyro\Desktop\test\prac\JWFramework\obj\Release\JWFramework.csproj.CoreCompileInputs.cache
+C:\Users\Gyro\Desktop\test\prac\JWFramework\obj\Release\TypeScriptHTMLApp1.dll
+C:\Users\Gyro\Desktop\test\prac\JWFramework\obj\Release\TypeScriptHTMLApp1.pdb

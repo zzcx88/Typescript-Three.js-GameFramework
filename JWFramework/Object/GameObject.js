@@ -36,6 +36,9 @@ var JWFramework;
         get ExportComponent() {
             return this.exportComponent;
         }
+        get CollisionComponent() {
+            return this.collisionComponent;
+        }
         get PhysicsCompIncluded() {
             return this.physicsCompIncluded;
         }
@@ -63,6 +66,11 @@ var JWFramework;
         get IsDead() {
             return this.isDead;
         }
+        set IsDead(flag) {
+            this.isDead = flag;
+        }
+        CollisionActive(value = 0) { }
+        CollisionDeActive(value = 0) { }
         Animate() { }
         DeleteObject() {
             this.isDead = true;

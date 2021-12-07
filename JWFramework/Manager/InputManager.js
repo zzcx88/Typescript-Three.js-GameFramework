@@ -17,6 +17,8 @@ var JWFramework;
             this.AddKey(38, 'up');
             this.AddKey(40, 'down');
             this.AddKey(32, 'space');
+            this.AddKey(46, 'delete');
+            this.AddKey(82, 'r');
             this.AddKey(87, 'w');
             this.AddKey(70, 'f');
             this.AddKey(49, '1');

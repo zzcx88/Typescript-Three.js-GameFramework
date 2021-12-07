@@ -40,8 +40,20 @@
 
         private modelNumber: number;
     }
+
     export interface ModelSet {
         model: GameObject;
         url: string;
+    }
+
+    export interface ObjectSet {
+        GameObject: GameObject;
+        Name: string;
+    }
+
+    export interface KeySet {
+        KeyCode: number;
+        KeyName: string;
+        KeyPressed: boolean;
     }
 }

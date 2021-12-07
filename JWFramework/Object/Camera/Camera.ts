@@ -10,6 +10,8 @@
             this.cameraInstance = new THREE.PerspectiveCamera(this.fov, this.aspect, this.near, this.far);
             this.GameObjectInstance = this.CameraInstance;
             this.physicsComponent = new PhysicsComponent(this)
+            this.collisionComponent = new CollisionComponent(this);
+            this.CollisionComponent.CreateBoundingBox(1,1,1);
             this.GameObjectInstance.matrixAutoUpdate = true;
         }
 
@@ -58,6 +60,7 @@
         }
 
         public Animate() {
+            this.CollisionComponent.Update();
             //if (InputManager.getInstance().GetKeyState('left')) {
             //    this.y = 1;
             //    this.PhysicsComponent.Rotate(0, this.y, 0);

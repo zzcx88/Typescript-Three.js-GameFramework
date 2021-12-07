@@ -39,6 +39,10 @@
             return this.exportComponent;
         }
 
+        public get CollisionComponent(): CollisionComponent {
+            return this.collisionComponent;
+        }
+
         public get PhysicsCompIncluded() {
             return this.physicsCompIncluded;
         }
@@ -75,6 +79,13 @@
             return this.isDead;
         }
 
+        public set IsDead(flag: boolean) {
+            this.isDead = flag;
+        }
+
+        public CollisionActive(value: any = 0) { }
+        public CollisionDeActive(value: any = 0) { }
+
         public Animate() {}
 
         public DeleteObject() {
@@ -91,6 +102,7 @@
         protected graphicComponent: GraphComponent;
         protected guiComponent: GUIComponent;
         protected exportComponent: ExportComponent;
+        protected collisionComponent: CollisionComponent;
 
         private physicsCompIncluded: boolean = false;
         private graphicCompIncluded: boolean = false;

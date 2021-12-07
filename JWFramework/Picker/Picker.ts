@@ -6,9 +6,7 @@
 
             this.pickMode = PickMode.PICK_MODIFY;
 
-            this.orbitControl = new THREE.OrbitControls(WorldManager.getInstance().MainCamera.CameraInstance, WorldManager.getInstance().Canvas);
-            this.orbitControl.maxDistance = 200;
-            this.orbitControl.minDistance = 0;
+            this.CreateOrtbitControl();
 
             window.addEventListener('click', function (e) {
                 SceneManager.getInstance().CurrentScene.Picker.SetPickPosition(e);
@@ -19,6 +17,15 @@
             window.addEventListener('mouseleave', function (e) {
                 SceneManager.getInstance().CurrentScene.Picker.ClearPickPosition();
             });
+        }
+
+        private CreateOrtbitControl() {
+            this.orbitControl = new THREE.OrbitControls(WorldManager.getInstance().MainCamera.CameraInstance, WorldManager.getInstance().Canvas);
+            this.orbitControl.maxDistance = 2000;
+            this.orbitControl.minDistance = -2000;
+            this.orbitControl.zoomSpeed = 2;
+            this.orbitControl.maxZoom = -2000;
+            this.orbitControl.panSpeed = 3;
         }
 
         private GetParentName(intersectedObjects: THREE.Object3D) {
@@ -33,8 +40,10 @@
 
         private PickOffObject() {
             let objectList = ObjectManager.getInstance().GetObjectList;
-            for (let i = 0; i < objectList.length; ++i) {
-                objectList[i].GameObject.Picked = false;
+            for (let TYPE = ObjectType.OBJ_OBJECT3D; TYPE < ObjectType.OBJ_OBJECT2D; ++TYPE) {
+                for (let OBJ = 0; OBJ < objectList[TYPE].length; ++OBJ) {
+                    objectList[TYPE][OBJ].GameObject.Picked = false;
+                }
             }
         }
 
@@ -49,13 +58,14 @@
 
             if (this.pickMode == PickMode.PICK_CLONE) {
                 let objectManager = ObjectManager.getInstance();
-                let intersectedObject = this.raycaster.intersectObject(objectManager.GetObjectFromName("Terrain").GameObjectInstance, true);
+                let intersectedObject = this.raycaster.intersectObject(objectManager.GetInSectorTerrain().GameObjectInstance, true);
 
                 //클론된 오브젝트를 생성한다.
                 let cloneObject = objectManager.MakeClone(objectManager.GetObjectFromName(GUIManager.getInstance().GUI_Select.GetSelectObjectName()));
                 cloneObject.GameObjectInstance.position.set(0, 0, 0);
-                cloneObject.GameObjectInstance.position.copy(intersectedObject[0].point);
-
+                let clonePosition: THREE.Vector3 = new THREE.Vector3(intersectedObject[0].point.x, intersectedObject[0].point.y + 10, intersectedObject[0].point.z);
+                cloneObject.GameObjectInstance.position.copy(clonePosition);
+                
                 SceneManager.getInstance().SceneInstance.add(cloneObject.GameObjectInstance);
                 objectManager.AddObject(cloneObject, cloneObject.Name, cloneObject.Type);
 
@@ -63,9 +73,9 @@
             //터레인은 키보드 입력으로 높낮이 조절 가능하게 할것
             else if (this.pickMode == PickMode.PICK_TERRAIN) {
                 let objectManager = ObjectManager.getInstance();
-                let intersectedObject = this.raycaster.intersectObject(objectManager.GetObjectFromName("Terrain").GameObjectInstance, true);
-
-                let terrain = objectManager.GetObjectFromName("Terrain");
+                let intersectedObject = this.raycaster.intersectObject(objectManager.GetInSectorTerrain().GameObjectInstance, true);
+                let terrain = objectManager.GetInSectorTerrain();
+                //console.log(intersectedObject[0].faceIndex)
                 (terrain as unknown as HeightmapTerrain).SetHeight(intersectedObject[0].face.a);
                 (terrain as unknown as HeightmapTerrain).SetHeight(intersectedObject[0].face.b);
                 (terrain as unknown as HeightmapTerrain).SetHeight(intersectedObject[0].face.c);
@@ -80,7 +90,7 @@
                 }
             }
             else {
-                let intersectedObjects = this.raycaster.intersectObjects(SceneManager.getInstance().SceneInstance.children);
+                let intersectedObjects = this.raycaster.intersectObject(SceneManager.getInstance().SceneInstance);
                 if (intersectedObjects.length) {
                     this.GetParentName(intersectedObjects[0].object);
                     this.pickedParent = ObjectManager.getInstance().GetObjectFromName(this.pickedParentName);
@@ -126,8 +136,16 @@
             this.pickMode = PickMode.PICK_REMOVE;
         }
 
+        public get PickMode(): PickMode {
+            return this.pickMode;
+        }
+
         public get OrbitControl(): THREE.OrbitControls {
             return this.orbitControl;
+        }
+
+        public GetPickParents(): GameObject {
+            return this.pickedParent;
         }
 
         private pickMode: PickMode;
