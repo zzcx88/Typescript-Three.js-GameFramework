@@ -20,7 +20,7 @@ var JWFramework;
         AddElement() {
             let item = [];
             let objectList = JWFramework.ObjectManager.getInstance().GetObjectList;
-            for (let TYPE = JWFramework.ObjectType.OBJ_OBJECT3D; TYPE < JWFramework.ObjectType.OBJ_END; ++TYPE) {
+            for (let TYPE = JWFramework.ObjectType.OBJ_OBJECT3D; TYPE < JWFramework.ObjectType.OBJ_OBJECT2D; ++TYPE) {
                 for (let OBJ = 0; OBJ < objectList[TYPE].length; ++OBJ) {
                     item.push(objectList[TYPE][OBJ].Name);
                 }

@@ -19,7 +19,7 @@ var JWFramework;
             this.renderer = new THREE.WebGLRenderer({
                 canvas: document.querySelector("#c"),
                 alpha: true,
-                antialias: false,
+                antialias: true,
                 precision: "highp",
                 premultipliedAlpha: true,
                 stencil: true,

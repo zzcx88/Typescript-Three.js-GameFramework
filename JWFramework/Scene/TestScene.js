@@ -14,7 +14,7 @@ var JWFramework;
             JWFramework.ModelLoadManager.getInstance().LoadSceneTest();
             for (let i = 0; i < 10; ++i) {
                 for (let j = 0; j < 10; ++j) {
-                    this.terrain[i] = new JWFramework.HeightmapTerrain(j * 300, i * 300);
+                    this.terrain[i] = new JWFramework.HeightmapTerrain(j * 300, i * 300, 32, 32);
                 }
             }
             let rotation = new THREE.Matrix4().makeRotationY(-Math.PI);

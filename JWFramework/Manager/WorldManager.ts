@@ -25,7 +25,7 @@
                 {
                 canvas: document.querySelector("#c"),
                 alpha: true,
-                antialias: false,
+                antialias: true,
                 precision: "highp",
                 premultipliedAlpha: true,
                 stencil: true,

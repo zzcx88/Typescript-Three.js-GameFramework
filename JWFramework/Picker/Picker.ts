@@ -8,6 +8,12 @@
 
             this.CreateOrtbitControl();
 
+            window.addEventListener('mousemove', function (e) {
+                if (SceneManager.getInstance().CurrentScene.Picker.pickMode == PickMode.PICK_TERRAIN)
+                    if (InputManager.getInstance().GetKeyState('t'))
+                        SceneManager.getInstance().CurrentScene.Picker.SetPickPosition(e);
+            });
+
             window.addEventListener('click', function (e) {
                 SceneManager.getInstance().CurrentScene.Picker.SetPickPosition(e);
             });

@@ -54,7 +54,7 @@ var JWFramework;
                     this.PhysicsComponent.RotateVec3(this.PhysicsComponent.Right, 1);
                 }
                 if (JWFramework.InputManager.getInstance().GetKeyState('w')) {
-                    this.PhysicsComponent.MoveFoward(50);
+                    this.PhysicsComponent.MoveFoward(15);
                 }
                 if (JWFramework.InputManager.getInstance().GetKeyState('f')) {
                     JWFramework.CameraManager.getInstance().SetCameraSavedPosition(JWFramework.CameraMode.CAMERA_3RD);

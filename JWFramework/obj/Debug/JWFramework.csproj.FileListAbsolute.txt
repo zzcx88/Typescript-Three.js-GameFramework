@@ -12,10 +12,10 @@ C:\Users\LEEJAEWON\Desktop\JWFramework\obj\Debug\JWFramework.csproj.CoreCompileI
 C:\Users\LEEJAEWON\Desktop\JWFramework\obj\Debug\TypeScriptHTMLApp1.dll
 C:\Users\LEEJAEWON\Desktop\JWFramework\obj\Debug\TypeScriptHTMLApp1.pdb
 C:\Users\Gyro\Desktop\test\prac\JWFramework\obj\Debug\JWFramework.csproj.AssemblyReference.cache
-C:\Users\LEEJAEWON\Desktop\ThreeJS_with_typescript\JWFramework\bin\TypeScriptHTMLApp1.dll.config
-C:\Users\LEEJAEWON\Desktop\ThreeJS_with_typescript\JWFramework\bin\TypeScriptHTMLApp1.dll
-C:\Users\LEEJAEWON\Desktop\ThreeJS_with_typescript\JWFramework\bin\TypeScriptHTMLApp1.pdb
-C:\Users\LEEJAEWON\Desktop\ThreeJS_with_typescript\JWFramework\obj\Debug\JWFramework.csproj.AssemblyReference.cache
-C:\Users\LEEJAEWON\Desktop\ThreeJS_with_typescript\JWFramework\obj\Debug\JWFramework.csproj.CoreCompileInputs.cache
-C:\Users\LEEJAEWON\Desktop\ThreeJS_with_typescript\JWFramework\obj\Debug\TypeScriptHTMLApp1.dll
-C:\Users\LEEJAEWON\Desktop\ThreeJS_with_typescript\JWFramework\obj\Debug\TypeScriptHTMLApp1.pdb
+C:\Users\LEEJAEWON\Desktop\study\WebGL\ThreeJS_with_typescript\JWFramework\bin\TypeScriptHTMLApp1.dll.config
+C:\Users\LEEJAEWON\Desktop\study\WebGL\ThreeJS_with_typescript\JWFramework\bin\TypeScriptHTMLApp1.dll
+C:\Users\LEEJAEWON\Desktop\study\WebGL\ThreeJS_with_typescript\JWFramework\bin\TypeScriptHTMLApp1.pdb
+C:\Users\LEEJAEWON\Desktop\study\WebGL\ThreeJS_with_typescript\JWFramework\obj\Debug\JWFramework.csproj.AssemblyReference.cache
+C:\Users\LEEJAEWON\Desktop\study\WebGL\ThreeJS_with_typescript\JWFramework\obj\Debug\JWFramework.csproj.CoreCompileInputs.cache
+C:\Users\LEEJAEWON\Desktop\study\WebGL\ThreeJS_with_typescript\JWFramework\obj\Debug\TypeScriptHTMLApp1.dll
+C:\Users\LEEJAEWON\Desktop\study\WebGL\ThreeJS_with_typescript\JWFramework\obj\Debug\TypeScriptHTMLApp1.pdb

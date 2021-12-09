@@ -63,7 +63,7 @@
                     this.PhysicsComponent.RotateVec3(this.PhysicsComponent.Right, 1);
                 }
                 if (InputManager.getInstance().GetKeyState('w')) {
-                    this.PhysicsComponent.MoveFoward(50);
+                    this.PhysicsComponent.MoveFoward(15);
                 }
                 if (InputManager.getInstance().GetKeyState('f')) {
                     CameraManager.getInstance().SetCameraSavedPosition(CameraMode.CAMERA_3RD);

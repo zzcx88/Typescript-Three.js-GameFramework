@@ -8,6 +8,11 @@ var JWFramework;
             this.pickedObject = null;
             this.pickMode = JWFramework.PickMode.PICK_MODIFY;
             this.CreateOrtbitControl();
+            window.addEventListener('mousemove', function (e) {
+                if (JWFramework.SceneManager.getInstance().CurrentScene.Picker.pickMode == JWFramework.PickMode.PICK_TERRAIN)
+                    if (JWFramework.InputManager.getInstance().GetKeyState('t'))
+                        JWFramework.SceneManager.getInstance().CurrentScene.Picker.SetPickPosition(e);
+            });
             window.addEventListener('click', function (e) {
                 JWFramework.SceneManager.getInstance().CurrentScene.Picker.SetPickPosition(e);
             });

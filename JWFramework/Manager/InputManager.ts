@@ -27,6 +27,7 @@
             this.AddKey(82, 'r');
             this.AddKey(87, 'w');
             this.AddKey(70, 'f');
+            this.AddKey(84, 't');
             this.AddKey(49, '1');
             this.AddKey(50, '2');
             this.AddKey(51, '3');
