@@ -25,13 +25,14 @@
             return null;
         }
 
-        public GetInSectorTerrain(): HeightmapTerrain {
-            let terrain;
+        public GetInSectorTerrain() {
+            let terrain: GameObject;
             for (let OBJ = 0; OBJ < this.objectList[ObjectType.OBJ_TERRAIN].length; ++OBJ) {
                 terrain = this.objectList[ObjectType.OBJ_TERRAIN][OBJ].GameObject;
                 if ((terrain as unknown as HeightmapTerrain).cameraInSecter == true)
-                    return terrain;
+                    this.terrainList.add(terrain.GameObjectInstance);
             }
+            return this.terrainList;
         }
 
         public get GetObjectList() {
@@ -130,6 +131,7 @@
 
         public Render() { }
 
+        private terrainList = new THREE.Group();
         private objectList: ObjectSet[][] = [[],[],[],[]];
         private exportObjectList = [];
     }

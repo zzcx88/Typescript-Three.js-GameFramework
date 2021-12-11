@@ -57,7 +57,7 @@ var JWFramework;
             this.raycaster.setFromCamera({ x: this.pickPositionX, y: this.pickPositionY }, JWFramework.WorldManager.getInstance().MainCamera.CameraInstance);
             if (this.pickMode == JWFramework.PickMode.PICK_CLONE) {
                 let objectManager = JWFramework.ObjectManager.getInstance();
-                let intersectedObject = this.raycaster.intersectObject(objectManager.GetInSectorTerrain().GameObjectInstance, true);
+                let intersectedObject = this.raycaster.intersectObject(JWFramework.SceneManager.getInstance().SceneInstance, true);
                 //클론된 오브젝트를 생성한다.
                 let cloneObject = objectManager.MakeClone(objectManager.GetObjectFromName(JWFramework.GUIManager.getInstance().GUI_Select.GetSelectObjectName()));
                 cloneObject.GameObjectInstance.position.set(0, 0, 0);
@@ -65,16 +65,19 @@ var JWFramework;
                 cloneObject.GameObjectInstance.position.copy(clonePosition);
                 JWFramework.SceneManager.getInstance().SceneInstance.add(cloneObject.GameObjectInstance);
                 objectManager.AddObject(cloneObject, cloneObject.Name, cloneObject.Type);
+                //SceneManager.getInstance().SceneInstance.add(objectManager.GetInSectorTerrain());
             }
             //터레인은 키보드 입력으로 높낮이 조절 가능하게 할것
             else if (this.pickMode == JWFramework.PickMode.PICK_TERRAIN) {
                 let objectManager = JWFramework.ObjectManager.getInstance();
-                let intersectedObject = this.raycaster.intersectObject(objectManager.GetInSectorTerrain().GameObjectInstance, true);
-                let terrain = objectManager.GetInSectorTerrain();
-                //console.log(intersectedObject[0].faceIndex)
-                terrain.SetHeight(intersectedObject[0].face.a);
-                terrain.SetHeight(intersectedObject[0].face.b);
-                terrain.SetHeight(intersectedObject[0].face.c);
+                let intersectedObject = this.raycaster.intersectObject(JWFramework.SceneManager.getInstance().SceneInstance, true);
+                let terrain = objectManager.GetObjectFromName(intersectedObject[0].object.name);
+                if (terrain.Type == JWFramework.ObjectType.OBJ_TERRAIN) {
+                    terrain.SetHeight(intersectedObject[0].face.a);
+                    terrain.SetHeight(intersectedObject[0].face.b);
+                    terrain.SetHeight(intersectedObject[0].face.c);
+                }
+                //SceneManager.getInstance().SceneInstance.add(objectManager.GetInSectorTerrain());
             }
             else if (this.pickMode == JWFramework.PickMode.PICK_REMOVE) {
                 let intersectedObjects = this.raycaster.intersectObjects(JWFramework.SceneManager.getInstance().SceneInstance.children);

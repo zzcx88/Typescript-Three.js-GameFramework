@@ -30,7 +30,7 @@ var JWFramework;
             this.light2.Intensity = 0.7;
             this.light2.GameObjectInstance.position.set(-10000, -10000, 0);
             this.sceneManager.SceneInstance.add(this.light.GameObjectInstance);
-            this.sceneManager.SceneInstance.add(this.light2.GameObjectInstance);
+            //this.sceneManager.SceneInstance.add(this.light2.GameObjectInstance);
         }
         BuildFog() {
             let sceneInstance = this.sceneManager.SceneInstance;
@@ -51,6 +51,13 @@ var JWFramework;
                 }
                 if (JWFramework.InputManager.getInstance().GetKeyState('4')) {
                     this.Picker.ChangePickModeRemove();
+                }
+                if (JWFramework.InputManager.getInstance().GetKeyState('5')) {
+                    fetch("./Model/Scene.json")
+                        .then(response => {
+                        return response.json();
+                    })
+                        .then(jsondata => console.log(jsondata));
                 }
                 if (JWFramework.InputManager.getInstance().GetKeyState('delete')) {
                     JWFramework.ObjectManager.getInstance().DeleteAllObject();

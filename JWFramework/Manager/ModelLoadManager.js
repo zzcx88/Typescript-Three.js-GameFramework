@@ -36,18 +36,25 @@ var JWFramework;
                 console.log('success');
                 console.log(gltf);
                 gameObject.GameObjectInstance = gltf.scene;
-                //gameObject.GameObjectInstance.traverse(n => {
-                //    if (n.isMesh) {
-                //        n.castShadow = true;
-                //        n.receiveShadow = true;
-                //        if (n.material.map) n.material.map.anisotropy = 1;
-                //        n.material.transparent = true;
-                //        n.material.opacity = 0.5;
-                //        n.material.alphaTest = 0;
-                //        //n.material.alphaToCoverage = true;
-                //        console.log(n.material);
-                //    }
-                //});
+                gameObject.GameObjectInstance.traverse(n => {
+                    if (n.isMesh) {
+                        let texture = n.material.map;
+                        let normal = n.material.normalMap;
+                        let color = n.material.color;
+                        n.material = new THREE.MeshToonMaterial();
+                        n.material.map = texture;
+                        n.material.normalMap = normal;
+                        n.material.color = color;
+                        n.castShadow = true;
+                        n.receiveShadow = true;
+                        //if (n.material.map) n.material.map.anisotropy = 1;
+                        //n.material.transparent = true;
+                        //n.material.opacity = 0.5;
+                        //n.material.alphaTest = 0;
+                        //n.material.alphaToCoverage = true;
+                        //console.log(n.material);
+                    }
+                });
                 //SceneManager.getInstance().SceneInstance.add(gameObject.GameObjectInstance);
                 gameObject.InitializeAfterLoad();
                 this.SetLoadComplete();

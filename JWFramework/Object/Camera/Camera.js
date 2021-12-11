@@ -13,7 +13,7 @@ var JWFramework;
             this.GameObjectInstance = this.CameraInstance;
             this.physicsComponent = new JWFramework.PhysicsComponent(this);
             this.collisionComponent = new JWFramework.CollisionComponent(this);
-            this.CollisionComponent.CreateBoundingBox(1, 1, 1);
+            this.CollisionComponent.CreateBoundingBox(300, 1, 300);
             this.GameObjectInstance.matrixAutoUpdate = true;
         }
         get Fov() {

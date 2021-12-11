@@ -2,6 +2,7 @@ var JWFramework;
 (function (JWFramework) {
     class ObjectManager {
         constructor() {
+            this.terrainList = new THREE.Group();
             this.objectList = [[], [], [], []];
             this.exportObjectList = [];
         }
@@ -27,8 +28,9 @@ var JWFramework;
             for (let OBJ = 0; OBJ < this.objectList[JWFramework.ObjectType.OBJ_TERRAIN].length; ++OBJ) {
                 terrain = this.objectList[JWFramework.ObjectType.OBJ_TERRAIN][OBJ].GameObject;
                 if (terrain.cameraInSecter == true)
-                    return terrain;
+                    this.terrainList.add(terrain.GameObjectInstance);
             }
+            return this.terrainList;
         }
         get GetObjectList() {
             return this.objectList;

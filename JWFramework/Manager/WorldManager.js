@@ -29,6 +29,7 @@ var JWFramework;
             this.renderer.setViewport(0, 0, JWFramework.Define.SCREEN_WIDTH, JWFramework.Define.SCREEN_HEIGHT);
             this.renderer.setScissor(0, 0, 0, 0);
             this.renderer.setClearColor(0x000000);
+            this.renderer.shadowMap.enabled = true;
             document.body.appendChild(this.renderer.domElement);
         }
         ResizeView() {

@@ -64,7 +64,7 @@
 
             if (this.pickMode == PickMode.PICK_CLONE) {
                 let objectManager = ObjectManager.getInstance();
-                let intersectedObject = this.raycaster.intersectObject(objectManager.GetInSectorTerrain().GameObjectInstance, true);
+                let intersectedObject = this.raycaster.intersectObject(SceneManager.getInstance().SceneInstance, true);
 
                 //클론된 오브젝트를 생성한다.
                 let cloneObject = objectManager.MakeClone(objectManager.GetObjectFromName(GUIManager.getInstance().GUI_Select.GetSelectObjectName()));
@@ -74,17 +74,19 @@
                 
                 SceneManager.getInstance().SceneInstance.add(cloneObject.GameObjectInstance);
                 objectManager.AddObject(cloneObject, cloneObject.Name, cloneObject.Type);
-
+                //SceneManager.getInstance().SceneInstance.add(objectManager.GetInSectorTerrain());
             }
             //터레인은 키보드 입력으로 높낮이 조절 가능하게 할것
             else if (this.pickMode == PickMode.PICK_TERRAIN) {
                 let objectManager = ObjectManager.getInstance();
-                let intersectedObject = this.raycaster.intersectObject(objectManager.GetInSectorTerrain().GameObjectInstance, true);
-                let terrain = objectManager.GetInSectorTerrain();
-                //console.log(intersectedObject[0].faceIndex)
-                (terrain as unknown as HeightmapTerrain).SetHeight(intersectedObject[0].face.a);
-                (terrain as unknown as HeightmapTerrain).SetHeight(intersectedObject[0].face.b);
-                (terrain as unknown as HeightmapTerrain).SetHeight(intersectedObject[0].face.c);
+                let intersectedObject = this.raycaster.intersectObject(SceneManager.getInstance().SceneInstance, true);
+                let terrain = objectManager.GetObjectFromName(intersectedObject[0].object.name);
+                if (terrain.Type == ObjectType.OBJ_TERRAIN) {
+                    (terrain as unknown as HeightmapTerrain).SetHeight(intersectedObject[0].face.a);
+                    (terrain as unknown as HeightmapTerrain).SetHeight(intersectedObject[0].face.b);
+                    (terrain as unknown as HeightmapTerrain).SetHeight(intersectedObject[0].face.c);
+                }
+                //SceneManager.getInstance().SceneInstance.add(objectManager.GetInSectorTerrain());
             }
             else if (this.pickMode == PickMode.PICK_REMOVE) {
                 let intersectedObjects = this.raycaster.intersectObjects(SceneManager.getInstance().SceneInstance.children);

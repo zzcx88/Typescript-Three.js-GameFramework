@@ -36,6 +36,7 @@
             this.renderer.setViewport(0, 0, Define.SCREEN_WIDTH, Define.SCREEN_HEIGHT);
             this.renderer.setScissor(0, 0, 0, 0);
             this.renderer.setClearColor(0x000000);
+            this.renderer.shadowMap.enabled = true;
             document.body.appendChild(this.renderer.domElement);
         }
 

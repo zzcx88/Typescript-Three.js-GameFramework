@@ -45,7 +45,7 @@
             // blend pass
             this.blendPass = new THREE.ShaderPass(THREE.BlendShader, "tDiffuse1");
             this.blendPass.uniforms["tDiffuse2"].value = this.savePass.renderTarget.texture;
-            this.blendPass.uniforms["mixRatio"].value = 0.65;
+            this.blendPass.uniforms["mixRatio"].value = 0.75;
 
             // output pass
             this.outputPass = new THREE.ShaderPass(THREE.CopyShader);

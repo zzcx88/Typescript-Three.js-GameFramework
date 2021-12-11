@@ -35,7 +35,7 @@ var JWFramework;
         }
         CreateTerrainMesh() {
             this.planeGeomatry = new THREE.PlaneGeometry(300, 300, this.segmentWidth, this.segmentHeight);
-            this.material = new THREE.MeshStandardMaterial();
+            this.material = new THREE.MeshToonMaterial();
             this.texture = new THREE.TextureLoader().load("Model/Heightmap/TerrainTexture.jpg");
             this.texture.wrapS = THREE.RepeatWrapping;
             this.texture.wrapT = THREE.RepeatWrapping;
@@ -166,8 +166,8 @@ var JWFramework;
                 this.inSecter = false;
         }
         Animate() {
-            if (JWFramework.SceneManager.getInstance().CurrentScene.Picker.PickMode != JWFramework.PickMode.PICK_TERRAIN && this.vertexNormalNeedUpdate) {
-                //this.planeGeomatry.computeVertexNormals();
+            if ( /*SceneManager.getInstance().CurrentScene.Picker.PickMode != PickMode.PICK_TERRAIN &&*/this.vertexNormalNeedUpdate) {
+                this.planeGeomatry.computeVertexNormals();
                 this.vertexNormalNeedUpdate = false;
             }
         }

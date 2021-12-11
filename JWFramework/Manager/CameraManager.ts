@@ -34,7 +34,7 @@
             let gameObjectForCamera = SceneManager.getInstance().CurrentScene.Picker.GetPickParents();
             gameObjectForCamera.GameObjectInstance.add(WorldManager.getInstance().MainCamera.CameraInstance);
 
-            WorldManager.getInstance().MainCamera.CameraInstance.lookAt(gameObjectForCamera.PhysicsComponent.GetPosition());
+            WorldManager.getInstance().MainCamera.CameraInstance.lookAt(gameObjectForCamera.PhysicsComponent.GetPosition().x, gameObjectForCamera.PhysicsComponent.GetPosition().y + 1.5, gameObjectForCamera.PhysicsComponent.GetPosition().z);
 
             WorldManager.getInstance().MainCamera.PhysicsComponent.SetPostion(0, 0, 0);
 
@@ -42,15 +42,15 @@
             let Look = new THREE.Vector3(0, 0, 1);
 
             WorldManager.getInstance().MainCamera.PhysicsComponent.SetPostion(
-                WorldManager.getInstance().MainCamera.PhysicsComponent.GetPosition().x + Up.x * 3.5,
-                WorldManager.getInstance().MainCamera.PhysicsComponent.GetPosition().y + Up.y * 3.5,
-                WorldManager.getInstance().MainCamera.PhysicsComponent.GetPosition().z + Up.z * 3.5
+                WorldManager.getInstance().MainCamera.PhysicsComponent.GetPosition().x + Up.x * 1.5,
+                WorldManager.getInstance().MainCamera.PhysicsComponent.GetPosition().y + Up.y * 1.5,
+                WorldManager.getInstance().MainCamera.PhysicsComponent.GetPosition().z + Up.z * 1.5
             );
 
             WorldManager.getInstance().MainCamera.PhysicsComponent.SetPostion(
-                WorldManager.getInstance().MainCamera.PhysicsComponent.GetPosition().x + Look.x * -13,
-                WorldManager.getInstance().MainCamera.PhysicsComponent.GetPosition().y + Look.y * -13,
-                WorldManager.getInstance().MainCamera.PhysicsComponent.GetPosition().z + Look.z * -13
+                WorldManager.getInstance().MainCamera.PhysicsComponent.GetPosition().x + Look.x * -4.8,
+                WorldManager.getInstance().MainCamera.PhysicsComponent.GetPosition().y + Look.y * -4.8,
+                WorldManager.getInstance().MainCamera.PhysicsComponent.GetPosition().z + Look.z * -4.8
             );
             //WorldManager.getInstance().MainCamera.Animate();
         }

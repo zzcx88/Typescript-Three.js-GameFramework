@@ -36,7 +36,7 @@
 
         public CreateTerrainMesh() {
             this.planeGeomatry = new THREE.PlaneGeometry(300, 300, this.segmentWidth, this.segmentHeight);
-            this.material = new THREE.MeshStandardMaterial();
+            this.material = new THREE.MeshToonMaterial();
             this.texture = new THREE.TextureLoader().load("Model/Heightmap/TerrainTexture.jpg");
             this.texture.wrapS = THREE.RepeatWrapping;
             this.texture.wrapT = THREE.RepeatWrapping;
@@ -195,15 +195,15 @@
         }
 
         public Animate() {
-            if (SceneManager.getInstance().CurrentScene.Picker.PickMode != PickMode.PICK_TERRAIN && this.vertexNormalNeedUpdate) {
-                //this.planeGeomatry.computeVertexNormals();
+            if (/*SceneManager.getInstance().CurrentScene.Picker.PickMode != PickMode.PICK_TERRAIN &&*/ this.vertexNormalNeedUpdate) {
+                this.planeGeomatry.computeVertexNormals();
                 this.vertexNormalNeedUpdate = false;
             }
         }
 
         private planeMesh: THREE.Mesh;
         private planeGeomatry: THREE.PlaneGeometry;
-        private material: THREE.MeshStandardMaterial;
+        private material: THREE.MeshToonMaterial;
         private texture: THREE.Texture;
 
         private terrainIndex: number;

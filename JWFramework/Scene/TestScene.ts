@@ -32,7 +32,7 @@
             this.light2.GameObjectInstance.position.set(-10000, -10000, 0);
 
             this.sceneManager.SceneInstance.add(this.light.GameObjectInstance);
-            this.sceneManager.SceneInstance.add(this.light2.GameObjectInstance);
+            //this.sceneManager.SceneInstance.add(this.light2.GameObjectInstance);
         }
         private BuildFog() {
             let sceneInstance = this.sceneManager.SceneInstance;
@@ -55,6 +55,13 @@
                 }
                 if (InputManager.getInstance().GetKeyState('4')) {
                     this.Picker.ChangePickModeRemove();
+                }
+                if (InputManager.getInstance().GetKeyState('5')) {
+                    fetch("./Model/Scene.json")
+                        .then(response => {
+                            return response.json();
+                        })
+                        .then(jsondata => console.log(jsondata));
                 }
                 if (InputManager.getInstance().GetKeyState('delete')) {
                     ObjectManager.getInstance().DeleteAllObject();
