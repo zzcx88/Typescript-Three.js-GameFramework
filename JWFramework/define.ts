@@ -4,14 +4,14 @@
         static readonly SCREEN_HEIGHT: number = window.innerHeight;
     }
 
-    export class ModelSceneTest {
-        private static instance: ModelSceneTest;
-
+    export class ModelSceneEdit {
+        private static instance: ModelSceneEdit;
+        ModelSceneEdit
         static getInstance() {
-            if (!ModelSceneTest.instance) {
-                ModelSceneTest.instance = new ModelSceneTest;
+            if (!ModelSceneEdit.instance) {
+                ModelSceneEdit.instance = new ModelSceneEdit;
             }
-            return ModelSceneTest.instance;
+            return ModelSceneEdit.instance;
         }
 
         public constructor() {
@@ -25,7 +25,7 @@
             ];
             this.modelNumber = this.sceneTestModel.length;
         }
-        public get ModelSceneTest(): ModelSet[] {
+        public get ModelScene(): ModelSet[] {
             return this.sceneTestModel;
         }
 
@@ -33,13 +33,47 @@
             return this.modelNumber;
         }
 
-        private helmet: TestObject = new TestObject;
-        private F16: TestObject = new TestObject;
-        private flower: TestObject = new TestObject;
+        private helmet: EditObject = new EditObject;
+        private F16: EditObject = new EditObject;
+        private flower: EditObject = new EditObject;
         private sceneTestModel: ModelSet[] = [];
 
         private modelNumber: number;
     }
+
+
+
+    export class ModelSceneStage {
+        private static instance: ModelSceneStage;
+        ModelSceneEdit
+        static getInstance() {
+            if (!ModelSceneStage.instance) {
+                ModelSceneStage.instance = new ModelSceneStage;
+            }
+            return ModelSceneStage.instance;
+        }
+
+        public constructor() {
+            this.F16.Name = "F-16";
+            this.sceneTestModel = [
+                { model: this.F16, url: 'Model/F-16D/F-16.gltf' },
+            ];
+            this.modelNumber = this.sceneTestModel.length;
+        }
+        public get ModelScene(): ModelSet[] {
+            return this.sceneTestModel;
+        }
+
+        public get ModelNumber(): number {
+            return this.modelNumber;
+        }
+
+        private F16: EditObject = new EditObject;
+        private sceneTestModel: ModelSet[] = [];
+
+        private modelNumber: number;
+    }
+
 
     export interface ModelSet {
         model: GameObject;
@@ -54,6 +88,9 @@
     export interface KeySet {
         KeyCode: number;
         KeyName: string;
+        KeyEvent: boolean;
+        KeyDown: boolean;
         KeyPressed: boolean;
+        KeyUp: boolean;
     }
 }

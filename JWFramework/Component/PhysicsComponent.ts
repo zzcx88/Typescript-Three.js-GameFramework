@@ -83,6 +83,7 @@
         public RotateVec3(axis: THREE.Vector3, angle: number): void {
             this.GameObject.GameObjectInstance.rotateOnWorldAxis(axis, angle * WorldManager.getInstance().GetDeltaTime());
             this.UpdateMatrix();
+            //console.log(this.GameObject.GameObjectInstance.matrix);
         }
 
         public UpdateMatrix() {

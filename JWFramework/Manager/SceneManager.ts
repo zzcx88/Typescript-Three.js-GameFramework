@@ -30,12 +30,12 @@
 
         public BuildScene() {
             this.sceneThree = new THREE.Scene();
-            this.sceneType = SceneType.SCENE_TEST;
+            this.sceneType = SceneType.SCENE_EDIT;
             this.objectManager = ObjectManager.getInstance();
 
             switch (this.sceneType) {
-                case JWFramework.SceneType.SCENE_TEST:
-                    this.scene = new TestScene(this);
+                case JWFramework.SceneType.SCENE_EDIT:
+                    this.scene = new EditScene(this);
                     break;
                 case JWFramework.SceneType.SCENE_START:
                     break;

@@ -13,8 +13,11 @@ var JWFramework;
                     if (dst.GameObject != undefined && src.GameObject.IsClone == true) {
                         let intersect = src.GameObject.CollisionComponent.Raycaster.intersectObject(dst.GameObject.GameObjectInstance);
                         if (intersect[0] != undefined)
-                            if (intersect[0].distance < 1 || src.GameObject.PhysicsComponent.GetPosition().y < 0)
+                            if (intersect[0].distance < 1 /* || src.GameObject.PhysicsComponent.GetPosition().y < 0*/) {
+                                let terrain = JWFramework.ObjectManager.getInstance().GetObjectFromName(intersect[0].object.name);
+                                //(terrain as unknown as HeightmapTerrain).planeGeomatry.getAttribute('position').getY();
                                 src.GameObject.PhysicsComponent.SetPostion(intersect[0].point.x, intersect[0].point.y + 1.0000001, intersect[0].point.z);
+                            }
                     }
                 });
             });

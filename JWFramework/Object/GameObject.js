@@ -4,6 +4,7 @@ var JWFramework;
         constructor() {
             this.isClone = false;
             this.isDead = false;
+            this.isPlayer = false;
             this.physicsCompIncluded = false;
             this.graphicCompIncluded = false;
             this.picked = false;
@@ -23,6 +24,12 @@ var JWFramework;
         }
         set IsClone(isClone) {
             this.isClone = isClone;
+        }
+        get IsPlayer() {
+            return this.isPlayer;
+        }
+        set IsPlayer(flag) {
+            this.isPlayer = flag;
         }
         get PhysicsComponent() {
             return this.physicsComponent;

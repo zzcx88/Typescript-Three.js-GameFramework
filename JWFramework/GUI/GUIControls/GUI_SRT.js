@@ -14,6 +14,7 @@ var JWFramework;
             this.positionFolder = this.datGui.addFolder('Position');
             this.rotateFolder = this.datGui.addFolder('Rotate');
             this.scaleFolder = this.datGui.addFolder('Scale');
+            this.isPlayerFolder = this.datGui.addFolder('IsPlayer');
         }
         AddElement() {
             this.positionFolder.add(this.gameObject.GameObjectInstance.position, 'x').step(0.01).listen();
@@ -28,12 +29,23 @@ var JWFramework;
             this.scaleFolder.add(this.gameObject.GameObjectInstance.scale, 'y', 0).step(0.01).listen();
             this.scaleFolder.add(this.gameObject.GameObjectInstance.scale, 'z', 0).step(0.01).listen();
             this.scaleFolder.open();
+            this.isPlayerFunc = function () {
+                this.isPlayer = function () {
+                    console.log(JWFramework.GUIManager.getInstance().GUI_SRT.gameObject.IsPlayer);
+                    JWFramework.GUIManager.getInstance().GUI_SRT.gameObject.IsPlayer = true;
+                    console.log(JWFramework.GUIManager.getInstance().GUI_SRT.gameObject.IsPlayer);
+                };
+            };
+            this.isPlayerFunc = new this.isPlayerFunc();
+            this.isPlayerFolder.add(this.isPlayerFunc, 'isPlayer');
+            this.isPlayerFolder.open();
         }
         SetGameObject(gameObject) {
             this.gameObject = gameObject;
             this.datGui.removeFolder(this.positionFolder);
             this.datGui.removeFolder(this.rotateFolder);
             this.datGui.removeFolder(this.scaleFolder);
+            this.datGui.removeFolder(this.isPlayerFolder);
             this.CreateFolder();
             this.AddElement();
         }

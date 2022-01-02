@@ -3,7 +3,7 @@ var JWFramework;
     class ObjectManager {
         constructor() {
             this.terrainList = new THREE.Group();
-            this.objectList = [[], [], [], []];
+            this.objectList = [[], [], [], [], []];
             this.exportObjectList = [];
         }
         static getInstance() {
@@ -43,7 +43,15 @@ var JWFramework;
             this.objectList[type].push({ GameObject: gameObject, Name: name });
         }
         MakeClone(selectObject) {
-            let cloneObject = new JWFramework.TestObject;
+            let cloneObject;
+            //해당 인스턴스로 생성이 가능한지 판별
+            if (selectObject instanceof JWFramework.EditObject) {
+                cloneObject = new JWFramework.EditObject;
+            }
+            else {
+                alert(selectObject.Name.toUpperCase() + " Instance of class name not found");
+                return;
+            }
             cloneObject.IsClone = true;
             cloneObject.Name = selectObject.Name + "Clone" + ObjectManager.getInstance().GetObjectList[cloneObject.Type].length.toString();
             cloneObject.GameObjectInstance = selectObject.GameObjectInstance.clone();
@@ -78,11 +86,16 @@ var JWFramework;
                     }
                     if (node.material)
                         if (Array.isArray(node.material)) {
-                            for (let i = 0; i < node.material.length; ++i)
+                            for (let i = 0; i < node.material.length; ++i) {
                                 node.material[i].dispose();
+                                if (node.material[i].map)
+                                    node.material[i].map.dispose();
+                            }
                         }
                         else {
                             node.material.dispose();
+                            if (node.material.map)
+                                node.material.map.dispose();
                         }
                 }
             });
@@ -91,7 +104,7 @@ var JWFramework;
         DeleteAllObject() {
             this.objectList.forEach(function (type) {
                 type.forEach(function (object) {
-                    if (object.GameObject.Type != JWFramework.ObjectType.OBJ_CAMERA)
+                    if (object.GameObject.Type != JWFramework.ObjectType.OBJ_CAMERA && object.GameObject.IsClone == true)
                         object.GameObject.IsDead = true;
                 });
             });
@@ -114,6 +127,7 @@ var JWFramework;
             //CollisionManager.getInstance().CollideBoxToBox(this.objectList[ObjectType.OBJ_TERRAIN], this.objectList[ObjectType.OBJ_OBJECT3D]);
             //let sectoredTerrain = this.objectList[ObjectType.OBJ_TERRAIN].filter((element) => (element.GameObject as unknown as HeightmapTerrain).inSecter == true);
             JWFramework.CollisionManager.getInstance().CollideRayToTerrain(this.objectList[JWFramework.ObjectType.OBJ_OBJECT3D], this.objectList[JWFramework.ObjectType.OBJ_TERRAIN]);
+            JWFramework.InputManager.getInstance().UpdateKey();
         }
         Render() { }
     }

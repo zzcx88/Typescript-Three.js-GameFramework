@@ -4,13 +4,15 @@ var JWFramework;
         constructor() {
             this.pickPositionX = 0;
             this.pickPositionY = 0;
+            this.terrainOption = JWFramework.TerrainOption.TERRAIN_UP;
+            this.terrainOffset = 0;
             this.raycaster = new THREE.Raycaster();
             this.pickedObject = null;
             this.pickMode = JWFramework.PickMode.PICK_MODIFY;
             this.CreateOrtbitControl();
             window.addEventListener('mousemove', function (e) {
                 if (JWFramework.SceneManager.getInstance().CurrentScene.Picker.pickMode == JWFramework.PickMode.PICK_TERRAIN)
-                    if (JWFramework.InputManager.getInstance().GetKeyState('t'))
+                    if (JWFramework.InputManager.getInstance().GetKeyState('t', JWFramework.KeyState.KEY_PRESS))
                         JWFramework.SceneManager.getInstance().CurrentScene.Picker.SetPickPosition(e);
             });
             window.addEventListener('click', function (e) {
@@ -60,12 +62,15 @@ var JWFramework;
                 let intersectedObject = this.raycaster.intersectObject(JWFramework.SceneManager.getInstance().SceneInstance, true);
                 //클론된 오브젝트를 생성한다.
                 let cloneObject = objectManager.MakeClone(objectManager.GetObjectFromName(JWFramework.GUIManager.getInstance().GUI_Select.GetSelectObjectName()));
-                cloneObject.GameObjectInstance.position.set(0, 0, 0);
-                let clonePosition = new THREE.Vector3(intersectedObject[0].point.x, intersectedObject[0].point.y + 10, intersectedObject[0].point.z);
-                cloneObject.GameObjectInstance.position.copy(clonePosition);
-                JWFramework.SceneManager.getInstance().SceneInstance.add(cloneObject.GameObjectInstance);
-                objectManager.AddObject(cloneObject, cloneObject.Name, cloneObject.Type);
-                //SceneManager.getInstance().SceneInstance.add(objectManager.GetInSectorTerrain());
+                let terrain = objectManager.GetObjectFromName(intersectedObject[0].object.name);
+                if (terrain.Type == JWFramework.ObjectType.OBJ_TERRAIN) {
+                    cloneObject.GameObjectInstance.position.set(0, 0, 0);
+                    let clonePosition = new THREE.Vector3(intersectedObject[0].point.x, intersectedObject[0].point.y + 10, intersectedObject[0].point.z);
+                    cloneObject.GameObjectInstance.position.copy(clonePosition);
+                    JWFramework.SceneManager.getInstance().SceneInstance.add(cloneObject.GameObjectInstance);
+                    objectManager.AddObject(cloneObject, cloneObject.Name, cloneObject.Type);
+                    //SceneManager.getInstance().SceneInstance.add(objectManager.GetInSectorTerrain());
+                }
             }
             //터레인은 키보드 입력으로 높낮이 조절 가능하게 할것
             else if (this.pickMode == JWFramework.PickMode.PICK_TERRAIN) {
@@ -73,9 +78,9 @@ var JWFramework;
                 let intersectedObject = this.raycaster.intersectObject(JWFramework.SceneManager.getInstance().SceneInstance, true);
                 let terrain = objectManager.GetObjectFromName(intersectedObject[0].object.name);
                 if (terrain.Type == JWFramework.ObjectType.OBJ_TERRAIN) {
-                    terrain.SetHeight(intersectedObject[0].face.a);
-                    terrain.SetHeight(intersectedObject[0].face.b);
-                    terrain.SetHeight(intersectedObject[0].face.c);
+                    terrain.SetHeight(intersectedObject[0].face.a, -20, this.terrainOption);
+                    terrain.SetHeight(intersectedObject[0].face.b, -20, this.terrainOption);
+                    terrain.SetHeight(intersectedObject[0].face.c, -20, this.terrainOption);
                 }
                 //SceneManager.getInstance().SceneInstance.add(objectManager.GetInSectorTerrain());
             }
@@ -126,6 +131,14 @@ var JWFramework;
         }
         ChangePickModeRemove() {
             this.pickMode = JWFramework.PickMode.PICK_REMOVE;
+        }
+        ChangeTerrainOption() {
+            if (this.pickMode == JWFramework.PickMode.PICK_TERRAIN) {
+                if (this.terrainOption == JWFramework.TerrainOption.TERRAIN_BALANCE)
+                    this.terrainOption = JWFramework.TerrainOption.TERRAIN_UP;
+                else
+                    this.terrainOption++;
+            }
         }
         get PickMode() {
             return this.pickMode;

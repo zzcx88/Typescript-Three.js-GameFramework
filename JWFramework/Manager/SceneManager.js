@@ -22,11 +22,11 @@ var JWFramework;
         }
         BuildScene() {
             this.sceneThree = new THREE.Scene();
-            this.sceneType = JWFramework.SceneType.SCENE_TEST;
+            this.sceneType = JWFramework.SceneType.SCENE_EDIT;
             this.objectManager = JWFramework.ObjectManager.getInstance();
             switch (this.sceneType) {
-                case JWFramework.SceneType.SCENE_TEST:
-                    this.scene = new JWFramework.TestScene(this);
+                case JWFramework.SceneType.SCENE_EDIT:
+                    this.scene = new JWFramework.EditScene(this);
                     break;
                 case JWFramework.SceneType.SCENE_START:
                     break;

@@ -19,7 +19,7 @@
         protected AddElement() {
             let item = [];
             let objectList = ObjectManager.getInstance().GetObjectList;
-            for (let TYPE = ObjectType.OBJ_OBJECT3D; TYPE < ObjectType.OBJ_OBJECT2D; ++TYPE) {
+            for (let TYPE = ObjectType.OBJ_OBJECT3D; TYPE < ObjectType.OBJ_END; ++TYPE) {
                 for (let OBJ = 0; OBJ < objectList[TYPE].length; ++OBJ) {
                     item.push(objectList[TYPE][OBJ].Name);
                 }
@@ -49,7 +49,7 @@
         private datGui: dat.GUI;
         private objectListFolder: dat.GUI;
         private exportButtonFolder: dat.GUI;
-        private ExportData;
+        //private ExportData;
         private makeJson;
         private List = {
             ObjectList: "None"

@@ -12,10 +12,26 @@
 
         public constructor() {
             window.addEventListener('keydown', (e) => {
-                this.KeyPressedCheck(e.keyCode, true);
+                let key = this.keys.find(data => { return data.KeyCode == e.keyCode });
+                key.KeyEvent = true;
+                //for (let i: number = 0; i < this.keys.length; ++i) {
+                //    if (this.keys[i].KeyCode == e.keyCode) {
+                //        this.keys[i].KeyEvent = true;
+                //        return;
+                //    }
+                //}
+                //this.KeyPressedCheck(e.keyCode);
             });
             window.addEventListener('keyup', (e) => {
-                this.KeyPressedCheck(e.keyCode, false);
+                let key = this.keys.find(data => { return data.KeyCode == e.keyCode });
+                key.KeyEvent = false;
+                //for (let i: number = 0; i < this.keys.length; ++i) {
+                //    if (this.keys[i].KeyCode == e.keyCode) {
+                //        this.keys[i].KeyEvent = false;
+                //        return;
+                //    }
+                //}
+                //this.KeyPressedCheck(e.keyCode);
             });
 
             this.AddKey(37, 'left');
@@ -36,23 +52,60 @@
         }
 
         private AddKey = (Code: number, name: string) => {
-            this.keys.push({ KeyCode: Code, KeyName: name, KeyPressed: false });
+            this.keys.push({ KeyCode: Code, KeyName: name, KeyEvent: false, KeyPressed: false, KeyDown: false, KeyUp: false });
         }
 
         //만약 해당 키코드가 눌렸다면 pressed를 true로 바꾼 후 리턴
-        private KeyPressedCheck(keyCode: number, pressed: boolean) {
-            for (let i: number = 0; i < this.keys.length; ++i) {
-                if (this.keys[i].KeyCode == keyCode) {
-                    this.keys[i].KeyPressed = pressed;
-                    return this.keys[i].KeyPressed;
+        private KeyPressedCheck(key: KeySet) {
+            if (key.KeyEvent == true) {
+                    //이전에 눌린적이 없을때 누른경우
+                if (key.KeyDown == false && key.KeyPressed == false) {
+                        key.KeyDown = true;
+                        key.KeyPressed = false;
+                        key.KeyUp = false;
+                    }
+                    //이전에 눌린적이 있는 상태에서 누른경우
+                    else {
+                        key.KeyDown = false;
+                        key.KeyPressed = true;
+                        key.KeyUp = false;
+                    }
                 }
+                else {
+                    //이전에 누른적이 없는 상태에서 뗀 경우
+                    if (key.KeyUp == true) {
+                        key.KeyDown = false;
+                        key.KeyPressed = false;
+                        key.KeyUp = false;
+                    }
+                    //이전에 누른적이 있는 상태에서 뗀 경우
+                    else {
+                        key.KeyDown = false;
+                        key.KeyPressed = false;
+                        key.KeyUp = true;
+                    }
+                }
+                //return this.keys[i];
+        }
+
+        public UpdateKey() {
+            for (let i: number = 0; i < this.keys.length; ++i) {
+                this.KeyPressedCheck(this.keys[i]);
             }
         }
 
-        public GetKeyState(keyName: string): boolean {
+        public GetKeyState(keyName: string, keyState: KeyState): boolean {
+            let key: boolean;
             for (let i: number = 0; i < this.keys.length; ++i) {
-                if (this.keys[i].KeyName == keyName)
-                    return this.keys[i].KeyPressed;
+                if (this.keys[i].KeyName == keyName) {
+                    if (keyState == KeyState.KEY_DOWN)
+                        key = this.keys[i].KeyDown;
+                    if (keyState == KeyState.KEY_PRESS)
+                        key =  this.keys[i].KeyPressed;
+                    if (keyState == KeyState.KEY_UP)
+                        key = this.keys[i].KeyUp;
+                    return key;
+                }
             }
         }
 

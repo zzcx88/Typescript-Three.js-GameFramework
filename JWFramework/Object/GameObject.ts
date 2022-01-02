@@ -23,6 +23,14 @@
             this.isClone = isClone;
         }
 
+        public get IsPlayer(): boolean {
+            return this.isPlayer;
+        }
+
+        public set IsPlayer(flag: boolean) {
+            this.isPlayer = flag;
+        }
+
         public get PhysicsComponent(): PhysicsComponent {
             return this.physicsComponent;
         }
@@ -97,6 +105,7 @@
         protected name: string;
         protected isClone: boolean = false;
         protected isDead: boolean = false;
+        protected isPlayer: boolean = false;
 
         protected physicsComponent: PhysicsComponent;
         protected graphicComponent: GraphComponent;

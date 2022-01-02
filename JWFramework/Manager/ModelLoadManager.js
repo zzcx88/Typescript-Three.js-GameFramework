@@ -16,17 +16,23 @@ var JWFramework;
         }
         SetLoadComplete() {
             this.modelNumber++;
-            if (this.modelNumber == JWFramework.ModelSceneTest.getInstance().ModelNumber)
+            if (this.modelNumber == JWFramework.ModelSceneEdit.getInstance().ModelNumber)
                 this.loadComplete = true;
         }
         get LoadComplete() {
-            if (this.loadComplete == true) {
+            if (this.loadComplete == true && JWFramework.SceneManager.getInstance().SceneType == JWFramework.SceneType.SCENE_EDIT) {
                 JWFramework.GUIManager.getInstance().GUI_Select;
             }
             return this.loadComplete;
         }
         LoadSceneTest() {
-            this.modeltList = JWFramework.ModelSceneTest.getInstance().ModelSceneTest;
+            this.modeltList = JWFramework.ModelSceneEdit.getInstance().ModelScene;
+            for (let i = 0; i < this.modeltList.length; ++i) {
+                this.LoadModel(this.modeltList[i].url, this.modeltList[i].model);
+            }
+        }
+        LoadSceneStage() {
+            this.modeltList = JWFramework.ModelSceneStage.getInstance().ModelScene;
             for (let i = 0; i < this.modeltList.length; ++i) {
                 this.LoadModel(this.modeltList[i].url, this.modeltList[i].model);
             }

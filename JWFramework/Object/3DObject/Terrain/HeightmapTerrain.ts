@@ -38,10 +38,14 @@
             this.planeGeomatry = new THREE.PlaneGeometry(300, 300, this.segmentWidth, this.segmentHeight);
             this.material = new THREE.MeshToonMaterial();
             this.texture = new THREE.TextureLoader().load("Model/Heightmap/TerrainTexture.jpg");
+            this.gradientmap = new THREE.TextureLoader().load('Model/Heightmap/fiveTone.jpg');
+            this.gradientmap.minFilter = THREE.NearestFilter;
+            this.gradientmap.magFilter = THREE.NearestFilter;
             this.texture.wrapS = THREE.RepeatWrapping;
             this.texture.wrapT = THREE.RepeatWrapping;
             this.texture.repeat.set(128, 128);
             this.material.map = this.texture;
+            this.material.gradientMap = this.gradientmap;
             //this.material.normalMap = new THREE.TextureLoader().load("Model/Heightmap/TerrainTexture_N.png");
             this.material.wireframe = false;
 
@@ -179,6 +183,7 @@
             if (value == ObjectType.OBJ_CAMERA) {
                 this.cameraInSecter = true;
                 this.material.opacity = 0.9;
+
                 this.planeGeomatry.computeVertexNormals();
             }
             else
@@ -205,6 +210,7 @@
         private planeGeomatry: THREE.PlaneGeometry;
         private material: THREE.MeshToonMaterial;
         private texture: THREE.Texture;
+        private gradientmap: THREE.Texture;
 
         private terrainIndex: number;
         private width: number;

@@ -72,6 +72,7 @@ var JWFramework;
         RotateVec3(axis, angle) {
             this.GameObject.GameObjectInstance.rotateOnWorldAxis(axis, angle * JWFramework.WorldManager.getInstance().GetDeltaTime());
             this.UpdateMatrix();
+            //console.log(this.GameObject.GameObjectInstance.matrix);
         }
         UpdateMatrix() {
             if (this.GameObject.Name != "MainCamera" && JWFramework.CameraManager.getInstance().CameraMode != JWFramework.CameraMode.CAMERA_3RD) {

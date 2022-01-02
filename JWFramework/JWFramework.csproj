@@ -116,6 +116,7 @@
     <TypeScriptCompile Include="GUI\GUIControls\GUI_Base.ts" />
     <TypeScriptCompile Include="GUI\GUIControls\GUI_Select.ts" />
     <TypeScriptCompile Include="GUI\GUIControls\GUI_SRT.ts" />
+    <TypeScriptCompile Include="GUI\GUIControls\GUI_Terrain.ts" />
     <TypeScriptCompile Include="Lib\datGUI\dat.gui.d.ts" />
     <TypeScriptCompile Include="Main.ts" />
     <TypeScriptCompile Include="Manager\CameraManager.ts" />
@@ -127,15 +128,18 @@
     <TypeScriptCompile Include="Manager\SceneManager.ts" />
     <TypeScriptCompile Include="Manager\ShaderManager.ts" />
     <TypeScriptCompile Include="Manager\WorldManager.ts" />
-    <TypeScriptCompile Include="Object\3DObject\Terrain\HeightmapTerrain.ts" />
-    <TypeScriptCompile Include="Object\3DObject\TestCube.ts" />
-    <TypeScriptCompile Include="Object\3DObject\testObject.ts" />
+    <TypeScriptCompile Include="Object\CommonObject\Terrain\HeightmapTerrain.ts" />
+    <TypeScriptCompile Include="Object\EditObject\TestCube.ts" />
+    <TypeScriptCompile Include="Object\EditObject\EditObject.ts" />
     <TypeScriptCompile Include="Object\Camera\Camera.ts" />
     <TypeScriptCompile Include="Object\GameObject.ts" />
+    <TypeScriptCompile Include="Object\InGameObject\AircraftObject.ts" />
+    <TypeScriptCompile Include="Object\InGameObject\F16Object.ts" />
     <TypeScriptCompile Include="Object\Light\Light.ts" />
     <TypeScriptCompile Include="Picker\Picker.ts" />
     <TypeScriptCompile Include="Scene\SceneBase.ts" />
-    <TypeScriptCompile Include="Scene\TestScene.ts" />
+    <TypeScriptCompile Include="Scene\EditScene.ts" />
+    <TypeScriptCompile Include="Scene\StageScene.ts" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

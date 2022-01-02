@@ -10,7 +10,7 @@
 
             window.addEventListener('mousemove', function (e) {
                 if (SceneManager.getInstance().CurrentScene.Picker.pickMode == PickMode.PICK_TERRAIN)
-                    if (InputManager.getInstance().GetKeyState('t'))
+                    if (InputManager.getInstance().GetKeyState('t', KeyState.KEY_PRESS))
                         SceneManager.getInstance().CurrentScene.Picker.SetPickPosition(e);
             });
 
@@ -68,13 +68,16 @@
 
                 //클론된 오브젝트를 생성한다.
                 let cloneObject = objectManager.MakeClone(objectManager.GetObjectFromName(GUIManager.getInstance().GUI_Select.GetSelectObjectName()));
-                cloneObject.GameObjectInstance.position.set(0, 0, 0);
-                let clonePosition: THREE.Vector3 = new THREE.Vector3(intersectedObject[0].point.x, intersectedObject[0].point.y + 10, intersectedObject[0].point.z);
-                cloneObject.GameObjectInstance.position.copy(clonePosition);
-                
-                SceneManager.getInstance().SceneInstance.add(cloneObject.GameObjectInstance);
-                objectManager.AddObject(cloneObject, cloneObject.Name, cloneObject.Type);
-                //SceneManager.getInstance().SceneInstance.add(objectManager.GetInSectorTerrain());
+                let terrain = objectManager.GetObjectFromName(intersectedObject[0].object.name);
+                if (terrain.Type == ObjectType.OBJ_TERRAIN) {
+                    cloneObject.GameObjectInstance.position.set(0, 0, 0);
+                    let clonePosition: THREE.Vector3 = new THREE.Vector3(intersectedObject[0].point.x, intersectedObject[0].point.y + 10, intersectedObject[0].point.z);
+                    cloneObject.GameObjectInstance.position.copy(clonePosition);
+
+                    SceneManager.getInstance().SceneInstance.add(cloneObject.GameObjectInstance);
+                    objectManager.AddObject(cloneObject, cloneObject.Name, cloneObject.Type);
+                    //SceneManager.getInstance().SceneInstance.add(objectManager.GetInSectorTerrain());
+                }
             }
             //터레인은 키보드 입력으로 높낮이 조절 가능하게 할것
             else if (this.pickMode == PickMode.PICK_TERRAIN) {
@@ -82,9 +85,9 @@
                 let intersectedObject = this.raycaster.intersectObject(SceneManager.getInstance().SceneInstance, true);
                 let terrain = objectManager.GetObjectFromName(intersectedObject[0].object.name);
                 if (terrain.Type == ObjectType.OBJ_TERRAIN) {
-                    (terrain as unknown as HeightmapTerrain).SetHeight(intersectedObject[0].face.a);
-                    (terrain as unknown as HeightmapTerrain).SetHeight(intersectedObject[0].face.b);
-                    (terrain as unknown as HeightmapTerrain).SetHeight(intersectedObject[0].face.c);
+                    (terrain as unknown as HeightmapTerrain).SetHeight(intersectedObject[0].face.a, -20, this.terrainOption);
+                    (terrain as unknown as HeightmapTerrain).SetHeight(intersectedObject[0].face.b, -20, this.terrainOption);
+                    (terrain as unknown as HeightmapTerrain).SetHeight(intersectedObject[0].face.c, -20, this.terrainOption);
                 }
                 //SceneManager.getInstance().SceneInstance.add(objectManager.GetInSectorTerrain());
             }
@@ -144,6 +147,15 @@
             this.pickMode = PickMode.PICK_REMOVE;
         }
 
+        public ChangeTerrainOption() {
+            if (this.pickMode == PickMode.PICK_TERRAIN) {
+                if (this.terrainOption == TerrainOption.TERRAIN_BALANCE)
+                    this.terrainOption = TerrainOption.TERRAIN_UP;
+                else
+                    this.terrainOption++;
+            }
+        }
+
         public get PickMode(): PickMode {
             return this.pickMode;
         }
@@ -163,6 +175,9 @@
         private pickedParent: GameObject;
         private pickPositionX = 0;
         private pickPositionY = 0;
+
+        private terrainOption: TerrainOption = TerrainOption.TERRAIN_UP;
+        private terrainOffset: number = 0;
 
         private orbitControl: THREE.OrbitControls;
 

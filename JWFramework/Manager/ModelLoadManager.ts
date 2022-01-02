@@ -20,23 +20,31 @@
 
         private SetLoadComplete() {
             this.modelNumber++;
-            if (this.modelNumber == ModelSceneTest.getInstance().ModelNumber)
+            if (this.modelNumber == ModelSceneEdit.getInstance().ModelNumber)
                 this.loadComplete = true;
         }
 
         public get LoadComplete(): boolean {
-            if (this.loadComplete == true) {
+            if (this.loadComplete == true && SceneManager.getInstance().SceneType == SceneType.SCENE_EDIT) {
                 GUIManager.getInstance().GUI_Select;
             }
             return this.loadComplete;
         }
 
         public LoadSceneTest() {
-            this.modeltList = ModelSceneTest.getInstance().ModelSceneTest;
+            this.modeltList = ModelSceneEdit.getInstance().ModelScene;
 
             for (let i = 0; i < this.modeltList.length; ++i) {
                 this.LoadModel(this.modeltList[i].url, this.modeltList[i].model);
             } 
+        }
+
+        public LoadSceneStage() {
+            this.modeltList = ModelSceneStage.getInstance().ModelScene;
+
+            for (let i = 0; i < this.modeltList.length; ++i) {
+                this.LoadModel(this.modeltList[i].url, this.modeltList[i].model);
+            }
         }
 
         private LoadModel(modelSource: string, gameObject: GameObject) {

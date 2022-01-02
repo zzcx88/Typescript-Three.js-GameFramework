@@ -49,7 +49,17 @@
         }
 
         public MakeClone(selectObject: GameObject): GameObject {
-            let cloneObject: TestObject = new TestObject;
+            let cloneObject: GameObject;
+
+            //해당 인스턴스로 생성이 가능한지 판별
+            if (selectObject instanceof EditObject) {
+                cloneObject = new EditObject;
+            }
+            else {
+                alert(selectObject.Name.toUpperCase() + " Instance of class name not found");
+                return;
+            }
+
             cloneObject.IsClone = true;
             cloneObject.Name = selectObject.Name + "Clone" + ObjectManager.getInstance().GetObjectList[cloneObject.Type].length.toString();
             cloneObject.GameObjectInstance = selectObject.GameObjectInstance.clone();
@@ -86,11 +96,16 @@
                     }
                     if (node.material)
                         if (Array.isArray(node.material)) {
-                            for (let i = 0; i < node.material.length; ++i)
+                            for (let i = 0; i < node.material.length; ++i) {
                                 node.material[i].dispose();
+                                if (node.material[i].map)
+                                    node.material[i].map.dispose();
+                            }
                         }
                         else {
                             node.material.dispose();
+                            if (node.material.map)
+                                node.material.map.dispose();
                         }
                 }
             });
@@ -100,7 +115,7 @@
         public DeleteAllObject() {
             this.objectList.forEach(function (type) {
                 type.forEach(function (object) {
-                    if (object.GameObject.Type != ObjectType.OBJ_CAMERA)
+                    if (object.GameObject.Type != ObjectType.OBJ_CAMERA && object.GameObject.IsClone == true)
                         object.GameObject.IsDead = true;
                 })
             })
@@ -127,12 +142,14 @@
             //CollisionManager.getInstance().CollideBoxToBox(this.objectList[ObjectType.OBJ_TERRAIN], this.objectList[ObjectType.OBJ_OBJECT3D]);
             //let sectoredTerrain = this.objectList[ObjectType.OBJ_TERRAIN].filter((element) => (element.GameObject as unknown as HeightmapTerrain).inSecter == true);
             CollisionManager.getInstance().CollideRayToTerrain(this.objectList[ObjectType.OBJ_OBJECT3D], this.objectList[ObjectType.OBJ_TERRAIN]);
+
+            InputManager.getInstance().UpdateKey();
         }
 
         public Render() { }
 
         private terrainList = new THREE.Group();
-        private objectList: ObjectSet[][] = [[],[],[],[]];
+        private objectList: ObjectSet[][] = [[],[],[],[],[]];
         private exportObjectList = [];
     }
 }
