@@ -11,9 +11,7 @@ var JWFramework;
             this.pickMode = JWFramework.PickMode.PICK_MODIFY;
             this.CreateOrtbitControl();
             window.addEventListener('mousemove', function (e) {
-                if (JWFramework.SceneManager.getInstance().CurrentScene.Picker.pickMode == JWFramework.PickMode.PICK_TERRAIN)
-                    if (JWFramework.InputManager.getInstance().GetKeyState('t', JWFramework.KeyState.KEY_PRESS))
-                        JWFramework.SceneManager.getInstance().CurrentScene.Picker.SetPickPosition(e);
+                JWFramework.SceneManager.getInstance().CurrentScene.Picker.mouseEvent = e;
             });
             window.addEventListener('click', function (e) {
                 JWFramework.SceneManager.getInstance().CurrentScene.Picker.SetPickPosition(e);
@@ -51,6 +49,7 @@ var JWFramework;
             }
         }
         Pick() {
+            let terrain;
             if (this.pickPositionX > 0.75 || this.pickPositionX == -1) {
                 return;
             }
@@ -76,11 +75,14 @@ var JWFramework;
             else if (this.pickMode == JWFramework.PickMode.PICK_TERRAIN) {
                 let objectManager = JWFramework.ObjectManager.getInstance();
                 let intersectedObject = this.raycaster.intersectObject(JWFramework.SceneManager.getInstance().SceneInstance, true);
-                let terrain = objectManager.GetObjectFromName(intersectedObject[0].object.name);
-                if (terrain.Type == JWFramework.ObjectType.OBJ_TERRAIN) {
-                    terrain.SetHeight(intersectedObject[0].face.a, -20, this.terrainOption);
-                    terrain.SetHeight(intersectedObject[0].face.b, -20, this.terrainOption);
-                    terrain.SetHeight(intersectedObject[0].face.c, -20, this.terrainOption);
+                if (intersectedObject[0] != undefined) {
+                    terrain = objectManager.GetObjectFromName(intersectedObject[0].object.name);
+                    if (terrain != null && terrain.Type == JWFramework.ObjectType.OBJ_TERRAIN) {
+                        intersectedObject[0].face.normal;
+                        terrain.SetHeight(intersectedObject[0].face.a, 1, this.terrainOption);
+                        terrain.SetHeight(intersectedObject[0].face.b, 1, this.terrainOption);
+                        terrain.SetHeight(intersectedObject[0].face.c, 1, this.terrainOption);
+                    }
                 }
                 //SceneManager.getInstance().SceneInstance.add(objectManager.GetInSectorTerrain());
             }
@@ -110,6 +112,9 @@ var JWFramework;
                 x: (event.clientX - rect.left) * JWFramework.WorldManager.getInstance().Canvas.width / rect.width,
                 y: (event.clientY - rect.top) * JWFramework.WorldManager.getInstance().Canvas.height / rect.height,
             };
+        }
+        get MouseEvent() {
+            return this.mouseEvent;
         }
         SetPickPosition(event) {
             this.pickPositionX = (event.clientX / window.innerWidth) * 2 - 1;

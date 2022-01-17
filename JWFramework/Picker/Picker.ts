@@ -9,9 +9,7 @@
             this.CreateOrtbitControl();
 
             window.addEventListener('mousemove', function (e) {
-                if (SceneManager.getInstance().CurrentScene.Picker.pickMode == PickMode.PICK_TERRAIN)
-                    if (InputManager.getInstance().GetKeyState('t', KeyState.KEY_PRESS))
-                        SceneManager.getInstance().CurrentScene.Picker.SetPickPosition(e);
+                SceneManager.getInstance().CurrentScene.Picker.mouseEvent = e;
             });
 
             window.addEventListener('click', function (e) {
@@ -54,6 +52,9 @@
         }
 
         public Pick() {
+
+            let terrain;
+
             if (this.pickPositionX > 0.75 || this.pickPositionX == -1) {
                 return;
             }
@@ -83,11 +84,14 @@
             else if (this.pickMode == PickMode.PICK_TERRAIN) {
                 let objectManager = ObjectManager.getInstance();
                 let intersectedObject = this.raycaster.intersectObject(SceneManager.getInstance().SceneInstance, true);
-                let terrain = objectManager.GetObjectFromName(intersectedObject[0].object.name);
-                if (terrain.Type == ObjectType.OBJ_TERRAIN) {
-                    (terrain as unknown as HeightmapTerrain).SetHeight(intersectedObject[0].face.a, -20, this.terrainOption);
-                    (terrain as unknown as HeightmapTerrain).SetHeight(intersectedObject[0].face.b, -20, this.terrainOption);
-                    (terrain as unknown as HeightmapTerrain).SetHeight(intersectedObject[0].face.c, -20, this.terrainOption);
+                if (intersectedObject[0] != undefined) {
+                    terrain = objectManager.GetObjectFromName(intersectedObject[0].object.name);
+                    if (terrain != null && terrain.Type == ObjectType.OBJ_TERRAIN) {
+                        intersectedObject[0].face.normal;
+                        (terrain as unknown as HeightmapTerrain).SetHeight(intersectedObject[0].face.a, 1, this.terrainOption);
+                        (terrain as unknown as HeightmapTerrain).SetHeight(intersectedObject[0].face.b, 1, this.terrainOption);
+                        (terrain as unknown as HeightmapTerrain).SetHeight(intersectedObject[0].face.c, 1, this.terrainOption);
+                    }
                 }
                 //SceneManager.getInstance().SceneInstance.add(objectManager.GetInSectorTerrain());
             }
@@ -116,8 +120,12 @@
             let rect = WorldManager.getInstance().Canvas.getBoundingClientRect();
             return {
                 x: (event.clientX - rect.left) * WorldManager.getInstance().Canvas.width / rect.width,
-                y: (event.clientY - rect.top) * WorldManager.getInstance().Canvas.height / rect.height,
+                y: (event.clientY - rect.top) * WorldManager.getInstance().Canvas.height / rect.height, 
             };
+        }
+
+        public get MouseEvent(): MouseEvent {
+            return this.mouseEvent;
         }
 
         public SetPickPosition(event) {
@@ -167,6 +175,8 @@
         public GetPickParents(): GameObject {
             return this.pickedParent;
         }
+
+        private mouseEvent: MouseEvent;
 
         private pickMode: PickMode;
 

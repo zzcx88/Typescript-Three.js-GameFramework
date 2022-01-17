@@ -48,6 +48,7 @@
             this.texture.repeat.set(128, 128);
             this.material.map = this.texture;
             this.material.gradientMap = this.gradientmap;
+
             //this.material.normalMap = new THREE.TextureLoader().load("Model/Heightmap/TerrainTexture_N.png");
             this.material.wireframe = false;
 
@@ -72,6 +73,10 @@
         }
 
         public get HeightBuffer(): number[] {
+            for (let i = 0; i < this.heigtBuffer.length; ++i) {
+                this.heigtBuffer.pop();
+            }
+            this.heigtBuffer.length = 0;
             this.heigtIndexBuffer.forEach(element =>
                 this.heigtBuffer.push(this.planeGeomatry.getAttribute('position').getY(element)));
             return this.heigtBuffer;
@@ -110,14 +115,12 @@
                 if (objectList[ObjectType.OBJ_TERRAIN][this.terrainIndex + 1]) {
                     let terrain = objectList[ObjectType.OBJ_TERRAIN][this.terrainIndex + 1].GameObject;
                     (terrain as unknown as HeightmapTerrain).planeGeomatry.getAttribute('position').needsUpdate = true;
-                    let height: number = (terrain as unknown as HeightmapTerrain).planeGeomatry.getAttribute('position').getY(index - this.segmentHeight);
                     (terrain as unknown as HeightmapTerrain).planeGeomatry.getAttribute('position').setY(index - this.segmentHeight, oldheight);
 
                     if (index == endPointIndex) {
                         if (objectList[ObjectType.OBJ_TERRAIN][this.terrainIndex + 11]) {
                             let terrain = objectList[ObjectType.OBJ_TERRAIN][this.terrainIndex + 11].GameObject;
                             (terrain as unknown as HeightmapTerrain).planeGeomatry.getAttribute('position').needsUpdate = true;
-                            let height: number = (terrain as unknown as HeightmapTerrain).planeGeomatry.getAttribute('position').getY(0);
                             (terrain as unknown as HeightmapTerrain).planeGeomatry.getAttribute('position').setY(0, oldheight);
                         }
                     }
@@ -126,7 +129,6 @@
                         if (objectList[ObjectType.OBJ_TERRAIN][this.terrainIndex - 9]) {
                             let terrain = objectList[ObjectType.OBJ_TERRAIN][this.terrainIndex - 9].GameObject;
                             (terrain as unknown as HeightmapTerrain).planeGeomatry.getAttribute('position').needsUpdate = true;
-                            let height: number = (terrain as unknown as HeightmapTerrain).planeGeomatry.getAttribute('position').getY(endPointIndex - this.segmentWidth);
                             (terrain as unknown as HeightmapTerrain).planeGeomatry.getAttribute('position').setY(endPointIndex - this.segmentWidth, oldheight);
                         }
                     }
@@ -137,7 +139,6 @@
                 if (objectList[ObjectType.OBJ_TERRAIN][this.terrainIndex - 1]) {
                     let terrain = objectList[ObjectType.OBJ_TERRAIN][this.terrainIndex - 1].GameObject;
                     (terrain as unknown as HeightmapTerrain).planeGeomatry.getAttribute('position').needsUpdate = true;
-                    let height: number = (terrain as unknown as HeightmapTerrain).planeGeomatry.getAttribute('position').getY(index + this.segmentHeight);
                     (terrain as unknown as HeightmapTerrain).planeGeomatry.getAttribute('position').setY(index + this.segmentHeight, oldheight);
                 }
 
@@ -145,7 +146,6 @@
                     if (objectList[ObjectType.OBJ_TERRAIN][this.terrainIndex - 11]) {
                         let terrain = objectList[ObjectType.OBJ_TERRAIN][this.terrainIndex - 11].GameObject;
                         (terrain as unknown as HeightmapTerrain).planeGeomatry.getAttribute('position').needsUpdate = true;
-                        let height: number = (terrain as unknown as HeightmapTerrain).planeGeomatry.getAttribute('position').getY(endPointIndex);
                         (terrain as unknown as HeightmapTerrain).planeGeomatry.getAttribute('position').setY(endPointIndex, oldheight);
                     }
                 }
@@ -154,7 +154,6 @@
                     if (objectList[ObjectType.OBJ_TERRAIN][this.terrainIndex + 9]) {
                         let terrain = objectList[ObjectType.OBJ_TERRAIN][this.terrainIndex + 9].GameObject;
                         (terrain as unknown as HeightmapTerrain).planeGeomatry.getAttribute('position').needsUpdate = true;
-                        let height: number = (terrain as unknown as HeightmapTerrain).planeGeomatry.getAttribute('position').getY(this.segmentWidth);
                         (terrain as unknown as HeightmapTerrain).planeGeomatry.getAttribute('position').setY(this.segmentWidth, oldheight);
                     }
                 }
@@ -164,7 +163,6 @@
                 if (objectList[ObjectType.OBJ_TERRAIN][this.terrainIndex + 10]) {
                     let terrain = objectList[ObjectType.OBJ_TERRAIN][this.terrainIndex + 10].GameObject;
                     (terrain as unknown as HeightmapTerrain).planeGeomatry.getAttribute('position').needsUpdate = true;
-                    let height: number = (terrain as unknown as HeightmapTerrain).planeGeomatry.getAttribute('position').getY(index - (endPointIndex - this.segmentWidth));
                     (terrain as unknown as HeightmapTerrain).planeGeomatry.getAttribute('position').setY(index - (endPointIndex - this.segmentWidth), oldheight);
                 }
             }
@@ -173,7 +171,6 @@
                 if (objectList[ObjectType.OBJ_TERRAIN][this.terrainIndex - 10]) {
                     let terrain = objectList[ObjectType.OBJ_TERRAIN][this.terrainIndex - 10].GameObject;
                     (terrain as unknown as HeightmapTerrain).planeGeomatry.getAttribute('position').needsUpdate = true;
-                    let height: number = (terrain as unknown as HeightmapTerrain).planeGeomatry.getAttribute('position').getY(index + (endPointIndex - this.segmentWidth));
                     (terrain as unknown as HeightmapTerrain).planeGeomatry.getAttribute('position').setY(index + (endPointIndex - this.segmentWidth), oldheight);
                 }
             }

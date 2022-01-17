@@ -59,6 +59,9 @@
                 if (InputManager.getInstance().GetKeyState('r', KeyState.KEY_DOWN)) {
                     this.Picker.ChangeTerrainOption();
                 }
+                if (SceneManager.getInstance().CurrentScene.Picker.PickMode == PickMode.PICK_TERRAIN)
+                    if (InputManager.getInstance().GetKeyState('t', KeyState.KEY_PRESS))
+                        this.Picker.SetPickPosition(this.Picker.MouseEvent);
 
                 if (InputManager.getInstance().GetKeyState('5', KeyState.KEY_DOWN)) {
                     fetch("./Model/Scene.json")

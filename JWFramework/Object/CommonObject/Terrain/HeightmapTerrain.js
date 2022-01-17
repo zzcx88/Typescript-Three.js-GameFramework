@@ -63,6 +63,10 @@ var JWFramework;
             return this.heigtIndexBuffer;
         }
         get HeightBuffer() {
+            for (let i = 0; i < this.heigtBuffer.length; ++i) {
+                this.heigtBuffer.pop();
+            }
+            this.heigtBuffer.length = 0;
             this.heigtIndexBuffer.forEach(element => this.heigtBuffer.push(this.planeGeomatry.getAttribute('position').getY(element)));
             return this.heigtBuffer;
         }
@@ -93,13 +97,11 @@ var JWFramework;
                 if (objectList[JWFramework.ObjectType.OBJ_TERRAIN][this.terrainIndex + 1]) {
                     let terrain = objectList[JWFramework.ObjectType.OBJ_TERRAIN][this.terrainIndex + 1].GameObject;
                     terrain.planeGeomatry.getAttribute('position').needsUpdate = true;
-                    let height = terrain.planeGeomatry.getAttribute('position').getY(index - this.segmentHeight);
                     terrain.planeGeomatry.getAttribute('position').setY(index - this.segmentHeight, oldheight);
                     if (index == endPointIndex) {
                         if (objectList[JWFramework.ObjectType.OBJ_TERRAIN][this.terrainIndex + 11]) {
                             let terrain = objectList[JWFramework.ObjectType.OBJ_TERRAIN][this.terrainIndex + 11].GameObject;
                             terrain.planeGeomatry.getAttribute('position').needsUpdate = true;
-                            let height = terrain.planeGeomatry.getAttribute('position').getY(0);
                             terrain.planeGeomatry.getAttribute('position').setY(0, oldheight);
                         }
                     }
@@ -107,7 +109,6 @@ var JWFramework;
                         if (objectList[JWFramework.ObjectType.OBJ_TERRAIN][this.terrainIndex - 9]) {
                             let terrain = objectList[JWFramework.ObjectType.OBJ_TERRAIN][this.terrainIndex - 9].GameObject;
                             terrain.planeGeomatry.getAttribute('position').needsUpdate = true;
-                            let height = terrain.planeGeomatry.getAttribute('position').getY(endPointIndex - this.segmentWidth);
                             terrain.planeGeomatry.getAttribute('position').setY(endPointIndex - this.segmentWidth, oldheight);
                         }
                     }
@@ -117,14 +118,12 @@ var JWFramework;
                 if (objectList[JWFramework.ObjectType.OBJ_TERRAIN][this.terrainIndex - 1]) {
                     let terrain = objectList[JWFramework.ObjectType.OBJ_TERRAIN][this.terrainIndex - 1].GameObject;
                     terrain.planeGeomatry.getAttribute('position').needsUpdate = true;
-                    let height = terrain.planeGeomatry.getAttribute('position').getY(index + this.segmentHeight);
                     terrain.planeGeomatry.getAttribute('position').setY(index + this.segmentHeight, oldheight);
                 }
                 if (index == 0) {
                     if (objectList[JWFramework.ObjectType.OBJ_TERRAIN][this.terrainIndex - 11]) {
                         let terrain = objectList[JWFramework.ObjectType.OBJ_TERRAIN][this.terrainIndex - 11].GameObject;
                         terrain.planeGeomatry.getAttribute('position').needsUpdate = true;
-                        let height = terrain.planeGeomatry.getAttribute('position').getY(endPointIndex);
                         terrain.planeGeomatry.getAttribute('position').setY(endPointIndex, oldheight);
                     }
                 }
@@ -132,7 +131,6 @@ var JWFramework;
                     if (objectList[JWFramework.ObjectType.OBJ_TERRAIN][this.terrainIndex + 9]) {
                         let terrain = objectList[JWFramework.ObjectType.OBJ_TERRAIN][this.terrainIndex + 9].GameObject;
                         terrain.planeGeomatry.getAttribute('position').needsUpdate = true;
-                        let height = terrain.planeGeomatry.getAttribute('position').getY(this.segmentWidth);
                         terrain.planeGeomatry.getAttribute('position').setY(this.segmentWidth, oldheight);
                     }
                 }
@@ -141,7 +139,6 @@ var JWFramework;
                 if (objectList[JWFramework.ObjectType.OBJ_TERRAIN][this.terrainIndex + 10]) {
                     let terrain = objectList[JWFramework.ObjectType.OBJ_TERRAIN][this.terrainIndex + 10].GameObject;
                     terrain.planeGeomatry.getAttribute('position').needsUpdate = true;
-                    let height = terrain.planeGeomatry.getAttribute('position').getY(index - (endPointIndex - this.segmentWidth));
                     terrain.planeGeomatry.getAttribute('position').setY(index - (endPointIndex - this.segmentWidth), oldheight);
                 }
             }
@@ -149,7 +146,6 @@ var JWFramework;
                 if (objectList[JWFramework.ObjectType.OBJ_TERRAIN][this.terrainIndex - 10]) {
                     let terrain = objectList[JWFramework.ObjectType.OBJ_TERRAIN][this.terrainIndex - 10].GameObject;
                     terrain.planeGeomatry.getAttribute('position').needsUpdate = true;
-                    let height = terrain.planeGeomatry.getAttribute('position').getY(index + (endPointIndex - this.segmentWidth));
                     terrain.planeGeomatry.getAttribute('position').setY(index + (endPointIndex - this.segmentWidth), oldheight);
                 }
             }

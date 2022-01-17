@@ -20,6 +20,7 @@
                                 let terrain = ObjectManager.getInstance().GetObjectFromName(intersect[0].object.name);
                                 //(terrain as unknown as HeightmapTerrain).planeGeomatry.getAttribute('position').getY();
                                 src.GameObject.PhysicsComponent.SetPostion(intersect[0].point.x, intersect[0].point.y + 1.0000001, intersect[0].point.z);
+                                //alert("collide");
                             }
                     }
                 })

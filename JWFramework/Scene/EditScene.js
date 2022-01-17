@@ -55,6 +55,9 @@ var JWFramework;
                 if (JWFramework.InputManager.getInstance().GetKeyState('r', JWFramework.KeyState.KEY_DOWN)) {
                     this.Picker.ChangeTerrainOption();
                 }
+                if (JWFramework.SceneManager.getInstance().CurrentScene.Picker.PickMode == JWFramework.PickMode.PICK_TERRAIN)
+                    if (JWFramework.InputManager.getInstance().GetKeyState('t', JWFramework.KeyState.KEY_PRESS))
+                        this.Picker.SetPickPosition(this.Picker.MouseEvent);
                 if (JWFramework.InputManager.getInstance().GetKeyState('5', JWFramework.KeyState.KEY_DOWN)) {
                     fetch("./Model/Scene.json")
                         .then(response => {
