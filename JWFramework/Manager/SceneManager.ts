@@ -1,34 +1,44 @@
-﻿namespace JWFramework {
-    export class SceneManager {
+﻿/// <reference path="../Scene/EditScene.ts" />
+/// <reference path="../Scene/StageScene.ts" />
+namespace JWFramework
+{
+    export class SceneManager
+    {
 
         private static instance: SceneManager;
 
         public constructor() { }
 
-        static getInstance() {
+        static getInstance()
+        {
             if (!SceneManager.instance) {
                 SceneManager.instance = new SceneManager;
             }
             return SceneManager.instance;
         }
 
-        public get SceneInstance(): THREE.Scene {
+        public get SceneInstance(): THREE.Scene
+        {
             return this.sceneThree;
         }
 
-        public get CurrentScene(): SceneBase {
+        public get CurrentScene(): SceneBase
+        {
             return this.scene;
         }
 
-        public get SceneType(): SceneType {
+        public get SceneType(): SceneType
+        {
             return this.sceneType;
         }
 
-        public MakeJSON() {
+        public MakeJSON()
+        {
             ObjectManager.getInstance().MakeJSONArray();
         }
 
-        public BuildScene() {
+        public BuildScene()
+        {
             this.sceneThree = new THREE.Scene();
             this.sceneType = SceneType.SCENE_EDIT;
             this.objectManager = ObjectManager.getInstance();
@@ -44,7 +54,8 @@
             }
         }
 
-        public Animate() {
+        public Animate()
+        {
             this.scene.Animate();
         }
 

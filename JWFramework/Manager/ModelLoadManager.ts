@@ -1,59 +1,77 @@
-﻿namespace JWFramework {
-    export class ModelLoadManager {
+﻿/// <reference path="../Object/CommonObject/Terrain/HeightmapTerrain.ts" />
+namespace JWFramework
+{
+    export class ModelLoadManager
+    {
 
         private static instance: ModelLoadManager;
 
-        static getInstance() {
+        static getInstance()
+        {
             if (!ModelLoadManager.instance) {
                 ModelLoadManager.instance = new ModelLoadManager;
             }
             return ModelLoadManager.instance;
         }
 
-        public constructor() {
+        public constructor()
+        {
             this.loaderManager = new THREE.LoadingManager;
             this.loaderManager.onLoad = this.SetLoadComplete;
             this.gltfLoader = new THREE.GLTFLoader(this.loaderManager);
 
-            this.modelNumber = 0;
+            this.loadCompletModel = 0;
         }
 
-        private SetLoadComplete() {
-            this.modelNumber++;
-            if (this.modelNumber == ModelSceneEdit.getInstance().ModelNumber)
+        private SetLoadComplete()
+        {
+            this.loadCompletModel++;
+            if (this.loadCompletModel == this.modelCount)
                 this.loadComplete = true;
         }
 
-        public get LoadComplete(): boolean {
+        public get LoadComplete(): boolean
+        {
             if (this.loadComplete == true && SceneManager.getInstance().SceneType == SceneType.SCENE_EDIT) {
+                //에디트 모드에서만 DatGUI를 사용함
                 GUIManager.getInstance().GUI_Select;
             }
             return this.loadComplete;
         }
 
-        public LoadSceneTest() {
-            this.modeltList = ModelSceneEdit.getInstance().ModelScene;
-
-            for (let i = 0; i < this.modeltList.length; ++i) {
-                this.LoadModel(this.modeltList[i].url, this.modeltList[i].model);
-            } 
-        }
-
-        public LoadSceneStage() {
-            this.modeltList = ModelSceneStage.getInstance().ModelScene;
+        public LoadScene()
+        {
+            if (SceneManager.getInstance().SceneType == SceneType.SCENE_EDIT)
+            {
+                this.modeltList = ModelSceneEdit.getInstance().ModelScene;
+                this.modelCount = ModelSceneEdit.getInstance().ModelNumber;
+            }
 
             for (let i = 0; i < this.modeltList.length; ++i) {
                 this.LoadModel(this.modeltList[i].url, this.modeltList[i].model);
             }
+            this.LoadHeightmapTerrain();
         }
 
-        private LoadModel(modelSource: string, gameObject: GameObject) {
+        //public LoadSceneStage()
+        //{
+        //    this.modeltList = ModelSceneStage.getInstance().ModelScene;
+        //    for (let i = 0; i < this.modeltList.length; ++i) {
+        //        this.LoadModel(this.modeltList[i].url, this.modeltList[i].model);
+        //    }
+        //    this.LoadHeightmapTerrain();
+        //}
+
+        private LoadModel(modelSource: string, gameObject: GameObject)
+        {
             this.gltfLoader.load(modelSource,
-                (gltf) => {
+                (gltf) =>
+                {
                     console.log('success')
                     console.log(gltf);
                     gameObject.GameObjectInstance = gltf.scene;
-                    gameObject.GameObjectInstance.traverse(n => {
+                    gameObject.GameObjectInstance.traverse(n =>
+                    {
                         if (n.isMesh) {
                             let texture = n.material.map;
                             let normal = n.material.normalMap;
@@ -78,21 +96,34 @@
                     gameObject.InitializeAfterLoad();
                     this.SetLoadComplete();
                 },
-                (progress) => {
+                (progress) =>
+                {
                     console.log('progress')
                     console.log(progress)
                 },
-                (error) => {
+                (error) =>
+                {
                     console.log('error')
                     console.log(error)
                 });
-            
+
+        }
+
+        private LoadHeightmapTerrain()
+        {
+            for (let i = 0; i < 10; ++i) {
+                for (let j = 0; j < 10; ++j) {
+                    this.terrain[i] = new HeightmapTerrain(j * 300, i * 300, 32, 32);
+                }
+            }
         }
         private loaderManager: THREE.LoadingManager
         private gltfLoader: THREE.GLTFLoader;
-        private modelNumber: number;
+        private loadCompletModel: number;
+        private modelCount: number;
         private loadComplete: boolean = false;
 
-        private modeltList:  ModelSet[];
+        private modeltList: ModelSet[];
+        private terrain = [];
     }
 }

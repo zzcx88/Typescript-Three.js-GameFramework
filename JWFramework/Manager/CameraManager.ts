@@ -1,21 +1,28 @@
-﻿namespace JWFramework {
-    export class CameraManager {
+﻿namespace JWFramework
+{
+    export class CameraManager
+    {
 
         private static instance: CameraManager;
 
-        static getInstance() {
-            if (!CameraManager.instance) {
+        static getInstance()
+        {
+            if (!CameraManager.instance)
+            {
                 CameraManager.instance = new CameraManager;
             }
             return CameraManager.instance;
         }
 
-        public get CameraMode(): CameraMode {
+        public get CameraMode(): CameraMode
+        {
             return this.cameraMode;
         }
 
-        public SetCameraSavedPosition(cameraMode: CameraMode) {
-            switch (cameraMode) {
+        public SetCameraSavedPosition(cameraMode: CameraMode)
+        {
+            switch (cameraMode)
+            {
                 case CameraMode.CAMERA_3RD:
                     this.ChangeThridPersonCamera();
                     break;
@@ -26,7 +33,8 @@
             }
         }
 
-        private ChangeThridPersonCamera() {
+        private ChangeThridPersonCamera()
+        {
             this.cameraMode = CameraMode.CAMERA_3RD;
 
             SceneManager.getInstance().CurrentScene.Picker.OrbitControl.enabled = false;
@@ -56,7 +64,8 @@
         }
 
 
-        private ChangeOrbitCamera() {
+        private ChangeOrbitCamera()
+        {
             this.cameraMode = CameraMode.CAMERA_ORBIT;
             SceneManager.getInstance().CurrentScene.Picker.OrbitControl.enabled = true;
             let gameObjectForCamera = SceneManager.getInstance().CurrentScene.Picker.GetPickParents();

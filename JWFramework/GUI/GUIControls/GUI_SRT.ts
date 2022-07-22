@@ -1,7 +1,10 @@
-﻿namespace JWFramework {
-    export class GUI_SRT extends GUI_Base {
+﻿namespace JWFramework
+{
+    export class GUI_SRT extends GUI_Base
+    {
 
-        constructor(gameObject: GameObject) {
+        constructor(gameObject: GameObject)
+        {
             super();
             this.datGui = new dat.GUI;
             this.datGui.open();
@@ -12,14 +15,16 @@
             this.datGui.width = WorldManager.getInstance().Canvas.width / 8;
         }
 
-        protected CreateFolder() {
+        protected CreateFolder()
+        {
             this.positionFolder = this.datGui.addFolder('Position');
             this.rotateFolder = this.datGui.addFolder('Rotate');
             this.scaleFolder = this.datGui.addFolder('Scale');
             this.isPlayerFolder = this.datGui.addFolder('IsPlayer');
         }
 
-        protected AddElement() {
+        protected AddElement()
+        {
 
             this.positionFolder.add(this.gameObject.GameObjectInstance.position, 'x').step(0.01).listen();
             this.positionFolder.add(this.gameObject.GameObjectInstance.position, 'y').step(0.01).listen();
@@ -36,11 +41,13 @@
             this.scaleFolder.add(this.gameObject.GameObjectInstance.scale, 'z', 0).step(0.01).listen();
             this.scaleFolder.open();
 
-            this.isPlayerFunc = function () {
-                this.isPlayer = function () {
+            this.isPlayerFunc = function ()
+            {
+                this.isPlayer = function ()
+                {
                     console.log(GUIManager.getInstance().GUI_SRT.gameObject.IsPlayer);
                     GUIManager.getInstance().GUI_SRT.gameObject.IsPlayer = true;
-                    console.log( GUIManager.getInstance().GUI_SRT.gameObject.IsPlayer);
+                    console.log(GUIManager.getInstance().GUI_SRT.gameObject.IsPlayer);
                 }
             }
 
@@ -50,7 +57,8 @@
             this.isPlayerFolder.open();
         }
 
-        public SetGameObject(gameObject: GameObject) {
+        public SetGameObject(gameObject: GameObject)
+        {
             this.gameObject = gameObject;
 
             this.datGui.removeFolder(this.positionFolder);
@@ -62,15 +70,19 @@
             this.AddElement();
         }
 
-        public UpdateDisplay() {
+        public UpdateDisplay()
+        {
             this.datGui.updateDisplay();
         }
 
-        public ShowGUI(show: boolean) {
-            if (show == true) {
+        public ShowGUI(show: boolean)
+        {
+            if (show == true)
+            {
                 this.datGui.open();
             }
-            else {
+            else
+            {
                 this.datGui.close();
             }
             this.gameObject.PhysicsComponent.UpdateMatrix();

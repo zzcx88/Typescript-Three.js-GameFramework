@@ -1,20 +1,26 @@
-﻿namespace JWFramework {
-    export class GraphComponent {
-        constructor(gameObject: GameObject) {
+﻿namespace JWFramework
+{
+    export class GraphComponent
+    {
+        constructor(gameObject: GameObject)
+        {
             this.GameObject = gameObject;
             this.GameObject.GraphicCompIncluded = true;
             this.renderSwitch = true;
         }
 
-        public SetRenderOnOff(renderSwitch: boolean) {
+        public SetRenderOnOff(renderSwitch: boolean)
+        {
             this.renderSwitch = renderSwitch;
 
-            if (renderSwitch == false) {
+            if (renderSwitch == false)
+            {
                 SceneManager.getInstance().SceneInstance.remove(this.GameObject.GameObjectInstance);
             }
-            else {
+            else
+            {
                 if (SceneManager.getInstance().SceneInstance)
-                SceneManager.getInstance().SceneInstance.add(this.GameObject.GameObjectInstance);
+                    SceneManager.getInstance().SceneInstance.add(this.GameObject.GameObjectInstance);
             }
         }
 

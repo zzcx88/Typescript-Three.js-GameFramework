@@ -1,12 +1,15 @@
-﻿namespace JWFramework {
-    export enum SceneType {
+﻿namespace JWFramework
+{
+    export enum SceneType
+    {
         SCENE_EDIT,
         SCENE_START,
         SCENE_STAGE,
         SCENE_END
     }
 
-    export enum ObjectType {
+    export enum ObjectType
+    {
         OBJ_TERRAIN,
         OBJ_OBJECT3D,
         OBJ_OBJECT2D,
@@ -15,14 +18,16 @@
         OBJ_END
     }
 
-    export enum PickMode {
+    export enum PickMode
+    {
         PICK_MODIFY,
         PICK_CLONE,
         PICK_TERRAIN,
         PICK_REMOVE
     }
 
-    export enum TerrainOption {
+    export enum TerrainOption
+    {
         TERRAIN_UP,
         TERRAIN_DOWN,
         TERRAIN_BALANCE,
@@ -30,12 +35,14 @@
         TERRAIN_END
     }
 
-    export enum CameraMode {
+    export enum CameraMode
+    {
         CAMERA_ORBIT,
         CAMERA_3RD
     }
 
-    export enum KeyState {
+    export enum KeyState
+    {
         KEY_DOWN,
         KEY_PRESS,
         KEY_UP

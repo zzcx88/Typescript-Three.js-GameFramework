@@ -1,20 +1,25 @@
-﻿namespace JWFramework {
-    export class ShaderManager {
+﻿namespace JWFramework
+{
+    export class ShaderManager
+    {
 
         private static instance: ShaderManager;
 
-        public constructor() {
+        public constructor()
+        {
             this.BuildMotuinBlurShader();
         }
 
-        static getInstance() {
+        static getInstance()
+        {
             if (!ShaderManager.instance) {
                 ShaderManager.instance = new ShaderManager;
             }
             return ShaderManager.instance;
         }
 
-        public BuildMotuinBlurShader() {
+        public BuildMotuinBlurShader()
+        {
             let renderer = WorldManager.getInstance().Renderer;
             let sceneInstance = SceneManager.getInstance().SceneInstance;
             let camera = WorldManager.getInstance().MainCamera.CameraInstance;
@@ -58,7 +63,8 @@
             this.composer.renderToScreen = true;
         }
 
-        public ShadedRender() {
+        public ShadedRender()
+        {
             this.composer.render();
         }
 

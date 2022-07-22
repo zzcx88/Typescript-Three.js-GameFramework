@@ -1,6 +1,9 @@
-﻿namespace JWFramework {
-    export class F16Object extends AircraftObject {
-        constructor() {
+﻿namespace JWFramework
+{
+    export class F16Object extends AircraftObject
+    {
+        constructor()
+        {
             super();
             this.type = ObjectType.OBJ_AIRCRAFT;
 
@@ -9,7 +12,8 @@
             this.collisionComponent = new CollisionComponent(this);
         }
 
-        public InitializeAfterLoad() {
+        public InitializeAfterLoad()
+        {
             this.GameObjectInstance.matrixAutoUpdate = true;
 
             this.GameObjectInstance.name = this.name;
@@ -20,18 +24,22 @@
                 this.CreateCollider();
         }
 
-        public CreateCollider() {
+        public CreateCollider()
+        {
             this.CollisionComponent.CreateBoundingBox(1, 1, 1);
             this.CollisionComponent.CreateRaycaster();
         }
 
-        public CollisionActive() {
+        public CollisionActive()
+        {
         }
 
-        public CollisionDeActive() {
+        public CollisionDeActive()
+        {
         }
 
-        public Animate() {
+        public Animate()
+        {
             if (this.isClone == true) {
                 this.CollisionComponent.Update();
             }

@@ -1,28 +1,42 @@
-﻿namespace JWFramework {
-    export class SceneBase {
+﻿/// <reference path="../Picker/Picker.ts" />
+namespace JWFramework
+{
+    export class SceneBase
+    {
 
-        constructor() { }
+        constructor(sceneManager: SceneManager)
+        {
+            this.sceneManager = sceneManager;
+            this.BuildObject();
+            this.BuildLight();
+            this.BuildFog();
+            this.SetPicker();
+        }
+
+        protected BuildObject() { }
+
+        protected BuildLight() { }
+
+        protected BuildFog() { }
 
         public Animate() { }
 
-        public get Terrain(): HeightmapTerrain {
-            return this.heightmapTerrain;
+
+        public get SceneManager()
+        {
+            return this.sceneManager;
         }
 
-        public set Terrain(terrain: HeightmapTerrain) {
-            this.heightmapTerrain = terrain;
-        }
-
-        public get Picker(): Picker {
-
+        public get Picker(): Picker
+        {
             return this.picker;
         }
-
-        public SetPicker() {
+        public SetPicker()
+        {
             this.picker = new Picker();
         }
 
+        private sceneManager: SceneManager
         private picker: Picker;
-        private heightmapTerrain: HeightmapTerrain;
     }
 }

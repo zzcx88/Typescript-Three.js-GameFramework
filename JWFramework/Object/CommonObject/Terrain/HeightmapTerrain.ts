@@ -1,6 +1,10 @@
-﻿namespace JWFramework {
-    export class HeightmapTerrain extends GameObject {
-        constructor(x: number, z: number, segmentWidth: number, segmentHeight: number) {
+﻿/// <reference path="../../GameObject.ts" />
+namespace JWFramework
+{
+    export class HeightmapTerrain extends GameObject
+    {
+        constructor(x: number, z: number, segmentWidth: number, segmentHeight: number)
+        {
             super();
             this.width = x;
             this.height = z;
@@ -21,7 +25,8 @@
             this.CreateTerrainMesh();
         }
 
-        public InitializeAfterLoad() {
+        public InitializeAfterLoad()
+        {
             this.PhysicsComponent.SetPostion(this.width, 0, this.height);
 
             this.CreateBoundingBox();
@@ -31,12 +36,14 @@
             ObjectManager.getInstance().AddObject(this, this.name, this.type);
         }
 
-        public CreateBoundingBox() {
+        public CreateBoundingBox()
+        {
             this.CollisionComponent.CreateBoundingBox(300, 5000, 300);
             this.CollisionComponent.BoxHelper.box.setFromCenterAndSize(new THREE.Vector3(this.width, 2500, this.height), new THREE.Vector3(300, 5000, 300));
         }
 
-        public CreateTerrainMesh() {
+        public CreateTerrainMesh()
+        {
             this.planeGeomatry = new THREE.PlaneGeometry(300, 300, this.segmentWidth, this.segmentHeight);
             this.material = new THREE.MeshToonMaterial();
             this.texture = new THREE.TextureLoader().load("Model/Heightmap/TerrainTexture.jpg");
@@ -68,11 +75,13 @@
             this.InitializeAfterLoad();
         }
 
-        public get HeightIndexBuffer(): number[] {
+        public get HeightIndexBuffer(): number[]
+        {
             return this.heigtIndexBuffer;
         }
 
-        public get HeightBuffer(): number[] {
+        public get HeightBuffer(): number[]
+        {
             for (let i = 0; i < this.heigtBuffer.length; ++i) {
                 this.heigtBuffer.pop();
             }
@@ -82,7 +91,8 @@
             return this.heigtBuffer;
         }
 
-        public SetHeight(index: number, value: number = undefined, option: TerrainOption = TerrainOption.TERRAIN_UP) {
+        public SetHeight(index: number, value: number = undefined, option: TerrainOption = TerrainOption.TERRAIN_UP)
+        {
             this.planeGeomatry.getAttribute('position').needsUpdate = true;
             let height: number = this.planeGeomatry.getAttribute('position').getY(index);
 
@@ -103,8 +113,8 @@
             else {
                 this.planeGeomatry.getAttribute('position').setY(index, height += value);
             }
-            
-             //   this.planeGeomatry.getAttribute('position').setY(index, value);
+
+            //   this.planeGeomatry.getAttribute('position').setY(index, value);
             //////////////////////
 
             let objectList = ObjectManager.getInstance().GetObjectList;
@@ -198,7 +208,8 @@
 
         }
 
-        public CollisionActive(value: ObjectType) {
+        public CollisionActive(value: ObjectType)
+        {
             if (value == ObjectType.OBJ_CAMERA) {
                 this.cameraInSecter = true;
                 this.material.opacity = 0.9;
@@ -209,7 +220,8 @@
                 this.inSecter = true;
         }
 
-        public CollisionDeActive(value: ObjectType) {
+        public CollisionDeActive(value: ObjectType)
+        {
             if (value == ObjectType.OBJ_CAMERA) {
                 this.cameraInSecter = false;
                 this.material.opacity = 1;
@@ -218,7 +230,8 @@
                 this.inSecter = false;
         }
 
-        public Animate() {
+        public Animate()
+        {
             if (/*SceneManager.getInstance().CurrentScene.Picker.PickMode != PickMode.PICK_TERRAIN &&*/ this.vertexNormalNeedUpdate) {
                 this.planeGeomatry.computeVertexNormals();
                 this.vertexNormalNeedUpdate = false;

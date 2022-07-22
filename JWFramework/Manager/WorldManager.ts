@@ -1,18 +1,26 @@
-﻿namespace JWFramework {
-    export class WorldManager {
+﻿/// <reference path="../../JWFramework/Object/Camera/Camera.ts" />
+/// <reference path="../../JWFramework/Manager/ObjectManager.ts" />
+/// <reference path="../../JWFramework/Manager/SceneManager.ts" />
+/// <reference path="../../JWFramework/Manager/ShaderManager.ts" />
+namespace JWFramework
+{
+    export class WorldManager
+    {
 
         private static instance: WorldManager;
 
         private constructor() { }
 
-        static getInstance() {
+        static getInstance()
+        {
             if (!WorldManager.instance) {
                 WorldManager.instance = new WorldManager;
             }
             return WorldManager.instance;
         }
 
-        public InitializeWorld() {
+        public InitializeWorld()
+        {
             this.CreateRendere();
             this.ResizeView();
             this.CreateMainCamera();
@@ -20,17 +28,18 @@
             this.CreateDeltaTime();
         }
 
-        private CreateRendere() {
+        private CreateRendere()
+        {
             this.renderer = new THREE.WebGLRenderer(
                 {
-                canvas: document.querySelector("#c"),
-                alpha: true,
-                antialias: true,
-                precision: "highp",
-                premultipliedAlpha: true,
-                stencil: true,
-                preserveDrawingBuffer: false,
-                logarithmicDepthBuffer: false
+                    canvas: document.querySelector("#c"),
+                    alpha: true,
+                    antialias: true,
+                    precision: "highp",
+                    premultipliedAlpha: true,
+                    stencil: true,
+                    preserveDrawingBuffer: false,
+                    logarithmicDepthBuffer: false
                 }
             );
             this.renderer.setViewport(0, 0, Define.SCREEN_WIDTH, Define.SCREEN_HEIGHT);
@@ -40,7 +49,8 @@
             document.body.appendChild(this.renderer.domElement);
         }
 
-        private ResizeView() {
+        private ResizeView()
+        {
             const width = this.Canvas.clientWidth;
             const height = this.Canvas.clientHeight;
             const needResize = this.Canvas.width !== width || this.Canvas.height !== height;
@@ -51,8 +61,9 @@
             //this.renderer.setSize(Define.SCREEN_WIDTH, Define.SCREEN_HEIGHT);
         }
 
-        private CreateMainCamera() {
-            this.camera = new Camera();
+        private CreateMainCamera()
+        {
+            this.camera = new JWFramework.Camera();
             this.camera.Name = "MainCamera";
             this.camera.Fov = 75;
             this.camera.Aspect = this.Canvas.clientWidth / this.Canvas.clientHeight;
@@ -62,7 +73,8 @@
             ObjectManager.getInstance().AddObject(this.camera, this.camera.Name, this.camera.Type);
         }
 
-        private CreateScene() {
+        private CreateScene()
+        {
             this.sceneManager = SceneManager.getInstance();
             this.sceneManager.BuildScene();
 
@@ -79,28 +91,34 @@
                 ]);
         }
 
-        private CreateDeltaTime() {
+        private CreateDeltaTime()
+        {
             this.clock = new THREE.Clock();
             this.delta = 0;
         }
 
-        public GetDeltaTime(): number {
+        public GetDeltaTime(): number
+        {
             return this.delta;
         }
 
-        public get Canvas(): HTMLCanvasElement {
+        public get Canvas(): HTMLCanvasElement
+        {
             return this.renderer.domElement;
         }
 
-        public get MainCamera(): Camera {
+        public get MainCamera(): JWFramework.Camera
+        {
             return this.camera;
         }
 
-        public get Renderer(): THREE.WebGLRenderer {
+        public get Renderer(): THREE.WebGLRenderer
+        {
             return this.renderer;
         }
 
-        public Animate() {
+        public Animate()
+        {
             if (this.ResizeView()) {
                 this.camera.Aspect = this.Canvas.clientWidth / this.Canvas.clientHeight;
                 this.camera.CameraInstance.updateProjectionMatrix();
@@ -111,7 +129,8 @@
             this.sceneManager.Animate();
         }
 
-        public Render() {
+        public Render()
+        {
             //--NormalRender
             //this.renderer.render(this.sceneManager.SceneInstance, this.camera.CameraInstance);
 
@@ -122,7 +141,7 @@
         private renderer: THREE.WebGLRenderer;
         private sceneManager: SceneManager;
 
-        private camera: Camera;
+        private camera: JWFramework.Camera;
 
         private clock: THREE.Clock;
         private delta: number;

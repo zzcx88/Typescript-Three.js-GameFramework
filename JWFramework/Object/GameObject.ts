@@ -1,102 +1,127 @@
-﻿namespace JWFramework {
-    export class GameObject {
+﻿namespace JWFramework
+{
+    export class GameObject
+    {
 
         public InitializeAfterLoad() { }
 
-        public get Type(): ObjectType {
+        public get Type(): ObjectType
+        {
             return this.type;
         }
 
-        public get Name(): string {
+        public get Name(): string
+        {
             return this.name;
         }
 
-        public set Name(name: string) {
+        public set Name(name: string)
+        {
             this.name = name;
         }
 
-        public get IsClone(): boolean {
+        public get IsClone(): boolean
+        {
             return this.isClone;
         }
 
-        public set IsClone(isClone: boolean) {
+        public set IsClone(isClone: boolean)
+        {
             this.isClone = isClone;
         }
 
-        public get IsPlayer(): boolean {
+        public get IsPlayer(): boolean
+        {
             return this.isPlayer;
         }
 
-        public set IsPlayer(flag: boolean) {
+        public set IsPlayer(flag: boolean)
+        {
             this.isPlayer = flag;
         }
 
-        public get PhysicsComponent(): PhysicsComponent {
+        public get PhysicsComponent(): PhysicsComponent
+        {
             return this.physicsComponent;
         }
 
-        public get GraphicComponent(): GraphComponent {
+        public get GraphicComponent(): GraphComponent
+        {
             return this.graphicComponent;
         }
 
-        public get GUIComponent(): GUIComponent {
+        public get GUIComponent(): GUIComponent
+        {
             return this.guiComponent;
         }
 
-        public get ExportComponent(): ExportComponent {
+        public get ExportComponent(): ExportComponent
+        {
             return this.exportComponent;
         }
 
-        public get CollisionComponent(): CollisionComponent {
+        public get CollisionComponent(): CollisionComponent
+        {
             return this.collisionComponent;
         }
 
-        public get PhysicsCompIncluded() {
+        public get PhysicsCompIncluded()
+        {
             return this.physicsCompIncluded;
         }
 
-        public get GraphicCompIncluded() {
+        public get GraphicCompIncluded()
+        {
             return this.graphicCompIncluded;
         }
 
-        public set PhysicsCompIncluded(isIncluded: boolean) {
+        public set PhysicsCompIncluded(isIncluded: boolean)
+        {
             this.physicsCompIncluded = isIncluded;
         }
 
-        public set GraphicCompIncluded(isIncluded: boolean) {
+        public set GraphicCompIncluded(isIncluded: boolean)
+        {
             this.graphicCompIncluded = isIncluded;
         }
 
-        public set Picked(picked: boolean) {
+        public set Picked(picked: boolean)
+        {
             this.picked = picked;
         }
 
-        public get Picked(): boolean {
+        public get Picked(): boolean
+        {
             return this.picked;
         }
 
-        public get GameObjectInstance() {
+        public get GameObjectInstance()
+        {
             return this.gameObjectInstance;
         }
 
-        public set GameObjectInstance(gameObjectInstance) {
-            this.gameObjectInstance = gameObjectInstance ;
+        public set GameObjectInstance(gameObjectInstance)
+        {
+            this.gameObjectInstance = gameObjectInstance;
         }
 
-        public get IsDead(): boolean {
+        public get IsDead(): boolean
+        {
             return this.isDead;
         }
 
-        public set IsDead(flag: boolean) {
+        public set IsDead(flag: boolean)
+        {
             this.isDead = flag;
         }
 
         public CollisionActive(value: any = 0) { }
         public CollisionDeActive(value: any = 0) { }
 
-        public Animate() {}
+        public Animate() { }
 
-        public DeleteObject() {
+        public DeleteObject()
+        {
             this.isDead = true;
         }
 

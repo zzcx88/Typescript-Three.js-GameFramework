@@ -1,27 +1,49 @@
-﻿namespace JWFramework {
-    export class CollisionComponent {
-        constructor(gameObject: GameObject) {
+﻿namespace JWFramework
+{
+    export class CollisionComponent
+    {
+        constructor(gameObject: GameObject)
+        {
             this.gameObject = gameObject;
             this.boundingBoxInclude = false;
             this.boundingSphereInclude = false;
             this.raycasterInclude = false;
         }
 
-        public CreateBoundingBox(x: number, y: number, z: number) {
+        public CreateBoundingBox(x: number, y: number, z: number)
+        {
             this.sizeX = x; this.sizeY = y; this.sizeZ = z;
             this.boundingBox = new THREE.Box3();
+            this.boundingBox.setFromCenterAndSize(new THREE.Vector3(0, 0, 0), new THREE.Vector3(this.sizeX, this.sizeY, this.sizeZ));
             let color = new THREE.Color().setColorName("Red");
             this.boxHelper = new THREE.Box3Helper(this.boundingBox, color);
-            this.boundingBox.setFromCenterAndSize(new THREE.Vector3(0, 0, 0), new THREE.Vector3(this.sizeX, this.sizeY, this.sizeZ));
+            if (SceneManager.getInstance().SceneInstance != null)
+                SceneManager.getInstance().SceneInstance.add(this.boxHelper);
 
             this.boundingBoxInclude = true;
         }
 
-        public CreateBoundingSphere() {
+        public CreateOrientedBoundingBox(x: number, y: number, z: number)
+        {
+            //this.sizeX = x; this.sizeY = y; this.sizeZ = z;
+            //this.boundingBox = new THREE.OBB();
+            //this.boundingBox.setFromCenterAndSize(new THREE.Vector3(0, 0, 0), new THREE.Vector3(this.sizeX, this.sizeY, this.sizeZ));
+            //let color = new THREE.Color().setColorName("Red");
+            //this.boxHelper = new THREE.Box3Helper(this.boundingBox, color);
+            //if (SceneManager.getInstance().SceneInstance != null) {
+            //    SceneManager.getInstance().SceneInstance.add(this.boxHelper);
+            //}
+
+            //this.boundingBoxInclude = true;
+        }
+
+        public CreateBoundingSphere()
+        {
 
         }
 
-        public CreateRaycaster() {
+        public CreateRaycaster()
+        {
             let vec3pos = new THREE.Vector3(0, 0, 0);
             let vecd3 = new THREE.Vector3(0, -1, 0);
             this.raycaster = new THREE.Raycaster(vec3pos, vecd3);
@@ -29,40 +51,50 @@
             this.raycasterInclude = true;
         }
 
-        public get BoundingBox(): THREE.Box3 {
+        public get BoundingBox(): THREE.Box3
+        {
             return this.boundingBox;
         }
 
-        public get BoxHelper(): THREE.Box3Helper {
+        public get BoxHelper(): THREE.Box3Helper
+        {
             return this.boxHelper;
         }
 
-        public get BoundingSphere(): THREE.Sphere {
+        public get BoundingSphere(): THREE.Sphere
+        {
             return this.boundingSphere;
         }
 
-        public get Raycaster(): THREE.Raycaster {
+        public get Raycaster(): THREE.Raycaster
+        {
             return this.raycaster;
         }
 
-        public DeleteCollider() {
-            if (this.boundingBoxInclude) {
+        public DeleteCollider()
+        {
+            if (this.boundingBoxInclude)
+            {
                 this.boxHelper.visible = false;
                 delete this.boundingBox;
                 delete this.boxHelper;
                 this.boundingBox = null;
                 this.boxHelper = null;
             }
-            if (this.raycasterInclude == true) { 
+            if (this.raycasterInclude == true)
+            {
                 delete this.raycaster
             }
         }
 
-        public Update() {
-            if (this.boundingBoxInclude) {
+        public Update()
+        {
+            if (this.boundingBoxInclude)
+            {
                 this.boxHelper.box.setFromCenterAndSize(this.gameObject.PhysicsComponent.GetPosition(), new THREE.Vector3(this.sizeX, this.sizeY, this.sizeZ));
             }
-            if (this.raycasterInclude == true) {
+            if (this.raycasterInclude == true)
+            {
                 this.raycaster.set(this.gameObject.PhysicsComponent.GetPosition(), new THREE.Vector3(0, -1, 0));
             }
         }

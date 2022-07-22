@@ -1,11 +1,14 @@
-﻿namespace JWFramework {
-    export class ObjectManager {
+﻿namespace JWFramework
+{
+    export class ObjectManager
+    {
 
         private static instance: ObjectManager;
 
-        public constructor() {}
+        public constructor() { }
 
-        static getInstance() {
+        static getInstance()
+        {
             if (!ObjectManager.instance) {
                 ObjectManager.instance = new ObjectManager;
             }
@@ -14,7 +17,8 @@
 
         public GetObjectsFromType() { }
 
-        public GetObjectFromName(name: string): GameObject {
+        public GetObjectFromName(name: string): GameObject
+        {
             for (let TYPE = ObjectType.OBJ_TERRAIN; TYPE < ObjectType.OBJ_END; ++TYPE) {
                 for (let OBJ = 0; OBJ < this.objectList[TYPE].length; ++OBJ) {
                     if (name == this.objectList[TYPE][OBJ].GameObject.Name) {
@@ -25,7 +29,8 @@
             return null;
         }
 
-        public GetInSectorTerrain() {
+        public GetInSectorTerrain()
+        {
             let terrain: GameObject;
             for (let OBJ = 0; OBJ < this.objectList[ObjectType.OBJ_TERRAIN].length; ++OBJ) {
                 terrain = this.objectList[ObjectType.OBJ_TERRAIN][OBJ].GameObject;
@@ -35,20 +40,24 @@
             return this.terrainList;
         }
 
-        public get GetObjectList() {
+        public get GetObjectList()
+        {
             return this.objectList;
         }
 
-        public ClearExportObjectList() {
+        public ClearExportObjectList()
+        {
             this.exportObjectList = [];
             this.exportObjectList.length = 0;
         }
 
-        public AddObject(gameObject: GameObject, name: string, type: ObjectType) {
+        public AddObject(gameObject: GameObject, name: string, type: ObjectType)
+        {
             this.objectList[type].push({ GameObject: gameObject, Name: name });
         }
 
-        public MakeClone(selectObject: GameObject): GameObject {
+        public MakeClone(selectObject: GameObject): GameObject
+        {
             let cloneObject: GameObject;
 
             //해당 인스턴스로 생성이 가능한지 판별
@@ -56,7 +65,10 @@
                 cloneObject = new EditObject;
             }
             else {
-                alert(selectObject.Name.toUpperCase() + " Instance of class name not found");
+                if (selectObject == null)
+                    alert("EmtyObject")
+                else
+                    alert(selectObject.Name.toUpperCase() + " Instance of class name not found");
                 return;
             }
 
@@ -67,7 +79,8 @@
             return cloneObject;
         }
 
-        public MakeJSONArray() {
+        public MakeJSONArray()
+        {
             for (let TYPE = ObjectType.OBJ_TERRAIN; TYPE < ObjectType.OBJ_END; ++TYPE) {
                 for (let OBJ = 0; OBJ < this.objectList[TYPE].length; ++OBJ) {
                     if (this.objectList[TYPE][OBJ].GameObject.IsClone == true || this.objectList[TYPE][OBJ].GameObject.Type == ObjectType.OBJ_TERRAIN) {
@@ -86,10 +99,12 @@
             this.ClearExportObjectList();
         }
 
-        public DeleteObject(gameObject: GameObject) {
+        public DeleteObject(gameObject: GameObject)
+        {
             SceneManager.getInstance().SceneInstance.remove(gameObject.GameObjectInstance);
             gameObject.CollisionComponent.DeleteCollider();
-            gameObject.GameObjectInstance.traverse(node => {
+            gameObject.GameObjectInstance.traverse(node =>
+            {
                 if (node.isMesh) {
                     if (node.geometry) {
                         node.geometry.dispose();
@@ -112,9 +127,12 @@
             this.ClearExportObjectList();
         }
 
-        public DeleteAllObject() {
-            this.objectList.forEach(function (type) {
-                type.forEach(function (object) {
+        public DeleteAllObject()
+        {
+            this.objectList.forEach(function (type)
+            {
+                type.forEach(function (object)
+                {
                     if (object.GameObject.Type != ObjectType.OBJ_CAMERA && object.GameObject.IsClone == true)
                         object.GameObject.IsDead = true;
                 })
@@ -123,7 +141,8 @@
 
         private RenderOffObject() { }
 
-        public Animate() {
+        public Animate()
+        {
             for (let TYPE = 0; TYPE < ObjectType.OBJ_END; ++TYPE) {
                 for (let OBJ = 0; OBJ < this.objectList[TYPE].length; ++OBJ) {
                     this.objectList[TYPE][OBJ].GameObject.Animate();
@@ -149,7 +168,7 @@
         public Render() { }
 
         private terrainList = new THREE.Group();
-        private objectList: ObjectSet[][] = [[],[],[],[],[]];
+        private objectList: ObjectSet[][] = [[], [], [], [], []];
         private exportObjectList = [];
     }
 }

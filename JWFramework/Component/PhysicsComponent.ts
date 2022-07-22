@@ -1,78 +1,102 @@
-﻿namespace JWFramework {
-    export class PhysicsComponent {
-        constructor(gameObject: JWFramework.GameObject) {
+﻿/// <reference path="../Manager/CameraManager.ts" />
+namespace JWFramework
+{
+    export class PhysicsComponent
+    {
+        constructor(gameObject: JWFramework.GameObject)
+        {
             this.GameObject = gameObject;
             this.GameObject.PhysicsCompIncluded = true;
         }
 
-        public get Up(): THREE.Vector3 {
+        public get Up(): THREE.Vector3
+        {
             return this.vec3Up;
         }
 
-        public get Right(): THREE.Vector3 {
+        public get Right(): THREE.Vector3
+        {
             return this.vec3Right;
         }
 
-        public get Look(): THREE.Vector3 {
+        public get Look(): THREE.Vector3
+        {
             return this.vec3Look;
         }
 
-        public set Up(vec3Up: THREE.Vector3) {
+        public set Up(vec3Up: THREE.Vector3)
+        {
             this.vec3Up = vec3Up;
         }
 
-        public set Right(vec3Right: THREE.Vector3) {
+        public set Right(vec3Right: THREE.Vector3)
+        {
             this.vec3Right = vec3Right;
         }
 
-        public set Look(vec3Look: THREE.Vector3) {
+        public set Look(vec3Look: THREE.Vector3)
+        {
             this.vec3Look = vec3Look;
         }
 
-        public SetPostion(x: number, y: number, z: number): void {
+        public SetPostion(x: number, y: number, z: number): void
+        {
             this.GameObject.GameObjectInstance.position.x = x;
             this.GameObject.GameObjectInstance.position.y = y;
             this.GameObject.GameObjectInstance.position.z = z;
             this.UpdateMatrix();
         }
 
-        public SetPostionVec3(vec3: THREE.Vector3): void {
+        public SetPostionVec3(vec3: THREE.Vector3): void
+        {
             this.GameObject.GameObjectInstance.position.x = vec3.x;
             this.GameObject.GameObjectInstance.position.y = vec3.y;
             this.GameObject.GameObjectInstance.position.z = vec3.z;
             this.UpdateMatrix();
         }
 
-        public SetScale(x: number, y: number, z: number) {
+        public SetScale(x: number, y: number, z: number)
+        {
             this.GameObject.GameObjectInstance.scale.set(x, y, z);
             this.UpdateMatrix();
         }
 
-        public SetScaleScalar(scalar: number) {
+        public SetScaleScalar(scalar: number)
+        {
             this.GameObject.GameObjectInstance.scale.setScalar(scalar);
             this.UpdateMatrix();
         }
 
-        public MoveFoward(distance: number) {
+        public MoveFoward(distance: number)
+        {
             let Look = new THREE.Vector3(0, 0, 1);
             this.GameObject.GameObjectInstance.translateOnAxis(Look, distance * WorldManager.getInstance().GetDeltaTime());
             this.UpdateMatrix();
         }
 
-        public GetPosition(): THREE.Vector3{
+        public GetPosition(): THREE.Vector3
+        {
             return this.GameObject.GameObjectInstance.position;
         }
 
-        public GetRotateEuler(): THREE.Euler {
+        public GetRotateEuler(): THREE.Euler
+        {
             return this.GameObject.GameObjectInstance.rotation;
         }
 
-        public GetScale(): THREE.Vector3 {
+        public GetScale(): THREE.Vector3
+        {
             return this.GameObject.GameObjectInstance.scale;
         }
 
+        public GetMatrix4()
+        {
+            return this.GameObject.GameObjectInstance.matrixWorld;
+        }
+
         //Object스페이스 축 기준 회전
-        public Rotate(x: number, y: number, z: number): void {
+        public Rotate(x: number, y: number, z: number): void
+        {
             this.GameObject.GameObjectInstance.rotateX(x * WorldManager.getInstance().GetDeltaTime());
             this.GameObject.GameObjectInstance.rotateY(y * WorldManager.getInstance().GetDeltaTime());
             this.GameObject.GameObjectInstance.rotateZ(z * WorldManager.getInstance().GetDeltaTime());
@@ -80,17 +104,21 @@
         }
 
         //월드 스페이스 축 기준 회전
-        public RotateVec3(axis: THREE.Vector3, angle: number): void {
+        public RotateVec3(axis: THREE.Vector3, angle: number): void
+        {
             this.GameObject.GameObjectInstance.rotateOnWorldAxis(axis, angle * WorldManager.getInstance().GetDeltaTime());
             this.UpdateMatrix();
             //console.log(this.GameObject.GameObjectInstance.matrix);
         }
 
-        public UpdateMatrix() {
-            if (this.GameObject.Name != "MainCamera" && CameraManager.getInstance().CameraMode != CameraMode.CAMERA_3RD) {
+        public UpdateMatrix()
+        {
+            if (this.GameObject.Name != "MainCamera" && CameraManager.getInstance().CameraMode != CameraMode.CAMERA_3RD)
+            {
                 this.GameObject.GameObjectInstance.getWorldPosition(this.vec3Position);
             }
-            else {
+            else
+            {
                 this.vec3Position = this.GameObject.GameObjectInstance.position;
             }
 
@@ -112,8 +140,8 @@
         }
 
         private gameince: THREE.Object3D;
-        private vec3Right:  THREE.Vector3 = new THREE.Vector3(1, 0, 0);
-        private vec3Up:     THREE.Vector3 = new THREE.Vector3(0, 1, 0);
+        private vec3Right: THREE.Vector3 = new THREE.Vector3(1, 0, 0);
+        private vec3Up: THREE.Vector3 = new THREE.Vector3(0, 1, 0);
         private vec3Look: THREE.Vector3 = new THREE.Vector3(0, 0, 1);
         private vec3Position: THREE.Vector3 = new THREE.Vector3(0, 0, 0);
         private GameObject: JWFramework.GameObject;

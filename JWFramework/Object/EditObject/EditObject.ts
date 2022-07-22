@@ -1,6 +1,10 @@
-﻿namespace JWFramework {
-    export class EditObject extends GameObject {
-        constructor() {
+﻿/// <reference path="../GameObject.ts" />
+namespace JWFramework
+{
+    export class EditObject extends GameObject
+    {
+        constructor()
+        {
             super();
             this.type = ObjectType.OBJ_OBJECT3D;
 
@@ -10,7 +14,8 @@
             this.collisionComponent = new CollisionComponent(this);
         }
 
-        public InitializeAfterLoad() {
+        public InitializeAfterLoad()
+        {
             this.GameObjectInstance.matrixAutoUpdate = true;
             this.PhysicsComponent.SetScaleScalar(1);
             this.PhysicsComponent.SetPostion(0, 0, 0);
@@ -28,21 +33,27 @@
             if (SceneManager.getInstance().SceneType == SceneType.SCENE_EDIT) {
                 this.axisHelper = new THREE.AxesHelper(10);
                 this.GameObjectInstance.add(this.axisHelper);
+                //this.GameObjectInstance.add(this.CollisionComponent.BoxHelper);
             }
         }
 
-        public CreateCollider() {
-            this.CollisionComponent.CreateBoundingBox(1,1,1);
+        public CreateCollider()
+        {
+            this.CollisionComponent.CreateBoundingBox(this.PhysicsComponent.GetScale().x, this.PhysicsComponent.GetScale().y, this.PhysicsComponent.GetScale().z);
             this.CollisionComponent.CreateRaycaster();
+            //SceneManager.getInstance().SceneInstance.add(this.CollisionComponent.BoxHelper);
         }
 
-        public CollisionActive() {
+        public CollisionActive()
+        {
         }
 
-        public CollisionDeActive() {
+        public CollisionDeActive()
+        {
         }
 
-        public Animate() {
+        public Animate()
+        {
             if (this.isClone == true) {
                 this.CollisionComponent.Update();
             }

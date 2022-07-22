@@ -21,7 +21,7 @@ canvas {
 
 #terrain-gui-container {
     position: absolute;
-    top: 450px;
+    top: 500px;
     right: 0px;
     z-index: 10;
 }

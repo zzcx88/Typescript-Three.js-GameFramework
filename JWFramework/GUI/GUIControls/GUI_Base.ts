@@ -1,5 +1,7 @@
-﻿namespace JWFramework {
-    export class GUI_Base {
+﻿namespace JWFramework
+{
+    export class GUI_Base
+    {
 
         constructor() { }
 

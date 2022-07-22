@@ -1,6 +1,9 @@
-﻿namespace JWFramework {
-    export class Light extends GameObject {
-        constructor() {
+﻿namespace JWFramework
+{
+    export class Light extends GameObject
+    {
+        constructor()
+        {
             super();
             this.color = 0x000000;
             this.intensity = 0;
@@ -8,27 +11,32 @@
             this.GameObjectInstance = this.light;
         }
 
-        public get Color(): number {
+        public get Color(): number
+        {
             return this.color;
         }
 
-        public SetColor(color: number) {
+        public SetColor(color: number)
+        {
             this.color = color;
 
             this.SetLightElement();
         }
 
-        public get Intensity(): number {
+        public get Intensity(): number
+        {
             return this.intensity;
         }
-        public set Intensity(intensity: number) {
+        public set Intensity(intensity: number)
+        {
             this.intensity = intensity;
 
             this.SetLightElement();
         }
 
-        private SetLightElement() {
-            this.light.color.set( this.color);
+        private SetLightElement()
+        {
+            this.light.color.set(this.color);
             this.light.intensity = this.intensity;
             this.light.target.position.set(0, 0, 0);
         }

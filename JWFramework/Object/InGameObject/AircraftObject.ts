@@ -1,22 +1,30 @@
-﻿namespace JWFramework {
-    export class AircraftObject extends GameObject {
-        constructor() {
+﻿namespace JWFramework
+{
+    export class AircraftObject extends GameObject
+    {
+        constructor()
+        {
             super();
         }
 
-        public InitializeAfterLoad() {
+        public InitializeAfterLoad()
+        {
         }
 
-        public CreateCollider() {
+        public CreateCollider()
+        {
         }
 
-        public CollisionActive() {
+        public CollisionActive()
+        {
         }
 
-        public CollisionDeActive() {
+        public CollisionDeActive()
+        {
         }
 
-        public Animate() {
+        public Animate()
+        {
             if (this.throttle > 100) {
                 this.throttle = 100;
                 this.afterBurner = true;
