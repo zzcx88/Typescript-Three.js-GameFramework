@@ -4,7 +4,6 @@ C:\Users\Gyro\Desktop\test\prac\JWFramework\bin\JWFramework.dll
 C:\Users\Gyro\Desktop\test\prac\JWFramework\bin\JWFramework.pdb
 C:\Users\Gyro\Desktop\test\prac\JWFramework\obj\Debug\JWFramework.dll
 C:\Users\Gyro\Desktop\test\prac\JWFramework\obj\Debug\JWFramework.pdb
-C:\Users\LEEJAEWON\Desktop\ThreeJS_with_typescript\JWFramework\obj\Debug\JWFramework.csproj.AssemblyReference.cache
 C:\Users\LEEJAEWON\Desktop\ThreeJS_with_typescript\JWFramework\obj\Debug\JWFramework.dll
 C:\Users\LEEJAEWON\Desktop\ThreeJS_with_typescript\JWFramework\obj\Debug\JWFramework.pdb
 C:\Users\LEEJAEWON\Desktop\ThreeJS_with_typescript\JWFramework\bin\JWFramework.dll.config
