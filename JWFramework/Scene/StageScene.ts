@@ -16,12 +16,12 @@
 
         BuildLight()
         {
-            this.light = new Light();
+            this.light = new Light(LightType.LIGHT_DIRECTIONAL);
             this.light.SetColor(0xFFFFFF);
             this.light.Intensity = 1.5;
             this.light.GameObjectInstance.position.set(10000, 10000, 0);
 
-            this.light2 = new Light();
+            this.light2 = new Light(LightType.LIGHT_DIRECTIONAL);
             this.light2.SetColor(0xFFFFFF);
             this.light2.Intensity = 0.7;
             this.light2.GameObjectInstance.position.set(-10000, -10000, 0);

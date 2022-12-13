@@ -211,7 +211,7 @@
 
 					if ( scope.enableDamping === true ) {
 
-						scope.target.addScaledVector( panOffset, scope.dampingFactor );
+						scope.target.addScaledVector( panOffset, 1 );
 
 					} else {
 

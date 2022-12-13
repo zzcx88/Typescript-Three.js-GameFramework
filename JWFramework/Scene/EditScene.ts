@@ -19,19 +19,25 @@ namespace JWFramework
 
         BuildLight()
         {
-            //Directional Light
-            this.light = new Light();
-            this.light.SetColor(0xFFFFFF);
-            this.light.Intensity = 1.5;
-            this.light.GameObjectInstance.position.set(10000, 10000, 0);
+            ////Directional Light
+            this.light = new Light(LightType.LIGHT_DIRECTIONAL);
+            this.light.SetColor(0xefefff);
+            this.light.Intensity = 0.8;
+            this.light.GameObjectInstance.position.set(0, 10, 0);
             this.SceneManager.SceneInstance.add(this.light.GameObjectInstance);
 
             //Sub Directional Light
-            //this.light2 = new Light();
+            //this.light2 = new Light(LightType.LIGHT_DIRECTIONAL);
             //this.light2.SetColor(0xFFFFFF);
-            //this.light2.Intensity = 0.7;
-            //this.light2.GameObjectInstance.position.set(-10000, -10000, 0);
-            //this.sceneManager.SceneInstance.add(this.light2.GameObjectInstance);
+            //this.light2.Intensity = 0.5;
+            //this.light2.GameObjectInstance.position.set(0, 10, 0);
+            //this.SceneManager.SceneInstance.add(this.light2.GameObjectInstance);
+
+            //AmbientLight
+            this.light3 = new Light(LightType.LIGHT_AMBIENT);
+            this.light3.SetColor(0xFFFFFF);
+            this.light3.Intensity = 1.0;
+            this.SceneManager.SceneInstance.add(this.light3.GameObjectInstance);
         }
         BuildFog()
         {
@@ -79,5 +85,6 @@ namespace JWFramework
         }
         private light: Light;
         private light2: Light;
+        private light3: Light;
     }
 }

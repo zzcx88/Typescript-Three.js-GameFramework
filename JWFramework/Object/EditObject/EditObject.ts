@@ -27,8 +27,10 @@ namespace JWFramework
 
             if (this.IsClone == false)
                 ObjectManager.getInstance().AddObject(this, this.name, this.Type);
-            else
+            else {
                 this.CreateCollider();
+                //this.AnimationMixer.clipAction(this.ModelData.animations[0]).play();
+            }
 
             if (SceneManager.getInstance().SceneType == SceneType.SCENE_EDIT) {
                 this.axisHelper = new THREE.AxesHelper(10);
@@ -39,13 +41,16 @@ namespace JWFramework
 
         public CreateCollider()
         {
-            this.CollisionComponent.CreateBoundingBox(this.PhysicsComponent.GetScale().x, this.PhysicsComponent.GetScale().y, this.PhysicsComponent.GetScale().z);
+            //this.CollisionComponent.CreateBoundingBox(this.PhysicsComponent.GetScale().x, this.PhysicsComponent.GetScale().y, this.PhysicsComponent.GetScale().z);
+            this.CollisionComponent.CreateOrientedBoundingBox(this.physicsComponent.GetPosition(), this.PhysicsComponent.GetScale());
             this.CollisionComponent.CreateRaycaster();
             //SceneManager.getInstance().SceneInstance.add(this.CollisionComponent.BoxHelper);
         }
 
         public CollisionActive()
         {
+            console.clear();
+            console.log("충돌");
         }
 
         public CollisionDeActive()
@@ -54,10 +59,6 @@ namespace JWFramework
 
         public Animate()
         {
-            if (this.isClone == true) {
-                this.CollisionComponent.Update();
-            }
-
             if (this.Picked == true) {
                 if (InputManager.getInstance().GetKeyState('left', KeyState.KEY_PRESS)) {
                     this.PhysicsComponent.RotateVec3(this.PhysicsComponent.Look, -1);
@@ -72,13 +73,13 @@ namespace JWFramework
                     this.PhysicsComponent.RotateVec3(this.PhysicsComponent.Right, 1);
                 }
                 if (InputManager.getInstance().GetKeyState('w', KeyState.KEY_PRESS)) {
-                    this.PhysicsComponent.MoveFoward(15);
+                    this.PhysicsComponent.MoveFoward(50);
                 }
                 if (InputManager.getInstance().GetKeyState('f', KeyState.KEY_PRESS)) {
                     CameraManager.getInstance().SetCameraSavedPosition(CameraMode.CAMERA_3RD);
                 }
                 if (InputManager.getInstance().GetKeyState('r', KeyState.KEY_PRESS)) {
-                    CameraManager.getInstance().SetCameraSavedPosition(CameraMode.CAMERA_ORBIT);
+                    CameraManager.getInstance().SetCameraSavedPosition(CameraMode.CAMERA_ORBIT);;
                 }
             }
             if (SceneManager.getInstance().SceneType == SceneType.SCENE_EDIT && this.Picked == true) {
@@ -86,6 +87,12 @@ namespace JWFramework
             }
             if (SceneManager.getInstance().SceneType == SceneType.SCENE_EDIT && this.Picked == false) {
                 this.axisHelper.visible = false;
+            }
+            if (this.isClone == true) {
+                this.CollisionComponent.Update();
+            }
+            if (this.AnimationMixer != null) {
+                this.AnimationMixer.update(WorldManager.getInstance().GetDeltaTime());
             }
         }
         private axisHelper: THREE.AxesHelper;

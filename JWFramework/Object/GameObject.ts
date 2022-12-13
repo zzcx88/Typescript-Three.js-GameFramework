@@ -65,6 +65,16 @@
             return this.collisionComponent;
         }
 
+        public get AnimationMixer(): THREE.AnimationMixer
+        {
+            return this.animationMixer;
+        }
+
+        public set AnimationMixer(animationMixer: THREE.AnimationMixer)
+        {
+            this.animationMixer = animationMixer;
+        }
+
         public get PhysicsCompIncluded()
         {
             return this.physicsCompIncluded;
@@ -105,6 +115,16 @@
             this.gameObjectInstance = gameObjectInstance;
         }
 
+        public get ModelData()
+        {
+            return this.modelData;
+        }
+
+        public set ModelData(anim: THREE.GLTF)
+        {
+            this.modelData = anim;
+        }
+
         public get IsDead(): boolean
         {
             return this.isDead;
@@ -126,6 +146,7 @@
         }
 
         protected gameObjectInstance;
+        protected modelData: THREE.GLTF;
         protected type: ObjectType;
         protected name: string;
         protected isClone: boolean = false;
@@ -137,6 +158,7 @@
         protected guiComponent: GUIComponent;
         protected exportComponent: ExportComponent;
         protected collisionComponent: CollisionComponent;
+        protected animationMixer: THREE.AnimationMixer;
 
         private physicsCompIncluded: boolean = false;
         private graphicCompIncluded: boolean = false;

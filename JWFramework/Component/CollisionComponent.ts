@@ -6,15 +6,16 @@
         {
             this.gameObject = gameObject;
             this.boundingBoxInclude = false;
+            this.orientedBoundingBoxInlcude = false;
             this.boundingSphereInclude = false;
             this.raycasterInclude = false;
         }
 
         public CreateBoundingBox(x: number, y: number, z: number)
         {
-            this.sizeX = x; this.sizeY = y; this.sizeZ = z;
+            this.sizeAABB = new THREE.Vector3(x, y, z);
             this.boundingBox = new THREE.Box3();
-            this.boundingBox.setFromCenterAndSize(new THREE.Vector3(0, 0, 0), new THREE.Vector3(this.sizeX, this.sizeY, this.sizeZ));
+            this.boundingBox.setFromCenterAndSize(new THREE.Vector3(0, 0, 0), this.sizeAABB);
             let color = new THREE.Color().setColorName("Red");
             this.boxHelper = new THREE.Box3Helper(this.boundingBox, color);
             if (SceneManager.getInstance().SceneInstance != null)
@@ -23,18 +24,25 @@
             this.boundingBoxInclude = true;
         }
 
-        public CreateOrientedBoundingBox(x: number, y: number, z: number)
+        public CreateOrientedBoundingBox(center?: THREE.Vector3, halfSize?: THREE.Vector3)
         {
-            //this.sizeX = x; this.sizeY = y; this.sizeZ = z;
-            //this.boundingBox = new THREE.OBB();
-            //this.boundingBox.setFromCenterAndSize(new THREE.Vector3(0, 0, 0), new THREE.Vector3(this.sizeX, this.sizeY, this.sizeZ));
-            //let color = new THREE.Color().setColorName("Red");
-            //this.boxHelper = new THREE.Box3Helper(this.boundingBox, color);
-            //if (SceneManager.getInstance().SceneInstance != null) {
-            //    SceneManager.getInstance().SceneInstance.add(this.boxHelper);
-            //}
+            if (center == null)
+                center = new THREE.Vector3(0, 0, 0);
+            if (halfSize == null)
+                halfSize = new THREE.Vector3(1, 1, 1);
+            this.orientedBoundingBox = new THREE.OBB();
+            let color = new THREE.Color().setColorName("Red");
+            let obbGeometry = new THREE.BoxGeometry(halfSize.x, halfSize.y, halfSize.z);
+            obbGeometry.userData.obb = new THREE.OBB(center, halfSize);
+            let material = new THREE.MeshBasicMaterial({ color });
+            material.wireframe = true;
+            this.obbBoxHelper = new THREE.Mesh(obbGeometry, material);
 
-            //this.boundingBoxInclude = true;
+            //this.gameObject.GameObjectInstance.add(this.obbBoxHelper);
+            if (SceneManager.getInstance().SceneInstance != null)
+                SceneManager.getInstance().SceneInstance.add(this.obbBoxHelper);
+
+            this.orientedBoundingBoxInlcude = true;
         }
 
         public CreateBoundingSphere()
@@ -61,6 +69,10 @@
             return this.boxHelper;
         }
 
+        public get OBB(): THREE.OBB {
+            return this.orientedBoundingBox;
+        }
+
         public get BoundingSphere(): THREE.Sphere
         {
             return this.boundingSphere;
@@ -73,7 +85,7 @@
 
         public DeleteCollider()
         {
-            if (this.boundingBoxInclude)
+            if (this.boundingBox)
             {
                 this.boxHelper.visible = false;
                 delete this.boundingBox;
@@ -81,7 +93,19 @@
                 this.boundingBox = null;
                 this.boxHelper = null;
             }
-            if (this.raycasterInclude == true)
+            if (this.orientedBoundingBox)
+            {
+                this.obbBoxHelper.visible = false;
+                delete this.orientedBoundingBox;
+                this.obbBoxHelper.geometry.dispose();
+                delete this.obbBoxHelper.material;
+                delete this.obbBoxHelper.userData.obb;
+                delete this.obbBoxHelper;
+                this.orientedBoundingBox = null;
+                this.obbBoxHelper = null;
+
+            }
+            if (this.raycaster)
             {
                 delete this.raycaster
             }
@@ -89,30 +113,40 @@
 
         public Update()
         {
-            if (this.boundingBoxInclude)
+            if (this.boundingBox)
             {
-                this.boxHelper.box.setFromCenterAndSize(this.gameObject.PhysicsComponent.GetPosition(), new THREE.Vector3(this.sizeX, this.sizeY, this.sizeZ));
+                this.boxHelper.box.setFromCenterAndSize(this.gameObject.PhysicsComponent.GetPosition(), this.sizeAABB);
             }
-            if (this.raycasterInclude == true)
+            if (this.orientedBoundingBox)
+            {
+                this.obbBoxHelper.position.set(this.gameObject.PhysicsComponent.GetPosition().x, this.gameObject.PhysicsComponent.GetPosition().y, this.gameObject.PhysicsComponent.GetPosition().z);
+                this.obbBoxHelper.rotation.set(this.gameObject.PhysicsComponent.GetRotateEuler().x, this.gameObject.PhysicsComponent.GetRotateEuler().y, this.gameObject.PhysicsComponent.GetRotateEuler().z);
+                this.orientedBoundingBox.copy(this.obbBoxHelper.geometry.userData.obb);
+                this.orientedBoundingBox.applyMatrix4(this.obbBoxHelper.matrixWorld);
+            }
+            if (this.raycaster)
             {
                 this.raycaster.set(this.gameObject.PhysicsComponent.GetPosition(), new THREE.Vector3(0, -1, 0));
             }
         }
 
-        private sizeX: number;
-        private sizeY: number;
-        private sizeZ: number;
+        private sizeAABB: THREE.Vector3;
 
         private gameObject: GameObject;
         public terrain: HeightmapTerrain;
-        private boundingBox: THREE.Box3;
-        private boundingSphere: THREE.Sphere;
-        private raycaster: THREE.Raycaster;
+
+        //충돌체를 배열로 관리하도록 변경해야함
+        private boundingBox: THREE.Box3 = null;
+        private orientedBoundingBox: THREE.OBB = null;
+        private boundingSphere: THREE.Sphere = null;
+        private raycaster: THREE.Raycaster = null;
 
         private boundingBoxInclude: boolean;
+        private orientedBoundingBoxInlcude: boolean;
         private boundingSphereInclude: boolean;
         private raycasterInclude: boolean;
 
         private boxHelper: THREE.Box3Helper;
+        private obbBoxHelper: THREE.Mesh
     }
 }

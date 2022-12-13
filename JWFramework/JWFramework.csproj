@@ -72,6 +72,7 @@
     <Content Include="Lib\datGUI\dat.gui.js" />
     <Content Include="Lib\GLTFLoader\GLTFLoader.js" />
     <Content Include="Lib\Three\Controls\OrbitControls.js" />
+    <Content Include="Lib\Three\MathClass\OBB.js" />
     <Content Include="Lib\Three\Shader\BlendShader.js" />
     <Content Include="Lib\Three\Shader\CopyShader.js" />
     <Content Include="Lib\Three\Shader\EffectComposer.js" />
@@ -118,6 +119,7 @@
     <TypeScriptCompile Include="GUI\GUIControls\GUI_SRT.ts" />
     <TypeScriptCompile Include="GUI\GUIControls\GUI_Terrain.ts" />
     <TypeScriptCompile Include="Lib\datGUI\dat.gui.d.ts" />
+    <Content Include="Lib\Three\SkeletonUtils.js" />
     <TypeScriptCompile Include="Main.ts" />
     <TypeScriptCompile Include="Manager\CameraManager.ts" />
     <TypeScriptCompile Include="Manager\CollisionManager.ts" />

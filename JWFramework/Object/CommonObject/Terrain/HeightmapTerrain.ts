@@ -10,7 +10,6 @@ namespace JWFramework
             this.height = z;
             this.segmentWidth = segmentWidth;
             this.segmentHeight = segmentHeight;
-            //this.name = "Terrain" + ObjectManager.getInstance().GetObjectList[ObjectType.OBJ_TERRAIN].length;
             this.name = "Terrain" + ObjectManager.getInstance().GetObjectList[ObjectType.OBJ_TERRAIN].length;
             this.terrainIndex = ObjectManager.getInstance().GetObjectList[ObjectType.OBJ_TERRAIN].length;
             this.type = ObjectType.OBJ_TERRAIN;

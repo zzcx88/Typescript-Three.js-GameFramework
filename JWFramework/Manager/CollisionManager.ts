@@ -42,15 +42,46 @@
             {
                 destination.forEach(function (dst)
                 {
-                    if (src.GameObject.CollisionComponent.BoxHelper.box.intersectsBox(dst.GameObject.CollisionComponent.BoxHelper.box))
+                    if (src.GameObject.IsClone && dst.GameObject.IsClone)
                     {
-                        src.GameObject.CollisionActive(dst.GameObject.Type);
-                        dst.GameObject.CollisionActive();
+                        if (src.GameObject != dst.GameObject)
+                        {
+                            if (src.GameObject.CollisionComponent.BoxHelper.box.intersectsBox(dst.GameObject.CollisionComponent.BoxHelper.box)) {
+                                src.GameObject.CollisionActive(dst.GameObject.Type);
+                                dst.GameObject.CollisionActive();
+                            }
+                            else
+                            {
+                                src.GameObject.CollisionDeActive(dst.GameObject.Type);
+                                dst.GameObject.CollisionDeActive();
+                            }
+                        }
                     }
-                    else
+                })
+            })
+        }
+
+        public CollideObbToObb(sorce: ObjectSet[], destination: ObjectSet[])
+        {
+            sorce.forEach(function (src)
+            {
+                destination.forEach(function (dst)
+                {
+                    if (src.GameObject.IsClone && dst.GameObject.IsClone)
                     {
-                        src.GameObject.CollisionDeActive(dst.GameObject.Type);
-                        dst.GameObject.CollisionDeActive();
+                        if (src.GameObject != dst.GameObject)
+                        {
+                            if (src.GameObject.CollisionComponent.OBB.intersectsOBB(dst.GameObject.CollisionComponent.OBB, Number.EPSILON))
+                            {
+                                src.GameObject.CollisionActive(dst.GameObject.Type);
+                                dst.GameObject.CollisionActive();
+                            }
+                            else
+                            {
+                                src.GameObject.CollisionDeActive(dst.GameObject.Type);
+                                dst.GameObject.CollisionDeActive();
+                            }
+                        }
                     }
                 })
             })

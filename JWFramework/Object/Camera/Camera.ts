@@ -75,7 +75,7 @@ namespace JWFramework
 
         public Animate()
         {
-            //this.CollisionComponent.Update();
+            this.CollisionComponent.Update();
             //if (InputManager.getInstance().GetKeyState('left')) {
             //    this.y = 1;
             //    this.PhysicsComponent.Rotate(0, this.y, 0);

@@ -84,6 +84,17 @@ namespace JWFramework
             return this.GameObject.GameObjectInstance.rotation;
         }
 
+        public GetRotateMatrix3(): THREE.Matrix3
+        {
+            let rotatematrix = new THREE.Matrix3();
+            rotatematrix.set(
+                this.Right.x, this.Right.y, this.Right.z,
+                this.Up.x, this.Up.y, this.Up.z,
+                this.Look.x, this.Look.y, this.Look.z,
+            )
+            return rotatematrix;
+        }
+
         public GetScale(): THREE.Vector3
         {
             return this.GameObject.GameObjectInstance.scale;

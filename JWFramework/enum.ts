@@ -18,6 +18,12 @@
         OBJ_END
     }
 
+    export enum LightType
+    {
+        LIGHT_DIRECTIONAL,
+        LIGHT_AMBIENT
+    }
+
     export enum PickMode
     {
         PICK_MODIFY,

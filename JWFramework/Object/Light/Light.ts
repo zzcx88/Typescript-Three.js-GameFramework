@@ -2,12 +2,15 @@
 {
     export class Light extends GameObject
     {
-        constructor()
+        constructor(type: LightType)
         {
             super();
             this.color = 0x000000;
             this.intensity = 0;
-            this.light = new THREE.DirectionalLight(this.color, this.intensity);
+            if (type == LightType.LIGHT_DIRECTIONAL)
+                this.light = new THREE.DirectionalLight(this.color, this.intensity);
+            else if (type == LightType.LIGHT_AMBIENT)
+                this.light = new THREE.AmbientLight(this.color, this.intensity);
             this.GameObjectInstance = this.light;
         }
 
@@ -16,7 +19,7 @@
             return this.color;
         }
 
-        public SetColor(color: number)
+        public SetColor(color)
         {
             this.color = color;
 
@@ -38,11 +41,13 @@
         {
             this.light.color.set(this.color);
             this.light.intensity = this.intensity;
-            this.light.target.position.set(0, 0, 0);
+            if (this.light instanceof THREE.DirectionalLight) {
+                this.light.target.position.set(0, 0, 0);
+            }
         }
 
-        private color: number;
+        private color;
         private intensity: number;
-        private light: THREE.DirectionalLight;
+        private light: THREE.Light;
     }
 }

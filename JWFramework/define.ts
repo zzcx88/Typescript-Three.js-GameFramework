@@ -24,10 +24,12 @@ namespace JWFramework
             this.F16.Name = "F-16";
             this.helmet.Name = "helmet";
             this.flower.Name = "flower";
+            this.anim.Name = "animation";
             this.sceneTestModel = [
                 { model: this.F16, url: 'Model/F-16D/F-16.gltf' },
                 { model: this.helmet, url: 'Model/DamagedHelmet.gltf' },
-                { model: this.flower, url: 'Model/Flower.glb' }
+                { model: this.flower, url: 'Model/Flower.glb' },
+                { model: this.anim, url: 'Model/Sprint.glb' }
             ];
             this.modelNumber = this.sceneTestModel.length;
         }
@@ -44,6 +46,7 @@ namespace JWFramework
         private helmet: EditObject = new EditObject;
         private F16: EditObject = new EditObject;
         private flower: EditObject = new EditObject;
+        private anim: EditObject = new EditObject;
         private sceneTestModel: ModelSet[] = [];
 
         private modelNumber: number;

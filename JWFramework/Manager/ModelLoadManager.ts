@@ -19,7 +19,6 @@ namespace JWFramework
             this.loaderManager = new THREE.LoadingManager;
             this.loaderManager.onLoad = this.SetLoadComplete;
             this.gltfLoader = new THREE.GLTFLoader(this.loaderManager);
-
             this.loadCompletModel = 0;
         }
 
@@ -69,14 +68,19 @@ namespace JWFramework
                 {
                     console.log('success')
                     console.log(gltf);
-                    gameObject.GameObjectInstance = gltf.scene;
-                    gameObject.GameObjectInstance.traverse(n =>
+                    gameObject.ModelData = gltf;
+                    (gltf.scene as any).traverse(n =>
                     {
                         if (n.isMesh) {
                             let texture = n.material.map;
                             let normal = n.material.normalMap;
                             let color = n.material.color;
-                            n.material = new THREE.MeshToonMaterial();
+                            if (modelSource[modelSource.length - 1] != 'b') {
+                                n.material = new THREE.MeshStandardMaterial();
+                            }
+                            else {
+                                n.material = new THREE.MeshBasicMaterial();
+                            }
                             n.material.map = texture;
                             n.material.normalMap = normal;
                             n.material.color = color;
@@ -90,8 +94,7 @@ namespace JWFramework
                             //console.log(n.material);
                         }
                     });
-
-
+                    gameObject.GameObjectInstance = gltf.scene;
                     //SceneManager.getInstance().SceneInstance.add(gameObject.GameObjectInstance);
                     gameObject.InitializeAfterLoad();
                     this.SetLoadComplete();
@@ -119,6 +122,10 @@ namespace JWFramework
         }
         private loaderManager: THREE.LoadingManager
         private gltfLoader: THREE.GLTFLoader;
+        //animetionTest
+        public animationMixer: THREE.AnimationMixer = null;
+        public anim;
+        ////////////
         private loadCompletModel: number;
         private modelCount: number;
         private loadComplete: boolean = false;

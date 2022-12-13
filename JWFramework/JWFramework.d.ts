@@ -2,27 +2,29 @@ declare namespace JWFramework {
     class CollisionComponent {
         constructor(gameObject: GameObject);
         CreateBoundingBox(x: number, y: number, z: number): void;
-        CreateOrientedBoundingBox(x: number, y: number, z: number): void;
+        CreateOrientedBoundingBox(center?: THREE.Vector3, halfSize?: THREE.Vector3): void;
         CreateBoundingSphere(): void;
         CreateRaycaster(): void;
         get BoundingBox(): THREE.Box3;
         get BoxHelper(): THREE.Box3Helper;
+        get OBB(): THREE.OBB;
         get BoundingSphere(): THREE.Sphere;
         get Raycaster(): THREE.Raycaster;
         DeleteCollider(): void;
         Update(): void;
-        private sizeX;
-        private sizeY;
-        private sizeZ;
+        private sizeAABB;
         private gameObject;
         terrain: HeightmapTerrain;
         private boundingBox;
+        private orientedBoundingBox;
         private boundingSphere;
         private raycaster;
         private boundingBoxInclude;
+        private orientedBoundingBoxInlcude;
         private boundingSphereInclude;
         private raycasterInclude;
         private boxHelper;
+        private obbBoxHelper;
     }
 }
 declare namespace JWFramework {
@@ -75,6 +77,7 @@ declare namespace JWFramework {
         MoveFoward(distance: number): void;
         GetPosition(): THREE.Vector3;
         GetRotateEuler(): THREE.Euler;
+        GetRotateMatrix3(): THREE.Matrix3;
         GetScale(): THREE.Vector3;
         GetMatrix4(): any;
         Rotate(x: number, y: number, z: number): void;
@@ -103,6 +106,8 @@ declare namespace JWFramework {
         get GUIComponent(): GUIComponent;
         get ExportComponent(): ExportComponent;
         get CollisionComponent(): CollisionComponent;
+        get AnimationMixer(): THREE.AnimationMixer;
+        set AnimationMixer(animationMixer: THREE.AnimationMixer);
         get PhysicsCompIncluded(): boolean;
         get GraphicCompIncluded(): boolean;
         set PhysicsCompIncluded(isIncluded: boolean);
@@ -111,6 +116,8 @@ declare namespace JWFramework {
         get Picked(): boolean;
         get GameObjectInstance(): any;
         set GameObjectInstance(gameObjectInstance: any);
+        get ModelData(): THREE.GLTF;
+        set ModelData(anim: THREE.GLTF);
         get IsDead(): boolean;
         set IsDead(flag: boolean);
         CollisionActive(value?: any): void;
@@ -118,6 +125,7 @@ declare namespace JWFramework {
         Animate(): void;
         DeleteObject(): void;
         protected gameObjectInstance: any;
+        protected modelData: THREE.GLTF;
         protected type: ObjectType;
         protected name: string;
         protected isClone: boolean;
@@ -128,6 +136,7 @@ declare namespace JWFramework {
         protected guiComponent: GUIComponent;
         protected exportComponent: ExportComponent;
         protected collisionComponent: CollisionComponent;
+        protected animationMixer: THREE.AnimationMixer;
         private physicsCompIncluded;
         private graphicCompIncluded;
         private picked;
@@ -159,6 +168,7 @@ declare namespace JWFramework {
         private helmet;
         private F16;
         private flower;
+        private anim;
         private sceneTestModel;
         private modelNumber;
     }
@@ -204,6 +214,10 @@ declare namespace JWFramework {
         OBJ_AIRCRAFT = 3,
         OBJ_CAMERA = 4,
         OBJ_END = 5
+    }
+    enum LightType {
+        LIGHT_DIRECTIONAL = 0,
+        LIGHT_AMBIENT = 1
     }
     enum PickMode {
         PICK_MODIFY = 0,
@@ -410,6 +424,8 @@ declare namespace JWFramework {
         private LoadHeightmapTerrain;
         private loaderManager;
         private gltfLoader;
+        animationMixer: THREE.AnimationMixer;
+        anim: any;
         private loadCompletModel;
         private modelCount;
         private loadComplete;
@@ -419,9 +435,9 @@ declare namespace JWFramework {
 }
 declare namespace JWFramework {
     class Light extends GameObject {
-        constructor();
+        constructor(type: LightType);
         get Color(): number;
-        SetColor(color: number): void;
+        SetColor(color: any): void;
         get Intensity(): number;
         set Intensity(intensity: number);
         private SetLightElement;
@@ -439,6 +455,7 @@ declare namespace JWFramework {
         Animate(): void;
         private light;
         private light2;
+        private light3;
     }
 }
 declare namespace JWFramework {
@@ -515,6 +532,7 @@ declare namespace JWFramework {
         static getInstance(): CollisionManager;
         CollideRayToTerrain(sorce: ObjectSet[], destination: ObjectSet[]): void;
         CollideBoxToBox(sorce: ObjectSet[], destination: ObjectSet[]): void;
+        CollideObbToObb(sorce: ObjectSet[], destination: ObjectSet[]): void;
         CollideBoxToSphere(sorce: ObjectSet[], destination: ObjectSet[]): void;
         CollideSphereToSphere(sorce: ObjectSet[], destination: ObjectSet[]): void;
     }
