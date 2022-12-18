@@ -85,13 +85,12 @@
                 //클론된 오브젝트를 생성한다.
                 if (intersectedObject[0] != undefined) {
                     let terrain = objectManager.GetObjectFromName(intersectedObject[0].object.name);
-                    if (terrain.Type == ObjectType.OBJ_TERRAIN) {
+                    if (terrain != undefined && terrain.Type == ObjectType.OBJ_TERRAIN) {
                         let cloneObject = objectManager.MakeClone(objectManager.GetObjectFromName(GUIManager.getInstance().GUI_Select.GetSelectObjectName()));
                         cloneObject.GameObjectInstance.position.set(0, 0, 0);
                         let clonePosition: THREE.Vector3 = new THREE.Vector3(intersectedObject[0].point.x, intersectedObject[0].point.y + 10, intersectedObject[0].point.z);
                         cloneObject.GameObjectInstance.position.copy(clonePosition);
 
-                        SceneManager.getInstance().SceneInstance.add(cloneObject.GameObjectInstance);
                         objectManager.AddObject(cloneObject, cloneObject.Name, cloneObject.Type);
                         //SceneManager.getInstance().SceneInstance.add(objectManager.GetInSectorTerrain());
                     }

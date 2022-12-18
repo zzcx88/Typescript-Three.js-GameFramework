@@ -21,12 +21,15 @@ namespace JWFramework
 
         public constructor()
         {
-            this.F16.Name = "F-16";
+            this.mig23.Name = "MIG_23_MLD";
+            this.mig29.Name = "MIG_29";
             this.helmet.Name = "helmet";
             this.flower.Name = "flower";
             this.anim.Name = "animation";
             this.sceneTestModel = [
-                { model: this.F16, url: 'Model/F-16D/F-16.gltf' },
+                //{ model: this.F16, url: 'Model/F-16D/F-16.gltf' },
+                { model: this.mig23, url: 'Model/mig_23_mld.glb' },
+                { model: this.mig29, url: 'Model/mig_29.glb' },
                 { model: this.helmet, url: 'Model/DamagedHelmet.gltf' },
                 { model: this.flower, url: 'Model/Flower.glb' },
                 { model: this.anim, url: 'Model/Sprint.glb' }
@@ -44,7 +47,8 @@ namespace JWFramework
         }
 
         private helmet: EditObject = new EditObject;
-        private F16: EditObject = new EditObject;
+        private mig23: EditObject = new EditObject;
+        private mig29: EditObject = new EditObject;
         private flower: EditObject = new EditObject;
         private anim: EditObject = new EditObject;
         private sceneTestModel: ModelSet[] = [];

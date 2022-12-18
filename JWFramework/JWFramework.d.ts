@@ -166,7 +166,8 @@ declare namespace JWFramework {
         get ModelScene(): ModelSet[];
         get ModelNumber(): number;
         private helmet;
-        private F16;
+        private mig23;
+        private mig29;
         private flower;
         private anim;
         private sceneTestModel;
@@ -392,8 +393,8 @@ declare namespace JWFramework {
         get HeightIndexBuffer(): number[];
         get HeightBuffer(): number[];
         SetHeight(index: number, value?: number, option?: TerrainOption): void;
-        CollisionActive(value: ObjectType): void;
-        CollisionDeActive(value: ObjectType): void;
+        CollisionActive(object: GameObject): void;
+        CollisionDeActive(object: GameObject): void;
         Animate(): void;
         private planeMesh;
         private planeGeomatry;
@@ -407,6 +408,7 @@ declare namespace JWFramework {
         private segmentHeight;
         private heigtIndexBuffer;
         private heigtBuffer;
+        private inSectorObject;
         private vertexNormalNeedUpdate;
         inSecter: boolean;
         cameraInSecter: boolean;
@@ -533,6 +535,7 @@ declare namespace JWFramework {
         CollideRayToTerrain(sorce: ObjectSet[], destination: ObjectSet[]): void;
         CollideBoxToBox(sorce: ObjectSet[], destination: ObjectSet[]): void;
         CollideObbToObb(sorce: ObjectSet[], destination: ObjectSet[]): void;
+        CollideObbToBox(sorce: ObjectSet[], destination: ObjectSet[]): void;
         CollideBoxToSphere(sorce: ObjectSet[], destination: ObjectSet[]): void;
         CollideSphereToSphere(sorce: ObjectSet[], destination: ObjectSet[]): void;
     }

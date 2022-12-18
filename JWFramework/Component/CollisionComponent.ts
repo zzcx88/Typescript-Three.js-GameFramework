@@ -99,7 +99,7 @@
                 delete this.orientedBoundingBox;
                 this.obbBoxHelper.geometry.dispose();
                 delete this.obbBoxHelper.material;
-                delete this.obbBoxHelper.userData.obb;
+                delete this.obbBoxHelper.geometry.userData.obb;
                 delete this.obbBoxHelper;
                 this.orientedBoundingBox = null;
                 this.obbBoxHelper = null;

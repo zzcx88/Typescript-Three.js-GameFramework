@@ -79,11 +79,12 @@ namespace JWFramework
                                 n.material = new THREE.MeshStandardMaterial();
                             }
                             else {
-                                n.material = new THREE.MeshBasicMaterial();
+                                n.material = new THREE.MeshPhongMaterial();
                             }
                             n.material.map = texture;
                             n.material.normalMap = normal;
                             n.material.color = color;
+                            //n.material.wireframe = true;
                             n.castShadow = true;
                             n.receiveShadow = true;
                             //if (n.material.map) n.material.map.anisotropy = 1;
@@ -116,7 +117,7 @@ namespace JWFramework
         {
             for (let i = 0; i < 10; ++i) {
                 for (let j = 0; j < 10; ++j) {
-                    this.terrain[i] = new HeightmapTerrain(j * 300, i * 300, 32, 32);
+                    this.terrain[i] = new HeightmapTerrain(j * 450, i * 450, 32, 32);
                 }
             }
         }

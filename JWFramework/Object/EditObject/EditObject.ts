@@ -42,15 +42,15 @@ namespace JWFramework
         public CreateCollider()
         {
             //this.CollisionComponent.CreateBoundingBox(this.PhysicsComponent.GetScale().x, this.PhysicsComponent.GetScale().y, this.PhysicsComponent.GetScale().z);
-            this.CollisionComponent.CreateOrientedBoundingBox(this.physicsComponent.GetPosition(), this.PhysicsComponent.GetScale());
+            this.CollisionComponent.CreateOrientedBoundingBox(/*this.physicsComponent.GetPosition(), this.PhysicsComponent.GetScale()*/);
             this.CollisionComponent.CreateRaycaster();
             //SceneManager.getInstance().SceneInstance.add(this.CollisionComponent.BoxHelper);
         }
 
         public CollisionActive()
         {
-            console.clear();
-            console.log("충돌");
+            //console.clear();
+            //console.log("충돌");
         }
 
         public CollisionDeActive()

@@ -5,7 +5,7 @@
 
         private static instance: ObjectManager;
 
-        public constructor() { }
+        public constructor(){}
 
         static getInstance()
         {
@@ -54,6 +54,9 @@
         public AddObject(gameObject: GameObject, name: string, type: ObjectType)
         {
             this.objectList[type].push({ GameObject: gameObject, Name: name });
+            if (gameObject.IsClone == true && type != ObjectType.OBJ_CAMERA) {
+                SceneManager.getInstance().SceneInstance.add(gameObject.GameObjectInstance);
+            }
         }
 
         public MakeClone(selectObject: GameObject): GameObject
@@ -154,7 +157,7 @@
                 for (let OBJ = 0; OBJ < this.objectList[TYPE].length; ++OBJ) {
                     this.objectList[TYPE][OBJ].GameObject.Animate();
 
-                    if (this.objectList[TYPE][OBJ].GameObject.PhysicsCompIncluded == true && TYPE != ObjectType.OBJ_TERRAIN)
+                    if (this.objectList[TYPE][OBJ].GameObject.PhysicsCompIncluded == true)
                         this.objectList[TYPE][OBJ].GameObject.PhysicsComponent.UpdateMatrix();
 
                     if (this.objectList[TYPE][OBJ].GameObject.IsDead) {
@@ -166,9 +169,9 @@
             }
             //CollisionManager.getInstance().CollideBoxToBox(this.objectList[ObjectType.OBJ_TERRAIN], this.objectList[ObjectType.OBJ_CAMERA]);
             CollisionManager.getInstance().CollideObbToObb(this.objectList[ObjectType.OBJ_OBJECT3D], this.objectList[ObjectType.OBJ_OBJECT3D]);
-            //CollisionManager.getInstance().CollideBoxToBox(this.objectList[ObjectType.OBJ_TERRAIN], this.objectList[ObjectType.OBJ_OBJECT3D]);
-            //let sectoredTerrain = this.objectList[ObjectType.OBJ_TERRAIN].filter((element) => (element.GameObject as unknown as HeightmapTerrain).inSecter == true);
-            CollisionManager.getInstance().CollideRayToTerrain(this.objectList[ObjectType.OBJ_OBJECT3D], this.objectList[ObjectType.OBJ_TERRAIN]);
+            CollisionManager.getInstance().CollideObbToBox(this.objectList[ObjectType.OBJ_OBJECT3D], this.objectList[ObjectType.OBJ_TERRAIN]);
+            let sectoredTerrain = this.objectList[ObjectType.OBJ_TERRAIN].filter((element) => (element.GameObject as unknown as HeightmapTerrain).inSecter == true);
+            CollisionManager.getInstance().CollideRayToTerrain(this.objectList[ObjectType.OBJ_OBJECT3D], sectoredTerrain);
 
             InputManager.getInstance().UpdateKey();
         }

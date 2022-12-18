@@ -132,10 +132,10 @@ namespace JWFramework
         public Render()
         {
             //--NormalRender
-            this.renderer.render(this.sceneManager.SceneInstance, this.camera.CameraInstance);
+            //this.renderer.render(this.sceneManager.SceneInstance, this.camera.CameraInstance);
 
             //--MotionBlurRender
-            //ShaderManager.getInstance().ShadedRender();
+            ShaderManager.getInstance().ShadedRender();
         }
 
         private renderer: THREE.WebGLRenderer;

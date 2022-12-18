@@ -37,13 +37,13 @@ namespace JWFramework
 
         public CreateBoundingBox()
         {
-            this.CollisionComponent.CreateBoundingBox(300, 5000, 300);
-            this.CollisionComponent.BoxHelper.box.setFromCenterAndSize(new THREE.Vector3(this.width, 2500, this.height), new THREE.Vector3(300, 5000, 300));
+            this.CollisionComponent.CreateBoundingBox(450, 5000, 450);
+            this.CollisionComponent.BoxHelper.box.setFromCenterAndSize(new THREE.Vector3(this.width, 2000, this.height), new THREE.Vector3(450, 5000, 450));
         }
 
         public CreateTerrainMesh()
         {
-            this.planeGeomatry = new THREE.PlaneGeometry(300, 300, this.segmentWidth, this.segmentHeight);
+            this.planeGeomatry = new THREE.PlaneGeometry(450, 450, this.segmentWidth, this.segmentHeight);
             this.material = new THREE.MeshToonMaterial();
             this.texture = new THREE.TextureLoader().load("Model/Heightmap/TerrainTexture.jpg");
             this.gradientmap = new THREE.TextureLoader().load('Model/Heightmap/fiveTone.jpg');
@@ -120,7 +120,7 @@ namespace JWFramework
             let endPointIndex = this.planeGeomatry.getAttribute('position').count - 1;
             let oldheight: number = this.planeGeomatry.getAttribute('position').getY(index);
 
-            if (this.planeGeomatry.getAttribute('position').getX(index) == 300 / 2) {
+            if (this.planeGeomatry.getAttribute('position').getX(index) == 450 / 2) {
                 if (objectList[ObjectType.OBJ_TERRAIN][this.terrainIndex + 1]) {
                     let terrain = objectList[ObjectType.OBJ_TERRAIN][this.terrainIndex + 1].GameObject;
                     (terrain as unknown as HeightmapTerrain).planeGeomatry.getAttribute('position').needsUpdate = true;
@@ -144,7 +144,7 @@ namespace JWFramework
                 }
             }
 
-            if (this.planeGeomatry.getAttribute('position').getX(index) == -(300 / 2)) {
+            if (this.planeGeomatry.getAttribute('position').getX(index) == -(450 / 2)) {
                 if (objectList[ObjectType.OBJ_TERRAIN][this.terrainIndex - 1]) {
                     let terrain = objectList[ObjectType.OBJ_TERRAIN][this.terrainIndex - 1].GameObject;
                     (terrain as unknown as HeightmapTerrain).planeGeomatry.getAttribute('position').needsUpdate = true;
@@ -168,7 +168,7 @@ namespace JWFramework
                 }
             }
 
-            if (this.planeGeomatry.getAttribute('position').getZ(index) == 300 / 2) {
+            if (this.planeGeomatry.getAttribute('position').getZ(index) == 450 / 2) {
                 if (objectList[ObjectType.OBJ_TERRAIN][this.terrainIndex + 10]) {
                     let terrain = objectList[ObjectType.OBJ_TERRAIN][this.terrainIndex + 10].GameObject;
                     (terrain as unknown as HeightmapTerrain).planeGeomatry.getAttribute('position').needsUpdate = true;
@@ -176,7 +176,7 @@ namespace JWFramework
                 }
             }
 
-            if (this.planeGeomatry.getAttribute('position').getZ(index) == -(300 / 2)) {
+            if (this.planeGeomatry.getAttribute('position').getZ(index) == -(450 / 2)) {
                 if (objectList[ObjectType.OBJ_TERRAIN][this.terrainIndex - 10]) {
                     let terrain = objectList[ObjectType.OBJ_TERRAIN][this.terrainIndex - 10].GameObject;
                     (terrain as unknown as HeightmapTerrain).planeGeomatry.getAttribute('position').needsUpdate = true;
@@ -207,26 +207,32 @@ namespace JWFramework
 
         }
 
-        public CollisionActive(value: ObjectType)
+        public CollisionActive(object: GameObject)
         {
-            if (value == ObjectType.OBJ_CAMERA) {
-                this.cameraInSecter = true;
-                this.material.opacity = 0.9;
-
-                //this.planeGeomatry.computeVertexNormals();
-            }
-            else
-                this.inSecter = true;
-        }
-
-        public CollisionDeActive(value: ObjectType)
-        {
-            if (value == ObjectType.OBJ_CAMERA) {
+            if (object.Type == ObjectType.OBJ_CAMERA) {
                 this.cameraInSecter = false;
                 this.material.opacity = 1;
             }
-            else
-                this.inSecter = false;
+            else {
+                if (this.inSectorObject.includes(object) == false) {
+                    this.inSectorObject.push(object);
+                    this.material.opacity = 0.9;
+                    this.inSecter = true;
+                }
+            }
+        }
+
+        public CollisionDeActive(object: GameObject)
+        {
+            if (object.Type == ObjectType.OBJ_CAMERA) {
+                this.cameraInSecter = false;
+                this.material.opacity = 1;
+            }
+            else {
+                if (this.inSectorObject.includes(object) == true) {
+                    this.inSectorObject = this.inSectorObject.filter((element) => (element != object)).slice();
+                }
+            }
         }
 
         public Animate()
@@ -234,6 +240,11 @@ namespace JWFramework
             if (/*SceneManager.getInstance().CurrentScene.Picker.PickMode != PickMode.PICK_TERRAIN &&*/ this.vertexNormalNeedUpdate) {
                 this.planeGeomatry.computeVertexNormals();
                 this.vertexNormalNeedUpdate = false;
+            }
+            this.inSectorObject = this.inSectorObject.filter((element) => (element.IsDead == false));
+            if (this.inSectorObject.length == 0) {
+                this.material.opacity = 1;
+                this.inSecter = false;
             }
         }
 
@@ -251,6 +262,7 @@ namespace JWFramework
 
         private heigtIndexBuffer: number[] = [];
         private heigtBuffer: number[] = [];
+        private inSectorObject: GameObject[] = [];
 
         private vertexNormalNeedUpdate: boolean = false;
 
