@@ -73,7 +73,7 @@ namespace JWFramework
                     this.PhysicsComponent.RotateVec3(this.PhysicsComponent.Right, 1);
                 }
                 if (InputManager.getInstance().GetKeyState('w', KeyState.KEY_PRESS)) {
-                    this.PhysicsComponent.MoveFoward(50);
+                    this.PhysicsComponent.MoveFoward(70);
                 }
                 if (InputManager.getInstance().GetKeyState('f', KeyState.KEY_PRESS)) {
                     CameraManager.getInstance().SetCameraSavedPosition(CameraMode.CAMERA_3RD);

@@ -158,24 +158,25 @@ declare namespace JWFramework {
         static readonly SCREEN_WIDTH: number;
         static readonly SCREEN_HEIGHT: number;
     }
-    class ModelSceneEdit {
+    class ModelSceneBase {
         private static instance;
-        ModelSceneEdit: any;
-        static getInstance(): ModelSceneEdit;
+        static getInstance(modelSceneType: string): any;
         constructor();
         get ModelScene(): ModelSet[];
         get ModelNumber(): number;
+        protected sceneModelData: ModelSet[];
+        protected modelNumber: number;
+    }
+    class ModelSceneEdit extends ModelSceneBase {
+        constructor();
         private helmet;
         private mig23;
         private mig29;
         private flower;
         private anim;
-        private sceneTestModel;
-        private modelNumber;
     }
     class ModelSceneStage {
         private static instance;
-        ModelSceneEdit: any;
         static getInstance(): ModelSceneStage;
         constructor();
         get ModelScene(): ModelSet[];
@@ -422,6 +423,7 @@ declare namespace JWFramework {
         private SetLoadComplete;
         get LoadComplete(): boolean;
         LoadScene(): void;
+        LoadSceneStage(): void;
         private LoadModel;
         private LoadHeightmapTerrain;
         private loaderManager;

@@ -231,8 +231,8 @@ var JWFramework;
             JWFramework.WorldManager.getInstance().MainCamera.PhysicsComponent.SetPostion(0, 0, 0);
             let Up = new THREE.Vector3(0, 1, 0);
             let Look = new THREE.Vector3(0, 0, 1);
-            JWFramework.WorldManager.getInstance().MainCamera.PhysicsComponent.SetPostion(JWFramework.WorldManager.getInstance().MainCamera.PhysicsComponent.GetPosition().x + Up.x * 1.5, JWFramework.WorldManager.getInstance().MainCamera.PhysicsComponent.GetPosition().y + Up.y * 1.5, JWFramework.WorldManager.getInstance().MainCamera.PhysicsComponent.GetPosition().z + Up.z * 1.5);
-            JWFramework.WorldManager.getInstance().MainCamera.PhysicsComponent.SetPostion(JWFramework.WorldManager.getInstance().MainCamera.PhysicsComponent.GetPosition().x + Look.x * -4.8, JWFramework.WorldManager.getInstance().MainCamera.PhysicsComponent.GetPosition().y + Look.y * -4.8, JWFramework.WorldManager.getInstance().MainCamera.PhysicsComponent.GetPosition().z + Look.z * -4.8);
+            JWFramework.WorldManager.getInstance().MainCamera.PhysicsComponent.SetPostion(JWFramework.WorldManager.getInstance().MainCamera.PhysicsComponent.GetPosition().x + Up.x * 0.6, JWFramework.WorldManager.getInstance().MainCamera.PhysicsComponent.GetPosition().y + Up.y * 0.6, JWFramework.WorldManager.getInstance().MainCamera.PhysicsComponent.GetPosition().z + Up.z * 0.6);
+            JWFramework.WorldManager.getInstance().MainCamera.PhysicsComponent.SetPostion(JWFramework.WorldManager.getInstance().MainCamera.PhysicsComponent.GetPosition().x + Look.x * -3.7, JWFramework.WorldManager.getInstance().MainCamera.PhysicsComponent.GetPosition().y + Look.y * -3.7, JWFramework.WorldManager.getInstance().MainCamera.PhysicsComponent.GetPosition().z + Look.z * -3.7);
         }
         ChangeOrbitCamera() {
             this.cameraMode = JWFramework.CameraMode.CAMERA_ORBIT;
@@ -241,7 +241,7 @@ var JWFramework;
             let gameObjectForCamera = JWFramework.SceneManager.getInstance().CurrentScene.Picker.GetPickParents();
             gameObjectForCamera.GameObjectInstance.remove(JWFramework.WorldManager.getInstance().MainCamera.CameraInstance);
             JWFramework.SceneManager.getInstance().CurrentScene.Picker.OrbitControl.object.position.x = gameObjectForCamera.PhysicsComponent.GetPosition().x;
-            JWFramework.SceneManager.getInstance().CurrentScene.Picker.OrbitControl.object.position.y = gameObjectForCamera.PhysicsComponent.GetPosition().y + 20;
+            JWFramework.SceneManager.getInstance().CurrentScene.Picker.OrbitControl.object.position.y = gameObjectForCamera.PhysicsComponent.GetPosition().y + 15;
             JWFramework.SceneManager.getInstance().CurrentScene.Picker.OrbitControl.object.position.z = gameObjectForCamera.PhysicsComponent.GetPosition().z;
             JWFramework.SceneManager.getInstance().CurrentScene.Picker.OrbitControl.target = tartgetLocation.copy(gameObjectForCamera.PhysicsComponent.GetPosition());
             JWFramework.WorldManager.getInstance().MainCamera.CameraInstance.lookAt(gameObjectForCamera.PhysicsComponent.GetPosition());
@@ -498,7 +498,7 @@ var JWFramework;
                     this.PhysicsComponent.RotateVec3(this.PhysicsComponent.Right, 1);
                 }
                 if (JWFramework.InputManager.getInstance().GetKeyState('w', JWFramework.KeyState.KEY_PRESS)) {
-                    this.PhysicsComponent.MoveFoward(50);
+                    this.PhysicsComponent.MoveFoward(70);
                 }
                 if (JWFramework.InputManager.getInstance().GetKeyState('f', JWFramework.KeyState.KEY_PRESS)) {
                     JWFramework.CameraManager.getInstance().SetCameraSavedPosition(JWFramework.CameraMode.CAMERA_3RD);
@@ -531,39 +531,47 @@ var JWFramework;
     Define.SCREEN_WIDTH = window.innerWidth;
     Define.SCREEN_HEIGHT = window.innerHeight;
     JWFramework.Define = Define;
-    class ModelSceneEdit {
+    class ModelSceneBase {
         constructor() {
+            this.sceneModelData = [];
+            this.sceneModelData = [];
+            this.modelNumber = this.sceneModelData.length;
+        }
+        static getInstance(modelSceneType) {
+            if (!ModelSceneBase.instance) {
+                ModelSceneBase.instance = new JWFramework[modelSceneType];
+            }
+            return ModelSceneBase.instance;
+        }
+        get ModelScene() {
+            return this.sceneModelData;
+        }
+        get ModelNumber() {
+            return this.modelNumber;
+        }
+    }
+    JWFramework.ModelSceneBase = ModelSceneBase;
+    class ModelSceneEdit extends ModelSceneBase {
+        constructor() {
+            super();
             this.helmet = new JWFramework.EditObject;
             this.mig23 = new JWFramework.EditObject;
             this.mig29 = new JWFramework.EditObject;
             this.flower = new JWFramework.EditObject;
             this.anim = new JWFramework.EditObject;
-            this.sceneTestModel = [];
             this.mig23.Name = "MIG_23_MLD";
             this.mig29.Name = "MIG_29";
             this.helmet.Name = "helmet";
             this.flower.Name = "flower";
             this.anim.Name = "animation";
-            this.sceneTestModel = [
+            this.sceneModelData = [
                 { model: this.mig23, url: 'Model/mig_23_mld.glb' },
                 { model: this.mig29, url: 'Model/mig_29.glb' },
                 { model: this.helmet, url: 'Model/DamagedHelmet.gltf' },
-                { model: this.flower, url: 'Model/Flower.glb' },
+                { model: this.flower, url: 'Model/cloud.glb' },
                 { model: this.anim, url: 'Model/Sprint.glb' }
             ];
-            this.modelNumber = this.sceneTestModel.length;
-        }
-        static getInstance() {
-            if (!ModelSceneEdit.instance) {
-                ModelSceneEdit.instance = new ModelSceneEdit;
-            }
-            return ModelSceneEdit.instance;
-        }
-        get ModelScene() {
-            return this.sceneTestModel;
-        }
-        get ModelNumber() {
-            return this.modelNumber;
+            this.modelNumber = this.sceneModelData.length;
         }
     }
     JWFramework.ModelSceneEdit = ModelSceneEdit;
@@ -1248,11 +1256,11 @@ var JWFramework;
             JWFramework.ObjectManager.getInstance().AddObject(this, this.name, this.type);
         }
         CreateBoundingBox() {
-            this.CollisionComponent.CreateBoundingBox(450, 5000, 450);
-            this.CollisionComponent.BoxHelper.box.setFromCenterAndSize(new THREE.Vector3(this.width, 2000, this.height), new THREE.Vector3(450, 5000, 450));
+            this.CollisionComponent.CreateBoundingBox(900, 5000, 900);
+            this.CollisionComponent.BoxHelper.box.setFromCenterAndSize(new THREE.Vector3(this.width, 2000, this.height), new THREE.Vector3(900, 5000, 900));
         }
         CreateTerrainMesh() {
-            this.planeGeomatry = new THREE.PlaneGeometry(450, 450, this.segmentWidth, this.segmentHeight);
+            this.planeGeomatry = new THREE.PlaneGeometry(900, 900, this.segmentWidth, this.segmentHeight);
             this.material = new THREE.MeshToonMaterial();
             this.texture = new THREE.TextureLoader().load("Model/Heightmap/TerrainTexture.jpg");
             this.gradientmap = new THREE.TextureLoader().load('Model/Heightmap/fiveTone.jpg');
@@ -1260,7 +1268,7 @@ var JWFramework;
             this.gradientmap.magFilter = THREE.NearestFilter;
             this.texture.wrapS = THREE.RepeatWrapping;
             this.texture.wrapT = THREE.RepeatWrapping;
-            this.texture.repeat.set(128, 128);
+            this.texture.repeat.set(256, 256);
             this.material.map = this.texture;
             this.material.gradientMap = this.gradientmap;
             this.material.wireframe = false;
@@ -1306,7 +1314,7 @@ var JWFramework;
             let objectList = JWFramework.ObjectManager.getInstance().GetObjectList;
             let endPointIndex = this.planeGeomatry.getAttribute('position').count - 1;
             let oldheight = this.planeGeomatry.getAttribute('position').getY(index);
-            if (this.planeGeomatry.getAttribute('position').getX(index) == 450 / 2) {
+            if (this.planeGeomatry.getAttribute('position').getX(index) == 900 / 2) {
                 if (objectList[JWFramework.ObjectType.OBJ_TERRAIN][this.terrainIndex + 1]) {
                     let terrain = objectList[JWFramework.ObjectType.OBJ_TERRAIN][this.terrainIndex + 1].GameObject;
                     terrain.planeGeomatry.getAttribute('position').needsUpdate = true;
@@ -1327,7 +1335,7 @@ var JWFramework;
                     }
                 }
             }
-            if (this.planeGeomatry.getAttribute('position').getX(index) == -(450 / 2)) {
+            if (this.planeGeomatry.getAttribute('position').getX(index) == -(900 / 2)) {
                 if (objectList[JWFramework.ObjectType.OBJ_TERRAIN][this.terrainIndex - 1]) {
                     let terrain = objectList[JWFramework.ObjectType.OBJ_TERRAIN][this.terrainIndex - 1].GameObject;
                     terrain.planeGeomatry.getAttribute('position').needsUpdate = true;
@@ -1348,14 +1356,14 @@ var JWFramework;
                     }
                 }
             }
-            if (this.planeGeomatry.getAttribute('position').getZ(index) == 450 / 2) {
+            if (this.planeGeomatry.getAttribute('position').getZ(index) == 900 / 2) {
                 if (objectList[JWFramework.ObjectType.OBJ_TERRAIN][this.terrainIndex + 10]) {
                     let terrain = objectList[JWFramework.ObjectType.OBJ_TERRAIN][this.terrainIndex + 10].GameObject;
                     terrain.planeGeomatry.getAttribute('position').needsUpdate = true;
                     terrain.planeGeomatry.getAttribute('position').setY(index - (endPointIndex - this.segmentWidth), oldheight);
                 }
             }
-            if (this.planeGeomatry.getAttribute('position').getZ(index) == -(450 / 2)) {
+            if (this.planeGeomatry.getAttribute('position').getZ(index) == -(900 / 2)) {
                 if (objectList[JWFramework.ObjectType.OBJ_TERRAIN][this.terrainIndex - 10]) {
                     let terrain = objectList[JWFramework.ObjectType.OBJ_TERRAIN][this.terrainIndex - 10].GameObject;
                     terrain.planeGeomatry.getAttribute('position').needsUpdate = true;
@@ -1435,9 +1443,17 @@ var JWFramework;
         }
         LoadScene() {
             if (JWFramework.SceneManager.getInstance().SceneType == JWFramework.SceneType.SCENE_EDIT) {
-                this.modeltList = JWFramework.ModelSceneEdit.getInstance().ModelScene;
-                this.modelCount = JWFramework.ModelSceneEdit.getInstance().ModelNumber;
+                this.modeltList = JWFramework.ModelSceneBase.getInstance("ModelSceneEdit").ModelScene;
+                this.modelCount = JWFramework.ModelSceneBase.getInstance("ModelSceneEdit").ModelNumber;
             }
+            for (let i = 0; i < this.modeltList.length; ++i) {
+                this.LoadModel(this.modeltList[i].url, this.modeltList[i].model);
+            }
+            this.LoadHeightmapTerrain();
+        }
+        LoadSceneStage() {
+            this.modeltList = JWFramework.ModelSceneStage.getInstance().ModelScene;
+            this.modelCount = JWFramework.ModelSceneStage.getInstance().ModelNumber;
             for (let i = 0; i < this.modeltList.length; ++i) {
                 this.LoadModel(this.modeltList[i].url, this.modeltList[i].model);
             }
@@ -1480,7 +1496,7 @@ var JWFramework;
         LoadHeightmapTerrain() {
             for (let i = 0; i < 10; ++i) {
                 for (let j = 0; j < 10; ++j) {
-                    this.terrain[i] = new JWFramework.HeightmapTerrain(j * 450, i * 450, 32, 32);
+                    this.terrain[i] = new JWFramework.HeightmapTerrain(j * 900, i * 900, 64, 64);
                 }
             }
         }

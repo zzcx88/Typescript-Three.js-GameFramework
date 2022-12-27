@@ -42,8 +42,8 @@ namespace JWFramework
         {
             if (SceneManager.getInstance().SceneType == SceneType.SCENE_EDIT)
             {
-                this.modeltList = ModelSceneEdit.getInstance().ModelScene;
-                this.modelCount = ModelSceneEdit.getInstance().ModelNumber;
+                this.modeltList = ModelSceneBase.getInstance("ModelSceneEdit").ModelScene;
+                this.modelCount = ModelSceneBase.getInstance("ModelSceneEdit").ModelNumber;
             }
 
             for (let i = 0; i < this.modeltList.length; ++i) {
@@ -52,14 +52,15 @@ namespace JWFramework
             this.LoadHeightmapTerrain();
         }
 
-        //public LoadSceneStage()
-        //{
-        //    this.modeltList = ModelSceneStage.getInstance().ModelScene;
-        //    for (let i = 0; i < this.modeltList.length; ++i) {
-        //        this.LoadModel(this.modeltList[i].url, this.modeltList[i].model);
-        //    }
-        //    this.LoadHeightmapTerrain();
-        //}
+        public LoadSceneStage()
+        {
+            this.modeltList = ModelSceneStage.getInstance().ModelScene;
+            this.modelCount = ModelSceneStage.getInstance().ModelNumber;
+            for (let i = 0; i < this.modeltList.length; ++i) {
+                this.LoadModel(this.modeltList[i].url, this.modeltList[i].model);
+            }
+            this.LoadHeightmapTerrain();
+        }
 
         private LoadModel(modelSource: string, gameObject: GameObject)
         {
@@ -83,14 +84,14 @@ namespace JWFramework
                             }
                             n.material.map = texture;
                             n.material.normalMap = normal;
-                            n.material.color = color;
+                            n.material.color = color/*new THREE.Color('white')*/;
                             //n.material.wireframe = true;
                             n.castShadow = true;
                             n.receiveShadow = true;
                             //if (n.material.map) n.material.map.anisotropy = 1;
                             //n.material.transparent = true;
                             //n.material.opacity = 0.5;
-                            //n.material.alphaTest = 0;
+                            ////n.material.alphaTest = 0;
                             //n.material.alphaToCoverage = true;
                             //console.log(n.material);
                         }
@@ -117,7 +118,7 @@ namespace JWFramework
         {
             for (let i = 0; i < 10; ++i) {
                 for (let j = 0; j < 10; ++j) {
-                    this.terrain[i] = new HeightmapTerrain(j * 450, i * 450, 32, 32);
+                    this.terrain[i] = new HeightmapTerrain(j * 900, i * 900, 64, 64);
                 }
             }
         }

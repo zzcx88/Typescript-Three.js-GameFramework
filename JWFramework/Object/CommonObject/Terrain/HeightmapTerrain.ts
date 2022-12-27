@@ -37,13 +37,13 @@ namespace JWFramework
 
         public CreateBoundingBox()
         {
-            this.CollisionComponent.CreateBoundingBox(450, 5000, 450);
-            this.CollisionComponent.BoxHelper.box.setFromCenterAndSize(new THREE.Vector3(this.width, 2000, this.height), new THREE.Vector3(450, 5000, 450));
+            this.CollisionComponent.CreateBoundingBox(900, 5000, 900);
+            this.CollisionComponent.BoxHelper.box.setFromCenterAndSize(new THREE.Vector3(this.width, 2000, this.height), new THREE.Vector3(900, 5000, 900));
         }
 
         public CreateTerrainMesh()
         {
-            this.planeGeomatry = new THREE.PlaneGeometry(450, 450, this.segmentWidth, this.segmentHeight);
+            this.planeGeomatry = new THREE.PlaneGeometry(900, 900, this.segmentWidth, this.segmentHeight);
             this.material = new THREE.MeshToonMaterial();
             this.texture = new THREE.TextureLoader().load("Model/Heightmap/TerrainTexture.jpg");
             this.gradientmap = new THREE.TextureLoader().load('Model/Heightmap/fiveTone.jpg');
@@ -51,7 +51,7 @@ namespace JWFramework
             this.gradientmap.magFilter = THREE.NearestFilter;
             this.texture.wrapS = THREE.RepeatWrapping;
             this.texture.wrapT = THREE.RepeatWrapping;
-            this.texture.repeat.set(128, 128);
+            this.texture.repeat.set(256, 256);
             this.material.map = this.texture;
             this.material.gradientMap = this.gradientmap;
 
@@ -120,7 +120,7 @@ namespace JWFramework
             let endPointIndex = this.planeGeomatry.getAttribute('position').count - 1;
             let oldheight: number = this.planeGeomatry.getAttribute('position').getY(index);
 
-            if (this.planeGeomatry.getAttribute('position').getX(index) == 450 / 2) {
+            if (this.planeGeomatry.getAttribute('position').getX(index) == 900 / 2) {
                 if (objectList[ObjectType.OBJ_TERRAIN][this.terrainIndex + 1]) {
                     let terrain = objectList[ObjectType.OBJ_TERRAIN][this.terrainIndex + 1].GameObject;
                     (terrain as unknown as HeightmapTerrain).planeGeomatry.getAttribute('position').needsUpdate = true;
@@ -144,7 +144,7 @@ namespace JWFramework
                 }
             }
 
-            if (this.planeGeomatry.getAttribute('position').getX(index) == -(450 / 2)) {
+            if (this.planeGeomatry.getAttribute('position').getX(index) == -(900 / 2)) {
                 if (objectList[ObjectType.OBJ_TERRAIN][this.terrainIndex - 1]) {
                     let terrain = objectList[ObjectType.OBJ_TERRAIN][this.terrainIndex - 1].GameObject;
                     (terrain as unknown as HeightmapTerrain).planeGeomatry.getAttribute('position').needsUpdate = true;
@@ -168,7 +168,7 @@ namespace JWFramework
                 }
             }
 
-            if (this.planeGeomatry.getAttribute('position').getZ(index) == 450 / 2) {
+            if (this.planeGeomatry.getAttribute('position').getZ(index) == 900 / 2) {
                 if (objectList[ObjectType.OBJ_TERRAIN][this.terrainIndex + 10]) {
                     let terrain = objectList[ObjectType.OBJ_TERRAIN][this.terrainIndex + 10].GameObject;
                     (terrain as unknown as HeightmapTerrain).planeGeomatry.getAttribute('position').needsUpdate = true;
@@ -176,7 +176,7 @@ namespace JWFramework
                 }
             }
 
-            if (this.planeGeomatry.getAttribute('position').getZ(index) == -(450 / 2)) {
+            if (this.planeGeomatry.getAttribute('position').getZ(index) == -(900 / 2)) {
                 if (objectList[ObjectType.OBJ_TERRAIN][this.terrainIndex - 10]) {
                     let terrain = objectList[ObjectType.OBJ_TERRAIN][this.terrainIndex - 10].GameObject;
                     (terrain as unknown as HeightmapTerrain).planeGeomatry.getAttribute('position').needsUpdate = true;
