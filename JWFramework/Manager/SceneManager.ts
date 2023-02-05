@@ -1,5 +1,5 @@
 ﻿/// <reference path="../Scene/EditScene.ts" />
-/// <reference path="../Scene/StageScene.ts" />
+//// <reference path="../Scene/StageScene.ts" />
 namespace JWFramework
 {
     export class SceneManager

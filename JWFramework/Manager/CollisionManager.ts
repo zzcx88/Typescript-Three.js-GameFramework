@@ -14,36 +14,41 @@
             return CollisionManager.instance;
         }
 
-        public CollideRayToTerrain(sorce: ObjectSet[], destination: ObjectSet[])
+        public CollideRayToTerrain(sorce: ObjectSet[])
         {
             sorce.forEach(function (src)
             {
+                let destination = (src.GameObject as HeightmapTerrain).inSectorObject;
                 destination.forEach(function (dst)
                 {
-                    if (dst.GameObject != undefined && src.GameObject.IsClone == true) {
-                        let intersect = src.GameObject.CollisionComponent.Raycaster.intersectObject(dst.GameObject.GameObjectInstance);
-                        if (intersect[0] != undefined) {
-                            if (intersect[0].distance < 1/* || src.GameObject.PhysicsComponent.GetPosition().y < 0*/) {
-                                //let terrain = ObjectManager.getInstance().GetObjectFromName(intersect[0].object.name);
-                                src.GameObject.PhysicsComponent.SetPostion(intersect[0].point.x, intersect[0].point.y + 1, intersect[0].point.z);
-                                //alert("collide");
+                    if (dst.CollisionComponent.Raycaster != null)
+                        if ((src.GameObject != undefined && dst.IsClone == true && dst.IsRayOn == true) || SceneManager.getInstance().CurrentScene.NeedOnTerrain == true)
+                        {
+                            let intersect = dst.CollisionComponent.Raycaster.intersectObject(src.GameObject.GameObjectInstance);
+                            if (intersect[0] != undefined)
+                            {
+                                if (intersect[0].distance < 1)
+                                {
+                                    dst.PhysicsComponent.SetPostion(intersect[0].point.x, intersect[0].point.y + 1, intersect[0].point.z);
+                                }
+                            }
+                            else
+                            {
+                                dst.CollisionComponent.Raycaster.set(
+                                    new THREE.Vector3(
+                                        dst.PhysicsComponent.GetPosition().x,
+                                        2000,
+                                        dst.PhysicsComponent.GetPosition().z),
+                                    new THREE.Vector3(0, -1, 0)
+                                );
+                                let intersect = dst.CollisionComponent.Raycaster.intersectObject(src.GameObject.GameObjectInstance);
+                                if (intersect[0] != undefined)
+                                {
+                                    dst.PhysicsComponent.SetPostion(intersect[0].point.x, intersect[0].point.y + 1, intersect[0].point.z);
+                                }
+                                dst.CollisionComponent.Raycaster.set(dst.PhysicsComponent.GetPosition(), new THREE.Vector3(0, -1, 0))
                             }
                         }
-                        else {
-                            src.GameObject.CollisionComponent.Raycaster.set(
-                                new THREE.Vector3(
-                                    src.GameObject.PhysicsComponent.GetPosition().x,
-                                    2000,
-                                    src.GameObject.PhysicsComponent.GetPosition().z),
-                                new THREE.Vector3(0, -1, 0)
-                            );
-                            let intersect = src.GameObject.CollisionComponent.Raycaster.intersectObject(dst.GameObject.GameObjectInstance);
-                            if (intersect[0] != undefined) {
-                                src.GameObject.PhysicsComponent.SetPostion(intersect[0].point.x, intersect[0].point.y + 1, intersect[0].point.z);
-                            }
-                            src.GameObject.CollisionComponent.Raycaster.set(src.GameObject.PhysicsComponent.GetPosition(), new THREE.Vector3(0, -1, 0))
-                        }
-                    }
                 })
             })
         }
@@ -73,25 +78,25 @@
             })
         }
 
-        public CollideObbToObb(sorce: ObjectSet[], destination: ObjectSet[])
+        public CollideObbToObb(sorce, destination)
         {
             sorce.forEach(function (src)
             {
                 destination.forEach(function (dst)
                 {
-                    if (src.GameObject.IsClone && dst.GameObject.IsClone)
+                    if (src.IsClone && dst.IsClone)
                     {
-                        if (src.GameObject != dst.GameObject)
+                        if (src != dst)
                         {
-                            if (src.GameObject.CollisionComponent.OBB.intersectsOBB(dst.GameObject.CollisionComponent.OBB, Number.EPSILON))
+                            if (src.CollisionComponent.OBB.intersectsOBB(dst.CollisionComponent.OBB, Number.EPSILON))
                             {
-                                src.GameObject.CollisionActive(dst.GameObject.Type);
-                                dst.GameObject.CollisionActive();
+                                src.CollisionActive(dst.Type);
+                                dst.CollisionActive();
                             }
                             else
                             {
-                                src.GameObject.CollisionDeActive(dst.GameObject.Type);
-                                dst.GameObject.CollisionDeActive();
+                                src.CollisionDeActive(dst.Type);
+                                dst.CollisionDeActive();
                             }
                         }
                     }

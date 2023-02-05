@@ -18171,7 +18171,7 @@
 
 	function WebGLMaterials(properties) {
 		function refreshFogUniforms(uniforms, fog) {
-			uniforms.fogColor.value.copy(fog.color);
+			uniforms.fogColor.value = fog.color;
 
 			if (fog.isFog) {
 				uniforms.fogNear.value = fog.near;

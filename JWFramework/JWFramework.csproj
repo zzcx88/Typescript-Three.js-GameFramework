@@ -83,6 +83,10 @@
     <Content Include="Model\F-16D\F-16D.gltf" />
     <Content Include="Model\DamagedHelmet.gltf" />
     <Content Include="Model\Flower.glb" />
+    <Content Include="Model\F-5E.glb" />
+    <Content Include="Model\mig_23_mld.glb" />
+    <Content Include="Model\mig_29.glb" />
+    <Content Include="Model\Sprint.glb" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
@@ -142,6 +146,7 @@
     <TypeScriptCompile Include="Scene\SceneBase.ts" />
     <TypeScriptCompile Include="Scene\EditScene.ts" />
     <TypeScriptCompile Include="Scene\StageScene.ts" />
+    <TypeScriptCompile Include="Shader\SplettingShader.ts" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

@@ -44,6 +44,18 @@
             return this.propList.HeightOffset;
         }
 
+        public ChangeHeightOffset()
+        {
+            if (this.propList.HeightOffset == 0)
+                this.propList.HeightOffset = -1;
+            else if (this.propList.HeightOffset == -1)
+                this.propList.HeightOffset = 1;
+            else if (this.propList.HeightOffset == 1)
+                this.propList.HeightOffset = 0;
+
+            this.propList.HeightOffset;
+        }
+
         public ChangeTerrainOption()
         {
 

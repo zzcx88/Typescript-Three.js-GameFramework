@@ -59,7 +59,9 @@ namespace JWFramework
 
         public Animate()
         {
-            if (this.Picked == true) {
+            if (this.Picked == true)
+            {
+                this.IsRayOn = true;
                 if (InputManager.getInstance().GetKeyState('left', KeyState.KEY_PRESS)) {
                     this.PhysicsComponent.RotateVec3(this.PhysicsComponent.Look, -1);
                 }
@@ -79,9 +81,12 @@ namespace JWFramework
                     CameraManager.getInstance().SetCameraSavedPosition(CameraMode.CAMERA_3RD);
                 }
                 if (InputManager.getInstance().GetKeyState('r', KeyState.KEY_PRESS)) {
-                    CameraManager.getInstance().SetCameraSavedPosition(CameraMode.CAMERA_ORBIT);;
+                    CameraManager.getInstance().SetCameraSavedPosition(CameraMode.CAMERA_ORBIT);
                 }
             }
+            else
+                this.IsRayOn = false;
+
             if (SceneManager.getInstance().SceneType == SceneType.SCENE_EDIT && this.Picked == true) {
                 this.axisHelper.visible = true;
             }

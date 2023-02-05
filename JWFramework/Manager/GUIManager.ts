@@ -10,7 +10,7 @@
             if (!GUIManager.instance)
             {
                 GUIManager.instance = new GUIManager;
-                GUIManager.instance.gui_SRT = new GUI_SRT(ObjectManager.getInstance().GetObjectFromName("flower"));
+                GUIManager.instance.gui_SRT = new GUI_SRT(ObjectManager.getInstance().GetObjectFromName("MainCamera"));
                 GUIManager.instance.gui_Select = new GUI_Select();
                 GUIManager.instance.gui_Terrain = new GUI_Terrain();
             }

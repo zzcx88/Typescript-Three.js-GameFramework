@@ -118,10 +118,21 @@ namespace JWFramework
         {
             for (let i = 0; i < 10; ++i) {
                 for (let j = 0; j < 10; ++j) {
-                    this.terrain[i] = new HeightmapTerrain(j * 900, i * 900, 64, 64);
+                    this.terrain[i] = new HeightmapTerrain(j * 900, i * 900, 16, 16);
                 }
             }
         }
+
+        public LoadSavedScene()
+        {
+            fetch("./Model/Scene.json")
+                .then(response =>
+                {
+                    return response.json();
+                })
+                .then(jsondata => console.log( jsondata[0].name));
+        }
+
         private loaderManager: THREE.LoadingManager
         private gltfLoader: THREE.GLTFLoader;
         //animetionTest

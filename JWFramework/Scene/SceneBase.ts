@@ -36,7 +36,17 @@ namespace JWFramework
             this.picker = new Picker();
         }
 
+        public get NeedOnTerrain(): boolean
+        {
+            return this.needOnTerrain;
+        }
+        public set NeedOnTerrain(flag: boolean)
+        {
+            this.needOnTerrain = flag;
+        }
+
         private sceneManager: SceneManager
         private picker: Picker;
+        private needOnTerrain: boolean;
     }
 }

@@ -120,6 +120,8 @@ declare namespace JWFramework {
         set ModelData(anim: THREE.GLTF);
         get IsDead(): boolean;
         set IsDead(flag: boolean);
+        get IsRayOn(): boolean;
+        set IsRayOn(flag: boolean);
         CollisionActive(value?: any): void;
         CollisionDeActive(value?: any): void;
         Animate(): void;
@@ -131,6 +133,7 @@ declare namespace JWFramework {
         protected isClone: boolean;
         protected isDead: boolean;
         protected isPlayer: boolean;
+        protected isRayOn: boolean;
         protected physicsComponent: PhysicsComponent;
         protected graphicComponent: GraphComponent;
         protected guiComponent: GUIComponent;
@@ -172,7 +175,7 @@ declare namespace JWFramework {
         private helmet;
         private mig23;
         private mig29;
-        private flower;
+        private f_5e;
         private anim;
     }
     class ModelSceneStage {
@@ -287,6 +290,7 @@ declare namespace JWFramework {
         protected AddElement(): void;
         GetTerrainOption(): TerrainOption;
         GetHeightOffset(): number;
+        ChangeHeightOffset(): void;
         ChangeTerrainOption(): void;
         private SetTerrainOptionFromEnum;
         SetTerrainOptionList(): void;
@@ -381,8 +385,11 @@ declare namespace JWFramework {
         get SceneManager(): SceneManager;
         get Picker(): Picker;
         SetPicker(): void;
+        get NeedOnTerrain(): boolean;
+        set NeedOnTerrain(flag: boolean);
         private sceneManager;
         private picker;
+        private needOnTerrain;
     }
 }
 declare namespace JWFramework {
@@ -400,7 +407,10 @@ declare namespace JWFramework {
         private planeMesh;
         private planeGeomatry;
         private material;
-        private texture;
+        private farmTexture;
+        private mountainTexture;
+        private factoryTexture;
+        private cityTexture;
         private gradientmap;
         private terrainIndex;
         private width;
@@ -409,7 +419,7 @@ declare namespace JWFramework {
         private segmentHeight;
         private heigtIndexBuffer;
         private heigtBuffer;
-        private inSectorObject;
+        inSectorObject: GameObject[];
         private vertexNormalNeedUpdate;
         inSecter: boolean;
         cameraInSecter: boolean;
@@ -426,6 +436,7 @@ declare namespace JWFramework {
         LoadSceneStage(): void;
         private LoadModel;
         private LoadHeightmapTerrain;
+        LoadSavedScene(): void;
         private loaderManager;
         private gltfLoader;
         animationMixer: THREE.AnimationMixer;
@@ -463,18 +474,6 @@ declare namespace JWFramework {
     }
 }
 declare namespace JWFramework {
-    class StageScene extends SceneBase {
-        constructor(sceneManager: SceneManager);
-        BuildObject(): void;
-        BuildLight(): void;
-        BuildFog(): void;
-        Animate(): void;
-        private light;
-        private light2;
-        private terrain;
-    }
-}
-declare namespace JWFramework {
     class SceneManager {
         private static instance;
         constructor();
@@ -507,6 +506,13 @@ declare namespace JWFramework {
     }
 }
 declare namespace JWFramework {
+    class SplattingShader {
+        constructor();
+        vertexShader: string;
+        fragmentShader: string;
+    }
+}
+declare namespace JWFramework {
     class WorldManager {
         private static instance;
         private constructor();
@@ -525,6 +531,7 @@ declare namespace JWFramework {
         Render(): void;
         private renderer;
         private sceneManager;
+        splattingShader: SplattingShader;
         private camera;
         private clock;
         private delta;
@@ -534,9 +541,9 @@ declare namespace JWFramework {
     class CollisionManager {
         private static instance;
         static getInstance(): CollisionManager;
-        CollideRayToTerrain(sorce: ObjectSet[], destination: ObjectSet[]): void;
+        CollideRayToTerrain(sorce: ObjectSet[]): void;
         CollideBoxToBox(sorce: ObjectSet[], destination: ObjectSet[]): void;
-        CollideObbToObb(sorce: ObjectSet[], destination: ObjectSet[]): void;
+        CollideObbToObb(sorce: any, destination: any): void;
         CollideObbToBox(sorce: ObjectSet[], destination: ObjectSet[]): void;
         CollideBoxToSphere(sorce: ObjectSet[], destination: ObjectSet[]): void;
         CollideSphereToSphere(sorce: ObjectSet[], destination: ObjectSet[]): void;
@@ -597,5 +604,17 @@ declare namespace JWFramework {
         CollisionActive(): void;
         CollisionDeActive(): void;
         Animate(): void;
+    }
+}
+declare namespace JWFramework {
+    class StageScene extends SceneBase {
+        constructor(sceneManager: SceneManager);
+        BuildObject(): void;
+        BuildLight(): void;
+        BuildFog(): void;
+        Animate(): void;
+        private light;
+        private light2;
+        private terrain;
     }
 }

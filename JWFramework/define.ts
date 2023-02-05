@@ -44,14 +44,14 @@ namespace JWFramework
             this.mig23.Name = "MIG_23_MLD";
             this.mig29.Name = "MIG_29";
             this.helmet.Name = "helmet";
-            this.flower.Name = "flower";
+            this.f_5e.Name = "F-5E";
             this.anim.Name = "animation";
             this.sceneModelData = [
                 //{ model: this.F16, url: 'Model/F-16D/F-16.gltf' },
                 { model: this.mig23, url: 'Model/mig_23_mld.glb' },
                 { model: this.mig29, url: 'Model/mig_29.glb' },
                 { model: this.helmet, url: 'Model/DamagedHelmet.gltf' },
-                { model: this.flower, url: 'Model/cloud.glb' },
+                { model: this.f_5e, url: 'Model/F-5E.glb' },
                 { model: this.anim, url: 'Model/Sprint.glb' }
             ];
             this.modelNumber = this.sceneModelData.length;
@@ -60,7 +60,7 @@ namespace JWFramework
         private helmet: EditObject = new EditObject;
         private mig23: EditObject = new EditObject;
         private mig29: EditObject = new EditObject;
-        private flower: EditObject = new EditObject;
+        private f_5e: EditObject = new EditObject;
         private anim: EditObject = new EditObject;
     }
 

@@ -135,6 +135,16 @@
             this.isDead = flag;
         }
 
+        public get IsRayOn(): boolean
+        {
+            return this.isRayOn;
+        }
+
+        public set IsRayOn(flag: boolean)
+        {
+            this.isRayOn = flag;
+        }
+
         public CollisionActive(value: any = 0) { }
         public CollisionDeActive(value: any = 0) { }
 
@@ -152,6 +162,7 @@
         protected isClone: boolean = false;
         protected isDead: boolean = false;
         protected isPlayer: boolean = false;
+        protected isRayOn: boolean = false;
 
         protected physicsComponent: PhysicsComponent;
         protected graphicComponent: GraphComponent;

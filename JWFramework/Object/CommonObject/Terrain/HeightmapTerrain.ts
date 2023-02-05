@@ -44,19 +44,53 @@ namespace JWFramework
         public CreateTerrainMesh()
         {
             this.planeGeomatry = new THREE.PlaneGeometry(900, 900, this.segmentWidth, this.segmentHeight);
-            this.material = new THREE.MeshToonMaterial();
-            this.texture = new THREE.TextureLoader().load("Model/Heightmap/TerrainTexture.jpg");
-            this.gradientmap = new THREE.TextureLoader().load('Model/Heightmap/fiveTone.jpg');
-            this.gradientmap.minFilter = THREE.NearestFilter;
-            this.gradientmap.magFilter = THREE.NearestFilter;
-            this.texture.wrapS = THREE.RepeatWrapping;
-            this.texture.wrapT = THREE.RepeatWrapping;
-            this.texture.repeat.set(256, 256);
-            this.material.map = this.texture;
-            this.material.gradientMap = this.gradientmap;
+            this.material = new THREE.MeshStandardMaterial();
+            this.farmTexture = new THREE.TextureLoader().load("Model/Heightmap/farm.jpg");
+            
+            this.farmTexture.wrapS = THREE.RepeatWrapping;
+            this.farmTexture.wrapT = THREE.RepeatWrapping;
+            //this.texture.repeat.set(1, 1);
+
+            this.mountainTexture = new THREE.TextureLoader().load("Model/Heightmap/mountain.jpg");
+            this.mountainTexture.wrapS = THREE.RepeatWrapping;
+            this.mountainTexture.wrapT = THREE.RepeatWrapping;
+            //this.mountainTexture.repeat.set(16, 16);
+
+            this.factoryTexture = new THREE.TextureLoader().load("Model/Heightmap/factory.jpg");
+            this.factoryTexture.wrapS = THREE.RepeatWrapping;
+            this.factoryTexture.wrapT = THREE.RepeatWrapping;
+
+            //let a = THREE.UniformsLib['fog'].;
+            let customUniforms = {
+                farmTexture: { type: "t", value: this.farmTexture },
+                mountainTexture: { type: "t", value: this.mountainTexture },
+                factoryTexture: { type: "t", value: this.factoryTexture },
+
+                fogColor: { type: "c", value: THREE.UniformsLib['fog'].fogColor },
+                fogDensity: { type: "f", value: THREE.UniformsLib['fog'].fogDensity },
+                fogFar: { type: "f", value: THREE.UniformsLib['fog'].fogFar },
+                fogNear: { type: "f", value: THREE.UniformsLib['fog'].fogNear }
+            };
+            // create custom material from the shader code above
+            //   that is within specially labelled script tags
+
+            var customMaterial = new THREE.ShaderMaterial(
+                {
+                    uniforms: customUniforms,
+                    vertexShader: WorldManager.getInstance().splattingShader.vertexShader,
+                    fragmentShader: WorldManager.getInstance().splattingShader.fragmentShader,
+                    //side: THREE.DoubleSide,
+                     fog: true
+                });
+
+            //this.material.map = this.texture;
+            // this.gradientmap = new THREE.TextureLoader().load('Model/Heightmap/fiveTone.jpg');
+            // this.gradientmap.minFilter = THREE.NearestFilter;
+            // this.gradientmap.magFilter = THREE.NearestFilter;
+            // this.material.gradientMap = this.gradientmap;
 
             //this.material.normalMap = new THREE.TextureLoader().load("Model/Heightmap/TerrainTexture_N.png");
-            this.material.wireframe = false;
+            //this.material.wireframe = false;
 
             let rotation = new THREE.Matrix4().makeRotationX(-Math.PI / 2);
             this.planeGeomatry.applyMatrix4(rotation);
@@ -64,12 +98,14 @@ namespace JWFramework
             this.planeGeomatry.computeBoundingSphere();
             this.planeGeomatry.computeVertexNormals();
 
-            this.planeMesh = new THREE.Mesh(this.planeGeomatry, this.material);
+            this.planeMesh = new THREE.Mesh(this.planeGeomatry, customMaterial);
             this.planeMesh.receiveShadow = true;
             this.planeMesh.castShadow = true;
 
             this.gameObjectInstance = this.planeMesh;
             this.GameObjectInstance.name = this.name;
+
+            this.gameObjectInstance.frustumCulled = false;
 
             this.InitializeAfterLoad();
         }
@@ -92,6 +128,7 @@ namespace JWFramework
 
         public SetHeight(index: number, value: number = undefined, option: TerrainOption = TerrainOption.TERRAIN_UP)
         {
+            this.planeGeomatry.getAttribute('position')
             this.planeGeomatry.getAttribute('position').needsUpdate = true;
             let height: number = this.planeGeomatry.getAttribute('position').getY(index);
 
@@ -216,7 +253,7 @@ namespace JWFramework
             else {
                 if (this.inSectorObject.includes(object) == false) {
                     this.inSectorObject.push(object);
-                    this.material.opacity = 0.9;
+                    //this.material.opacity = 0.9;
                     this.inSecter = true;
                 }
             }
@@ -237,6 +274,9 @@ namespace JWFramework
 
         public Animate()
         {
+            if (this.gameObjectInstance.frustumCulled == false)
+                this.gameObjectInstance.frustumCulled = true;
+
             if (/*SceneManager.getInstance().CurrentScene.Picker.PickMode != PickMode.PICK_TERRAIN &&*/ this.vertexNormalNeedUpdate) {
                 this.planeGeomatry.computeVertexNormals();
                 this.vertexNormalNeedUpdate = false;
@@ -250,8 +290,11 @@ namespace JWFramework
 
         private planeMesh: THREE.Mesh;
         private planeGeomatry: THREE.PlaneGeometry;
-        private material: THREE.MeshToonMaterial;
-        private texture: THREE.Texture;
+        private material: THREE.MeshStandardMaterial;
+        private farmTexture: THREE.Texture;
+        private mountainTexture: THREE.Texture;
+        private factoryTexture: THREE.Texture;
+        private cityTexture: THREE.Texture;
         private gradientmap: THREE.Texture;
 
         private terrainIndex: number;
@@ -262,7 +305,7 @@ namespace JWFramework
 
         private heigtIndexBuffer: number[] = [];
         private heigtBuffer: number[] = [];
-        private inSectorObject: GameObject[] = [];
+        public inSectorObject: GameObject[] = [];
 
         private vertexNormalNeedUpdate: boolean = false;
 

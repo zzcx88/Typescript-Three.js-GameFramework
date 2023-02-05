@@ -168,10 +168,14 @@
                 }
             }
             //CollisionManager.getInstance().CollideBoxToBox(this.objectList[ObjectType.OBJ_TERRAIN], this.objectList[ObjectType.OBJ_CAMERA]);
-            CollisionManager.getInstance().CollideObbToObb(this.objectList[ObjectType.OBJ_OBJECT3D], this.objectList[ObjectType.OBJ_OBJECT3D]);
+            //CollisionManager.getInstance().CollideObbToObb(this.objectList[ObjectType.OBJ_OBJECT3D], this.objectList[ObjectType.OBJ_OBJECT3D]);
             CollisionManager.getInstance().CollideObbToBox(this.objectList[ObjectType.OBJ_OBJECT3D], this.objectList[ObjectType.OBJ_TERRAIN]);
             let sectoredTerrain = this.objectList[ObjectType.OBJ_TERRAIN].filter((element) => (element.GameObject as unknown as HeightmapTerrain).inSecter == true);
-            CollisionManager.getInstance().CollideRayToTerrain(this.objectList[ObjectType.OBJ_OBJECT3D], sectoredTerrain);
+            CollisionManager.getInstance().CollideRayToTerrain(sectoredTerrain);
+            sectoredTerrain.forEach(function (src)
+            {
+                CollisionManager.getInstance().CollideObbToObb((src.GameObject as HeightmapTerrain).inSectorObject, (src.GameObject as HeightmapTerrain).inSectorObject);
+            });
 
             InputManager.getInstance().UpdateKey();
         }

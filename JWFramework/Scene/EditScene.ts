@@ -43,7 +43,7 @@ namespace JWFramework
         {
             let sceneInstance = this.SceneManager.SceneInstance;
             let color = 0xdefdff;
-            sceneInstance.fog = new THREE.Fog(color, 10, 1000);
+            sceneInstance.fog = new THREE.Fog(color, 10, 1400);
         }
 
         public Animate()
@@ -69,6 +69,15 @@ namespace JWFramework
                 if (SceneManager.getInstance().CurrentScene.Picker.PickMode == PickMode.PICK_TERRAIN)
                     if (InputManager.getInstance().GetKeyState('t', KeyState.KEY_PRESS))
                         this.Picker.SetPickPosition(this.Picker.MouseEvent);
+
+                if (InputManager.getInstance().GetKeyState('u', KeyState.KEY_DOWN))
+                {
+                    SceneManager.getInstance().CurrentScene.NeedOnTerrain = true;
+                    GUIManager.getInstance().GUI_Terrain.ChangeHeightOffset();
+                }
+                else
+                    SceneManager.getInstance().CurrentScene.NeedOnTerrain = false;
+                    
 
                 if (InputManager.getInstance().GetKeyState('5', KeyState.KEY_DOWN)) {
                     fetch("./Model/Scene.json")

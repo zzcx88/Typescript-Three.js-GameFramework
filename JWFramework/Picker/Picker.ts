@@ -104,8 +104,9 @@
                 let intersectedObject = this.raycaster.intersectObject(SceneManager.getInstance().SceneInstance, true);
                 if (intersectedObject[0] != undefined) {
                     terrain = objectManager.GetObjectFromName(intersectedObject[0].object.name);
-                    if (terrain != null && terrain.Type == ObjectType.OBJ_TERRAIN) {
-                        intersectedObject[0].face.normal;
+                    if (terrain != null && terrain.Type == ObjectType.OBJ_TERRAIN)
+                    {
+                        console.log(intersectedObject[0].uv);
                         (terrain as unknown as HeightmapTerrain).SetHeight(intersectedObject[0].face.a, heightOffset, GUIManager.getInstance().GUI_Terrain.GetTerrainOption());
                         (terrain as unknown as HeightmapTerrain).SetHeight(intersectedObject[0].face.b, heightOffset, GUIManager.getInstance().GUI_Terrain.GetTerrainOption());
                         (terrain as unknown as HeightmapTerrain).SetHeight(intersectedObject[0].face.c, heightOffset, GUIManager.getInstance().GUI_Terrain.GetTerrainOption());
