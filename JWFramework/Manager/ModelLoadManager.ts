@@ -29,6 +29,11 @@ namespace JWFramework
                 this.loadComplete = true;
         }
 
+        public set LoadComplete(flag: boolean)
+        {
+            this.loadComplete = flag;
+        }
+
         public get LoadComplete(): boolean
         {
             if (this.loadComplete == true && SceneManager.getInstance().SceneType == SceneType.SCENE_EDIT) {
@@ -114,7 +119,7 @@ namespace JWFramework
 
         }
 
-        private LoadHeightmapTerrain()
+        public LoadHeightmapTerrain()
         {
             for (let i = 0; i < 10; ++i) {
                 for (let j = 0; j < 10; ++j) {
@@ -130,7 +135,39 @@ namespace JWFramework
                 {
                     return response.json();
                 })
-                .then(jsondata => console.log( jsondata[0].name));
+                .then(jsondata =>
+                {
+                    let objectManager = ObjectManager.getInstance();
+                    for (let data of jsondata)
+                    {
+                        if (data.name.includes("Terrain"))
+                        {
+                            let terrain = objectManager.GetObjectFromName(data.name);
+                            for (let i = 0; i < data.vertexIndex.length; ++i)
+                            {
+                                console.log(data.vertexIndex[i]);
+                                (terrain as unknown as HeightmapTerrain).SetHeight(data.vertexIndex[i], data.vertexHeight[i], TerrainOption.TERRAIN_LOAD);
+                            }
+                        }
+                        else if (data.name.includes("MIG_29"))
+                        {
+                            let cloneObject = objectManager.MakeClone(objectManager.GetObjectFromName("MIG_29"));
+                            cloneObject.PhysicsComponent.SetScale(data.scale.x, data.scale.y, data.scale.z);
+                            cloneObject.PhysicsComponent.SetRotate(data.rotation.x, data.rotation.y, data.rotation.z);
+                            cloneObject.PhysicsComponent.SetPostion(data.position.x, data.position.y, data.position.z);
+                            objectManager.AddObject(cloneObject, cloneObject.Name, cloneObject.Type);
+                        }
+
+                        else if (data.name.includes("F-5E"))
+                        {
+                            let cloneObject = objectManager.MakeClone(objectManager.GetObjectFromName("F-5E"));
+                            cloneObject.PhysicsComponent.SetScale(data.scale.x, data.scale.y, data.scale.z);
+                            cloneObject.PhysicsComponent.SetRotate(data.rotation.x, data.rotation.y, data.rotation.z);
+                            cloneObject.PhysicsComponent.SetPostion(data.position.x, data.position.y, data.position.z);
+                            objectManager.AddObject(cloneObject, cloneObject.Name, cloneObject.Type);
+                        }
+                    }
+                });
         }
 
         private loaderManager: THREE.LoadingManager

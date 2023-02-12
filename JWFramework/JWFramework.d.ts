@@ -8,6 +8,7 @@ declare namespace JWFramework {
         get BoundingBox(): THREE.Box3;
         get BoxHelper(): THREE.Box3Helper;
         get OBB(): THREE.OBB;
+        get ObbBoxHelper(): THREE.Mesh;
         get BoundingSphere(): THREE.Sphere;
         get Raycaster(): THREE.Raycaster;
         DeleteCollider(): void;
@@ -75,11 +76,13 @@ declare namespace JWFramework {
         SetScale(x: number, y: number, z: number): void;
         SetScaleScalar(scalar: number): void;
         MoveFoward(distance: number): void;
+        MoveDirection(direction: THREE.Vector3, distance: number): void;
         GetPosition(): THREE.Vector3;
         GetRotateEuler(): THREE.Euler;
         GetRotateMatrix3(): THREE.Matrix3;
         GetScale(): THREE.Vector3;
         GetMatrix4(): any;
+        SetRotate(x: number, y: number, z: number): void;
         Rotate(x: number, y: number, z: number): void;
         RotateVec3(axis: THREE.Vector3, angle: number): void;
         UpdateMatrix(): void;
@@ -153,6 +156,11 @@ declare namespace JWFramework {
         CollisionActive(): void;
         CollisionDeActive(): void;
         Animate(): void;
+        currentVelocity: THREE.Vector3;
+        private previousPosition;
+        private missileOrientation;
+        private isTarget;
+        private testpos;
         private axisHelper;
     }
 }
@@ -390,6 +398,7 @@ declare namespace JWFramework {
         private sceneManager;
         private picker;
         private needOnTerrain;
+        reloadScene: boolean;
     }
 }
 declare namespace JWFramework {
@@ -431,11 +440,12 @@ declare namespace JWFramework {
         static getInstance(): ModelLoadManager;
         constructor();
         private SetLoadComplete;
+        set LoadComplete(flag: boolean);
         get LoadComplete(): boolean;
         LoadScene(): void;
         LoadSceneStage(): void;
         private LoadModel;
-        private LoadHeightmapTerrain;
+        LoadHeightmapTerrain(): void;
         LoadSavedScene(): void;
         private loaderManager;
         private gltfLoader;
@@ -491,25 +501,30 @@ declare namespace JWFramework {
     }
 }
 declare namespace JWFramework {
+    class SplattingShader {
+        constructor();
+        vertexShader: string;
+        fragmentShader: string;
+    }
+}
+declare namespace JWFramework {
     class ShaderManager {
         private static instance;
         constructor();
         static getInstance(): ShaderManager;
         BuildMotuinBlurShader(): void;
+        get SplattingShader(): SplattingShader;
         ShadedRender(): void;
+        farmTexture: THREE.Texture;
+        mountainTexture: THREE.Texture;
+        factoryTexture: THREE.Texture;
         private composer;
         private renderPass;
         private savePass;
         private blendPass;
         private outputPass;
+        private splattingShader;
         private renderTargetParameters;
-    }
-}
-declare namespace JWFramework {
-    class SplattingShader {
-        constructor();
-        vertexShader: string;
-        fragmentShader: string;
     }
 }
 declare namespace JWFramework {
@@ -531,7 +546,6 @@ declare namespace JWFramework {
         Render(): void;
         private renderer;
         private sceneManager;
-        splattingShader: SplattingShader;
         private camera;
         private clock;
         private delta;

@@ -33,7 +33,7 @@
             this.orientedBoundingBox = new THREE.OBB();
             let color = new THREE.Color().setColorName("Red");
             let obbGeometry = new THREE.BoxGeometry(halfSize.x, halfSize.y, halfSize.z);
-            obbGeometry.userData.obb = new THREE.OBB(center, halfSize);
+            obbGeometry.userData.obb = new THREE.OBB(center.clone(), halfSize.clone());
             let material = new THREE.MeshBasicMaterial({ color });
             material.wireframe = true;
             this.obbBoxHelper = new THREE.Mesh(obbGeometry, material);
@@ -71,6 +71,11 @@
 
         public get OBB(): THREE.OBB {
             return this.orientedBoundingBox;
+        }
+
+        public get ObbBoxHelper(): THREE.Mesh
+        {
+            return this.obbBoxHelper;
         }
 
         public get BoundingSphere(): THREE.Sphere
@@ -119,8 +124,11 @@
             }
             if (this.orientedBoundingBox)
             {
-                this.obbBoxHelper.position.set(this.gameObject.PhysicsComponent.GetPosition().x, this.gameObject.PhysicsComponent.GetPosition().y, this.gameObject.PhysicsComponent.GetPosition().z);
+                if (this.gameObject.Picked == true)
+                    console.log(123);
+                this.obbBoxHelper.scale.set(this.gameObject.PhysicsComponent.GetScale().x, this.gameObject.PhysicsComponent.GetScale().y, this.gameObject.PhysicsComponent.GetScale().z)
                 this.obbBoxHelper.rotation.set(this.gameObject.PhysicsComponent.GetRotateEuler().x, this.gameObject.PhysicsComponent.GetRotateEuler().y, this.gameObject.PhysicsComponent.GetRotateEuler().z);
+                this.obbBoxHelper.position.set(this.gameObject.PhysicsComponent.GetPosition().x, this.gameObject.PhysicsComponent.GetPosition().y, this.gameObject.PhysicsComponent.GetPosition().z);
                 this.orientedBoundingBox.copy(this.obbBoxHelper.geometry.userData.obb);
                 this.orientedBoundingBox.applyMatrix4(this.obbBoxHelper.matrixWorld);
             }

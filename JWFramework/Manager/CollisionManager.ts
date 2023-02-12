@@ -88,14 +88,16 @@
                     {
                         if (src != dst)
                         {
-                            if (src.CollisionComponent.OBB.intersectsOBB(dst.CollisionComponent.OBB, Number.EPSILON))
+                            if (src.CollisionComponent.OBB.intersectsOBB(dst.CollisionComponent.OBB))
                             {
-                                src.CollisionActive(dst.Type);
+                                if (!(dst.GameObject as HeightmapTerrain) || !(src.GameObject as HeightmapTerrain))
+                                    src.CollisionActive(dst.Type);
                                 dst.CollisionActive();
                             }
                             else
                             {
-                                src.CollisionDeActive(dst.Type);
+                                if (!(dst.GameObject as HeightmapTerrain) || !(src.GameObject as HeightmapTerrain))
+                                    src.CollisionDeActive(dst.Type);
                                 dst.CollisionDeActive();
                             }
                         }
@@ -112,12 +114,20 @@
                 {
                     if (src.GameObject.IsClone && dst.GameObject.IsClone) {
                         if (src.GameObject != dst.GameObject) {
-                            if (src.GameObject.CollisionComponent.OBB.intersectsBox3(dst.GameObject.CollisionComponent.BoundingBox)) {
-                                src.GameObject.CollisionActive();
+                            if (src.GameObject.CollisionComponent.OBB.intersectsBox3(dst.GameObject.CollisionComponent.BoundingBox))
+                            {
+                                if (!(dst.GameObject as HeightmapTerrain))
+                                {
+                                    src.GameObject.CollisionActive();
+                                }
                                 dst.GameObject.CollisionActive(src.GameObject);
                             }
-                            else {
-                                src.GameObject.CollisionDeActive();
+                            else
+                            {
+                                if (!(dst.GameObject as HeightmapTerrain))
+                                {
+                                    src.GameObject.CollisionDeActive();
+                                }
                                 dst.GameObject.CollisionDeActive(src.GameObject);
                             }
                         }

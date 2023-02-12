@@ -42,7 +42,7 @@ namespace JWFramework
         public CreateCollider()
         {
             //this.CollisionComponent.CreateBoundingBox(this.PhysicsComponent.GetScale().x, this.PhysicsComponent.GetScale().y, this.PhysicsComponent.GetScale().z);
-            this.CollisionComponent.CreateOrientedBoundingBox(/*this.physicsComponent.GetPosition(), this.PhysicsComponent.GetScale()*/);
+            this.CollisionComponent.CreateOrientedBoundingBox(this.physicsComponent.GetPosition(), this.physicsComponent.GetScale());
             this.CollisionComponent.CreateRaycaster();
             //SceneManager.getInstance().SceneInstance.add(this.CollisionComponent.BoxHelper);
         }
@@ -50,7 +50,9 @@ namespace JWFramework
         public CollisionActive()
         {
             //console.clear();
-            //console.log("충돌");
+            console.log("충돌");
+            if (this.name != "Target" && this.Picked == true)
+                this.physicsComponent.SetPostion(0,200, 0);
         }
 
         public CollisionDeActive()
@@ -59,8 +61,25 @@ namespace JWFramework
 
         public Animate()
         {
+            if (this.previousPosition == null)
+                this.previousPosition = this.physicsComponent.GetPosition().clone();
+            if (this.isTarget == true)
+            {
+                this.PhysicsComponent.MoveFoward(50);
+                this.PhysicsComponent.RotateVec3(this.PhysicsComponent.Up, -0.5);
+            }
+            if (this.previousPosition)
+            {
+                this.currentVelocity = this.PhysicsComponent.GetPosition().clone().sub(this.previousPosition).divideScalar(900 / 1000);
+                this.previousPosition = this.physicsComponent.GetPosition();
+            }
             if (this.Picked == true)
             {
+                if (this.previousPosition)
+                {
+                    this.currentVelocity = this.PhysicsComponent.GetPosition().clone().sub(this.previousPosition).divideScalar(900 / 1000);
+                    //this.currentVelocity.multiplyScalar(5);
+                }
                 this.IsRayOn = true;
                 if (InputManager.getInstance().GetKeyState('left', KeyState.KEY_PRESS)) {
                     this.PhysicsComponent.RotateVec3(this.PhysicsComponent.Look, -1);
@@ -74,7 +93,8 @@ namespace JWFramework
                 if (InputManager.getInstance().GetKeyState('up', KeyState.KEY_PRESS)) {
                     this.PhysicsComponent.RotateVec3(this.PhysicsComponent.Right, 1);
                 }
-                if (InputManager.getInstance().GetKeyState('w', KeyState.KEY_PRESS)) {
+                if (InputManager.getInstance().GetKeyState('w', KeyState.KEY_PRESS))
+                {
                     this.PhysicsComponent.MoveFoward(70);
                 }
                 if (InputManager.getInstance().GetKeyState('f', KeyState.KEY_PRESS)) {
@@ -82,6 +102,42 @@ namespace JWFramework
                 }
                 if (InputManager.getInstance().GetKeyState('r', KeyState.KEY_PRESS)) {
                     CameraManager.getInstance().SetCameraSavedPosition(CameraMode.CAMERA_ORBIT);
+                }
+                if (InputManager.getInstance().GetKeyState('p', KeyState.KEY_DOWN))
+                {
+                    this.isTarget = true;
+                    this.name = "Target";
+                }
+                if (InputManager.getInstance().GetKeyState('space', KeyState.KEY_PRESS))
+                {
+                    
+                    let currentTime = performance.now();
+                    let targetPos = ObjectManager.getInstance().GetObjectFromName("Target").PhysicsComponent.GetPosition();
+
+                    let missileDirection = targetPos.clone().sub(this.PhysicsComponent.GetPosition()).normalize();
+                    this.currentVelocity.addScalar(missileDirection.length());
+                    let direction = targetPos.clone().sub(this.physicsComponent.GetPosition().clone()).normalize();
+                    this.GameObjectInstance.lookAt(targetPos.clone());
+                    //this.PhysicsComponent.MoveDirection(missileDirection, 100);
+                    this.physicsComponent.SetPostionVec3(this.physicsComponent.GetPosition().add(missileDirection));
+
+
+                    //let relativePosition = targetPos.clone().sub(this.PhysicsComponent.GetPosition());
+                    //let relativeVelocity = (ObjectManager.getInstance().GetObjectFromName("Target") as EditObject).currentVelocity.clone().sub(this.currentVelocity);
+                    //let relativeRange = relativePosition.length();
+                    //let rangeRate = relativePosition.dot(relativeVelocity) / relativeRange;
+                    //let missileAcceleration = relativePosition.multiplyScalar(800 / Math.pow(relativeRange, 2)).sub(relativeVelocity.multiplyScalar(800 / relativeRange));
+                    //this.physicsComponent.SetPostionVec3(this.physicsComponent.GetPosition().add(missileAcceleration));
+
+                    //this.missileOrientation = this.gameObjectInstance.quaternion;
+                    //let direction = this.previousPosition.clone().sub(this.physicsComponent.GetPosition().clone()).normalize();
+                    //let targetOrientation = new THREE.Quaternion().setFromUnitVectors(new THREE.Vector3(0, 0, 1), direction);
+                    //this.missileOrientation = this.missileOrientation.slerp(targetOrientation, 1);
+                    //this.GameObjectInstance.setRotationFromQuaternion(this.missileOrientation);
+
+
+                    //this.GameObjectInstance.lookAt(targetPos);
+                    this.previousPosition = this.physicsComponent.GetPosition();
                 }
             }
             else
@@ -100,6 +156,11 @@ namespace JWFramework
                 this.AnimationMixer.update(WorldManager.getInstance().GetDeltaTime());
             }
         }
+        public currentVelocity: THREE.Vector3;
+        private previousPosition: THREE.Vector3;
+        private missileOrientation: THREE.Quaternion;
+        private isTarget: boolean = false;
+        private testpos = 0;
         private axisHelper: THREE.AxesHelper;
     }
 }

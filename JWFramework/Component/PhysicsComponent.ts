@@ -74,6 +74,12 @@ namespace JWFramework
             this.UpdateMatrix();
         }
 
+        public MoveDirection(direction: THREE.Vector3, distance: number) {
+            ;
+            this.GameObject.GameObjectInstance.translateOnAxis(direction, distance * WorldManager.getInstance().GetDeltaTime());
+            this.UpdateMatrix();
+        }
+
         public GetPosition(): THREE.Vector3
         {
             return this.GameObject.GameObjectInstance.position;
@@ -105,6 +111,14 @@ namespace JWFramework
             return this.GameObject.GameObjectInstance.matrixWorld;
         }
 
+         //Object스페이스 축 기준 수치만큼 회전
+        public SetRotate(x: number, y: number, z: number): void
+        {
+            this.GameObject.GameObjectInstance.rotateX(x);
+            this.GameObject.GameObjectInstance.rotateY(y);
+            this.GameObject.GameObjectInstance.rotateZ(z);
+            this.UpdateMatrix();
+        }
         //Object스페이스 축 기준 회전
         public Rotate(x: number, y: number, z: number): void
         {

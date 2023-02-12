@@ -48,5 +48,6 @@ namespace JWFramework
         private sceneManager: SceneManager
         private picker: Picker;
         private needOnTerrain: boolean;
+        public reloadScene: boolean = false;
     }
 }

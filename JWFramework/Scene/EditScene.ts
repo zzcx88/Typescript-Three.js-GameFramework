@@ -70,7 +70,7 @@ namespace JWFramework
                     if (InputManager.getInstance().GetKeyState('t', KeyState.KEY_PRESS))
                         this.Picker.SetPickPosition(this.Picker.MouseEvent);
 
-                if (InputManager.getInstance().GetKeyState('u', KeyState.KEY_DOWN))
+                if (InputManager.getInstance().GetKeyState('u', KeyState.KEY_PRESS))
                 {
                     SceneManager.getInstance().CurrentScene.NeedOnTerrain = true;
                     GUIManager.getInstance().GUI_Terrain.ChangeHeightOffset();
@@ -79,19 +79,25 @@ namespace JWFramework
                     SceneManager.getInstance().CurrentScene.NeedOnTerrain = false;
                     
 
-                if (InputManager.getInstance().GetKeyState('5', KeyState.KEY_DOWN)) {
-                    fetch("./Model/Scene.json")
-                        .then(response =>
-                        {
-                            return response.json();
-                        })
-                        .then(jsondata => console.log(jsondata[0]));
+                if (InputManager.getInstance().GetKeyState('5', KeyState.KEY_DOWN))
+                {
+                    ModelLoadManager.getInstance().LoadSavedScene();
                 }
                 if (InputManager.getInstance().GetKeyState('delete', KeyState.KEY_DOWN)) {
                     ObjectManager.getInstance().DeleteAllObject();
+                    this.reloadScene = true;
                 }
             }
+            if (this.reloadScene)
+                if (ObjectManager.getInstance().GetObjectList[ObjectType.OBJ_TERRAIN].length == 0)
+                {
+                    ModelLoadManager.getInstance().LoadHeightmapTerrain();
+                    ModelLoadManager.getInstance().LoadSavedScene();
+                    WorldManager.getInstance().Renderer.clear();
+                    this.reloadScene = false;
+                }
         }
+        
         private light: Light;
         private light2: Light;
         private light3: Light;

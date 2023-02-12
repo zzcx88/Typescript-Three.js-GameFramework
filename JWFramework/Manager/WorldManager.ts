@@ -2,7 +2,6 @@
 /// <reference path="../../JWFramework/Manager/ObjectManager.ts" />
 /// <reference path="../../JWFramework/Manager/SceneManager.ts" />
 /// <reference path="../../JWFramework/Manager/ShaderManager.ts" />
-/// <reference path="../../JWFramework/Shader/SplettingShader.ts" />
 namespace JWFramework
 {
     export class WorldManager
@@ -22,13 +21,16 @@ namespace JWFramework
 
         public InitializeWorld()
         {
-            this.splattingShader = new JWFramework.SplattingShader();
             this.CreateRendere();
             this.ResizeView();
             this.CreateMainCamera();
             this.CreateScene();
             this.CreateDeltaTime();
             this.renderer.compile(SceneManager.getInstance().SceneInstance, this.camera.CameraInstance);
+
+            WorldManager.getInstance().Renderer.initTexture(ShaderManager.getInstance().farmTexture);
+            WorldManager.getInstance().Renderer.initTexture(ShaderManager.getInstance().mountainTexture);
+            WorldManager.getInstance().Renderer.initTexture(ShaderManager.getInstance().factoryTexture);
         }
 
         private CreateRendere()
@@ -143,8 +145,6 @@ namespace JWFramework
 
         private renderer: THREE.WebGLRenderer;
         private sceneManager: SceneManager;
-        public splattingShader: SplattingShader;
-
         private camera: JWFramework.Camera;
 
         private clock: THREE.Clock;

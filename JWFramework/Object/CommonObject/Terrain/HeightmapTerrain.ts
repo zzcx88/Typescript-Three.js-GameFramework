@@ -45,26 +45,14 @@ namespace JWFramework
         {
             this.planeGeomatry = new THREE.PlaneGeometry(900, 900, this.segmentWidth, this.segmentHeight);
             this.material = new THREE.MeshStandardMaterial();
-            this.farmTexture = new THREE.TextureLoader().load("Model/Heightmap/farm.jpg");
+
             
-            this.farmTexture.wrapS = THREE.RepeatWrapping;
-            this.farmTexture.wrapT = THREE.RepeatWrapping;
-            //this.texture.repeat.set(1, 1);
-
-            this.mountainTexture = new THREE.TextureLoader().load("Model/Heightmap/mountain.jpg");
-            this.mountainTexture.wrapS = THREE.RepeatWrapping;
-            this.mountainTexture.wrapT = THREE.RepeatWrapping;
-            //this.mountainTexture.repeat.set(16, 16);
-
-            this.factoryTexture = new THREE.TextureLoader().load("Model/Heightmap/factory.jpg");
-            this.factoryTexture.wrapS = THREE.RepeatWrapping;
-            this.factoryTexture.wrapT = THREE.RepeatWrapping;
 
             //let a = THREE.UniformsLib['fog'].;
             let customUniforms = {
-                farmTexture: { type: "t", value: this.farmTexture },
-                mountainTexture: { type: "t", value: this.mountainTexture },
-                factoryTexture: { type: "t", value: this.factoryTexture },
+                farmTexture: { type: "t", value: ShaderManager.getInstance().farmTexture },
+                mountainTexture: { type: "t", value: ShaderManager.getInstance().mountainTexture },
+                factoryTexture: { type: "t", value: ShaderManager.getInstance().factoryTexture },
 
                 fogColor: { type: "c", value: THREE.UniformsLib['fog'].fogColor },
                 fogDensity: { type: "f", value: THREE.UniformsLib['fog'].fogDensity },
@@ -77,8 +65,8 @@ namespace JWFramework
             var customMaterial = new THREE.ShaderMaterial(
                 {
                     uniforms: customUniforms,
-                    vertexShader: WorldManager.getInstance().splattingShader.vertexShader,
-                    fragmentShader: WorldManager.getInstance().splattingShader.fragmentShader,
+                    vertexShader: ShaderManager.getInstance().SplattingShader.vertexShader.slice(),
+                    fragmentShader: ShaderManager.getInstance().SplattingShader.fragmentShader.slice(),
                     //side: THREE.DoubleSide,
                      fog: true
                 });
@@ -105,7 +93,7 @@ namespace JWFramework
             this.gameObjectInstance = this.planeMesh;
             this.GameObjectInstance.name = this.name;
 
-            this.gameObjectInstance.frustumCulled = false;
+            this.gameObjectInstance.frustumCulled = true;
 
             this.InitializeAfterLoad();
         }
@@ -274,9 +262,6 @@ namespace JWFramework
 
         public Animate()
         {
-            if (this.gameObjectInstance.frustumCulled == false)
-                this.gameObjectInstance.frustumCulled = true;
-
             if (/*SceneManager.getInstance().CurrentScene.Picker.PickMode != PickMode.PICK_TERRAIN &&*/ this.vertexNormalNeedUpdate) {
                 this.planeGeomatry.computeVertexNormals();
                 this.vertexNormalNeedUpdate = false;

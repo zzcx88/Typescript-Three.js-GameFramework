@@ -1,4 +1,5 @@
-﻿namespace JWFramework
+﻿/// <reference path="../../JWFramework/Shader/SplettingShader.ts" />
+namespace JWFramework
 {
     export class ShaderManager
     {
@@ -8,6 +9,22 @@
         public constructor()
         {
             this.BuildMotuinBlurShader();
+            this.splattingShader = new JWFramework.SplattingShader();
+
+            this.farmTexture = new THREE.TextureLoader().load("Model/Heightmap/farm.jpg");
+            this.farmTexture.wrapS = THREE.RepeatWrapping;
+            this.farmTexture.wrapT = THREE.RepeatWrapping;
+            //this.texture.repeat.set(1, 1);
+
+            this.mountainTexture = new THREE.TextureLoader().load("Model/Heightmap/mountain.jpg");
+            this.mountainTexture.wrapS = THREE.RepeatWrapping;
+            this.mountainTexture.wrapT = THREE.RepeatWrapping;
+            //this.mountainTexture.repeat.set(16, 16);
+
+            this.factoryTexture = new THREE.TextureLoader().load("Model/Heightmap/factory.jpg");
+            this.factoryTexture.wrapS = THREE.RepeatWrapping;
+            this.factoryTexture.wrapT = THREE.RepeatWrapping;
+
         }
 
         static getInstance()
@@ -63,16 +80,28 @@
             this.composer.renderToScreen = true;
         }
 
+        public get SplattingShader()
+        {
+            return this.splattingShader;
+        }
+
         public ShadedRender()
         {
             this.composer.render();
         }
+
+        public farmTexture: THREE.Texture;
+        public mountainTexture: THREE.Texture;
+        public factoryTexture: THREE.Texture;
 
         private composer: THREE.EffectComposer;
         private renderPass: THREE.RenderPass;
         private savePass: THREE.SavePass;
         private blendPass: THREE.ShaderPass;
         private outputPass: THREE.ShaderPass;
+
+        private splattingShader: SplattingShader;
+
         private renderTargetParameters;
     }
 }

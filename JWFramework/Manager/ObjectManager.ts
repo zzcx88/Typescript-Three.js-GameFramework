@@ -144,7 +144,10 @@
                 type.forEach(function (object)
                 {
                     if (object.GameObject.Type != ObjectType.OBJ_CAMERA && object.GameObject.IsClone == true)
+                    {
+                        //ObjectManager.getInstance().DeleteObject(object.GameObject);
                         object.GameObject.IsDead = true;
+                    }
                 })
             })
         }
