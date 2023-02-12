@@ -70,16 +70,11 @@ namespace JWFramework
             }
             if (this.previousPosition)
             {
-                this.currentVelocity = this.PhysicsComponent.GetPosition().clone().sub(this.previousPosition).divideScalar(900 / 1000);
+                this.currentVelocity = this.PhysicsComponent.GetPosition().clone().sub(this.previousPosition);
                 this.previousPosition = this.physicsComponent.GetPosition();
             }
             if (this.Picked == true)
             {
-                if (this.previousPosition)
-                {
-                    this.currentVelocity = this.PhysicsComponent.GetPosition().clone().sub(this.previousPosition).divideScalar(900 / 1000);
-                    //this.currentVelocity.multiplyScalar(5);
-                }
                 this.IsRayOn = true;
                 if (InputManager.getInstance().GetKeyState('left', KeyState.KEY_PRESS)) {
                     this.PhysicsComponent.RotateVec3(this.PhysicsComponent.Look, -1);
@@ -114,12 +109,13 @@ namespace JWFramework
                     let currentTime = performance.now();
                     let targetPos = ObjectManager.getInstance().GetObjectFromName("Target").PhysicsComponent.GetPosition();
 
-                    let missileDirection = targetPos.clone().sub(this.PhysicsComponent.GetPosition()).normalize();
-                    this.currentVelocity.addScalar(missileDirection.length());
-                    let direction = targetPos.clone().sub(this.physicsComponent.GetPosition().clone()).normalize();
+                    let missileDirection = targetPos.clone().sub(this.PhysicsComponent.GetPosition().clone());
+                    //this.currentVelocity.addScalar(missileDirection.length());
+                    let relativeVelocity = (ObjectManager.getInstance().GetObjectFromName("Target") as EditObject).currentVelocity.clone().sub(this.currentVelocity);
+                    let missileAcceleration = missileDirection.multiplyScalar(100 / Math.pow(missileDirection.length(), 2)).sub(relativeVelocity.multiplyScalar(100 / missileDirection.length()));
                     this.GameObjectInstance.lookAt(targetPos.clone());
                     //this.PhysicsComponent.MoveDirection(missileDirection, 100);
-                    this.physicsComponent.SetPostionVec3(this.physicsComponent.GetPosition().add(missileDirection));
+                    this.physicsComponent.SetPostionVec3(this.physicsComponent.GetPosition().add(missileAcceleration));
 
 
                     //let relativePosition = targetPos.clone().sub(this.PhysicsComponent.GetPosition());
@@ -137,7 +133,6 @@ namespace JWFramework
 
 
                     //this.GameObjectInstance.lookAt(targetPos);
-                    this.previousPosition = this.physicsComponent.GetPosition();
                 }
             }
             else
