@@ -25,3 +25,16 @@ canvas {
     right: 0px;
     z-index: 10;
 }
+
+#info {
+	position: absolute;
+	top: flex;
+	text-align: left;
+	z-index: 100;
+	display:block;
+    color: #eeff00;
+    font-weight: bold;
+    background-color: rgba(0, 0, 0, 0.438);
+    width: flex;
+    height: flex;
+}
