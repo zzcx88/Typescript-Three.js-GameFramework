@@ -1,0 +1,2852 @@
+[
+  {
+    "type": 0,
+    "name": "Terrain0",
+    "vertexIndex": [
+      61,
+      78,
+      62,
+      77,
+      60,
+      44,
+      43,
+      59,
+      76,
+      93,
+      94,
+      111,
+      95,
+      112,
+      129,
+      113,
+      130,
+      114,
+      131,
+      115,
+      132,
+      116,
+      99,
+      98,
+      82,
+      97,
+      81,
+      80,
+      63,
+      64,
+      79,
+      96,
+      128,
+      145,
+      146,
+      147,
+      148,
+      110,
+      127,
+      109,
+      126,
+      162,
+      163,
+      164,
+      180,
+      181,
+      165,
+      149,
+      144,
+      150,
+      133,
+      167,
+      151,
+      134,
+      117,
+      168,
+      185,
+      169,
+      186,
+      252,
+      269,
+      253,
+      268,
+      251,
+      267,
+      284,
+      285,
+      286,
+      287,
+      270,
+      266,
+      283,
+      282,
+      265,
+      249,
+      248,
+      250,
+      254,
+      219,
+      236,
+      220,
+      203,
+      202,
+      237,
+      235,
+      288,
+      271
+    ],
+    "vertexHeight": [
+      60.720001220703125,
+      66.23999786376953,
+      40.47999954223633,
+      38.63999938964844,
+      20.239999771118164,
+      7.360000133514404,
+      7.360000133514404,
+      11.039999961853027,
+      12.880000114440918,
+      33.119998931884766,
+      58.880001068115234,
+      88.31995391845703,
+      68.07999420166016,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      7.360000133514404,
+      -1,
+      3.680000066757202,
+      -1,
+      7.360000133514404,
+      18.399999618530273,
+      12.880000114440918,
+      1.840000033378601,
+      20.239999771118164,
+      -1,
+      25.760000228881836,
+      20.239999771118164,
+      -1,
+      -1,
+      -1,
+      57.040000915527344,
+      25.760000228881836,
+      12.880000114440918,
+      1.840000033378601,
+      1.840000033378601,
+      3.680000066757202,
+      20.239999771118164,
+      3.680000066757202,
+      11.039999961853027,
+      20.239999771118164,
+      -1,
+      5.519999980926514,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1
+    ],
+    "scale": {
+      "x": 1,
+      "y": 1,
+      "z": 1
+    },
+    "rotation": {
+      "x": 0,
+      "y": 0,
+      "z": 0
+    },
+    "position": {
+      "x": 0,
+      "y": 0,
+      "z": 0
+    }
+  },
+  {
+    "type": 0,
+    "name": "Terrain1",
+    "vertexIndex": [
+      154,
+      171,
+      155,
+      170,
+      187,
+      256,
+      273,
+      257,
+      272,
+      255,
+      278,
+      279,
+      262,
+      261,
+      277,
+      260,
+      259,
+      276,
+      258,
+      275,
+      274,
+      208,
+      209,
+      192,
+      240,
+      241,
+      224,
+      242,
+      243,
+      280,
+      263,
+      244,
+      264,
+      265,
+      248,
+      249,
+      250,
+      233,
+      232,
+      230,
+      247,
+      231,
+      245,
+      228,
+      226,
+      229,
+      246,
+      188,
+      205,
+      189,
+      225
+    ],
+    "vertexHeight": [
+      -1,
+      -1,
+      1.840000033378601,
+      -1,
+      -1,
+      0,
+      -1,
+      -1,
+      -1,
+      -1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      -1,
+      0,
+      -1,
+      -1,
+      0,
+      0,
+      0,
+      0,
+      -1,
+      -1,
+      -1,
+      -1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      -1
+    ],
+    "scale": {
+      "x": 1,
+      "y": 1,
+      "z": 1
+    },
+    "rotation": {
+      "x": 0,
+      "y": 0,
+      "z": 0
+    },
+    "position": {
+      "x": 900,
+      "y": 0,
+      "z": 0
+    }
+  },
+  {
+    "type": 0,
+    "name": "Terrain2",
+    "vertexIndex": [],
+    "vertexHeight": [],
+    "scale": {
+      "x": 1,
+      "y": 1,
+      "z": 1
+    },
+    "rotation": {
+      "x": 0,
+      "y": 0,
+      "z": 0
+    },
+    "position": {
+      "x": 1800,
+      "y": 0,
+      "z": 0
+    }
+  },
+  {
+    "type": 0,
+    "name": "Terrain3",
+    "vertexIndex": [],
+    "vertexHeight": [],
+    "scale": {
+      "x": 1,
+      "y": 1,
+      "z": 1
+    },
+    "rotation": {
+      "x": 0,
+      "y": 0,
+      "z": 0
+    },
+    "position": {
+      "x": 2700,
+      "y": 0,
+      "z": 0
+    }
+  },
+  {
+    "type": 0,
+    "name": "Terrain4",
+    "vertexIndex": [],
+    "vertexHeight": [],
+    "scale": {
+      "x": 1,
+      "y": 1,
+      "z": 1
+    },
+    "rotation": {
+      "x": 0,
+      "y": 0,
+      "z": 0
+    },
+    "position": {
+      "x": 3600,
+      "y": 0,
+      "z": 0
+    }
+  },
+  {
+    "type": 0,
+    "name": "Terrain5",
+    "vertexIndex": [],
+    "vertexHeight": [],
+    "scale": {
+      "x": 1,
+      "y": 1,
+      "z": 1
+    },
+    "rotation": {
+      "x": 0,
+      "y": 0,
+      "z": 0
+    },
+    "position": {
+      "x": 4500,
+      "y": 0,
+      "z": 0
+    }
+  },
+  {
+    "type": 0,
+    "name": "Terrain6",
+    "vertexIndex": [],
+    "vertexHeight": [],
+    "scale": {
+      "x": 1,
+      "y": 1,
+      "z": 1
+    },
+    "rotation": {
+      "x": 0,
+      "y": 0,
+      "z": 0
+    },
+    "position": {
+      "x": 5400,
+      "y": 0,
+      "z": 0
+    }
+  },
+  {
+    "type": 0,
+    "name": "Terrain7",
+    "vertexIndex": [],
+    "vertexHeight": [],
+    "scale": {
+      "x": 1,
+      "y": 1,
+      "z": 1
+    },
+    "rotation": {
+      "x": 0,
+      "y": 0,
+      "z": 0
+    },
+    "position": {
+      "x": 6300,
+      "y": 0,
+      "z": 0
+    }
+  },
+  {
+    "type": 0,
+    "name": "Terrain8",
+    "vertexIndex": [],
+    "vertexHeight": [],
+    "scale": {
+      "x": 1,
+      "y": 1,
+      "z": 1
+    },
+    "rotation": {
+      "x": 0,
+      "y": 0,
+      "z": 0
+    },
+    "position": {
+      "x": 7200,
+      "y": 0,
+      "z": 0
+    }
+  },
+  {
+    "type": 0,
+    "name": "Terrain9",
+    "vertexIndex": [],
+    "vertexHeight": [],
+    "scale": {
+      "x": 1,
+      "y": 1,
+      "z": 1
+    },
+    "rotation": {
+      "x": 0,
+      "y": 0,
+      "z": 0
+    },
+    "position": {
+      "x": 8100,
+      "y": 0,
+      "z": 0
+    }
+  },
+  {
+    "type": 0,
+    "name": "Terrain10",
+    "vertexIndex": [
+      13,
+      30,
+      14,
+      31,
+      47,
+      48,
+      49,
+      32,
+      33,
+      66,
+      50,
+      67,
+      83,
+      65,
+      64,
+      46,
+      63,
+      62,
+      45,
+      44,
+      61,
+      60,
+      43,
+      59,
+      42,
+      58,
+      76,
+      77,
+      78,
+      79,
+      80,
+      15,
+      16,
+      29,
+      28,
+      27,
+      81,
+      82,
+      11,
+      12,
+      26,
+      10,
+      25,
+      41,
+      98,
+      96,
+      97
+    ],
+    "vertexHeight": [
+      -1,
+      -1,
+      -1,
+      -1,
+      0,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      0,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      0,
+      0,
+      0,
+      0,
+      3.7799999713897705,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      0,
+      -1,
+      -1,
+      -1,
+      -1,
+      0,
+      0,
+      0,
+      0,
+      -1,
+      -1,
+      -1
+    ],
+    "scale": {
+      "x": 1,
+      "y": 1,
+      "z": 1
+    },
+    "rotation": {
+      "x": 0,
+      "y": 0,
+      "z": 0
+    },
+    "position": {
+      "x": 0,
+      "y": 0,
+      "z": 900
+    }
+  },
+  {
+    "type": 0,
+    "name": "Terrain11",
+    "vertexIndex": [
+      34,
+      51,
+      35,
+      18,
+      52,
+      68,
+      69,
+      70,
+      53,
+      54,
+      71,
+      55,
+      72,
+      56,
+      73,
+      90,
+      74,
+      91,
+      92,
+      75,
+      76,
+      77,
+      60,
+      63,
+      80,
+      64,
+      61,
+      62,
+      45,
+      59,
+      43,
+      57,
+      40,
+      39,
+      19,
+      20,
+      3,
+      2,
+      1,
+      36,
+      37,
+      38,
+      41,
+      24,
+      42,
+      25,
+      17,
+      0,
+      88,
+      89,
+      93,
+      26,
+      23,
+      6,
+      7,
+      22,
+      5,
+      21,
+      58,
+      86,
+      87,
+      103,
+      85,
+      4,
+      44,
+      27,
+      46,
+      29,
+      30,
+      28,
+      11,
+      10
+    ],
+    "vertexHeight": [
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      -1,
+      11.34000015258789,
+      15.120000839233398,
+      13.230000495910645,
+      7.559999942779541,
+      7.559999942779541,
+      9.449999809265137,
+      9.449999809265137,
+      24.569997787475586,
+      35.909996032714844,
+      54.80998992919922,
+      17.010000228881836,
+      24.569997787475586,
+      3.7799999713897705,
+      3.7799999713897705,
+      3.7799999713897705,
+      1.8899999856948853,
+      1.8899999856948853,
+      0,
+      34.019996643066406,
+      0,
+      7.559999942779541,
+      0,
+      0,
+      -1,
+      -1,
+      -1,
+      0,
+      -1,
+      -1,
+      -1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      -1,
+      -1,
+      -1,
+      11.34000015258789,
+      11.34000015258789,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      -1,
+      -1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "scale": {
+      "x": 1,
+      "y": 1,
+      "z": 1
+    },
+    "rotation": {
+      "x": 0,
+      "y": 0,
+      "z": 0
+    },
+    "position": {
+      "x": 900,
+      "y": 0,
+      "z": 900
+    }
+  },
+  {
+    "type": 0,
+    "name": "Terrain12",
+    "vertexIndex": [],
+    "vertexHeight": [],
+    "scale": {
+      "x": 1,
+      "y": 1,
+      "z": 1
+    },
+    "rotation": {
+      "x": 0,
+      "y": 0,
+      "z": 0
+    },
+    "position": {
+      "x": 1800,
+      "y": 0,
+      "z": 900
+    }
+  },
+  {
+    "type": 0,
+    "name": "Terrain13",
+    "vertexIndex": [],
+    "vertexHeight": [],
+    "scale": {
+      "x": 1,
+      "y": 1,
+      "z": 1
+    },
+    "rotation": {
+      "x": 0,
+      "y": 0,
+      "z": 0
+    },
+    "position": {
+      "x": 2700,
+      "y": 0,
+      "z": 900
+    }
+  },
+  {
+    "type": 0,
+    "name": "Terrain14",
+    "vertexIndex": [],
+    "vertexHeight": [],
+    "scale": {
+      "x": 1,
+      "y": 1,
+      "z": 1
+    },
+    "rotation": {
+      "x": 0,
+      "y": 0,
+      "z": 0
+    },
+    "position": {
+      "x": 3600,
+      "y": 0,
+      "z": 900
+    }
+  },
+  {
+    "type": 0,
+    "name": "Terrain15",
+    "vertexIndex": [],
+    "vertexHeight": [],
+    "scale": {
+      "x": 1,
+      "y": 1,
+      "z": 1
+    },
+    "rotation": {
+      "x": 0,
+      "y": 0,
+      "z": 0
+    },
+    "position": {
+      "x": 4500,
+      "y": 0,
+      "z": 900
+    }
+  },
+  {
+    "type": 0,
+    "name": "Terrain16",
+    "vertexIndex": [],
+    "vertexHeight": [],
+    "scale": {
+      "x": 1,
+      "y": 1,
+      "z": 1
+    },
+    "rotation": {
+      "x": 0,
+      "y": 0,
+      "z": 0
+    },
+    "position": {
+      "x": 5400,
+      "y": 0,
+      "z": 900
+    }
+  },
+  {
+    "type": 0,
+    "name": "Terrain17",
+    "vertexIndex": [],
+    "vertexHeight": [],
+    "scale": {
+      "x": 1,
+      "y": 1,
+      "z": 1
+    },
+    "rotation": {
+      "x": 0,
+      "y": 0,
+      "z": 0
+    },
+    "position": {
+      "x": 6300,
+      "y": 0,
+      "z": 900
+    }
+  },
+  {
+    "type": 0,
+    "name": "Terrain18",
+    "vertexIndex": [],
+    "vertexHeight": [],
+    "scale": {
+      "x": 1,
+      "y": 1,
+      "z": 1
+    },
+    "rotation": {
+      "x": 0,
+      "y": 0,
+      "z": 0
+    },
+    "position": {
+      "x": 7200,
+      "y": 0,
+      "z": 900
+    }
+  },
+  {
+    "type": 0,
+    "name": "Terrain19",
+    "vertexIndex": [],
+    "vertexHeight": [],
+    "scale": {
+      "x": 1,
+      "y": 1,
+      "z": 1
+    },
+    "rotation": {
+      "x": 0,
+      "y": 0,
+      "z": 0
+    },
+    "position": {
+      "x": 8100,
+      "y": 0,
+      "z": 900
+    }
+  },
+  {
+    "type": 0,
+    "name": "Terrain20",
+    "vertexIndex": [],
+    "vertexHeight": [],
+    "scale": {
+      "x": 1,
+      "y": 1,
+      "z": 1
+    },
+    "rotation": {
+      "x": 0,
+      "y": 0,
+      "z": 0
+    },
+    "position": {
+      "x": 0,
+      "y": 0,
+      "z": 1800
+    }
+  },
+  {
+    "type": 0,
+    "name": "Terrain21",
+    "vertexIndex": [],
+    "vertexHeight": [],
+    "scale": {
+      "x": 1,
+      "y": 1,
+      "z": 1
+    },
+    "rotation": {
+      "x": 0,
+      "y": 0,
+      "z": 0
+    },
+    "position": {
+      "x": 900,
+      "y": 0,
+      "z": 1800
+    }
+  },
+  {
+    "type": 0,
+    "name": "Terrain22",
+    "vertexIndex": [],
+    "vertexHeight": [],
+    "scale": {
+      "x": 1,
+      "y": 1,
+      "z": 1
+    },
+    "rotation": {
+      "x": 0,
+      "y": 0,
+      "z": 0
+    },
+    "position": {
+      "x": 1800,
+      "y": 0,
+      "z": 1800
+    }
+  },
+  {
+    "type": 0,
+    "name": "Terrain23",
+    "vertexIndex": [],
+    "vertexHeight": [],
+    "scale": {
+      "x": 1,
+      "y": 1,
+      "z": 1
+    },
+    "rotation": {
+      "x": 0,
+      "y": 0,
+      "z": 0
+    },
+    "position": {
+      "x": 2700,
+      "y": 0,
+      "z": 1800
+    }
+  },
+  {
+    "type": 0,
+    "name": "Terrain24",
+    "vertexIndex": [],
+    "vertexHeight": [],
+    "scale": {
+      "x": 1,
+      "y": 1,
+      "z": 1
+    },
+    "rotation": {
+      "x": 0,
+      "y": 0,
+      "z": 0
+    },
+    "position": {
+      "x": 3600,
+      "y": 0,
+      "z": 1800
+    }
+  },
+  {
+    "type": 0,
+    "name": "Terrain25",
+    "vertexIndex": [],
+    "vertexHeight": [],
+    "scale": {
+      "x": 1,
+      "y": 1,
+      "z": 1
+    },
+    "rotation": {
+      "x": 0,
+      "y": 0,
+      "z": 0
+    },
+    "position": {
+      "x": 4500,
+      "y": 0,
+      "z": 1800
+    }
+  },
+  {
+    "type": 0,
+    "name": "Terrain26",
+    "vertexIndex": [],
+    "vertexHeight": [],
+    "scale": {
+      "x": 1,
+      "y": 1,
+      "z": 1
+    },
+    "rotation": {
+      "x": 0,
+      "y": 0,
+      "z": 0
+    },
+    "position": {
+      "x": 5400,
+      "y": 0,
+      "z": 1800
+    }
+  },
+  {
+    "type": 0,
+    "name": "Terrain27",
+    "vertexIndex": [],
+    "vertexHeight": [],
+    "scale": {
+      "x": 1,
+      "y": 1,
+      "z": 1
+    },
+    "rotation": {
+      "x": 0,
+      "y": 0,
+      "z": 0
+    },
+    "position": {
+      "x": 6300,
+      "y": 0,
+      "z": 1800
+    }
+  },
+  {
+    "type": 0,
+    "name": "Terrain28",
+    "vertexIndex": [],
+    "vertexHeight": [],
+    "scale": {
+      "x": 1,
+      "y": 1,
+      "z": 1
+    },
+    "rotation": {
+      "x": 0,
+      "y": 0,
+      "z": 0
+    },
+    "position": {
+      "x": 7200,
+      "y": 0,
+      "z": 1800
+    }
+  },
+  {
+    "type": 0,
+    "name": "Terrain29",
+    "vertexIndex": [],
+    "vertexHeight": [],
+    "scale": {
+      "x": 1,
+      "y": 1,
+      "z": 1
+    },
+    "rotation": {
+      "x": 0,
+      "y": 0,
+      "z": 0
+    },
+    "position": {
+      "x": 8100,
+      "y": 0,
+      "z": 1800
+    }
+  },
+  {
+    "type": 0,
+    "name": "Terrain30",
+    "vertexIndex": [],
+    "vertexHeight": [],
+    "scale": {
+      "x": 1,
+      "y": 1,
+      "z": 1
+    },
+    "rotation": {
+      "x": 0,
+      "y": 0,
+      "z": 0
+    },
+    "position": {
+      "x": 0,
+      "y": 0,
+      "z": 2700
+    }
+  },
+  {
+    "type": 0,
+    "name": "Terrain31",
+    "vertexIndex": [],
+    "vertexHeight": [],
+    "scale": {
+      "x": 1,
+      "y": 1,
+      "z": 1
+    },
+    "rotation": {
+      "x": 0,
+      "y": 0,
+      "z": 0
+    },
+    "position": {
+      "x": 900,
+      "y": 0,
+      "z": 2700
+    }
+  },
+  {
+    "type": 0,
+    "name": "Terrain32",
+    "vertexIndex": [],
+    "vertexHeight": [],
+    "scale": {
+      "x": 1,
+      "y": 1,
+      "z": 1
+    },
+    "rotation": {
+      "x": 0,
+      "y": 0,
+      "z": 0
+    },
+    "position": {
+      "x": 1800,
+      "y": 0,
+      "z": 2700
+    }
+  },
+  {
+    "type": 0,
+    "name": "Terrain33",
+    "vertexIndex": [],
+    "vertexHeight": [],
+    "scale": {
+      "x": 1,
+      "y": 1,
+      "z": 1
+    },
+    "rotation": {
+      "x": 0,
+      "y": 0,
+      "z": 0
+    },
+    "position": {
+      "x": 2700,
+      "y": 0,
+      "z": 2700
+    }
+  },
+  {
+    "type": 0,
+    "name": "Terrain34",
+    "vertexIndex": [],
+    "vertexHeight": [],
+    "scale": {
+      "x": 1,
+      "y": 1,
+      "z": 1
+    },
+    "rotation": {
+      "x": 0,
+      "y": 0,
+      "z": 0
+    },
+    "position": {
+      "x": 3600,
+      "y": 0,
+      "z": 2700
+    }
+  },
+  {
+    "type": 0,
+    "name": "Terrain35",
+    "vertexIndex": [],
+    "vertexHeight": [],
+    "scale": {
+      "x": 1,
+      "y": 1,
+      "z": 1
+    },
+    "rotation": {
+      "x": 0,
+      "y": 0,
+      "z": 0
+    },
+    "position": {
+      "x": 4500,
+      "y": 0,
+      "z": 2700
+    }
+  },
+  {
+    "type": 0,
+    "name": "Terrain36",
+    "vertexIndex": [],
+    "vertexHeight": [],
+    "scale": {
+      "x": 1,
+      "y": 1,
+      "z": 1
+    },
+    "rotation": {
+      "x": 0,
+      "y": 0,
+      "z": 0
+    },
+    "position": {
+      "x": 5400,
+      "y": 0,
+      "z": 2700
+    }
+  },
+  {
+    "type": 0,
+    "name": "Terrain37",
+    "vertexIndex": [],
+    "vertexHeight": [],
+    "scale": {
+      "x": 1,
+      "y": 1,
+      "z": 1
+    },
+    "rotation": {
+      "x": 0,
+      "y": 0,
+      "z": 0
+    },
+    "position": {
+      "x": 6300,
+      "y": 0,
+      "z": 2700
+    }
+  },
+  {
+    "type": 0,
+    "name": "Terrain38",
+    "vertexIndex": [],
+    "vertexHeight": [],
+    "scale": {
+      "x": 1,
+      "y": 1,
+      "z": 1
+    },
+    "rotation": {
+      "x": 0,
+      "y": 0,
+      "z": 0
+    },
+    "position": {
+      "x": 7200,
+      "y": 0,
+      "z": 2700
+    }
+  },
+  {
+    "type": 0,
+    "name": "Terrain39",
+    "vertexIndex": [],
+    "vertexHeight": [],
+    "scale": {
+      "x": 1,
+      "y": 1,
+      "z": 1
+    },
+    "rotation": {
+      "x": 0,
+      "y": 0,
+      "z": 0
+    },
+    "position": {
+      "x": 8100,
+      "y": 0,
+      "z": 2700
+    }
+  },
+  {
+    "type": 0,
+    "name": "Terrain40",
+    "vertexIndex": [],
+    "vertexHeight": [],
+    "scale": {
+      "x": 1,
+      "y": 1,
+      "z": 1
+    },
+    "rotation": {
+      "x": 0,
+      "y": 0,
+      "z": 0
+    },
+    "position": {
+      "x": 0,
+      "y": 0,
+      "z": 3600
+    }
+  },
+  {
+    "type": 0,
+    "name": "Terrain41",
+    "vertexIndex": [],
+    "vertexHeight": [],
+    "scale": {
+      "x": 1,
+      "y": 1,
+      "z": 1
+    },
+    "rotation": {
+      "x": 0,
+      "y": 0,
+      "z": 0
+    },
+    "position": {
+      "x": 900,
+      "y": 0,
+      "z": 3600
+    }
+  },
+  {
+    "type": 0,
+    "name": "Terrain42",
+    "vertexIndex": [],
+    "vertexHeight": [],
+    "scale": {
+      "x": 1,
+      "y": 1,
+      "z": 1
+    },
+    "rotation": {
+      "x": 0,
+      "y": 0,
+      "z": 0
+    },
+    "position": {
+      "x": 1800,
+      "y": 0,
+      "z": 3600
+    }
+  },
+  {
+    "type": 0,
+    "name": "Terrain43",
+    "vertexIndex": [],
+    "vertexHeight": [],
+    "scale": {
+      "x": 1,
+      "y": 1,
+      "z": 1
+    },
+    "rotation": {
+      "x": 0,
+      "y": 0,
+      "z": 0
+    },
+    "position": {
+      "x": 2700,
+      "y": 0,
+      "z": 3600
+    }
+  },
+  {
+    "type": 0,
+    "name": "Terrain44",
+    "vertexIndex": [],
+    "vertexHeight": [],
+    "scale": {
+      "x": 1,
+      "y": 1,
+      "z": 1
+    },
+    "rotation": {
+      "x": 0,
+      "y": 0,
+      "z": 0
+    },
+    "position": {
+      "x": 3600,
+      "y": 0,
+      "z": 3600
+    }
+  },
+  {
+    "type": 0,
+    "name": "Terrain45",
+    "vertexIndex": [],
+    "vertexHeight": [],
+    "scale": {
+      "x": 1,
+      "y": 1,
+      "z": 1
+    },
+    "rotation": {
+      "x": 0,
+      "y": 0,
+      "z": 0
+    },
+    "position": {
+      "x": 4500,
+      "y": 0,
+      "z": 3600
+    }
+  },
+  {
+    "type": 0,
+    "name": "Terrain46",
+    "vertexIndex": [],
+    "vertexHeight": [],
+    "scale": {
+      "x": 1,
+      "y": 1,
+      "z": 1
+    },
+    "rotation": {
+      "x": 0,
+      "y": 0,
+      "z": 0
+    },
+    "position": {
+      "x": 5400,
+      "y": 0,
+      "z": 3600
+    }
+  },
+  {
+    "type": 0,
+    "name": "Terrain47",
+    "vertexIndex": [],
+    "vertexHeight": [],
+    "scale": {
+      "x": 1,
+      "y": 1,
+      "z": 1
+    },
+    "rotation": {
+      "x": 0,
+      "y": 0,
+      "z": 0
+    },
+    "position": {
+      "x": 6300,
+      "y": 0,
+      "z": 3600
+    }
+  },
+  {
+    "type": 0,
+    "name": "Terrain48",
+    "vertexIndex": [],
+    "vertexHeight": [],
+    "scale": {
+      "x": 1,
+      "y": 1,
+      "z": 1
+    },
+    "rotation": {
+      "x": 0,
+      "y": 0,
+      "z": 0
+    },
+    "position": {
+      "x": 7200,
+      "y": 0,
+      "z": 3600
+    }
+  },
+  {
+    "type": 0,
+    "name": "Terrain49",
+    "vertexIndex": [],
+    "vertexHeight": [],
+    "scale": {
+      "x": 1,
+      "y": 1,
+      "z": 1
+    },
+    "rotation": {
+      "x": 0,
+      "y": 0,
+      "z": 0
+    },
+    "position": {
+      "x": 8100,
+      "y": 0,
+      "z": 3600
+    }
+  },
+  {
+    "type": 0,
+    "name": "Terrain50",
+    "vertexIndex": [],
+    "vertexHeight": [],
+    "scale": {
+      "x": 1,
+      "y": 1,
+      "z": 1
+    },
+    "rotation": {
+      "x": 0,
+      "y": 0,
+      "z": 0
+    },
+    "position": {
+      "x": 0,
+      "y": 0,
+      "z": 4500
+    }
+  },
+  {
+    "type": 0,
+    "name": "Terrain51",
+    "vertexIndex": [],
+    "vertexHeight": [],
+    "scale": {
+      "x": 1,
+      "y": 1,
+      "z": 1
+    },
+    "rotation": {
+      "x": 0,
+      "y": 0,
+      "z": 0
+    },
+    "position": {
+      "x": 900,
+      "y": 0,
+      "z": 4500
+    }
+  },
+  {
+    "type": 0,
+    "name": "Terrain52",
+    "vertexIndex": [],
+    "vertexHeight": [],
+    "scale": {
+      "x": 1,
+      "y": 1,
+      "z": 1
+    },
+    "rotation": {
+      "x": 0,
+      "y": 0,
+      "z": 0
+    },
+    "position": {
+      "x": 1800,
+      "y": 0,
+      "z": 4500
+    }
+  },
+  {
+    "type": 0,
+    "name": "Terrain53",
+    "vertexIndex": [],
+    "vertexHeight": [],
+    "scale": {
+      "x": 1,
+      "y": 1,
+      "z": 1
+    },
+    "rotation": {
+      "x": 0,
+      "y": 0,
+      "z": 0
+    },
+    "position": {
+      "x": 2700,
+      "y": 0,
+      "z": 4500
+    }
+  },
+  {
+    "type": 0,
+    "name": "Terrain54",
+    "vertexIndex": [],
+    "vertexHeight": [],
+    "scale": {
+      "x": 1,
+      "y": 1,
+      "z": 1
+    },
+    "rotation": {
+      "x": 0,
+      "y": 0,
+      "z": 0
+    },
+    "position": {
+      "x": 3600,
+      "y": 0,
+      "z": 4500
+    }
+  },
+  {
+    "type": 0,
+    "name": "Terrain55",
+    "vertexIndex": [],
+    "vertexHeight": [],
+    "scale": {
+      "x": 1,
+      "y": 1,
+      "z": 1
+    },
+    "rotation": {
+      "x": 0,
+      "y": 0,
+      "z": 0
+    },
+    "position": {
+      "x": 4500,
+      "y": 0,
+      "z": 4500
+    }
+  },
+  {
+    "type": 0,
+    "name": "Terrain56",
+    "vertexIndex": [],
+    "vertexHeight": [],
+    "scale": {
+      "x": 1,
+      "y": 1,
+      "z": 1
+    },
+    "rotation": {
+      "x": 0,
+      "y": 0,
+      "z": 0
+    },
+    "position": {
+      "x": 5400,
+      "y": 0,
+      "z": 4500
+    }
+  },
+  {
+    "type": 0,
+    "name": "Terrain57",
+    "vertexIndex": [],
+    "vertexHeight": [],
+    "scale": {
+      "x": 1,
+      "y": 1,
+      "z": 1
+    },
+    "rotation": {
+      "x": 0,
+      "y": 0,
+      "z": 0
+    },
+    "position": {
+      "x": 6300,
+      "y": 0,
+      "z": 4500
+    }
+  },
+  {
+    "type": 0,
+    "name": "Terrain58",
+    "vertexIndex": [],
+    "vertexHeight": [],
+    "scale": {
+      "x": 1,
+      "y": 1,
+      "z": 1
+    },
+    "rotation": {
+      "x": 0,
+      "y": 0,
+      "z": 0
+    },
+    "position": {
+      "x": 7200,
+      "y": 0,
+      "z": 4500
+    }
+  },
+  {
+    "type": 0,
+    "name": "Terrain59",
+    "vertexIndex": [],
+    "vertexHeight": [],
+    "scale": {
+      "x": 1,
+      "y": 1,
+      "z": 1
+    },
+    "rotation": {
+      "x": 0,
+      "y": 0,
+      "z": 0
+    },
+    "position": {
+      "x": 8100,
+      "y": 0,
+      "z": 4500
+    }
+  },
+  {
+    "type": 0,
+    "name": "Terrain60",
+    "vertexIndex": [],
+    "vertexHeight": [],
+    "scale": {
+      "x": 1,
+      "y": 1,
+      "z": 1
+    },
+    "rotation": {
+      "x": 0,
+      "y": 0,
+      "z": 0
+    },
+    "position": {
+      "x": 0,
+      "y": 0,
+      "z": 5400
+    }
+  },
+  {
+    "type": 0,
+    "name": "Terrain61",
+    "vertexIndex": [],
+    "vertexHeight": [],
+    "scale": {
+      "x": 1,
+      "y": 1,
+      "z": 1
+    },
+    "rotation": {
+      "x": 0,
+      "y": 0,
+      "z": 0
+    },
+    "position": {
+      "x": 900,
+      "y": 0,
+      "z": 5400
+    }
+  },
+  {
+    "type": 0,
+    "name": "Terrain62",
+    "vertexIndex": [],
+    "vertexHeight": [],
+    "scale": {
+      "x": 1,
+      "y": 1,
+      "z": 1
+    },
+    "rotation": {
+      "x": 0,
+      "y": 0,
+      "z": 0
+    },
+    "position": {
+      "x": 1800,
+      "y": 0,
+      "z": 5400
+    }
+  },
+  {
+    "type": 0,
+    "name": "Terrain63",
+    "vertexIndex": [],
+    "vertexHeight": [],
+    "scale": {
+      "x": 1,
+      "y": 1,
+      "z": 1
+    },
+    "rotation": {
+      "x": 0,
+      "y": 0,
+      "z": 0
+    },
+    "position": {
+      "x": 2700,
+      "y": 0,
+      "z": 5400
+    }
+  },
+  {
+    "type": 0,
+    "name": "Terrain64",
+    "vertexIndex": [],
+    "vertexHeight": [],
+    "scale": {
+      "x": 1,
+      "y": 1,
+      "z": 1
+    },
+    "rotation": {
+      "x": 0,
+      "y": 0,
+      "z": 0
+    },
+    "position": {
+      "x": 3600,
+      "y": 0,
+      "z": 5400
+    }
+  },
+  {
+    "type": 0,
+    "name": "Terrain65",
+    "vertexIndex": [],
+    "vertexHeight": [],
+    "scale": {
+      "x": 1,
+      "y": 1,
+      "z": 1
+    },
+    "rotation": {
+      "x": 0,
+      "y": 0,
+      "z": 0
+    },
+    "position": {
+      "x": 4500,
+      "y": 0,
+      "z": 5400
+    }
+  },
+  {
+    "type": 0,
+    "name": "Terrain66",
+    "vertexIndex": [],
+    "vertexHeight": [],
+    "scale": {
+      "x": 1,
+      "y": 1,
+      "z": 1
+    },
+    "rotation": {
+      "x": 0,
+      "y": 0,
+      "z": 0
+    },
+    "position": {
+      "x": 5400,
+      "y": 0,
+      "z": 5400
+    }
+  },
+  {
+    "type": 0,
+    "name": "Terrain67",
+    "vertexIndex": [],
+    "vertexHeight": [],
+    "scale": {
+      "x": 1,
+      "y": 1,
+      "z": 1
+    },
+    "rotation": {
+      "x": 0,
+      "y": 0,
+      "z": 0
+    },
+    "position": {
+      "x": 6300,
+      "y": 0,
+      "z": 5400
+    }
+  },
+  {
+    "type": 0,
+    "name": "Terrain68",
+    "vertexIndex": [],
+    "vertexHeight": [],
+    "scale": {
+      "x": 1,
+      "y": 1,
+      "z": 1
+    },
+    "rotation": {
+      "x": 0,
+      "y": 0,
+      "z": 0
+    },
+    "position": {
+      "x": 7200,
+      "y": 0,
+      "z": 5400
+    }
+  },
+  {
+    "type": 0,
+    "name": "Terrain69",
+    "vertexIndex": [],
+    "vertexHeight": [],
+    "scale": {
+      "x": 1,
+      "y": 1,
+      "z": 1
+    },
+    "rotation": {
+      "x": 0,
+      "y": 0,
+      "z": 0
+    },
+    "position": {
+      "x": 8100,
+      "y": 0,
+      "z": 5400
+    }
+  },
+  {
+    "type": 0,
+    "name": "Terrain70",
+    "vertexIndex": [],
+    "vertexHeight": [],
+    "scale": {
+      "x": 1,
+      "y": 1,
+      "z": 1
+    },
+    "rotation": {
+      "x": 0,
+      "y": 0,
+      "z": 0
+    },
+    "position": {
+      "x": 0,
+      "y": 0,
+      "z": 6300
+    }
+  },
+  {
+    "type": 0,
+    "name": "Terrain71",
+    "vertexIndex": [],
+    "vertexHeight": [],
+    "scale": {
+      "x": 1,
+      "y": 1,
+      "z": 1
+    },
+    "rotation": {
+      "x": 0,
+      "y": 0,
+      "z": 0
+    },
+    "position": {
+      "x": 900,
+      "y": 0,
+      "z": 6300
+    }
+  },
+  {
+    "type": 0,
+    "name": "Terrain72",
+    "vertexIndex": [],
+    "vertexHeight": [],
+    "scale": {
+      "x": 1,
+      "y": 1,
+      "z": 1
+    },
+    "rotation": {
+      "x": 0,
+      "y": 0,
+      "z": 0
+    },
+    "position": {
+      "x": 1800,
+      "y": 0,
+      "z": 6300
+    }
+  },
+  {
+    "type": 0,
+    "name": "Terrain73",
+    "vertexIndex": [],
+    "vertexHeight": [],
+    "scale": {
+      "x": 1,
+      "y": 1,
+      "z": 1
+    },
+    "rotation": {
+      "x": 0,
+      "y": 0,
+      "z": 0
+    },
+    "position": {
+      "x": 2700,
+      "y": 0,
+      "z": 6300
+    }
+  },
+  {
+    "type": 0,
+    "name": "Terrain74",
+    "vertexIndex": [],
+    "vertexHeight": [],
+    "scale": {
+      "x": 1,
+      "y": 1,
+      "z": 1
+    },
+    "rotation": {
+      "x": 0,
+      "y": 0,
+      "z": 0
+    },
+    "position": {
+      "x": 3600,
+      "y": 0,
+      "z": 6300
+    }
+  },
+  {
+    "type": 0,
+    "name": "Terrain75",
+    "vertexIndex": [],
+    "vertexHeight": [],
+    "scale": {
+      "x": 1,
+      "y": 1,
+      "z": 1
+    },
+    "rotation": {
+      "x": 0,
+      "y": 0,
+      "z": 0
+    },
+    "position": {
+      "x": 4500,
+      "y": 0,
+      "z": 6300
+    }
+  },
+  {
+    "type": 0,
+    "name": "Terrain76",
+    "vertexIndex": [],
+    "vertexHeight": [],
+    "scale": {
+      "x": 1,
+      "y": 1,
+      "z": 1
+    },
+    "rotation": {
+      "x": 0,
+      "y": 0,
+      "z": 0
+    },
+    "position": {
+      "x": 5400,
+      "y": 0,
+      "z": 6300
+    }
+  },
+  {
+    "type": 0,
+    "name": "Terrain77",
+    "vertexIndex": [],
+    "vertexHeight": [],
+    "scale": {
+      "x": 1,
+      "y": 1,
+      "z": 1
+    },
+    "rotation": {
+      "x": 0,
+      "y": 0,
+      "z": 0
+    },
+    "position": {
+      "x": 6300,
+      "y": 0,
+      "z": 6300
+    }
+  },
+  {
+    "type": 0,
+    "name": "Terrain78",
+    "vertexIndex": [],
+    "vertexHeight": [],
+    "scale": {
+      "x": 1,
+      "y": 1,
+      "z": 1
+    },
+    "rotation": {
+      "x": 0,
+      "y": 0,
+      "z": 0
+    },
+    "position": {
+      "x": 7200,
+      "y": 0,
+      "z": 6300
+    }
+  },
+  {
+    "type": 0,
+    "name": "Terrain79",
+    "vertexIndex": [],
+    "vertexHeight": [],
+    "scale": {
+      "x": 1,
+      "y": 1,
+      "z": 1
+    },
+    "rotation": {
+      "x": 0,
+      "y": 0,
+      "z": 0
+    },
+    "position": {
+      "x": 8100,
+      "y": 0,
+      "z": 6300
+    }
+  },
+  {
+    "type": 0,
+    "name": "Terrain80",
+    "vertexIndex": [],
+    "vertexHeight": [],
+    "scale": {
+      "x": 1,
+      "y": 1,
+      "z": 1
+    },
+    "rotation": {
+      "x": 0,
+      "y": 0,
+      "z": 0
+    },
+    "position": {
+      "x": 0,
+      "y": 0,
+      "z": 7200
+    }
+  },
+  {
+    "type": 0,
+    "name": "Terrain81",
+    "vertexIndex": [],
+    "vertexHeight": [],
+    "scale": {
+      "x": 1,
+      "y": 1,
+      "z": 1
+    },
+    "rotation": {
+      "x": 0,
+      "y": 0,
+      "z": 0
+    },
+    "position": {
+      "x": 900,
+      "y": 0,
+      "z": 7200
+    }
+  },
+  {
+    "type": 0,
+    "name": "Terrain82",
+    "vertexIndex": [],
+    "vertexHeight": [],
+    "scale": {
+      "x": 1,
+      "y": 1,
+      "z": 1
+    },
+    "rotation": {
+      "x": 0,
+      "y": 0,
+      "z": 0
+    },
+    "position": {
+      "x": 1800,
+      "y": 0,
+      "z": 7200
+    }
+  },
+  {
+    "type": 0,
+    "name": "Terrain83",
+    "vertexIndex": [],
+    "vertexHeight": [],
+    "scale": {
+      "x": 1,
+      "y": 1,
+      "z": 1
+    },
+    "rotation": {
+      "x": 0,
+      "y": 0,
+      "z": 0
+    },
+    "position": {
+      "x": 2700,
+      "y": 0,
+      "z": 7200
+    }
+  },
+  {
+    "type": 0,
+    "name": "Terrain84",
+    "vertexIndex": [],
+    "vertexHeight": [],
+    "scale": {
+      "x": 1,
+      "y": 1,
+      "z": 1
+    },
+    "rotation": {
+      "x": 0,
+      "y": 0,
+      "z": 0
+    },
+    "position": {
+      "x": 3600,
+      "y": 0,
+      "z": 7200
+    }
+  },
+  {
+    "type": 0,
+    "name": "Terrain85",
+    "vertexIndex": [],
+    "vertexHeight": [],
+    "scale": {
+      "x": 1,
+      "y": 1,
+      "z": 1
+    },
+    "rotation": {
+      "x": 0,
+      "y": 0,
+      "z": 0
+    },
+    "position": {
+      "x": 4500,
+      "y": 0,
+      "z": 7200
+    }
+  },
+  {
+    "type": 0,
+    "name": "Terrain86",
+    "vertexIndex": [],
+    "vertexHeight": [],
+    "scale": {
+      "x": 1,
+      "y": 1,
+      "z": 1
+    },
+    "rotation": {
+      "x": 0,
+      "y": 0,
+      "z": 0
+    },
+    "position": {
+      "x": 5400,
+      "y": 0,
+      "z": 7200
+    }
+  },
+  {
+    "type": 0,
+    "name": "Terrain87",
+    "vertexIndex": [],
+    "vertexHeight": [],
+    "scale": {
+      "x": 1,
+      "y": 1,
+      "z": 1
+    },
+    "rotation": {
+      "x": 0,
+      "y": 0,
+      "z": 0
+    },
+    "position": {
+      "x": 6300,
+      "y": 0,
+      "z": 7200
+    }
+  },
+  {
+    "type": 0,
+    "name": "Terrain88",
+    "vertexIndex": [],
+    "vertexHeight": [],
+    "scale": {
+      "x": 1,
+      "y": 1,
+      "z": 1
+    },
+    "rotation": {
+      "x": 0,
+      "y": 0,
+      "z": 0
+    },
+    "position": {
+      "x": 7200,
+      "y": 0,
+      "z": 7200
+    }
+  },
+  {
+    "type": 0,
+    "name": "Terrain89",
+    "vertexIndex": [],
+    "vertexHeight": [],
+    "scale": {
+      "x": 1,
+      "y": 1,
+      "z": 1
+    },
+    "rotation": {
+      "x": 0,
+      "y": 0,
+      "z": 0
+    },
+    "position": {
+      "x": 8100,
+      "y": 0,
+      "z": 7200
+    }
+  },
+  {
+    "type": 0,
+    "name": "Terrain90",
+    "vertexIndex": [],
+    "vertexHeight": [],
+    "scale": {
+      "x": 1,
+      "y": 1,
+      "z": 1
+    },
+    "rotation": {
+      "x": 0,
+      "y": 0,
+      "z": 0
+    },
+    "position": {
+      "x": 0,
+      "y": 0,
+      "z": 8100
+    }
+  },
+  {
+    "type": 0,
+    "name": "Terrain91",
+    "vertexIndex": [],
+    "vertexHeight": [],
+    "scale": {
+      "x": 1,
+      "y": 1,
+      "z": 1
+    },
+    "rotation": {
+      "x": 0,
+      "y": 0,
+      "z": 0
+    },
+    "position": {
+      "x": 900,
+      "y": 0,
+      "z": 8100
+    }
+  },
+  {
+    "type": 0,
+    "name": "Terrain92",
+    "vertexIndex": [],
+    "vertexHeight": [],
+    "scale": {
+      "x": 1,
+      "y": 1,
+      "z": 1
+    },
+    "rotation": {
+      "x": 0,
+      "y": 0,
+      "z": 0
+    },
+    "position": {
+      "x": 1800,
+      "y": 0,
+      "z": 8100
+    }
+  },
+  {
+    "type": 0,
+    "name": "Terrain93",
+    "vertexIndex": [],
+    "vertexHeight": [],
+    "scale": {
+      "x": 1,
+      "y": 1,
+      "z": 1
+    },
+    "rotation": {
+      "x": 0,
+      "y": 0,
+      "z": 0
+    },
+    "position": {
+      "x": 2700,
+      "y": 0,
+      "z": 8100
+    }
+  },
+  {
+    "type": 0,
+    "name": "Terrain94",
+    "vertexIndex": [],
+    "vertexHeight": [],
+    "scale": {
+      "x": 1,
+      "y": 1,
+      "z": 1
+    },
+    "rotation": {
+      "x": 0,
+      "y": 0,
+      "z": 0
+    },
+    "position": {
+      "x": 3600,
+      "y": 0,
+      "z": 8100
+    }
+  },
+  {
+    "type": 0,
+    "name": "Terrain95",
+    "vertexIndex": [],
+    "vertexHeight": [],
+    "scale": {
+      "x": 1,
+      "y": 1,
+      "z": 1
+    },
+    "rotation": {
+      "x": 0,
+      "y": 0,
+      "z": 0
+    },
+    "position": {
+      "x": 4500,
+      "y": 0,
+      "z": 8100
+    }
+  },
+  {
+    "type": 0,
+    "name": "Terrain96",
+    "vertexIndex": [],
+    "vertexHeight": [],
+    "scale": {
+      "x": 1,
+      "y": 1,
+      "z": 1
+    },
+    "rotation": {
+      "x": 0,
+      "y": 0,
+      "z": 0
+    },
+    "position": {
+      "x": 5400,
+      "y": 0,
+      "z": 8100
+    }
+  },
+  {
+    "type": 0,
+    "name": "Terrain97",
+    "vertexIndex": [],
+    "vertexHeight": [],
+    "scale": {
+      "x": 1,
+      "y": 1,
+      "z": 1
+    },
+    "rotation": {
+      "x": 0,
+      "y": 0,
+      "z": 0
+    },
+    "position": {
+      "x": 6300,
+      "y": 0,
+      "z": 8100
+    }
+  },
+  {
+    "type": 0,
+    "name": "Terrain98",
+    "vertexIndex": [],
+    "vertexHeight": [],
+    "scale": {
+      "x": 1,
+      "y": 1,
+      "z": 1
+    },
+    "rotation": {
+      "x": 0,
+      "y": 0,
+      "z": 0
+    },
+    "position": {
+      "x": 7200,
+      "y": 0,
+      "z": 8100
+    }
+  },
+  {
+    "type": 0,
+    "name": "Terrain99",
+    "vertexIndex": [],
+    "vertexHeight": [],
+    "scale": {
+      "x": 1,
+      "y": 1,
+      "z": 1
+    },
+    "rotation": {
+      "x": 0,
+      "y": 0,
+      "z": 0
+    },
+    "position": {
+      "x": 8100,
+      "y": 0,
+      "z": 8100
+    }
+  },
+  {
+    "type": 1,
+    "name": "MIG_29Clone25",
+    "scale": {
+      "x": 20,
+      "y": 22,
+      "z": 35
+    },
+    "rotation": {
+      "x": -3.141592653589793,
+      "y": 0.806662704009696,
+      "z": -3.141592653589793
+    },
+    "position": {
+      "x": 0,
+      "y": 200,
+      "z": 0
+    }
+  },
+  {
+    "type": 1,
+    "name": "F-5EClone52",
+    "scale": {
+      "x": 10,
+      "y": 10,
+      "z": 10
+    },
+    "rotation": {
+      "x": 0,
+      "y": 0,
+      "z": 0
+    },
+    "position": {
+      "x": -35.589508572679264,
+      "y": 200,
+      "z": -175.75939764434125
+    }
+  },
+  {
+    "type": 1,
+    "name": "MIG_29Clone7",
+    "scale": {
+      "x": 1,
+      "y": 1,
+      "z": 1
+    },
+    "rotation": {
+      "x": 0,
+      "y": 0,
+      "z": 0
+    },
+    "position": {
+      "x": -81.70315653568989,
+      "y": 9.999999999999986,
+      "z": 320.1173298842192
+    }
+  },
+  {
+    "type": 1,
+    "name": "MIG_29Clone8",
+    "scale": {
+      "x": 1,
+      "y": 1,
+      "z": 1
+    },
+    "rotation": {
+      "x": 0,
+      "y": 0,
+      "z": 0
+    },
+    "position": {
+      "x": -110.11326265000346,
+      "y": 9.999999999999986,
+      "z": 334.3464987873832
+    }
+  },
+  {
+    "type": 1,
+    "name": "MIG_29Clone9",
+    "scale": {
+      "x": 1,
+      "y": 1,
+      "z": 1
+    },
+    "rotation": {
+      "x": 0,
+      "y": 0,
+      "z": 0
+    },
+    "position": {
+      "x": -55.456126218216326,
+      "y": 9.999999999999972,
+      "z": 435.2566842668567
+    }
+  },
+  {
+    "type": 1,
+    "name": "MIG_29Clone10",
+    "scale": {
+      "x": 1,
+      "y": 1,
+      "z": 1
+    },
+    "rotation": {
+      "x": 0,
+      "y": 0,
+      "z": 0
+    },
+    "position": {
+      "x": 3.462845392442901,
+      "y": 9.999999999999972,
+      "z": 419.27272340760317
+    }
+  },
+  {
+    "type": 1,
+    "name": "MIG_29Clone11",
+    "scale": {
+      "x": 1,
+      "y": 1,
+      "z": 1
+    },
+    "rotation": {
+      "x": 0,
+      "y": 0,
+      "z": 0
+    },
+    "position": {
+      "x": 30.999103958491403,
+      "y": 9.999999999999972,
+      "z": 371.6567726594676
+    }
+  },
+  {
+    "type": 1,
+    "name": "MIG_29Clone12",
+    "scale": {
+      "x": 1,
+      "y": 1,
+      "z": 1
+    },
+    "rotation": {
+      "x": 0,
+      "y": 0,
+      "z": 0
+    },
+    "position": {
+      "x": -295.9243930768714,
+      "y": 10,
+      "z": -288.09012851912075
+    }
+  },
+  {
+    "type": 1,
+    "name": "MIG_29Clone13",
+    "scale": {
+      "x": 1,
+      "y": 1,
+      "z": 1
+    },
+    "rotation": {
+      "x": 0,
+      "y": 0,
+      "z": 0
+    },
+    "position": {
+      "x": -237.2045794981018,
+      "y": 10,
+      "z": -78.15434745917798
+    }
+  },
+  {
+    "type": 1,
+    "name": "MIG_29Clone14",
+    "scale": {
+      "x": 1,
+      "y": 1,
+      "z": 1
+    },
+    "rotation": {
+      "x": 0,
+      "y": 0,
+      "z": 0
+    },
+    "position": {
+      "x": -124.46096008024327,
+      "y": 10,
+      "z": 77.36863989554627
+    }
+  },
+  {
+    "type": 1,
+    "name": "MIG_29Clone15",
+    "scale": {
+      "x": 1,
+      "y": 1,
+      "z": 1
+    },
+    "rotation": {
+      "x": 0,
+      "y": 0,
+      "z": 0
+    },
+    "position": {
+      "x": -299.46871079677857,
+      "y": 10.000000000000014,
+      "z": 8.32194174127676
+    }
+  },
+  {
+    "type": 1,
+    "name": "MIG_29Clone16",
+    "scale": {
+      "x": 1,
+      "y": 1,
+      "z": 1
+    },
+    "rotation": {
+      "x": 0,
+      "y": 0,
+      "z": 0
+    },
+    "position": {
+      "x": -200.0697110680431,
+      "y": 9.999999999999986,
+      "z": 218.97724865409924
+    }
+  }
+]
