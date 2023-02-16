@@ -22,6 +22,7 @@ https://zzcx88.github.io/ThreeJS_with_typescript/
 If an object is selected
 
 W: move forward
+
 Directional keys: roll or pitch
 
 You can move objects by using the keys above.
