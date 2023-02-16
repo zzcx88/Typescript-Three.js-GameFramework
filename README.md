@@ -1,7 +1,11 @@
 # ThreeJS_with_typescript
 ThreeJS Gameframework
 
+![Add   SRT](https://user-images.githubusercontent.com/28297467/219438755-5855d5c4-f30d-4fdc-8a1c-ab5b8251367e.gif)
 
+![3rdCam](https://user-images.githubusercontent.com/28297467/219438969-336d03b3-00dd-4791-bbc3-f0ef847ae40d.gif)
+
+![terrain](https://user-images.githubusercontent.com/28297467/219438696-46cb1190-487a-4b7f-9601-f2ff767bd79d.gif)
 
 Game framework based on TypeScript and Three.js.
 
