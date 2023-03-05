@@ -106,7 +106,7 @@ namespace JWFramework
             return this.GameObject.GameObjectInstance.scale;
         }
 
-        public GetMatrix4()
+        public GetMatrix4(): THREE.Matrix4
         {
             return this.GameObject.GameObjectInstance.matrixWorld;
         }

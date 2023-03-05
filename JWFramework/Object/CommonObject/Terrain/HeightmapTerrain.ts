@@ -1,10 +1,7 @@
 ﻿/// <reference path="../../GameObject.ts" />
-namespace JWFramework
-{
-    export class HeightmapTerrain extends GameObject
-    {
-        constructor(x: number, z: number, segmentWidth: number, segmentHeight: number)
-        {
+namespace JWFramework {
+    export class HeightmapTerrain extends GameObject {
+        constructor(x: number, z: number, segmentWidth: number, segmentHeight: number) {
             super();
             this.width = x;
             this.height = z;
@@ -24,8 +21,7 @@ namespace JWFramework
             this.CreateTerrainMesh();
         }
 
-        public InitializeAfterLoad()
-        {
+        public InitializeAfterLoad() {
             this.PhysicsComponent.SetPostion(this.width, 0, this.height);
 
             this.CreateBoundingBox();
@@ -35,20 +31,15 @@ namespace JWFramework
             ObjectManager.getInstance().AddObject(this, this.name, this.type);
         }
 
-        public CreateBoundingBox()
-        {
+        public CreateBoundingBox() {
             this.CollisionComponent.CreateBoundingBox(900, 5000, 900);
             this.CollisionComponent.BoxHelper.box.setFromCenterAndSize(new THREE.Vector3(this.width, 2000, this.height), new THREE.Vector3(900, 5000, 900));
         }
 
-        public CreateTerrainMesh()
-        {
+        public CreateTerrainMesh() {
             this.planeGeomatry = new THREE.PlaneGeometry(900, 900, this.segmentWidth, this.segmentHeight);
-            this.material = new THREE.MeshStandardMaterial();
+            //this.material = new THREE.MeshStandardMaterial();
 
-            
-
-            //let a = THREE.UniformsLib['fog'].;
             let customUniforms = {
                 farmTexture: { type: "t", value: ShaderManager.getInstance().farmTexture },
                 mountainTexture: { type: "t", value: ShaderManager.getInstance().mountainTexture },
@@ -57,18 +48,19 @@ namespace JWFramework
                 fogColor: { type: "c", value: THREE.UniformsLib['fog'].fogColor },
                 fogDensity: { type: "f", value: THREE.UniformsLib['fog'].fogDensity },
                 fogFar: { type: "f", value: THREE.UniformsLib['fog'].fogFar },
-                fogNear: { type: "f", value: THREE.UniformsLib['fog'].fogNear }
+                fogNear: { type: "f", value: THREE.UniformsLib['fog'].fogNear },
+                opacity: { type: "f", value: this.opacity }
             };
             // create custom material from the shader code above
             //   that is within specially labelled script tags
-
-            var customMaterial = new THREE.ShaderMaterial(
+            this.material = new THREE.ShaderMaterial(
                 {
                     uniforms: customUniforms,
                     vertexShader: ShaderManager.getInstance().SplattingShader.vertexShader.slice(),
                     fragmentShader: ShaderManager.getInstance().SplattingShader.fragmentShader.slice(),
                     //side: THREE.DoubleSide,
-                     fog: true
+                    fog: true,
+                    transparent: true,
                 });
 
             //this.material.map = this.texture;
@@ -86,7 +78,7 @@ namespace JWFramework
             this.planeGeomatry.computeBoundingSphere();
             this.planeGeomatry.computeVertexNormals();
 
-            this.planeMesh = new THREE.Mesh(this.planeGeomatry, customMaterial);
+            this.planeMesh = new THREE.Mesh(this.planeGeomatry, this.material);
             this.planeMesh.receiveShadow = true;
             this.planeMesh.castShadow = true;
 
@@ -98,13 +90,11 @@ namespace JWFramework
             this.InitializeAfterLoad();
         }
 
-        public get HeightIndexBuffer(): number[]
-        {
+        public get HeightIndexBuffer(): number[] {
             return this.heigtIndexBuffer;
         }
 
-        public get HeightBuffer(): number[]
-        {
+        public get HeightBuffer(): number[] {
             for (let i = 0; i < this.heigtBuffer.length; ++i) {
                 this.heigtBuffer.pop();
             }
@@ -114,9 +104,7 @@ namespace JWFramework
             return this.heigtBuffer;
         }
 
-        public SetHeight(index: number, value: number = undefined, option: TerrainOption = TerrainOption.TERRAIN_UP)
-        {
-            this.planeGeomatry.getAttribute('position')
+        public SetHeight(index: number, value: number = undefined, option: TerrainOption = TerrainOption.TERRAIN_UP) {
             this.planeGeomatry.getAttribute('position').needsUpdate = true;
             let height: number = this.planeGeomatry.getAttribute('position').getY(index);
 
@@ -232,26 +220,24 @@ namespace JWFramework
 
         }
 
-        public CollisionActive(object: GameObject)
-        {
+        public CollisionActive(object: GameObject) {
             if (object.Type == ObjectType.OBJ_CAMERA) {
                 this.cameraInSecter = false;
-                this.material.opacity = 1;
+                // this.material.opacity = 1;
             }
             else {
                 if (this.inSectorObject.includes(object) == false) {
                     this.inSectorObject.push(object);
-                    //this.material.opacity = 0.9;
+                    this.opacity = 0.5;
+                    this.material.uniforms['opacity'].value = this.opacity;
                     this.inSecter = true;
                 }
             }
         }
 
-        public CollisionDeActive(object: GameObject)
-        {
+        public CollisionDeActive(object: GameObject) {
             if (object.Type == ObjectType.OBJ_CAMERA) {
                 this.cameraInSecter = false;
-                this.material.opacity = 1;
             }
             else {
                 if (this.inSectorObject.includes(object) == true) {
@@ -260,22 +246,22 @@ namespace JWFramework
             }
         }
 
-        public Animate()
-        {
+        public Animate() {
             if (/*SceneManager.getInstance().CurrentScene.Picker.PickMode != PickMode.PICK_TERRAIN &&*/ this.vertexNormalNeedUpdate) {
                 this.planeGeomatry.computeVertexNormals();
                 this.vertexNormalNeedUpdate = false;
             }
             this.inSectorObject = this.inSectorObject.filter((element) => (element.IsDead == false));
             if (this.inSectorObject.length == 0) {
-                this.material.opacity = 1;
+                this.opacity = 1;
+                this.material.uniforms['opacity'].value = this.opacity;
                 this.inSecter = false;
             }
         }
 
         private planeMesh: THREE.Mesh;
         private planeGeomatry: THREE.PlaneGeometry;
-        private material: THREE.MeshStandardMaterial;
+        private material: THREE.ShaderMaterial;
         private farmTexture: THREE.Texture;
         private mountainTexture: THREE.Texture;
         private factoryTexture: THREE.Texture;
@@ -293,9 +279,9 @@ namespace JWFramework
         public inSectorObject: GameObject[] = [];
 
         private vertexNormalNeedUpdate: boolean = false;
+        private opacity: number = 1;
 
         public inSecter: boolean = false
         public cameraInSecter: boolean = false;
     }
 }
-

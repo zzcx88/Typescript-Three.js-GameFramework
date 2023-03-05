@@ -67,6 +67,7 @@ var JWFramework;
         DeleteCollider() {
             if (this.boundingBox) {
                 this.boxHelper.visible = false;
+                this.boxHelper.geometry.dispose();
                 delete this.boundingBox;
                 delete this.boxHelper;
                 this.boundingBox = null;
@@ -84,6 +85,7 @@ var JWFramework;
             }
             if (this.raycaster) {
                 delete this.raycaster;
+                this.raycaster = null;
             }
         }
         Update() {
@@ -91,8 +93,6 @@ var JWFramework;
                 this.boxHelper.box.setFromCenterAndSize(this.gameObject.PhysicsComponent.GetPosition(), this.sizeAABB);
             }
             if (this.orientedBoundingBox) {
-                if (this.gameObject.Picked == true)
-                    console.log(123);
                 this.obbBoxHelper.scale.set(this.gameObject.PhysicsComponent.GetScale().x, this.gameObject.PhysicsComponent.GetScale().y, this.gameObject.PhysicsComponent.GetScale().z);
                 this.obbBoxHelper.rotation.set(this.gameObject.PhysicsComponent.GetRotateEuler().x, this.gameObject.PhysicsComponent.GetRotateEuler().y, this.gameObject.PhysicsComponent.GetRotateEuler().z);
                 this.obbBoxHelper.position.set(this.gameObject.PhysicsComponent.GetPosition().x, this.gameObject.PhysicsComponent.GetPosition().y, this.gameObject.PhysicsComponent.GetPosition().z);
@@ -237,8 +237,8 @@ var JWFramework;
             JWFramework.WorldManager.getInstance().MainCamera.PhysicsComponent.SetPostion(0, 0, 0);
             let Up = new THREE.Vector3(0, 1, 0);
             let Look = new THREE.Vector3(0, 0, 1);
-            JWFramework.WorldManager.getInstance().MainCamera.PhysicsComponent.SetPostion(JWFramework.WorldManager.getInstance().MainCamera.PhysicsComponent.GetPosition().x + Up.x * 0.6, JWFramework.WorldManager.getInstance().MainCamera.PhysicsComponent.GetPosition().y + Up.y * 0.6, JWFramework.WorldManager.getInstance().MainCamera.PhysicsComponent.GetPosition().z + Up.z * 0.6);
-            JWFramework.WorldManager.getInstance().MainCamera.PhysicsComponent.SetPostion(JWFramework.WorldManager.getInstance().MainCamera.PhysicsComponent.GetPosition().x + Look.x * -3.7, JWFramework.WorldManager.getInstance().MainCamera.PhysicsComponent.GetPosition().y + Look.y * -3.7, JWFramework.WorldManager.getInstance().MainCamera.PhysicsComponent.GetPosition().z + Look.z * -3.7);
+            JWFramework.WorldManager.getInstance().MainCamera.PhysicsComponent.GetPosition().add(Up.multiplyScalar(0.6));
+            JWFramework.WorldManager.getInstance().MainCamera.PhysicsComponent.GetPosition().add(Look.multiplyScalar(-3.7));
         }
         ChangeOrbitCamera() {
             this.cameraMode = JWFramework.CameraMode.CAMERA_ORBIT;
@@ -467,6 +467,16 @@ var JWFramework;
         DeleteObject() {
             this.isDead = true;
         }
+        DeleteAllComponent() {
+            delete this.physicsComponent;
+            this.physicsComponent = null;
+            delete this.collisionComponent;
+            this.collisionComponent = null;
+            delete this.exportComponent;
+            this.exportComponent = null;
+            delete this.graphicComponent;
+            this.graphicComponent = null;
+        }
     }
     JWFramework.GameObject = GameObject;
 })(JWFramework || (JWFramework = {}));
@@ -475,8 +485,8 @@ var JWFramework;
     class EditObject extends JWFramework.GameObject {
         constructor() {
             super();
+            this.currentVelocity = new THREE.Vector3(0, 0, 1);
             this.isTarget = false;
-            this.testpos = 0;
             this.type = JWFramework.ObjectType.OBJ_OBJECT3D;
             this.physicsComponent = new JWFramework.PhysicsComponent(this);
             this.graphicComponent = new JWFramework.GraphComponent(this);
@@ -486,10 +496,6 @@ var JWFramework;
         InitializeAfterLoad() {
             this.GameObjectInstance.matrixAutoUpdate = true;
             this.PhysicsComponent.SetScaleScalar(1);
-            this.PhysicsComponent.SetPostion(0, 0, 0);
-            this.GameObjectInstance.rotation.x = 0;
-            this.GameObjectInstance.rotation.y = 0;
-            this.GameObjectInstance.rotation.z = 0;
             this.GameObjectInstance.name = this.name;
             if (this.IsClone == false)
                 JWFramework.ObjectManager.getInstance().AddObject(this, this.name, this.Type);
@@ -506,9 +512,10 @@ var JWFramework;
             this.CollisionComponent.CreateRaycaster();
         }
         CollisionActive() {
-            console.log("충돌");
-            if (this.name != "Target" && this.Picked == true)
-                this.physicsComponent.SetPostion(0, 200, 0);
+            if (this.name != "Target" && this.Picked == true) {
+                this.physicsComponent.SetPostion(40.1, 500.12, 73.02);
+                this.GameObjectInstance.lookAt(JWFramework.ObjectManager.getInstance().GetObjectFromName("Target").physicsComponent.GetPosition());
+            }
         }
         CollisionDeActive() {
         }
@@ -516,12 +523,8 @@ var JWFramework;
             if (this.previousPosition == null)
                 this.previousPosition = this.physicsComponent.GetPosition().clone();
             if (this.isTarget == true) {
-                this.PhysicsComponent.MoveFoward(50);
-                this.PhysicsComponent.RotateVec3(this.PhysicsComponent.Up, -0.5);
-            }
-            if (this.previousPosition) {
-                this.currentVelocity = this.PhysicsComponent.GetPosition().clone().sub(this.previousPosition);
-                this.previousPosition = this.physicsComponent.GetPosition();
+                this.PhysicsComponent.MoveFoward(100);
+                this.PhysicsComponent.RotateVec3(this.PhysicsComponent.Up, 0.25);
             }
             if (this.Picked == true) {
                 this.IsRayOn = true;
@@ -538,7 +541,7 @@ var JWFramework;
                     this.PhysicsComponent.RotateVec3(this.PhysicsComponent.Right, 1);
                 }
                 if (JWFramework.InputManager.getInstance().GetKeyState('w', JWFramework.KeyState.KEY_PRESS)) {
-                    this.PhysicsComponent.MoveFoward(70);
+                    this.PhysicsComponent.MoveFoward(80);
                 }
                 if (JWFramework.InputManager.getInstance().GetKeyState('f', JWFramework.KeyState.KEY_PRESS)) {
                     JWFramework.CameraManager.getInstance().SetCameraSavedPosition(JWFramework.CameraMode.CAMERA_3RD);
@@ -551,13 +554,25 @@ var JWFramework;
                     this.name = "Target";
                 }
                 if (JWFramework.InputManager.getInstance().GetKeyState('space', JWFramework.KeyState.KEY_PRESS)) {
-                    let currentTime = performance.now();
-                    let targetPos = JWFramework.ObjectManager.getInstance().GetObjectFromName("Target").PhysicsComponent.GetPosition();
-                    let missileDirection = targetPos.clone().sub(this.PhysicsComponent.GetPosition().clone());
-                    let relativeVelocity = JWFramework.ObjectManager.getInstance().GetObjectFromName("Target").currentVelocity.clone().sub(this.currentVelocity);
-                    let missileAcceleration = missileDirection.multiplyScalar(100 / Math.pow(missileDirection.length(), 2)).sub(relativeVelocity.multiplyScalar(100 / missileDirection.length()));
-                    this.GameObjectInstance.lookAt(targetPos.clone());
-                    this.physicsComponent.SetPostionVec3(this.physicsComponent.GetPosition().add(missileAcceleration));
+                    let targetObject = JWFramework.ObjectManager.getInstance().GetObjectFromName("Target");
+                    const targetDirection = new THREE.Vector3().subVectors(targetObject.PhysicsComponent.GetPosition().clone(), this.PhysicsComponent.GetPosition().clone()).normalize();
+                    const currentDirection = new THREE.Vector3(0, 0, 1).applyEuler(this.PhysicsComponent.GetRotateEuler());
+                    const angle = currentDirection.angleTo(targetDirection);
+                    const axis = new THREE.Vector3().crossVectors(currentDirection, targetDirection).normalize();
+                    let maxSpeed = 500;
+                    let maxRadius = 500;
+                    let speed = maxSpeed * (angle / maxRadius);
+                    speed = Math.min(speed, maxSpeed);
+                    const quaternion = new THREE.Quaternion().setFromAxisAngle(axis, speed);
+                    const currentRotation = new THREE.Quaternion();
+                    currentRotation.setFromEuler(this.PhysicsComponent.GetRotateEuler());
+                    const nextRotation = new THREE.Euler().setFromQuaternion(quaternion.multiply(currentRotation));
+                    this.GameObjectInstance.setRotationFromEuler(nextRotation);
+                    this.PhysicsComponent.MoveFoward(130);
+                }
+                if (this.previousPosition) {
+                    this.currentVelocity = this.PhysicsComponent.GetPosition().clone().sub(this.previousPosition);
+                    this.previousPosition = this.physicsComponent.GetPosition().clone();
                 }
             }
             else
@@ -1048,10 +1063,8 @@ var JWFramework;
             this.ClearExportObjectList();
         }
         DeleteObject(gameObject) {
-            JWFramework.SceneManager.getInstance().SceneInstance.remove(gameObject.GameObjectInstance);
-            gameObject.CollisionComponent.DeleteCollider();
             gameObject.GameObjectInstance.traverse(node => {
-                if (node.isMesh) {
+                if (node.isMesh || node.isGroup) {
                     if (node.geometry) {
                         node.geometry.dispose();
                     }
@@ -1070,6 +1083,20 @@ var JWFramework;
                         }
                 }
             });
+            if (gameObject instanceof JWFramework.HeightmapTerrain) {
+                gameObject.inSectorObject = [];
+                gameObject.inSectorObject = null;
+            }
+            gameObject.CollisionComponent.DeleteCollider();
+            gameObject.DeleteAllComponent();
+            delete gameObject.ModelData;
+            gameObject.ModelData = null;
+            gameObject.GameObjectInstance.clear();
+            gameObject.GameObjectInstance.removeFromParent();
+            JWFramework.SceneManager.getInstance().SceneInstance.remove(gameObject.GameObjectInstance);
+            delete gameObject.GameObjectInstance;
+            gameObject.GameObjectInstance = null;
+            gameObject = null;
             this.ClearExportObjectList();
         }
         DeleteAllObject() {
@@ -1090,6 +1117,7 @@ var JWFramework;
                         this.objectList[TYPE][OBJ].GameObject.PhysicsComponent.UpdateMatrix();
                     if (this.objectList[TYPE][OBJ].GameObject.IsDead) {
                         this.DeleteObject(this.objectList[TYPE][OBJ].GameObject);
+                        this.objectList[TYPE][OBJ] = null;
                         delete this.objectList[TYPE][OBJ];
                         this.objectList[TYPE] = this.objectList[TYPE].filter((element, OBJ) => element !== undefined);
                     }
@@ -1305,6 +1333,7 @@ var JWFramework;
             this.heigtBuffer = [];
             this.inSectorObject = [];
             this.vertexNormalNeedUpdate = false;
+            this.opacity = 1;
             this.inSecter = false;
             this.cameraInSecter = false;
             this.width = x;
@@ -1334,7 +1363,6 @@ var JWFramework;
         }
         CreateTerrainMesh() {
             this.planeGeomatry = new THREE.PlaneGeometry(900, 900, this.segmentWidth, this.segmentHeight);
-            this.material = new THREE.MeshStandardMaterial();
             let customUniforms = {
                 farmTexture: { type: "t", value: JWFramework.ShaderManager.getInstance().farmTexture },
                 mountainTexture: { type: "t", value: JWFramework.ShaderManager.getInstance().mountainTexture },
@@ -1342,19 +1370,21 @@ var JWFramework;
                 fogColor: { type: "c", value: THREE.UniformsLib['fog'].fogColor },
                 fogDensity: { type: "f", value: THREE.UniformsLib['fog'].fogDensity },
                 fogFar: { type: "f", value: THREE.UniformsLib['fog'].fogFar },
-                fogNear: { type: "f", value: THREE.UniformsLib['fog'].fogNear }
+                fogNear: { type: "f", value: THREE.UniformsLib['fog'].fogNear },
+                opacity: { type: "f", value: this.opacity }
             };
-            var customMaterial = new THREE.ShaderMaterial({
+            this.material = new THREE.ShaderMaterial({
                 uniforms: customUniforms,
                 vertexShader: JWFramework.ShaderManager.getInstance().SplattingShader.vertexShader.slice(),
                 fragmentShader: JWFramework.ShaderManager.getInstance().SplattingShader.fragmentShader.slice(),
-                fog: true
+                fog: true,
+                transparent: true,
             });
             let rotation = new THREE.Matrix4().makeRotationX(-Math.PI / 2);
             this.planeGeomatry.applyMatrix4(rotation);
             this.planeGeomatry.computeBoundingSphere();
             this.planeGeomatry.computeVertexNormals();
-            this.planeMesh = new THREE.Mesh(this.planeGeomatry, customMaterial);
+            this.planeMesh = new THREE.Mesh(this.planeGeomatry, this.material);
             this.planeMesh.receiveShadow = true;
             this.planeMesh.castShadow = true;
             this.gameObjectInstance = this.planeMesh;
@@ -1374,7 +1404,6 @@ var JWFramework;
             return this.heigtBuffer;
         }
         SetHeight(index, value = undefined, option = JWFramework.TerrainOption.TERRAIN_UP) {
-            this.planeGeomatry.getAttribute('position');
             this.planeGeomatry.getAttribute('position').needsUpdate = true;
             let height = this.planeGeomatry.getAttribute('position').getY(index);
             if (value != undefined && option == JWFramework.TerrainOption.TERRAIN_UP) {
@@ -1457,11 +1486,12 @@ var JWFramework;
         CollisionActive(object) {
             if (object.Type == JWFramework.ObjectType.OBJ_CAMERA) {
                 this.cameraInSecter = false;
-                this.material.opacity = 1;
             }
             else {
                 if (this.inSectorObject.includes(object) == false) {
                     this.inSectorObject.push(object);
+                    this.opacity = 0.5;
+                    this.material.uniforms['opacity'].value = this.opacity;
                     this.inSecter = true;
                 }
             }
@@ -1469,7 +1499,6 @@ var JWFramework;
         CollisionDeActive(object) {
             if (object.Type == JWFramework.ObjectType.OBJ_CAMERA) {
                 this.cameraInSecter = false;
-                this.material.opacity = 1;
             }
             else {
                 if (this.inSectorObject.includes(object) == true) {
@@ -1484,7 +1513,8 @@ var JWFramework;
             }
             this.inSectorObject = this.inSectorObject.filter((element) => (element.IsDead == false));
             if (this.inSectorObject.length == 0) {
-                this.material.opacity = 1;
+                this.opacity = 1;
+                this.material.uniforms['opacity'].value = this.opacity;
                 this.inSecter = false;
             }
         }
@@ -1593,7 +1623,6 @@ var JWFramework;
                     if (data.name.includes("Terrain")) {
                         let terrain = objectManager.GetObjectFromName(data.name);
                         for (let i = 0; i < data.vertexIndex.length; ++i) {
-                            console.log(data.vertexIndex[i]);
                             terrain.SetHeight(data.vertexIndex[i], data.vertexHeight[i], JWFramework.TerrainOption.TERRAIN_LOAD);
                         }
                     }
@@ -1711,9 +1740,12 @@ var JWFramework;
                 if (JWFramework.InputManager.getInstance().GetKeyState('5', JWFramework.KeyState.KEY_DOWN)) {
                     JWFramework.ModelLoadManager.getInstance().LoadSavedScene();
                 }
-                if (JWFramework.InputManager.getInstance().GetKeyState('delete', JWFramework.KeyState.KEY_DOWN)) {
+                if (JWFramework.InputManager.getInstance().GetKeyState('delete', JWFramework.KeyState.KEY_PRESS)) {
                     JWFramework.ObjectManager.getInstance().DeleteAllObject();
                     this.reloadScene = true;
+                }
+                if (JWFramework.InputManager.getInstance().GetKeyState('p', JWFramework.KeyState.KEY_PRESS)) {
+                    console.log(JWFramework.WorldManager.getInstance().Renderer.info);
                 }
             }
             if (this.reloadScene)
@@ -1775,45 +1807,45 @@ var JWFramework;
         constructor() {
             this.vertexShader =
                 `
-			#include <fog_pars_vertex>
-			varying vec2 vUV;
-			varying float vAmount;
-			varying vec4 Position;
+         #include <fog_pars_vertex>
+         varying vec2 vUV;
+         varying vec4 Position;
 
-			void main() {
-				#include <begin_vertex>
-				#include <project_vertex>
-				#include <fog_vertex>
-				vUV = uv;
-				gl_Position = projectionMatrix * modelViewMatrix  * vec4(position,1.0);
-				Position = vec4(position,1.0);
-			
-			  }
-			`;
+         void main() {
+            #include <begin_vertex>
+            #include <project_vertex>
+            #include <fog_vertex>
+            vUV = uv;
+            gl_Position = projectionMatrix * modelViewMatrix  * vec4(position,1.0);
+            Position = vec4(position,1.0);
+         
+           }
+         `;
             this.fragmentShader =
                 `
-			#include <fog_pars_fragment>
+         #include <fog_pars_fragment>
 
-			uniform sampler2D farmTexture;
-			uniform sampler2D mountainTexture;
-			uniform sampler2D factoryTexture;
-			
-			varying vec2 vUV;
+         uniform sampler2D farmTexture;
+         uniform sampler2D mountainTexture;
+         uniform sampler2D factoryTexture;
+         uniform float opacity;
 
-			varying float vAmount;
+         varying vec2 vUV;
+         varying vec4 Position;
 
-			varying vec4 Position;
+         void main() 
+         {
+            vec4 factory = (smoothstep(-2.f, -1.f, Position.y) - smoothstep(-1.f, 0.f, Position.y)) * texture2D( factoryTexture, vUV * 10.0 );
+            factory[3] = 0.0;
+            vec4 farm = (smoothstep(-1.f, 0.f, Position.y) - smoothstep(0.f, 1.f, Position.y)) * texture2D( farmTexture, vUV * 1.0 );
+            farm[3] = 0.0;
+            vec4 mountain = (smoothstep(0.f, 1.f, Position.y) - smoothstep(1.f, 1200.f, Position.y)) * texture2D( mountainTexture, vUV * 5.0 );
+            mountain[3] = 0.0;
+            gl_FragColor = vec4(0.0, 0.0, 0.0, opacity) + farm + mountain + factory;
 
-			void main() 
-			{
-				vec4 factory = (smoothstep(-2.f, -1.f, Position.y) - smoothstep(-1.f, 0.f, Position.y)) * texture2D( factoryTexture, vUV * 10.0 );
-				vec4 farm = (smoothstep(-1.f, 0.f, Position.y) - smoothstep(0.f, 1.f, Position.y)) * texture2D( farmTexture, vUV * 1.0 );
-				vec4 mountain = (smoothstep(0.f, 1.f, Position.y) - smoothstep(1.f, 1200.f, Position.y)) * texture2D( mountainTexture, vUV * 5.0 );
-				gl_FragColor = vec4(0.0, 0.0, 0.0, 1.0) + farm + mountain + factory;
-
-				#include <fog_fragment>
-			}  
-			`;
+            #include <fog_fragment>
+         }  
+         `;
         }
     }
     JWFramework.SplattingShader = SplattingShader;
@@ -1997,7 +2029,7 @@ var JWFramework;
             sorce.forEach(function (src) {
                 let destination = src.GameObject.inSectorObject;
                 destination.forEach(function (dst) {
-                    if (dst.CollisionComponent.Raycaster != null)
+                    if (dst.CollisionComponent != null && dst.CollisionComponent.Raycaster != null)
                         if ((src.GameObject != undefined && dst.IsClone == true && dst.IsRayOn == true) || JWFramework.SceneManager.getInstance().CurrentScene.NeedOnTerrain == true) {
                             let intersect = dst.CollisionComponent.Raycaster.intersectObject(src.GameObject.GameObjectInstance);
                             if (intersect[0] != undefined) {

@@ -31,7 +31,6 @@ C:\Users\LEEJAEWON\Desktop\JWFramework(cloneAnim)\bin\JWFramework.pdb
 C:\Users\LEEJAEWON\Desktop\JWFramework(cloneAnim)\obj\Debug\JWFramework.csproj.CoreCompileInputs.cache
 C:\Users\LEEJAEWON\Desktop\JWFramework\obj\Debug\JWFramework.csproj.AssemblyReference.cache
 C:\Users\Gyro\Desktop\test\prac\ThreeJS_with_typescript-main\ThreeJS_with_typescript-main\JWFramework\obj\Debug\JWFramework.csproj.AssemblyReference.cache
-C:\Users\LEEJAEWON\Desktop\ThreeJS_with_typescript\JWFramework\obj\Debug\JWFramework.csproj.AssemblyReference.cache
 C:\Users\GyroSoft\Desktop\ThreeJS_with_typescript-main\ThreeJS_with_typescript-main\JWFramework\bin\JWFramework.dll.config
 C:\Users\GyroSoft\Desktop\ThreeJS_with_typescript-main\ThreeJS_with_typescript-main\JWFramework\bin\JWFramework.dll
 C:\Users\GyroSoft\Desktop\ThreeJS_with_typescript-main\ThreeJS_with_typescript-main\JWFramework\bin\JWFramework.pdb

@@ -21,7 +21,7 @@
                 let destination = (src.GameObject as HeightmapTerrain).inSectorObject;
                 destination.forEach(function (dst)
                 {
-                    if (dst.CollisionComponent.Raycaster != null)
+                    if (dst.CollisionComponent != null && dst.CollisionComponent.Raycaster != null)
                         if ((src.GameObject != undefined && dst.IsClone == true && dst.IsRayOn == true) || SceneManager.getInstance().CurrentScene.NeedOnTerrain == true)
                         {
                             let intersect = dst.CollisionComponent.Raycaster.intersectObject(src.GameObject.GameObjectInstance);

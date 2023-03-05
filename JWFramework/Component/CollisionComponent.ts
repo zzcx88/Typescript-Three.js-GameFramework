@@ -93,6 +93,7 @@
             if (this.boundingBox)
             {
                 this.boxHelper.visible = false;
+                this.boxHelper.geometry.dispose();
                 delete this.boundingBox;
                 delete this.boxHelper;
                 this.boundingBox = null;
@@ -112,7 +113,8 @@
             }
             if (this.raycaster)
             {
-                delete this.raycaster
+                delete this.raycaster;
+                this.raycaster = null;
             }
         }
 
@@ -124,8 +126,6 @@
             }
             if (this.orientedBoundingBox)
             {
-                if (this.gameObject.Picked == true)
-                    console.log(123);
                 this.obbBoxHelper.scale.set(this.gameObject.PhysicsComponent.GetScale().x, this.gameObject.PhysicsComponent.GetScale().y, this.gameObject.PhysicsComponent.GetScale().z)
                 this.obbBoxHelper.rotation.set(this.gameObject.PhysicsComponent.GetRotateEuler().x, this.gameObject.PhysicsComponent.GetRotateEuler().y, this.gameObject.PhysicsComponent.GetRotateEuler().z);
                 this.obbBoxHelper.position.set(this.gameObject.PhysicsComponent.GetPosition().x, this.gameObject.PhysicsComponent.GetPosition().y, this.gameObject.PhysicsComponent.GetPosition().z);

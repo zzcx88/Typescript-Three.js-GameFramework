@@ -49,17 +49,8 @@
             let Up = new THREE.Vector3(0, 1, 0);
             let Look = new THREE.Vector3(0, 0, 1);
 
-            WorldManager.getInstance().MainCamera.PhysicsComponent.SetPostion(
-                WorldManager.getInstance().MainCamera.PhysicsComponent.GetPosition().x + Up.x * 0.6,
-                WorldManager.getInstance().MainCamera.PhysicsComponent.GetPosition().y + Up.y * 0.6,
-                WorldManager.getInstance().MainCamera.PhysicsComponent.GetPosition().z + Up.z * 0.6
-            );
-
-            WorldManager.getInstance().MainCamera.PhysicsComponent.SetPostion(
-                WorldManager.getInstance().MainCamera.PhysicsComponent.GetPosition().x + Look.x * -3.7,
-                WorldManager.getInstance().MainCamera.PhysicsComponent.GetPosition().y + Look.y * -3.7,
-                WorldManager.getInstance().MainCamera.PhysicsComponent.GetPosition().z + Look.z * -3.7
-            );
+            JWFramework.WorldManager.getInstance().MainCamera.PhysicsComponent.GetPosition().add(Up.multiplyScalar(0.6));
+            JWFramework.WorldManager.getInstance().MainCamera.PhysicsComponent.GetPosition().add(Look.multiplyScalar(-3.7));
             //WorldManager.getInstance().MainCamera.Animate();
         }
 

@@ -68,6 +68,7 @@ namespace JWFramework
             this.blendPass = new THREE.ShaderPass(THREE.BlendShader, "tDiffuse1");
             this.blendPass.uniforms["tDiffuse2"].value = this.savePass.renderTarget.texture;
             this.blendPass.uniforms["mixRatio"].value = 0.0;
+            //this.blendPass.uniforms["mixRatio"].value = 0.3;
 
             // output pass
             this.outputPass = new THREE.ShaderPass(THREE.CopyShader);

@@ -81,7 +81,7 @@ declare namespace JWFramework {
         GetRotateEuler(): THREE.Euler;
         GetRotateMatrix3(): THREE.Matrix3;
         GetScale(): THREE.Vector3;
-        GetMatrix4(): any;
+        GetMatrix4(): THREE.Matrix4;
         SetRotate(x: number, y: number, z: number): void;
         Rotate(x: number, y: number, z: number): void;
         RotateVec3(axis: THREE.Vector3, angle: number): void;
@@ -129,6 +129,7 @@ declare namespace JWFramework {
         CollisionDeActive(value?: any): void;
         Animate(): void;
         DeleteObject(): void;
+        DeleteAllComponent(): void;
         protected gameObjectInstance: any;
         protected modelData: THREE.GLTF;
         protected type: ObjectType;
@@ -160,7 +161,6 @@ declare namespace JWFramework {
         private previousPosition;
         private missileOrientation;
         private isTarget;
-        private testpos;
         private axisHelper;
     }
 }
@@ -430,6 +430,7 @@ declare namespace JWFramework {
         private heigtBuffer;
         inSectorObject: GameObject[];
         private vertexNormalNeedUpdate;
+        private opacity;
         inSecter: boolean;
         cameraInSecter: boolean;
     }

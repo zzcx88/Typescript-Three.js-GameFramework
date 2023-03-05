@@ -111,29 +111,48 @@
 
         public DeleteObject(gameObject: GameObject)
         {
-            SceneManager.getInstance().SceneInstance.remove(gameObject.GameObjectInstance);
-            gameObject.CollisionComponent.DeleteCollider();
             gameObject.GameObjectInstance.traverse(node =>
             {
-                if (node.isMesh) {
-                    if (node.geometry) {
+                if (node.isMesh || node.isGroup)
+                {
+                    if (node.geometry)
+                    {
                         node.geometry.dispose();
                     }
                     if (node.material)
-                        if (Array.isArray(node.material)) {
-                            for (let i = 0; i < node.material.length; ++i) {
+                        if (Array.isArray(node.material))
+                        {
+                            for (let i = 0; i < node.material.length; ++i)
+                            {
                                 node.material[i].dispose();
                                 if (node.material[i].map)
                                     node.material[i].map.dispose();
                             }
                         }
-                        else {
+                        else
+                        {
                             node.material.dispose();
                             if (node.material.map)
                                 node.material.map.dispose();
                         }
                 }
             });
+            if (gameObject instanceof HeightmapTerrain)
+            {
+                (gameObject as HeightmapTerrain).inSectorObject = [];
+                (gameObject as HeightmapTerrain).inSectorObject = null;
+            }
+            gameObject.CollisionComponent.DeleteCollider();
+            gameObject.DeleteAllComponent();
+
+            delete gameObject.ModelData;
+            gameObject.ModelData = null;
+            gameObject.GameObjectInstance.clear();
+            gameObject.GameObjectInstance.removeFromParent();
+            SceneManager.getInstance().SceneInstance.remove(gameObject.GameObjectInstance);
+            delete gameObject.GameObjectInstance;
+            gameObject.GameObjectInstance = null;
+            gameObject = null;
             this.ClearExportObjectList();
         }
 
@@ -165,7 +184,9 @@
 
                     if (this.objectList[TYPE][OBJ].GameObject.IsDead) {
                         this.DeleteObject(this.objectList[TYPE][OBJ].GameObject);
+                        this.objectList[TYPE][OBJ] = null;
                         delete this.objectList[TYPE][OBJ];
+                        
                         this.objectList[TYPE] = this.objectList[TYPE].filter((element, OBJ) => element !== undefined);
                     }
                 }

@@ -155,6 +155,21 @@
             this.isDead = true;
         }
 
+        public DeleteAllComponent()
+        {
+            delete this.physicsComponent;
+            this.physicsComponent = null;
+
+            delete this.collisionComponent;
+            this.collisionComponent = null;
+
+            delete this.exportComponent;
+            this.exportComponent = null;
+
+            delete this.graphicComponent;
+            this.graphicComponent = null;
+        }
+
         protected gameObjectInstance;
         protected modelData: THREE.GLTF;
         protected type: ObjectType;

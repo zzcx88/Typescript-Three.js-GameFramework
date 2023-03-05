@@ -145,7 +145,6 @@ namespace JWFramework
                             let terrain = objectManager.GetObjectFromName(data.name);
                             for (let i = 0; i < data.vertexIndex.length; ++i)
                             {
-                                console.log(data.vertexIndex[i]);
                                 (terrain as unknown as HeightmapTerrain).SetHeight(data.vertexIndex[i], data.vertexHeight[i], TerrainOption.TERRAIN_LOAD);
                             }
                         }

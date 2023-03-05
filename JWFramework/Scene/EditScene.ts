@@ -83,9 +83,14 @@ namespace JWFramework
                 {
                     ModelLoadManager.getInstance().LoadSavedScene();
                 }
-                if (InputManager.getInstance().GetKeyState('delete', KeyState.KEY_DOWN)) {
+                if (InputManager.getInstance().GetKeyState('delete', KeyState.KEY_PRESS))
+                {
                     ObjectManager.getInstance().DeleteAllObject();
                     this.reloadScene = true;
+                }
+                if (InputManager.getInstance().GetKeyState('p', KeyState.KEY_PRESS))
+                {
+                    console.log(WorldManager.getInstance().Renderer.info);
                 }
             }
             if (this.reloadScene)

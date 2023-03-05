@@ -18,10 +18,10 @@ namespace JWFramework
         {
             this.GameObjectInstance.matrixAutoUpdate = true;
             this.PhysicsComponent.SetScaleScalar(1);
-            this.PhysicsComponent.SetPostion(0, 0, 0);
-            this.GameObjectInstance.rotation.x = 0;
-            this.GameObjectInstance.rotation.y = 0;
-            this.GameObjectInstance.rotation.z = 0;
+            //this.PhysicsComponent.SetPostion(0, 0, 0);
+            //this.GameObjectInstance.rotation.x = 0;
+            //this.GameObjectInstance.rotation.y = 0;
+            //this.GameObjectInstance.rotation.z = 0;
 
             this.GameObjectInstance.name = this.name;
 
@@ -50,9 +50,12 @@ namespace JWFramework
         public CollisionActive()
         {
             //console.clear();
-            console.log("충돌");
+            //console.log("충돌");
             if (this.name != "Target" && this.Picked == true)
-                this.physicsComponent.SetPostion(0,200, 0);
+            {
+                this.physicsComponent.SetPostion(40.1, 500.12, 73.02);
+                this.GameObjectInstance.lookAt((ObjectManager.getInstance().GetObjectFromName("Target") as EditObject).physicsComponent.GetPosition());
+            }
         }
 
         public CollisionDeActive()
@@ -65,13 +68,8 @@ namespace JWFramework
                 this.previousPosition = this.physicsComponent.GetPosition().clone();
             if (this.isTarget == true)
             {
-                this.PhysicsComponent.MoveFoward(50);
-                this.PhysicsComponent.RotateVec3(this.PhysicsComponent.Up, -0.5);
-            }
-            if (this.previousPosition)
-            {
-                this.currentVelocity = this.PhysicsComponent.GetPosition().clone().sub(this.previousPosition);
-                this.previousPosition = this.physicsComponent.GetPosition();
+                this.PhysicsComponent.MoveFoward(100);
+                this.PhysicsComponent.RotateVec3(this.PhysicsComponent.Up, 0.25);
             }
             if (this.Picked == true)
             {
@@ -90,7 +88,7 @@ namespace JWFramework
                 }
                 if (InputManager.getInstance().GetKeyState('w', KeyState.KEY_PRESS))
                 {
-                    this.PhysicsComponent.MoveFoward(70);
+                    this.PhysicsComponent.MoveFoward(80);
                 }
                 if (InputManager.getInstance().GetKeyState('f', KeyState.KEY_PRESS)) {
                     CameraManager.getInstance().SetCameraSavedPosition(CameraMode.CAMERA_3RD);
@@ -105,34 +103,71 @@ namespace JWFramework
                 }
                 if (InputManager.getInstance().GetKeyState('space', KeyState.KEY_PRESS))
                 {
-                    
-                    let currentTime = performance.now();
-                    let targetPos = ObjectManager.getInstance().GetObjectFromName("Target").PhysicsComponent.GetPosition();
 
-                    let missileDirection = targetPos.clone().sub(this.PhysicsComponent.GetPosition().clone());
-                    //this.currentVelocity.addScalar(missileDirection.length());
-                    let relativeVelocity = (ObjectManager.getInstance().GetObjectFromName("Target") as EditObject).currentVelocity.clone().sub(this.currentVelocity);
-                    let missileAcceleration = missileDirection.multiplyScalar(100 / Math.pow(missileDirection.length(), 2)).sub(relativeVelocity.multiplyScalar(100 / missileDirection.length()));
-                    this.GameObjectInstance.lookAt(targetPos.clone());
-                    //this.PhysicsComponent.MoveDirection(missileDirection, 100);
-                    this.physicsComponent.SetPostionVec3(this.physicsComponent.GetPosition().add(missileAcceleration));
+                    let targetObject = (ObjectManager.getInstance().GetObjectFromName("Target") as EditObject);
+                    const targetDirection = new THREE.Vector3().subVectors(targetObject.PhysicsComponent.GetPosition().clone(), this.PhysicsComponent.GetPosition().clone()).normalize(); // 목표 방향
+                    const currentDirection = new THREE.Vector3(0,0,1).applyEuler(this.PhysicsComponent.GetRotateEuler()); // 현재 방향
 
+                    const angle = currentDirection.angleTo(targetDirection); // 현재 방향과 목표 방향 사이의 각도
+                    const axis = new THREE.Vector3().crossVectors(currentDirection, targetDirection).normalize(); // 회전 축
 
-                    //let relativePosition = targetPos.clone().sub(this.PhysicsComponent.GetPosition());
-                    //let relativeVelocity = (ObjectManager.getInstance().GetObjectFromName("Target") as EditObject).currentVelocity.clone().sub(this.currentVelocity);
-                    //let relativeRange = relativePosition.length();
-                    //let rangeRate = relativePosition.dot(relativeVelocity) / relativeRange;
-                    //let missileAcceleration = relativePosition.multiplyScalar(800 / Math.pow(relativeRange, 2)).sub(relativeVelocity.multiplyScalar(800 / relativeRange));
-                    //this.physicsComponent.SetPostionVec3(this.physicsComponent.GetPosition().add(missileAcceleration));
+                    let maxSpeed = 500;
+                    let maxRadius = 500;
 
-                    //this.missileOrientation = this.gameObjectInstance.quaternion;
-                    //let direction = this.previousPosition.clone().sub(this.physicsComponent.GetPosition().clone()).normalize();
-                    //let targetOrientation = new THREE.Quaternion().setFromUnitVectors(new THREE.Vector3(0, 0, 1), direction);
-                    //this.missileOrientation = this.missileOrientation.slerp(targetOrientation, 1);
-                    //this.GameObjectInstance.setRotationFromQuaternion(this.missileOrientation);
+                    let speed = maxSpeed * (angle / maxRadius); // 회전 속도
+                    speed = Math.min(speed, maxSpeed); // 최대 속도 제한
 
 
-                    //this.GameObjectInstance.lookAt(targetPos);
+                    const quaternion = new THREE.Quaternion().setFromAxisAngle(axis, speed); // 회전 quaternion
+
+                    const currentRotation = new THREE.Quaternion();
+                    currentRotation.setFromEuler(this.PhysicsComponent.GetRotateEuler());
+                    const nextRotation = new THREE.Euler().setFromQuaternion(quaternion.multiply(currentRotation)); // 다음 회전
+
+                    this.GameObjectInstance.setRotationFromEuler(nextRotation);
+
+                    this.PhysicsComponent.MoveFoward(130);
+
+                //    let N = 3;
+                //    let NT = 9.8 * JWFramework.WorldManager.getInstance().GetDeltaTime();
+                //    let targetObject = (ObjectManager.getInstance().GetObjectFromName("Target") as EditObject);
+
+                //    let RTM_old: THREE.Vector3;
+                //    let RTM_new: THREE.Vector3;
+                //    let LOS_Delta: THREE.Vector3;
+                //    let LOS_Rate: number;
+
+                //    RTM_old = targetObject.previousPosition.clone().sub(this.previousPosition);
+                //    RTM_new = targetObject.physicsComponent.GetPosition().clone().sub(this.physicsComponent.GetPosition());
+                //    RTM_old = RTM_old.normalize();
+                //    RTM_new = RTM_new.normalize();
+
+                //    if (RTM_old.length() == 0)
+                //    {
+                //        LOS_Delta = new THREE.Vector3(0, 0, 0);
+                //        LOS_Rate = 0;
+                //    }
+                //    else
+                //    {
+                //        LOS_Delta = RTM_new.clone().sub(RTM_old);
+                //        LOS_Rate = LOS_Delta.clone().length();
+                //    }
+                //    let Vc: number = LOS_Rate;
+                //    let latax1 = RTM_new.clone().multiplyScalar(N * Vc * LOS_Rate);
+                //    let latax2 = LOS_Delta.clone().multiplyScalar(NT * (0.5 * N));
+                //    let guidance = latax1.clone().add(latax2.clone());
+
+                //    //this.physicsComponent.MoveFoward(130);
+
+                //    let newPos = this.PhysicsComponent.GetPosition().clone().add(guidance);
+                //    let newDir = newPos.clone().sub(this.previousPosition).normalize();
+                //    let seeDir = newPos.clone().add(newDir.multiplyScalar(10));
+                //    this.GameObjectInstance.lookAt(/*seeDir*/newPos.clone());
+                }
+                if (this.previousPosition)
+                {
+                    this.currentVelocity = this.PhysicsComponent.GetPosition().clone().sub(this.previousPosition);
+                    this.previousPosition = this.physicsComponent.GetPosition().clone();
                 }
             }
             else
@@ -151,11 +186,10 @@ namespace JWFramework
                 this.AnimationMixer.update(WorldManager.getInstance().GetDeltaTime());
             }
         }
-        public currentVelocity: THREE.Vector3;
+        public currentVelocity: THREE.Vector3 = new THREE.Vector3(0,0,1);
         private previousPosition: THREE.Vector3;
         private missileOrientation: THREE.Quaternion;
         private isTarget: boolean = false;
-        private testpos = 0;
         private axisHelper: THREE.AxesHelper;
     }
 }
