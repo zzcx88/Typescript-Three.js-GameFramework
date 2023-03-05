@@ -17,7 +17,7 @@ It is still unfinished and still under working.
 
 This is the url where you can see the current work status.
 
-https://zzcx88.github.io/ThreeJS_with_typescript/
+https://zzcx88.github.io/Typescript-Three.js-GameFramework/
 
 If an object is selected
 
