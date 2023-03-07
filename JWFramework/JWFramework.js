@@ -27,6 +27,7 @@ var JWFramework;
                 center = new THREE.Vector3(0, 0, 0);
             if (halfSize == null)
                 halfSize = new THREE.Vector3(1, 1, 1);
+            this.halfSize = halfSize;
             this.orientedBoundingBox = new THREE.OBB();
             let color = new THREE.Color().setColorName("Red");
             let obbGeometry = new THREE.BoxGeometry(halfSize.x, halfSize.y, halfSize.z);
@@ -93,11 +94,12 @@ var JWFramework;
                 this.boxHelper.box.setFromCenterAndSize(this.gameObject.PhysicsComponent.GetPosition(), this.sizeAABB);
             }
             if (this.orientedBoundingBox) {
-                this.obbBoxHelper.scale.set(this.gameObject.PhysicsComponent.GetScale().x, this.gameObject.PhysicsComponent.GetScale().y, this.gameObject.PhysicsComponent.GetScale().z);
+                this.obbBoxHelper.scale.set(this.halfSize.x, this.halfSize.y, this.halfSize.z);
                 this.obbBoxHelper.rotation.set(this.gameObject.PhysicsComponent.GetRotateEuler().x, this.gameObject.PhysicsComponent.GetRotateEuler().y, this.gameObject.PhysicsComponent.GetRotateEuler().z);
                 this.obbBoxHelper.position.set(this.gameObject.PhysicsComponent.GetPosition().x, this.gameObject.PhysicsComponent.GetPosition().y, this.gameObject.PhysicsComponent.GetPosition().z);
                 this.orientedBoundingBox.copy(this.obbBoxHelper.geometry.userData.obb);
                 this.orientedBoundingBox.applyMatrix4(this.obbBoxHelper.matrixWorld);
+                this.orientedBoundingBox.center.set(this.gameObject.PhysicsComponent.GetPosition().x, this.gameObject.PhysicsComponent.GetPosition().y, this.gameObject.PhysicsComponent.GetPosition().z);
             }
             if (this.raycaster) {
                 this.raycaster.set(this.gameObject.PhysicsComponent.GetPosition(), new THREE.Vector3(0, -1, 0));
@@ -337,6 +339,12 @@ var JWFramework;
             this.GameObject.GameObjectInstance.rotateZ(z);
             this.UpdateMatrix();
         }
+        SetRotateVec3(vec3) {
+            this.GameObject.GameObjectInstance.rotateX(vec3.x);
+            this.GameObject.GameObjectInstance.rotateY(vec3.y);
+            this.GameObject.GameObjectInstance.rotateZ(vec3.z);
+            this.UpdateMatrix();
+        }
         Rotate(x, y, z) {
             this.GameObject.GameObjectInstance.rotateX(x * JWFramework.WorldManager.getInstance().GetDeltaTime());
             this.GameObject.GameObjectInstance.rotateY(y * JWFramework.WorldManager.getInstance().GetDeltaTime());
@@ -485,9 +493,111 @@ var JWFramework;
     class EditObject extends JWFramework.GameObject {
         constructor() {
             super();
-            this.currentVelocity = new THREE.Vector3(0, 0, 1);
             this.isTarget = false;
             this.type = JWFramework.ObjectType.OBJ_OBJECT3D;
+            this.physicsComponent = new JWFramework.PhysicsComponent(this);
+            this.graphicComponent = new JWFramework.GraphComponent(this);
+            this.exportComponent = new JWFramework.ExportComponent(this);
+            this.collisionComponent = new JWFramework.CollisionComponent(this);
+        }
+        InitializeAfterLoad() {
+            this.GameObjectInstance.matrixAutoUpdate = true;
+            this.PhysicsComponent.SetScaleScalar(1);
+            this.GameObjectInstance.name = this.name;
+            if (this.IsClone == false)
+                JWFramework.ObjectManager.getInstance().AddObject(this, this.name, this.Type);
+            else {
+                this.CreateCollider();
+                if (JWFramework.SceneManager.getInstance().SceneType == JWFramework.SceneType.SCENE_EDIT) {
+                    this.axisHelper = new THREE.AxesHelper(10);
+                    this.GameObjectInstance.add(this.axisHelper);
+                }
+            }
+        }
+        CreateCollider() {
+            this.CollisionComponent.CreateOrientedBoundingBox(this.physicsComponent.GetPosition(), new THREE.Vector3(2, 2, 2));
+            this.CollisionComponent.CreateRaycaster();
+        }
+        CollisionActive() {
+        }
+        CollisionDeActive() {
+        }
+        launchMissile() {
+            let objectManager = JWFramework.ObjectManager.getInstance();
+            let cloneObject = objectManager.MakeClone(objectManager.GetObjectFromName("AIM-9"));
+            cloneObject.PhysicsComponent.SetScale(1, 1, 1);
+            cloneObject.GameObjectInstance.setRotationFromEuler(this.PhysicsComponent.GetRotateEuler());
+            cloneObject.PhysicsComponent.SetPostionVec3(new THREE.Vector3(this.GameObjectInstance.position.x, this.GameObjectInstance.position.y, this.GameObjectInstance.position.z));
+            cloneObject.PhysicsComponent.GetPosition().add(this.physicsComponent.Up.multiplyScalar(-2));
+            objectManager.AddObject(cloneObject, cloneObject.Name, cloneObject.Type);
+        }
+        Animate() {
+            if (this.isTarget == true) {
+                this.PhysicsComponent.MoveFoward(60);
+                this.PhysicsComponent.RotateVec3(this.PhysicsComponent.Up, 0.25);
+            }
+            if (this.Picked == true) {
+                this.IsRayOn = true;
+                if (JWFramework.InputManager.getInstance().GetKeyState('left', JWFramework.KeyState.KEY_PRESS)) {
+                    this.PhysicsComponent.RotateVec3(this.PhysicsComponent.Look, -1);
+                }
+                if (JWFramework.InputManager.getInstance().GetKeyState('right', JWFramework.KeyState.KEY_PRESS)) {
+                    this.PhysicsComponent.RotateVec3(this.PhysicsComponent.Look, 1);
+                }
+                if (JWFramework.InputManager.getInstance().GetKeyState('down', JWFramework.KeyState.KEY_PRESS)) {
+                    this.PhysicsComponent.RotateVec3(this.PhysicsComponent.Right, -1);
+                }
+                if (JWFramework.InputManager.getInstance().GetKeyState('up', JWFramework.KeyState.KEY_PRESS)) {
+                    this.PhysicsComponent.RotateVec3(this.PhysicsComponent.Right, 1);
+                }
+                if (JWFramework.InputManager.getInstance().GetKeyState('w', JWFramework.KeyState.KEY_PRESS)) {
+                    this.PhysicsComponent.MoveFoward(70);
+                }
+                if (JWFramework.InputManager.getInstance().GetKeyState('f', JWFramework.KeyState.KEY_PRESS)) {
+                    JWFramework.CameraManager.getInstance().SetCameraSavedPosition(JWFramework.CameraMode.CAMERA_3RD);
+                }
+                if (JWFramework.InputManager.getInstance().GetKeyState('r', JWFramework.KeyState.KEY_PRESS)) {
+                    JWFramework.CameraManager.getInstance().SetCameraSavedPosition(JWFramework.CameraMode.CAMERA_ORBIT);
+                }
+                if (JWFramework.InputManager.getInstance().GetKeyState('p', JWFramework.KeyState.KEY_DOWN)) {
+                    this.isTarget = true;
+                    this.name = "Target";
+                }
+                if (JWFramework.InputManager.getInstance().GetKeyState('space', JWFramework.KeyState.KEY_DOWN)) {
+                    this.launchMissile();
+                }
+            }
+            else
+                this.IsRayOn = false;
+            if (JWFramework.SceneManager.getInstance().SceneType == JWFramework.SceneType.SCENE_EDIT && this.Picked == true) {
+                this.axisHelper.visible = true;
+            }
+            if (JWFramework.SceneManager.getInstance().SceneType == JWFramework.SceneType.SCENE_EDIT && this.Picked == false) {
+                this.axisHelper.visible = false;
+            }
+            if (this.isClone == true) {
+                this.CollisionComponent.Update();
+            }
+            if (this.AnimationMixer != null) {
+                this.AnimationMixer.update(JWFramework.WorldManager.getInstance().GetDeltaTime());
+            }
+        }
+    }
+    JWFramework.EditObject = EditObject;
+})(JWFramework || (JWFramework = {}));
+var JWFramework;
+(function (JWFramework) {
+    class Missile extends JWFramework.GameObject {
+        constructor() {
+            super();
+            this.currentVelocity = new THREE.Vector3(0, 0, 1);
+            this.rotaspeed = 15;
+            this.angle = 500;
+            this.distance = 100;
+            this.startGuidenceTime = 6;
+            this.makeObbTime = 0;
+            this.activeColide = false;
+            this.type = JWFramework.ObjectType.OBJ_MISSILE;
             this.physicsComponent = new JWFramework.PhysicsComponent(this);
             this.graphicComponent = new JWFramework.GraphComponent(this);
             this.exportComponent = new JWFramework.ExportComponent(this);
@@ -508,90 +618,68 @@ var JWFramework;
             }
         }
         CreateCollider() {
-            this.CollisionComponent.CreateOrientedBoundingBox(this.physicsComponent.GetPosition(), this.physicsComponent.GetScale());
+            this.CollisionComponent.CreateOrientedBoundingBox(this.physicsComponent.GetPosition(), new THREE.Vector3(2, 2, 2));
             this.CollisionComponent.CreateRaycaster();
+            this.CollisionComponent.ObbBoxHelper.visible = false;
         }
         CollisionActive() {
-            if (this.name != "Target" && this.Picked == true) {
-                this.physicsComponent.SetPostion(40.1, 500.12, 73.02);
-                this.GameObjectInstance.lookAt(JWFramework.ObjectManager.getInstance().GetObjectFromName("Target").physicsComponent.GetPosition());
-            }
+            if (this.activeColide == true)
+                this.isDead = true;
         }
         CollisionDeActive() {
         }
         Animate() {
-            if (this.previousPosition == null)
-                this.previousPosition = this.physicsComponent.GetPosition().clone();
-            if (this.isTarget == true) {
-                this.PhysicsComponent.MoveFoward(100);
-                this.PhysicsComponent.RotateVec3(this.PhysicsComponent.Up, 0.25);
-            }
-            if (this.Picked == true) {
-                this.IsRayOn = true;
-                if (JWFramework.InputManager.getInstance().GetKeyState('left', JWFramework.KeyState.KEY_PRESS)) {
-                    this.PhysicsComponent.RotateVec3(this.PhysicsComponent.Look, -1);
-                }
-                if (JWFramework.InputManager.getInstance().GetKeyState('right', JWFramework.KeyState.KEY_PRESS)) {
-                    this.PhysicsComponent.RotateVec3(this.PhysicsComponent.Look, 1);
-                }
-                if (JWFramework.InputManager.getInstance().GetKeyState('down', JWFramework.KeyState.KEY_PRESS)) {
-                    this.PhysicsComponent.RotateVec3(this.PhysicsComponent.Right, -1);
-                }
-                if (JWFramework.InputManager.getInstance().GetKeyState('up', JWFramework.KeyState.KEY_PRESS)) {
-                    this.PhysicsComponent.RotateVec3(this.PhysicsComponent.Right, 1);
-                }
-                if (JWFramework.InputManager.getInstance().GetKeyState('w', JWFramework.KeyState.KEY_PRESS)) {
-                    this.PhysicsComponent.MoveFoward(80);
-                }
-                if (JWFramework.InputManager.getInstance().GetKeyState('f', JWFramework.KeyState.KEY_PRESS)) {
-                    JWFramework.CameraManager.getInstance().SetCameraSavedPosition(JWFramework.CameraMode.CAMERA_3RD);
-                }
-                if (JWFramework.InputManager.getInstance().GetKeyState('r', JWFramework.KeyState.KEY_PRESS)) {
-                    JWFramework.CameraManager.getInstance().SetCameraSavedPosition(JWFramework.CameraMode.CAMERA_ORBIT);
-                }
-                if (JWFramework.InputManager.getInstance().GetKeyState('p', JWFramework.KeyState.KEY_DOWN)) {
-                    this.isTarget = true;
-                    this.name = "Target";
-                }
-                if (JWFramework.InputManager.getInstance().GetKeyState('space', JWFramework.KeyState.KEY_PRESS)) {
-                    let targetObject = JWFramework.ObjectManager.getInstance().GetObjectFromName("Target");
-                    const targetDirection = new THREE.Vector3().subVectors(targetObject.PhysicsComponent.GetPosition().clone(), this.PhysicsComponent.GetPosition().clone()).normalize();
-                    const currentDirection = new THREE.Vector3(0, 0, 1).applyEuler(this.PhysicsComponent.GetRotateEuler());
-                    const angle = currentDirection.angleTo(targetDirection);
-                    const axis = new THREE.Vector3().crossVectors(currentDirection, targetDirection).normalize();
-                    let maxSpeed = 500;
-                    let maxRadius = 500;
-                    let speed = maxSpeed * (angle / maxRadius);
-                    speed = Math.min(speed, maxSpeed);
-                    const quaternion = new THREE.Quaternion().setFromAxisAngle(axis, speed);
-                    const currentRotation = new THREE.Quaternion();
-                    currentRotation.setFromEuler(this.PhysicsComponent.GetRotateEuler());
-                    const nextRotation = new THREE.Euler().setFromQuaternion(quaternion.multiply(currentRotation));
-                    this.GameObjectInstance.setRotationFromEuler(nextRotation);
-                    this.PhysicsComponent.MoveFoward(130);
-                }
-                if (this.previousPosition) {
-                    this.currentVelocity = this.PhysicsComponent.GetPosition().clone().sub(this.previousPosition);
-                    this.previousPosition = this.physicsComponent.GetPosition().clone();
-                }
+            if (this.makeObbTime > 0.5) {
+                this.activeColide = true;
             }
             else
-                this.IsRayOn = false;
-            if (JWFramework.SceneManager.getInstance().SceneType == JWFramework.SceneType.SCENE_EDIT && this.Picked == true) {
-                this.axisHelper.visible = true;
+                this.makeObbTime += JWFramework.WorldManager.getInstance().GetDeltaTime();
+            let targetObject = JWFramework.ObjectManager.getInstance().GetObjectFromName("Target");
+            if (targetObject != undefined) {
+                let length = new THREE.Vector3().subVectors(targetObject.PhysicsComponent.GetPosition().clone(), this.PhysicsComponent.GetPosition().clone()).length();
+                let targetDirection;
+                if (length < 100)
+                    this.distance = length - (length / 2);
+                if (this.distance < 0) {
+                    this.distance = 0;
+                }
+                let nextPos = targetObject.PhysicsComponent.GetPosition().clone().add(targetObject.PhysicsComponent.Look.clone().multiplyScalar(this.distance));
+                targetDirection = new THREE.Vector3().subVectors(nextPos, this.PhysicsComponent.GetPosition().clone()).normalize();
+                const currentDirection = new THREE.Vector3(0, 0, 1).applyEuler(this.PhysicsComponent.GetRotateEuler());
+                const angle = currentDirection.angleTo(targetDirection);
+                const axis = new THREE.Vector3().crossVectors(currentDirection, targetDirection).normalize();
+                let maxSpeed = this.rotaspeed;
+                let maxRadius = this.angle;
+                if (this.rotaspeed > 1)
+                    this.rotaspeed -= 2 * JWFramework.WorldManager.getInstance().GetDeltaTime();
+                if (this.rotaspeed < 1)
+                    this.rotaspeed = 1;
+                console.log(this.rotaspeed);
+                let speed = maxSpeed * (angle / maxRadius);
+                speed = Math.min(speed, maxSpeed);
+                const quaternion = new THREE.Quaternion().setFromAxisAngle(axis, speed);
+                const currentRotation = new THREE.Quaternion();
+                currentRotation.setFromEuler(this.PhysicsComponent.GetRotateEuler());
+                const nextRotation = new THREE.Euler().setFromQuaternion(quaternion.multiply(currentRotation));
+                this.GameObjectInstance.setRotationFromEuler(nextRotation);
+                this.PhysicsComponent.MoveFoward(120);
             }
-            if (JWFramework.SceneManager.getInstance().SceneType == JWFramework.SceneType.SCENE_EDIT && this.Picked == false) {
-                this.axisHelper.visible = false;
-            }
+            else
+                this.PhysicsComponent.MoveFoward(120);
+            let labelMaterial = new THREE.SpriteMaterial({
+                map: JWFramework.ShaderManager.getInstance().fogTexture,
+                transparent: true,
+            });
+            let fog = new THREE.Sprite(labelMaterial);
+            fog.position.set(this.PhysicsComponent.GetPosition().x + Math.random() * 3, this.PhysicsComponent.GetPosition().y + Math.random() * 3, this.PhysicsComponent.GetPosition().z);
+            fog.scale.set(3, 3, 3);
+            JWFramework.SceneManager.getInstance().SceneInstance.add(fog);
             if (this.isClone == true) {
                 this.CollisionComponent.Update();
             }
-            if (this.AnimationMixer != null) {
-                this.AnimationMixer.update(JWFramework.WorldManager.getInstance().GetDeltaTime());
-            }
         }
     }
-    JWFramework.EditObject = EditObject;
+    JWFramework.Missile = Missile;
 })(JWFramework || (JWFramework = {}));
 var JWFramework;
 (function (JWFramework) {
@@ -624,17 +712,17 @@ var JWFramework;
         constructor() {
             super();
             this.helmet = new JWFramework.EditObject;
-            this.mig23 = new JWFramework.EditObject;
+            this.aim9 = new JWFramework.Missile;
             this.mig29 = new JWFramework.EditObject;
             this.f_5e = new JWFramework.EditObject;
             this.anim = new JWFramework.EditObject;
-            this.mig23.Name = "MIG_23_MLD";
+            this.aim9.Name = "AIM-9";
             this.mig29.Name = "MIG_29";
             this.helmet.Name = "helmet";
             this.f_5e.Name = "F-5E";
             this.anim.Name = "animation";
             this.sceneModelData = [
-                { model: this.mig23, url: 'Model/mig_23_mld.glb' },
+                { model: this.aim9, url: 'Model/aim-9.glb' },
                 { model: this.mig29, url: 'Model/mig_29.glb' },
                 { model: this.helmet, url: 'Model/DamagedHelmet.gltf' },
                 { model: this.f_5e, url: 'Model/F-5E.glb' },
@@ -684,8 +772,9 @@ var JWFramework;
         ObjectType[ObjectType["OBJ_OBJECT3D"] = 1] = "OBJ_OBJECT3D";
         ObjectType[ObjectType["OBJ_OBJECT2D"] = 2] = "OBJ_OBJECT2D";
         ObjectType[ObjectType["OBJ_AIRCRAFT"] = 3] = "OBJ_AIRCRAFT";
-        ObjectType[ObjectType["OBJ_CAMERA"] = 4] = "OBJ_CAMERA";
-        ObjectType[ObjectType["OBJ_END"] = 5] = "OBJ_END";
+        ObjectType[ObjectType["OBJ_MISSILE"] = 4] = "OBJ_MISSILE";
+        ObjectType[ObjectType["OBJ_CAMERA"] = 5] = "OBJ_CAMERA";
+        ObjectType[ObjectType["OBJ_END"] = 6] = "OBJ_END";
     })(ObjectType = JWFramework.ObjectType || (JWFramework.ObjectType = {}));
     let LightType;
     (function (LightType) {
@@ -977,7 +1066,7 @@ var JWFramework;
     class ObjectManager {
         constructor() {
             this.terrainList = new THREE.Group();
-            this.objectList = [[], [], [], [], []];
+            this.objectList = [[], [], [], [], [], []];
             this.exportObjectList = [];
         }
         static getInstance() {
@@ -1023,6 +1112,9 @@ var JWFramework;
             let cloneObject;
             if (selectObject instanceof JWFramework.EditObject) {
                 cloneObject = new JWFramework.EditObject;
+            }
+            else if (selectObject instanceof JWFramework.Missile) {
+                cloneObject = new JWFramework.Missile;
             }
             else {
                 if (selectObject == null)
@@ -1112,18 +1204,20 @@ var JWFramework;
         Animate() {
             for (let TYPE = 0; TYPE < JWFramework.ObjectType.OBJ_END; ++TYPE) {
                 for (let OBJ = 0; OBJ < this.objectList[TYPE].length; ++OBJ) {
-                    this.objectList[TYPE][OBJ].GameObject.Animate();
+                    if (this.objectList[TYPE][OBJ].GameObject.IsClone)
+                        this.objectList[TYPE][OBJ].GameObject.Animate();
                     if (this.objectList[TYPE][OBJ].GameObject.PhysicsCompIncluded == true)
                         this.objectList[TYPE][OBJ].GameObject.PhysicsComponent.UpdateMatrix();
                     if (this.objectList[TYPE][OBJ].GameObject.IsDead) {
                         this.DeleteObject(this.objectList[TYPE][OBJ].GameObject);
                         this.objectList[TYPE][OBJ] = null;
                         delete this.objectList[TYPE][OBJ];
-                        this.objectList[TYPE] = this.objectList[TYPE].filter((element, OBJ) => element !== undefined);
+                        this.objectList[TYPE] = this.objectList[TYPE].filter((element) => element !== undefined);
                     }
                 }
             }
             JWFramework.CollisionManager.getInstance().CollideObbToBox(this.objectList[JWFramework.ObjectType.OBJ_OBJECT3D], this.objectList[JWFramework.ObjectType.OBJ_TERRAIN]);
+            JWFramework.CollisionManager.getInstance().CollideObbToBox(this.objectList[JWFramework.ObjectType.OBJ_MISSILE], this.objectList[JWFramework.ObjectType.OBJ_TERRAIN]);
             let sectoredTerrain = this.objectList[JWFramework.ObjectType.OBJ_TERRAIN].filter((element) => element.GameObject.inSecter == true);
             JWFramework.CollisionManager.getInstance().CollideRayToTerrain(sectoredTerrain);
             sectoredTerrain.forEach(function (src) {
@@ -1640,6 +1734,13 @@ var JWFramework;
                         cloneObject.PhysicsComponent.SetPostion(data.position.x, data.position.y, data.position.z);
                         objectManager.AddObject(cloneObject, cloneObject.Name, cloneObject.Type);
                     }
+                    else if (data.name.includes("AIM-9")) {
+                        let cloneObject = objectManager.MakeClone(objectManager.GetObjectFromName("AIM-9"));
+                        cloneObject.PhysicsComponent.SetScale(data.scale.x, data.scale.y, data.scale.z);
+                        cloneObject.PhysicsComponent.SetRotate(data.rotation.x, data.rotation.y, data.rotation.z);
+                        cloneObject.PhysicsComponent.SetPostion(data.position.x, data.position.y, data.position.z);
+                        objectManager.AddObject(cloneObject, cloneObject.Name, cloneObject.Type);
+                    }
                 }
             });
         }
@@ -1865,6 +1966,9 @@ var JWFramework;
             this.factoryTexture = new THREE.TextureLoader().load("Model/Heightmap/factory.jpg");
             this.factoryTexture.wrapS = THREE.RepeatWrapping;
             this.factoryTexture.wrapT = THREE.RepeatWrapping;
+            this.fogTexture = new THREE.TextureLoader().load("Model/fog/fog.png");
+            this.fogTexture.wrapS = THREE.RepeatWrapping;
+            this.fogTexture.wrapT = THREE.RepeatWrapping;
         }
         static getInstance() {
             if (!ShaderManager.instance) {
@@ -1924,6 +2028,7 @@ var JWFramework;
             WorldManager.getInstance().Renderer.initTexture(JWFramework.ShaderManager.getInstance().farmTexture);
             WorldManager.getInstance().Renderer.initTexture(JWFramework.ShaderManager.getInstance().mountainTexture);
             WorldManager.getInstance().Renderer.initTexture(JWFramework.ShaderManager.getInstance().factoryTexture);
+            WorldManager.getInstance().Renderer.initTexture(JWFramework.ShaderManager.getInstance().fogTexture);
         }
         CreateRendere() {
             this.renderer = new THREE.WebGLRenderer({
@@ -2072,16 +2177,18 @@ var JWFramework;
                 destination.forEach(function (dst) {
                     if (src.IsClone && dst.IsClone) {
                         if (src != dst) {
-                            if (src.CollisionComponent.OBB.intersectsOBB(dst.CollisionComponent.OBB)) {
-                                if (!dst.GameObject || !src.GameObject)
-                                    src.CollisionActive(dst.Type);
-                                dst.CollisionActive();
-                            }
-                            else {
-                                if (!dst.GameObject || !src.GameObject)
-                                    src.CollisionDeActive(dst.Type);
-                                dst.CollisionDeActive();
-                            }
+                            if (src.CollisionComponent != null && dst.CollisionComponent != null)
+                                if (src.CollisionComponent.OBB.intersectsOBB(dst.CollisionComponent.OBB)) {
+                                    if (!(dst.GameObject instanceof JWFramework.HeightmapTerrain) || !(src.GameObject instanceof JWFramework.HeightmapTerrain)) {
+                                        src.CollisionActive(dst.Type);
+                                    }
+                                    dst.CollisionActive();
+                                }
+                                else {
+                                    if (!(dst.GameObject instanceof JWFramework.HeightmapTerrain) || !(src.GameObject instanceof JWFramework.HeightmapTerrain))
+                                        src.CollisionDeActive(dst.Type);
+                                    dst.CollisionDeActive();
+                                }
                         }
                     }
                 });
@@ -2093,13 +2200,13 @@ var JWFramework;
                     if (src.GameObject.IsClone && dst.GameObject.IsClone) {
                         if (src.GameObject != dst.GameObject) {
                             if (src.GameObject.CollisionComponent.OBB.intersectsBox3(dst.GameObject.CollisionComponent.BoundingBox)) {
-                                if (!dst.GameObject) {
+                                if (!(dst.GameObject instanceof JWFramework.HeightmapTerrain)) {
                                     src.GameObject.CollisionActive();
                                 }
                                 dst.GameObject.CollisionActive(src.GameObject);
                             }
                             else {
-                                if (!dst.GameObject) {
+                                if (!(dst.GameObject instanceof JWFramework.HeightmapTerrain)) {
                                     src.GameObject.CollisionDeActive();
                                 }
                                 dst.GameObject.CollisionDeActive(src.GameObject);

@@ -156,10 +156,17 @@ namespace JWFramework
                             cloneObject.PhysicsComponent.SetPostion(data.position.x, data.position.y, data.position.z);
                             objectManager.AddObject(cloneObject, cloneObject.Name, cloneObject.Type);
                         }
-
                         else if (data.name.includes("F-5E"))
                         {
                             let cloneObject = objectManager.MakeClone(objectManager.GetObjectFromName("F-5E"));
+                            cloneObject.PhysicsComponent.SetScale(data.scale.x, data.scale.y, data.scale.z);
+                            cloneObject.PhysicsComponent.SetRotate(data.rotation.x, data.rotation.y, data.rotation.z);
+                            cloneObject.PhysicsComponent.SetPostion(data.position.x, data.position.y, data.position.z);
+                            objectManager.AddObject(cloneObject, cloneObject.Name, cloneObject.Type);
+                        }
+                        else if (data.name.includes("AIM-9"))
+                        {
+                            let cloneObject = objectManager.MakeClone(objectManager.GetObjectFromName("AIM-9"));
                             cloneObject.PhysicsComponent.SetScale(data.scale.x, data.scale.y, data.scale.z);
                             cloneObject.PhysicsComponent.SetRotate(data.rotation.x, data.rotation.y, data.rotation.z);
                             cloneObject.PhysicsComponent.SetPostion(data.position.x, data.position.y, data.position.z);

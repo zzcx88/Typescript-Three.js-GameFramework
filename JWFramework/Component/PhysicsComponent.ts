@@ -119,6 +119,15 @@ namespace JWFramework
             this.GameObject.GameObjectInstance.rotateZ(z);
             this.UpdateMatrix();
         }
+
+        public SetRotateVec3(vec3: THREE.Vector3): void
+        {
+            this.GameObject.GameObjectInstance.rotateX(vec3.x);
+            this.GameObject.GameObjectInstance.rotateY(vec3.y);
+            this.GameObject.GameObjectInstance.rotateZ(vec3.z);
+            this.UpdateMatrix();
+        }
+
         //Object스페이스 축 기준 회전
         public Rotate(x: number, y: number, z: number): void
         {

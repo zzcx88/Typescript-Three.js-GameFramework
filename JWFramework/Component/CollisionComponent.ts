@@ -30,6 +30,7 @@
                 center = new THREE.Vector3(0, 0, 0);
             if (halfSize == null)
                 halfSize = new THREE.Vector3(1, 1, 1);
+            this.halfSize = halfSize;
             this.orientedBoundingBox = new THREE.OBB();
             let color = new THREE.Color().setColorName("Red");
             let obbGeometry = new THREE.BoxGeometry(halfSize.x, halfSize.y, halfSize.z);
@@ -126,11 +127,12 @@
             }
             if (this.orientedBoundingBox)
             {
-                this.obbBoxHelper.scale.set(this.gameObject.PhysicsComponent.GetScale().x, this.gameObject.PhysicsComponent.GetScale().y, this.gameObject.PhysicsComponent.GetScale().z)
+                this.obbBoxHelper.scale.set(this.halfSize.x, this.halfSize.y, this.halfSize.z)
                 this.obbBoxHelper.rotation.set(this.gameObject.PhysicsComponent.GetRotateEuler().x, this.gameObject.PhysicsComponent.GetRotateEuler().y, this.gameObject.PhysicsComponent.GetRotateEuler().z);
                 this.obbBoxHelper.position.set(this.gameObject.PhysicsComponent.GetPosition().x, this.gameObject.PhysicsComponent.GetPosition().y, this.gameObject.PhysicsComponent.GetPosition().z);
                 this.orientedBoundingBox.copy(this.obbBoxHelper.geometry.userData.obb);
                 this.orientedBoundingBox.applyMatrix4(this.obbBoxHelper.matrixWorld);
+                this.orientedBoundingBox.center.set(this.gameObject.PhysicsComponent.GetPosition().x, this.gameObject.PhysicsComponent.GetPosition().y, this.gameObject.PhysicsComponent.GetPosition().z);
             }
             if (this.raycaster)
             {
@@ -148,6 +150,8 @@
         private orientedBoundingBox: THREE.OBB = null;
         private boundingSphere: THREE.Sphere = null;
         private raycaster: THREE.Raycaster = null;
+
+        private halfSize: THREE.Vector3;
 
         private boundingBoxInclude: boolean;
         private orientedBoundingBoxInlcude: boolean;

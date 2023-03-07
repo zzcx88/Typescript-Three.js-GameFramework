@@ -45,3 +45,11 @@ C:\Users\GyroSoft\Desktop\ThreeJS_with_typescript-main\JWFramework\obj\Debug\JWF
 C:\Users\GyroSoft\Desktop\ThreeJS_with_typescript-main\JWFramework\obj\Debug\JWFramework.dll
 C:\Users\GyroSoft\Desktop\ThreeJS_with_typescript-main\JWFramework\obj\Debug\JWFramework.pdb
 C:\Users\GyroSoft\Desktop\ThreeJS_with_typescript-main\JWFramework\obj\Debug\JWFramework.csproj.AssemblyReference.cache
+C:\Users\GyroSoft\Desktop\Typescript-Three.js-GameFramework-main\JWFramework\bin\JWFramework.dll.config
+C:\Users\GyroSoft\Desktop\Typescript-Three.js-GameFramework-main\JWFramework\bin\JWFramework.dll
+C:\Users\GyroSoft\Desktop\Typescript-Three.js-GameFramework-main\JWFramework\bin\JWFramework.pdb
+C:\Users\GyroSoft\Desktop\Typescript-Three.js-GameFramework-main\JWFramework\obj\Debug\JWFramework.csproj.CoreCompileInputs.cache
+C:\Users\GyroSoft\Desktop\Typescript-Three.js-GameFramework-main\JWFramework\obj\Debug\JWFramework.dll
+C:\Users\GyroSoft\Desktop\Typescript-Three.js-GameFramework-main\JWFramework\obj\Debug\JWFramework.pdb
+C:\Users\LEEJAEWON\Desktop\ThreeJS_with_typescript\JWFramework\obj\Debug\JWFramework.csproj.AssemblyReference.cache
+C:\Users\GyroSoft\Desktop\Typescript-Three.js-GameFramework-main\JWFramework\obj\Debug\JWFramework.csproj.AssemblyReference.cache

@@ -31,6 +31,7 @@ namespace JWFramework
             WorldManager.getInstance().Renderer.initTexture(ShaderManager.getInstance().farmTexture);
             WorldManager.getInstance().Renderer.initTexture(ShaderManager.getInstance().mountainTexture);
             WorldManager.getInstance().Renderer.initTexture(ShaderManager.getInstance().factoryTexture);
+            WorldManager.getInstance().Renderer.initTexture(ShaderManager.getInstance().fogTexture);
         }
 
         private CreateRendere()

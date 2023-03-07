@@ -20,6 +20,7 @@ declare namespace JWFramework {
         private orientedBoundingBox;
         private boundingSphere;
         private raycaster;
+        private halfSize;
         private boundingBoxInclude;
         private orientedBoundingBoxInlcude;
         private boundingSphereInclude;
@@ -83,6 +84,7 @@ declare namespace JWFramework {
         GetScale(): THREE.Vector3;
         GetMatrix4(): THREE.Matrix4;
         SetRotate(x: number, y: number, z: number): void;
+        SetRotateVec3(vec3: THREE.Vector3): void;
         Rotate(x: number, y: number, z: number): void;
         RotateVec3(axis: THREE.Vector3, angle: number): void;
         UpdateMatrix(): void;
@@ -156,11 +158,27 @@ declare namespace JWFramework {
         CreateCollider(): void;
         CollisionActive(): void;
         CollisionDeActive(): void;
+        private launchMissile;
+        Animate(): void;
+        private isTarget;
+        private axisHelper;
+    }
+}
+declare namespace JWFramework {
+    class Missile extends GameObject {
+        constructor();
+        InitializeAfterLoad(): void;
+        CreateCollider(): void;
+        CollisionActive(): void;
+        CollisionDeActive(): void;
         Animate(): void;
         currentVelocity: THREE.Vector3;
-        private previousPosition;
-        private missileOrientation;
-        private isTarget;
+        private rotaspeed;
+        private angle;
+        private distance;
+        private startGuidenceTime;
+        private makeObbTime;
+        private activeColide;
         private axisHelper;
     }
 }
@@ -181,7 +199,7 @@ declare namespace JWFramework {
     class ModelSceneEdit extends ModelSceneBase {
         constructor();
         private helmet;
-        private mig23;
+        private aim9;
         private mig29;
         private f_5e;
         private anim;
@@ -225,8 +243,9 @@ declare namespace JWFramework {
         OBJ_OBJECT3D = 1,
         OBJ_OBJECT2D = 2,
         OBJ_AIRCRAFT = 3,
-        OBJ_CAMERA = 4,
-        OBJ_END = 5
+        OBJ_MISSILE = 4,
+        OBJ_CAMERA = 5,
+        OBJ_END = 6
     }
     enum LightType {
         LIGHT_DIRECTIONAL = 0,
@@ -519,6 +538,7 @@ declare namespace JWFramework {
         farmTexture: THREE.Texture;
         mountainTexture: THREE.Texture;
         factoryTexture: THREE.Texture;
+        fogTexture: THREE.Texture;
         private composer;
         private renderPass;
         private savePass;

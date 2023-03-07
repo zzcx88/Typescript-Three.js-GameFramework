@@ -67,6 +67,10 @@
             if (selectObject instanceof EditObject) {
                 cloneObject = new EditObject;
             }
+            else if (selectObject instanceof Missile)
+            {
+                cloneObject = new Missile;
+            }
             else {
                 if (selectObject == null)
                     alert("EmptyObject")
@@ -177,7 +181,8 @@
         {
             for (let TYPE = 0; TYPE < ObjectType.OBJ_END; ++TYPE) {
                 for (let OBJ = 0; OBJ < this.objectList[TYPE].length; ++OBJ) {
-                    this.objectList[TYPE][OBJ].GameObject.Animate();
+                    if (this.objectList[TYPE][OBJ].GameObject.IsClone)
+                        this.objectList[TYPE][OBJ].GameObject.Animate();
 
                     if (this.objectList[TYPE][OBJ].GameObject.PhysicsCompIncluded == true)
                         this.objectList[TYPE][OBJ].GameObject.PhysicsComponent.UpdateMatrix();
@@ -186,28 +191,28 @@
                         this.DeleteObject(this.objectList[TYPE][OBJ].GameObject);
                         this.objectList[TYPE][OBJ] = null;
                         delete this.objectList[TYPE][OBJ];
-                        
-                        this.objectList[TYPE] = this.objectList[TYPE].filter((element, OBJ) => element !== undefined);
+                         
+                        this.objectList[TYPE] = this.objectList[TYPE].filter((element) => element !== undefined);
                     }
                 }
             }
             //CollisionManager.getInstance().CollideBoxToBox(this.objectList[ObjectType.OBJ_TERRAIN], this.objectList[ObjectType.OBJ_CAMERA]);
             //CollisionManager.getInstance().CollideObbToObb(this.objectList[ObjectType.OBJ_OBJECT3D], this.objectList[ObjectType.OBJ_OBJECT3D]);
             CollisionManager.getInstance().CollideObbToBox(this.objectList[ObjectType.OBJ_OBJECT3D], this.objectList[ObjectType.OBJ_TERRAIN]);
+            CollisionManager.getInstance().CollideObbToBox(this.objectList[ObjectType.OBJ_MISSILE], this.objectList[ObjectType.OBJ_TERRAIN]);
             let sectoredTerrain = this.objectList[ObjectType.OBJ_TERRAIN].filter((element) => (element.GameObject as unknown as HeightmapTerrain).inSecter == true);
             CollisionManager.getInstance().CollideRayToTerrain(sectoredTerrain);
             sectoredTerrain.forEach(function (src)
             {
                 CollisionManager.getInstance().CollideObbToObb((src.GameObject as HeightmapTerrain).inSectorObject, (src.GameObject as HeightmapTerrain).inSectorObject);
             });
-
             InputManager.getInstance().UpdateKey();
         }
 
         public Render() { }
 
         private terrainList = new THREE.Group();
-        private objectList: ObjectSet[][] = [[], [], [], [], []];
+        private objectList: ObjectSet[][] = [[], [], [], [], [], []];
         private exportObjectList = [];
     }
 }

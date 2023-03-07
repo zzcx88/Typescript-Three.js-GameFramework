@@ -25,6 +25,10 @@ namespace JWFramework
             this.factoryTexture.wrapS = THREE.RepeatWrapping;
             this.factoryTexture.wrapT = THREE.RepeatWrapping;
 
+            this.fogTexture = new THREE.TextureLoader().load("Model/fog/fog.png");
+            this.fogTexture.wrapS = THREE.RepeatWrapping;
+            this.fogTexture.wrapT = THREE.RepeatWrapping;
+
         }
 
         static getInstance()
@@ -94,6 +98,7 @@ namespace JWFramework
         public farmTexture: THREE.Texture;
         public mountainTexture: THREE.Texture;
         public factoryTexture: THREE.Texture;
+        public fogTexture: THREE.Texture;
 
         private composer: THREE.EffectComposer;
         private renderPass: THREE.RenderPass;

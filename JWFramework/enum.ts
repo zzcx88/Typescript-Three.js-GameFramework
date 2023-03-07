@@ -14,6 +14,7 @@
         OBJ_OBJECT3D,
         OBJ_OBJECT2D,
         OBJ_AIRCRAFT,
+        OBJ_MISSILE,
         OBJ_CAMERA,
         OBJ_END
     }
