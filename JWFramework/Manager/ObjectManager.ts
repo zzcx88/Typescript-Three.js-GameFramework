@@ -67,9 +67,17 @@
             if (selectObject instanceof EditObject) {
                 cloneObject = new EditObject;
             }
-            else if (selectObject instanceof Missile)
+            else if (selectObject instanceof AIM9H)
             {
-                cloneObject = new Missile;
+                cloneObject = new AIM9H;
+            }
+            else if (selectObject instanceof AIM9L)
+            {
+                cloneObject = new AIM9L;
+            }
+            else if (selectObject instanceof R60M)
+            {
+                cloneObject = new R60M;
             }
             else {
                 if (selectObject == null)
@@ -117,7 +125,7 @@
         {
             gameObject.GameObjectInstance.traverse(node =>
             {
-                if (node.isMesh || node.isGroup)
+                if (node.isMesh || node.isGroup || node.isSprite)
                 {
                     if (node.geometry)
                     {
@@ -146,7 +154,8 @@
                 (gameObject as HeightmapTerrain).inSectorObject = [];
                 (gameObject as HeightmapTerrain).inSectorObject = null;
             }
-            gameObject.CollisionComponent.DeleteCollider();
+            if (gameObject.CollisionComponent != undefined)
+                gameObject.CollisionComponent.DeleteCollider();
             gameObject.DeleteAllComponent();
 
             delete gameObject.ModelData;

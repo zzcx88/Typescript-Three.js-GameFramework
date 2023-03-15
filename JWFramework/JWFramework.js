@@ -494,6 +494,8 @@ var JWFramework;
         constructor() {
             super();
             this.isTarget = false;
+            this.throttle = 0;
+            this.prevPosition = new THREE.Vector3(0, 0, 0);
             this.type = JWFramework.ObjectType.OBJ_OBJECT3D;
             this.physicsComponent = new JWFramework.PhysicsComponent(this);
             this.graphicComponent = new JWFramework.GraphComponent(this);
@@ -515,7 +517,7 @@ var JWFramework;
             }
         }
         CreateCollider() {
-            this.CollisionComponent.CreateOrientedBoundingBox(this.physicsComponent.GetPosition(), new THREE.Vector3(2, 2, 2));
+            this.CollisionComponent.CreateOrientedBoundingBox(this.physicsComponent.GetPosition(), new THREE.Vector3(2, 1, 2));
             this.CollisionComponent.CreateRaycaster();
         }
         CollisionActive() {
@@ -524,20 +526,23 @@ var JWFramework;
         }
         launchMissile() {
             let objectManager = JWFramework.ObjectManager.getInstance();
-            let cloneObject = objectManager.MakeClone(objectManager.GetObjectFromName("AIM-9"));
+            let cloneObject = objectManager.MakeClone(objectManager.GetObjectFromName("R-60M"));
             cloneObject.PhysicsComponent.SetScale(1, 1, 1);
             cloneObject.GameObjectInstance.setRotationFromEuler(this.PhysicsComponent.GetRotateEuler());
             cloneObject.PhysicsComponent.SetPostionVec3(new THREE.Vector3(this.GameObjectInstance.position.x, this.GameObjectInstance.position.y, this.GameObjectInstance.position.z));
-            cloneObject.PhysicsComponent.GetPosition().add(this.physicsComponent.Up.multiplyScalar(-2));
+            cloneObject.PhysicsComponent.GetPosition().add(this.physicsComponent.Up.multiplyScalar(-3));
+            cloneObject.AirCraftSpeed = this.throttle;
             objectManager.AddObject(cloneObject, cloneObject.Name, cloneObject.Type);
         }
         Animate() {
             if (this.isTarget == true) {
-                this.PhysicsComponent.MoveFoward(60);
-                this.PhysicsComponent.RotateVec3(this.PhysicsComponent.Up, 0.25);
+                this.throttle = 50;
+                this.PhysicsComponent.MoveFoward(this.throttle);
+                this.PhysicsComponent.RotateVec3(this.PhysicsComponent.Up, 0.5);
             }
             if (this.Picked == true) {
                 this.IsRayOn = true;
+                this.PhysicsComponent.MoveFoward(this.throttle);
                 if (JWFramework.InputManager.getInstance().GetKeyState('left', JWFramework.KeyState.KEY_PRESS)) {
                     this.PhysicsComponent.RotateVec3(this.PhysicsComponent.Look, -1);
                 }
@@ -551,7 +556,16 @@ var JWFramework;
                     this.PhysicsComponent.RotateVec3(this.PhysicsComponent.Right, 1);
                 }
                 if (JWFramework.InputManager.getInstance().GetKeyState('w', JWFramework.KeyState.KEY_PRESS)) {
-                    this.PhysicsComponent.MoveFoward(70);
+                    if (this.throttle < 100)
+                        this.throttle += 20 * JWFramework.WorldManager.getInstance().GetDeltaTime();
+                    else
+                        this.throttle = 100;
+                }
+                if (JWFramework.InputManager.getInstance().GetKeyState('s', JWFramework.KeyState.KEY_PRESS)) {
+                    if (this.throttle > 0)
+                        this.throttle -= 20 * JWFramework.WorldManager.getInstance().GetDeltaTime();
+                    else
+                        this.throttle = 0;
                 }
                 if (JWFramework.InputManager.getInstance().GetKeyState('f', JWFramework.KeyState.KEY_PRESS)) {
                     JWFramework.CameraManager.getInstance().SetCameraSavedPosition(JWFramework.CameraMode.CAMERA_3RD);
@@ -566,6 +580,11 @@ var JWFramework;
                 if (JWFramework.InputManager.getInstance().GetKeyState('space', JWFramework.KeyState.KEY_DOWN)) {
                     this.launchMissile();
                 }
+                let moveDistance = this.physicsComponent.GetPosition().clone().sub(this.prevPosition).length();
+                document.getElementById("speed").innerText = "속도 : " + JWFramework.UnitConvertManager.getInstance().ConvertToSpeedForKmh(moveDistance);
+                let targetObject = JWFramework.ObjectManager.getInstance().GetObjectFromName("Target");
+                if (targetObject != null)
+                    console.log(JWFramework.UnitConvertManager.getInstance().ConvertToDistance(this.physicsComponent.GetPosition().clone().sub(targetObject.physicsComponent.GetPosition().clone()).length()));
             }
             else
                 this.IsRayOn = false;
@@ -581,6 +600,7 @@ var JWFramework;
             if (this.AnimationMixer != null) {
                 this.AnimationMixer.update(JWFramework.WorldManager.getInstance().GetDeltaTime());
             }
+            this.prevPosition = this.PhysicsComponent.GetPosition().clone();
         }
     }
     JWFramework.EditObject = EditObject;
@@ -590,13 +610,21 @@ var JWFramework;
     class Missile extends JWFramework.GameObject {
         constructor() {
             super();
-            this.currentVelocity = new THREE.Vector3(0, 0, 1);
-            this.rotaspeed = 15;
+            this.aircraftSpeed = 0;
+            this.velocity = 0;
+            this.velocityGain = 0;
+            this.velocityBreak = 0;
+            this.maxVelocity = 80;
+            this.maxResultSpeed = 0;
+            this.resultSpeed = 0;
+            this.rotaspeed = 0;
+            this.maxRotateSpeed = 20;
+            this.rotateSpeedAcceletion = 20;
+            this.predictionDistance = 200;
+            this.endHomingStartLenge = 0;
             this.angle = 500;
-            this.distance = 100;
-            this.startGuidenceTime = 6;
-            this.makeObbTime = 0;
             this.activeColide = false;
+            this.deAcceleration = false;
             this.type = JWFramework.ObjectType.OBJ_MISSILE;
             this.physicsComponent = new JWFramework.PhysicsComponent(this);
             this.graphicComponent = new JWFramework.GraphComponent(this);
@@ -604,57 +632,71 @@ var JWFramework;
             this.collisionComponent = new JWFramework.CollisionComponent(this);
         }
         InitializeAfterLoad() {
+            this.targetObject = JWFramework.ObjectManager.getInstance().GetObjectFromName("Target");
             this.GameObjectInstance.matrixAutoUpdate = true;
             this.PhysicsComponent.SetScaleScalar(1);
             this.GameObjectInstance.name = this.name;
             if (this.IsClone == false)
                 JWFramework.ObjectManager.getInstance().AddObject(this, this.name, this.Type);
             else {
+                let flameMaterial = new THREE.SpriteMaterial({
+                    map: JWFramework.ShaderManager.getInstance().missileFlameTexture,
+                    transparent: true,
+                });
+                this.missileFlameMesh = new THREE.Sprite(flameMaterial);
+                this.GameObjectInstance.add(this.missileFlameMesh);
+                this.missileFlameMesh.scale.set(5, 5, 5);
+                this.missileFlameMesh.position.addScaledVector(this.PhysicsComponent.Look, -1.2);
+                this.missileFlameMesh.position.addScaledVector(this.PhysicsComponent.Right, -0.04);
+                this.missileFlameMesh.position.addScaledVector(this.PhysicsComponent.Up, 0.05);
                 this.CreateCollider();
-            }
-            if (JWFramework.SceneManager.getInstance().SceneType == JWFramework.SceneType.SCENE_EDIT) {
-                this.axisHelper = new THREE.AxesHelper(10);
-                this.GameObjectInstance.add(this.axisHelper);
             }
         }
         CreateCollider() {
-            this.CollisionComponent.CreateOrientedBoundingBox(this.physicsComponent.GetPosition(), new THREE.Vector3(2, 2, 2));
+            this.CollisionComponent.CreateOrientedBoundingBox(this.physicsComponent.GetPosition(), new THREE.Vector3(1.5, 1.5, 1.5));
             this.CollisionComponent.CreateRaycaster();
             this.CollisionComponent.ObbBoxHelper.visible = false;
         }
-        CollisionActive() {
+        CollisionActive(type = null) {
+            if (type == JWFramework.ObjectType.OBJ_TERRAIN)
+                this.activeColide = true;
             if (this.activeColide == true)
                 this.isDead = true;
         }
         CollisionDeActive() {
         }
+        get AirCraftSpeed() {
+            return this.aircraftSpeed;
+        }
+        set AirCraftSpeed(speed) {
+            this.aircraftSpeed = speed;
+        }
         Animate() {
-            if (this.makeObbTime > 0.5) {
-                this.activeColide = true;
-            }
-            else
-                this.makeObbTime += JWFramework.WorldManager.getInstance().GetDeltaTime();
-            let targetObject = JWFramework.ObjectManager.getInstance().GetObjectFromName("Target");
-            if (targetObject != undefined) {
-                let length = new THREE.Vector3().subVectors(targetObject.PhysicsComponent.GetPosition().clone(), this.PhysicsComponent.GetPosition().clone()).length();
+            this.isRayOn = true;
+            if (this.targetObject != undefined) {
+                let length = new THREE.Vector3().subVectors(this.targetObject.PhysicsComponent.GetPosition().clone(), this.PhysicsComponent.GetPosition().clone()).length();
                 let targetDirection;
-                if (length < 100)
-                    this.distance = length - (length / 2);
-                if (this.distance < 0) {
-                    this.distance = 0;
+                if (length < 20) {
+                    this.activeColide = true;
                 }
-                let nextPos = targetObject.PhysicsComponent.GetPosition().clone().add(targetObject.PhysicsComponent.Look.clone().multiplyScalar(this.distance));
+                if (length >= this.endHomingStartLenge) {
+                    this.predictionDistance = length - (length / 2);
+                }
+                else {
+                    this.predictionDistance = 0;
+                }
+                if (this.rotaspeed < this.maxRotateSpeed)
+                    this.rotaspeed += this.rotateSpeedAcceletion * JWFramework.WorldManager.getInstance().GetDeltaTime();
+                else {
+                    this.rotaspeed = this.maxRotateSpeed;
+                }
+                let nextPos = this.targetObject.PhysicsComponent.GetPosition().clone().add(this.targetObject.PhysicsComponent.Look.clone().multiplyScalar(this.predictionDistance));
                 targetDirection = new THREE.Vector3().subVectors(nextPos, this.PhysicsComponent.GetPosition().clone()).normalize();
                 const currentDirection = new THREE.Vector3(0, 0, 1).applyEuler(this.PhysicsComponent.GetRotateEuler());
                 const angle = currentDirection.angleTo(targetDirection);
                 const axis = new THREE.Vector3().crossVectors(currentDirection, targetDirection).normalize();
                 let maxSpeed = this.rotaspeed;
                 let maxRadius = this.angle;
-                if (this.rotaspeed > 1)
-                    this.rotaspeed -= 2 * JWFramework.WorldManager.getInstance().GetDeltaTime();
-                if (this.rotaspeed < 1)
-                    this.rotaspeed = 1;
-                console.log(this.rotaspeed);
                 let speed = maxSpeed * (angle / maxRadius);
                 speed = Math.min(speed, maxSpeed);
                 const quaternion = new THREE.Quaternion().setFromAxisAngle(axis, speed);
@@ -662,24 +704,192 @@ var JWFramework;
                 currentRotation.setFromEuler(this.PhysicsComponent.GetRotateEuler());
                 const nextRotation = new THREE.Euler().setFromQuaternion(quaternion.multiply(currentRotation));
                 this.GameObjectInstance.setRotationFromEuler(nextRotation);
-                this.PhysicsComponent.MoveFoward(120);
+                if (this.deAcceleration == false && this.velocity <= this.maxVelocity) {
+                    this.velocity += (this.velocityGain * JWFramework.WorldManager.getInstance().GetDeltaTime());
+                    this.resultSpeed = this.aircraftSpeed + this.velocity;
+                }
+                else if (this.deAcceleration == false && this.maxResultSpeed <= this.resultSpeed) {
+                    this.deAcceleration = true;
+                    this.resultSpeed = this.maxResultSpeed;
+                }
+                if (this.deAcceleration == true)
+                    this.resultSpeed -= (this.velocityBreak * JWFramework.WorldManager.getInstance().GetDeltaTime());
+                if (this.resultSpeed <= 60) {
+                    this.resultSpeed = this.maxVelocity;
+                }
+                this.PhysicsComponent.MoveFoward(this.resultSpeed);
             }
             else
                 this.PhysicsComponent.MoveFoward(120);
-            let labelMaterial = new THREE.SpriteMaterial({
-                map: JWFramework.ShaderManager.getInstance().fogTexture,
-                transparent: true,
-            });
-            let fog = new THREE.Sprite(labelMaterial);
-            fog.position.set(this.PhysicsComponent.GetPosition().x + Math.random() * 3, this.PhysicsComponent.GetPosition().y + Math.random() * 3, this.PhysicsComponent.GetPosition().z);
-            fog.scale.set(3, 3, 3);
-            JWFramework.SceneManager.getInstance().SceneInstance.add(fog);
+            let missileFog = new JWFramework.MissileFog();
+            missileFog.IsClone = true;
+            missileFog.PhysicsComponent.SetPostion(this.PhysicsComponent.GetPosition().x + Math.random() * 3, this.PhysicsComponent.GetPosition().y + Math.random() * 3, this.PhysicsComponent.GetPosition().z);
+            missileFog.PhysicsComponent.SetScale(0.5, 0.5, 0.5);
             if (this.isClone == true) {
                 this.CollisionComponent.Update();
             }
         }
     }
     JWFramework.Missile = Missile;
+})(JWFramework || (JWFramework = {}));
+var JWFramework;
+(function (JWFramework) {
+    class AIM9H extends JWFramework.Missile {
+        constructor() {
+            super();
+        }
+        InitializeAfterLoad() {
+            super.InitializeAfterLoad();
+            this.velocityGain = 40;
+            this.velocityBreak = 2;
+            this.maxVelocity = 60;
+            this.maxRotateSpeed = 18;
+            this.rotateSpeedAcceletion = 5;
+        }
+        CreateCollider() {
+            this.CollisionComponent.CreateOrientedBoundingBox(this.physicsComponent.GetPosition(), new THREE.Vector3(1.5, 1.5, 1.5));
+            this.CollisionComponent.CreateRaycaster();
+            this.CollisionComponent.ObbBoxHelper.visible = false;
+        }
+        CollisionActive(type) {
+            super.CollisionActive(type);
+        }
+        CollisionDeActive() {
+        }
+        Animate() {
+            if (this.maxResultSpeed == 0)
+                this.maxResultSpeed = this.maxVelocity + this.AirCraftSpeed;
+            let reletiveSpeed = this.resultSpeed - this.targetObject.throttle;
+            if (reletiveSpeed > this.targetObject.throttle)
+                this.endHomingStartLenge = 100;
+            else
+                this.endHomingStartLenge = 0;
+            super.Animate();
+        }
+    }
+    JWFramework.AIM9H = AIM9H;
+})(JWFramework || (JWFramework = {}));
+var JWFramework;
+(function (JWFramework) {
+    class AIM9L extends JWFramework.Missile {
+        constructor() {
+            super();
+        }
+        InitializeAfterLoad() {
+            super.InitializeAfterLoad();
+            this.velocityGain = 40;
+            this.velocityBreak = 5;
+            this.maxVelocity = 60;
+            this.maxRotateSpeed = 30;
+            this.rotateSpeedAcceletion = 15;
+        }
+        CreateCollider() {
+            this.CollisionComponent.CreateOrientedBoundingBox(this.physicsComponent.GetPosition(), new THREE.Vector3(1.5, 1.5, 1.5));
+            this.CollisionComponent.CreateRaycaster();
+            this.CollisionComponent.ObbBoxHelper.visible = false;
+        }
+        CollisionActive(type) {
+            super.CollisionActive(type);
+        }
+        CollisionDeActive() {
+        }
+        Animate() {
+            if (this.maxResultSpeed == 0)
+                this.maxResultSpeed = this.maxVelocity + this.AirCraftSpeed;
+            let reletiveSpeed = this.resultSpeed - this.targetObject.throttle;
+            if (reletiveSpeed > this.targetObject.throttle)
+                this.endHomingStartLenge = 50;
+            else
+                this.endHomingStartLenge = 0;
+            super.Animate();
+        }
+    }
+    JWFramework.AIM9L = AIM9L;
+})(JWFramework || (JWFramework = {}));
+var JWFramework;
+(function (JWFramework) {
+    class R60M extends JWFramework.Missile {
+        constructor() {
+            super();
+        }
+        InitializeAfterLoad() {
+            super.InitializeAfterLoad();
+            this.velocityGain = 20;
+            this.velocityBreak = 8;
+            this.maxVelocity = 60;
+            this.maxRotateSpeed = 30;
+            this.rotateSpeedAcceletion = 20;
+        }
+        CreateCollider() {
+            this.CollisionComponent.CreateOrientedBoundingBox(this.physicsComponent.GetPosition(), new THREE.Vector3(1.5, 1.5, 1.5));
+            this.CollisionComponent.CreateRaycaster();
+            this.CollisionComponent.ObbBoxHelper.visible = false;
+        }
+        CollisionActive(type) {
+            super.CollisionActive(type);
+        }
+        CollisionDeActive() {
+        }
+        Animate() {
+            if (this.maxResultSpeed == 0)
+                this.maxResultSpeed = this.maxVelocity + this.AirCraftSpeed;
+            let reletiveSpeed = this.resultSpeed - this.targetObject.throttle;
+            if (reletiveSpeed > this.targetObject.throttle)
+                this.endHomingStartLenge = 50;
+            else
+                this.endHomingStartLenge = 0;
+            super.Animate();
+        }
+    }
+    JWFramework.R60M = R60M;
+})(JWFramework || (JWFramework = {}));
+var JWFramework;
+(function (JWFramework) {
+    class MissileFog extends JWFramework.GameObject {
+        constructor() {
+            super();
+            this.fogLifeTime = 4;
+            this.currentTime = 0;
+            this.type = JWFramework.ObjectType.OBJ_OBJECT2D;
+            this.name = "MissileFog" + JWFramework.ObjectManager.getInstance().GetObjectList[JWFramework.ObjectType.OBJ_OBJECT2D].length;
+            this.physicsComponent = new JWFramework.PhysicsComponent(this);
+            this.graphicComponent = new JWFramework.GraphComponent(this);
+            this.CreateBillboardMesh();
+        }
+        InitializeAfterLoad() {
+            this.GameObjectInstance.matrixAutoUpdate = true;
+            this.PhysicsComponent.SetScaleScalar(1);
+            this.GameObjectInstance.name = this.name;
+            JWFramework.SceneManager.getInstance().SceneInstance.add(this.gameObjectInstance);
+            JWFramework.ObjectManager.getInstance().AddObject(this, this.name, this.Type);
+        }
+        CreateBillboardMesh() {
+            this.material = new THREE.SpriteMaterial({
+                map: JWFramework.ShaderManager.getInstance().fogTexture,
+                transparent: true,
+                opacity: 0.8
+            });
+            this.mesh = new THREE.Sprite(this.material);
+            this.GameObjectInstance = this.mesh;
+            this.InitializeAfterLoad();
+        }
+        *FogStateUpdate() {
+            this.currentTime += 1 * JWFramework.WorldManager.getInstance().GetDeltaTime();
+            this.physicsComponent.SetScaleScalar(this.currentTime * 3);
+            const material = this.GameObjectInstance.material;
+            while (material.opacity >= 0) {
+                material.opacity -= 0.2 * JWFramework.WorldManager.getInstance().GetDeltaTime();
+                yield;
+            }
+            this.isDead = true;
+            yield null;
+        }
+        Animate() {
+            let generator = this.FogStateUpdate();
+            generator.next();
+        }
+    }
+    JWFramework.MissileFog = MissileFog;
 })(JWFramework || (JWFramework = {}));
 var JWFramework;
 (function (JWFramework) {
@@ -712,17 +922,23 @@ var JWFramework;
         constructor() {
             super();
             this.helmet = new JWFramework.EditObject;
-            this.aim9 = new JWFramework.Missile;
             this.mig29 = new JWFramework.EditObject;
             this.f_5e = new JWFramework.EditObject;
             this.anim = new JWFramework.EditObject;
-            this.aim9.Name = "AIM-9";
+            this.aim9h = new JWFramework.AIM9H;
+            this.aim9l = new JWFramework.AIM9L;
+            this.r60m = new JWFramework.R60M;
             this.mig29.Name = "MIG_29";
             this.helmet.Name = "helmet";
             this.f_5e.Name = "F-5E";
             this.anim.Name = "animation";
+            this.aim9h.Name = "AIM-9H";
+            this.aim9l.Name = "AIM-9L";
+            this.r60m.Name = "R-60M";
             this.sceneModelData = [
-                { model: this.aim9, url: 'Model/aim-9.glb' },
+                { model: this.aim9h, url: 'Model/aim-9.glb' },
+                { model: this.aim9l, url: 'Model/aim-9.glb' },
+                { model: this.r60m, url: 'Model/aim-9.glb' },
                 { model: this.mig29, url: 'Model/mig_29.glb' },
                 { model: this.helmet, url: 'Model/DamagedHelmet.gltf' },
                 { model: this.f_5e, url: 'Model/F-5E.glb' },
@@ -1113,8 +1329,14 @@ var JWFramework;
             if (selectObject instanceof JWFramework.EditObject) {
                 cloneObject = new JWFramework.EditObject;
             }
-            else if (selectObject instanceof JWFramework.Missile) {
-                cloneObject = new JWFramework.Missile;
+            else if (selectObject instanceof JWFramework.AIM9H) {
+                cloneObject = new JWFramework.AIM9H;
+            }
+            else if (selectObject instanceof JWFramework.AIM9L) {
+                cloneObject = new JWFramework.AIM9L;
+            }
+            else if (selectObject instanceof JWFramework.R60M) {
+                cloneObject = new JWFramework.R60M;
             }
             else {
                 if (selectObject == null)
@@ -1156,7 +1378,7 @@ var JWFramework;
         }
         DeleteObject(gameObject) {
             gameObject.GameObjectInstance.traverse(node => {
-                if (node.isMesh || node.isGroup) {
+                if (node.isMesh || node.isGroup || node.isSprite) {
                     if (node.geometry) {
                         node.geometry.dispose();
                     }
@@ -1179,7 +1401,8 @@ var JWFramework;
                 gameObject.inSectorObject = [];
                 gameObject.inSectorObject = null;
             }
-            gameObject.CollisionComponent.DeleteCollider();
+            if (gameObject.CollisionComponent != undefined)
+                gameObject.CollisionComponent.DeleteCollider();
             gameObject.DeleteAllComponent();
             delete gameObject.ModelData;
             gameObject.ModelData = null;
@@ -1428,6 +1651,8 @@ var JWFramework;
             this.inSectorObject = [];
             this.vertexNormalNeedUpdate = false;
             this.opacity = 1;
+            this.row = 0;
+            this.col = 0;
             this.inSecter = false;
             this.cameraInSecter = false;
             this.width = x;
@@ -1472,7 +1697,7 @@ var JWFramework;
                 vertexShader: JWFramework.ShaderManager.getInstance().SplattingShader.vertexShader.slice(),
                 fragmentShader: JWFramework.ShaderManager.getInstance().SplattingShader.fragmentShader.slice(),
                 fog: true,
-                transparent: true,
+                transparent: false,
             });
             let rotation = new THREE.Matrix4().makeRotationX(-Math.PI / 2);
             this.planeGeomatry.applyMatrix4(rotation);
@@ -1517,21 +1742,25 @@ var JWFramework;
             let objectList = JWFramework.ObjectManager.getInstance().GetObjectList;
             let endPointIndex = this.planeGeomatry.getAttribute('position').count - 1;
             let oldheight = this.planeGeomatry.getAttribute('position').getY(index);
+            const terrainRowCount = objectList[JWFramework.ObjectType.OBJ_TERRAIN].length / 10;
+            const terrainColCount = 10;
+            const nextColIndex = this.terrainIndex % terrainColCount + 1;
+            const nextRowIndex = Math.floor(this.terrainIndex / terrainColCount) + 1;
             if (this.planeGeomatry.getAttribute('position').getX(index) == 900 / 2) {
                 if (objectList[JWFramework.ObjectType.OBJ_TERRAIN][this.terrainIndex + 1]) {
                     let terrain = objectList[JWFramework.ObjectType.OBJ_TERRAIN][this.terrainIndex + 1].GameObject;
                     terrain.planeGeomatry.getAttribute('position').needsUpdate = true;
                     terrain.planeGeomatry.getAttribute('position').setY(index - this.segmentHeight, oldheight);
                     if (index == endPointIndex) {
-                        if (objectList[JWFramework.ObjectType.OBJ_TERRAIN][this.terrainIndex + 11]) {
-                            let terrain = objectList[JWFramework.ObjectType.OBJ_TERRAIN][this.terrainIndex + 11].GameObject;
+                        if (objectList[JWFramework.ObjectType.OBJ_TERRAIN][this.terrainIndex + (this.row + 1)]) {
+                            let terrain = objectList[JWFramework.ObjectType.OBJ_TERRAIN][this.terrainIndex + (this.row + 1)].GameObject;
                             terrain.planeGeomatry.getAttribute('position').needsUpdate = true;
                             terrain.planeGeomatry.getAttribute('position').setY(0, oldheight);
                         }
                     }
                     else if (index == this.segmentWidth) {
-                        if (objectList[JWFramework.ObjectType.OBJ_TERRAIN][this.terrainIndex - 9]) {
-                            let terrain = objectList[JWFramework.ObjectType.OBJ_TERRAIN][this.terrainIndex - 9].GameObject;
+                        if (objectList[JWFramework.ObjectType.OBJ_TERRAIN][this.terrainIndex - (this.row - 1)]) {
+                            let terrain = objectList[JWFramework.ObjectType.OBJ_TERRAIN][this.terrainIndex - (this.row - 1)].GameObject;
                             terrain.planeGeomatry.getAttribute('position').needsUpdate = true;
                             terrain.planeGeomatry.getAttribute('position').setY(endPointIndex - this.segmentWidth, oldheight);
                         }
@@ -1545,30 +1774,30 @@ var JWFramework;
                     terrain.planeGeomatry.getAttribute('position').setY(index + this.segmentHeight, oldheight);
                 }
                 if (index == 0) {
-                    if (objectList[JWFramework.ObjectType.OBJ_TERRAIN][this.terrainIndex - 11]) {
-                        let terrain = objectList[JWFramework.ObjectType.OBJ_TERRAIN][this.terrainIndex - 11].GameObject;
+                    if (objectList[JWFramework.ObjectType.OBJ_TERRAIN][this.terrainIndex - (this.row + 1)]) {
+                        let terrain = objectList[JWFramework.ObjectType.OBJ_TERRAIN][this.terrainIndex - (this.row + 1)].GameObject;
                         terrain.planeGeomatry.getAttribute('position').needsUpdate = true;
                         terrain.planeGeomatry.getAttribute('position').setY(endPointIndex, oldheight);
                     }
                 }
                 else if (index == endPointIndex - this.segmentWidth) {
-                    if (objectList[JWFramework.ObjectType.OBJ_TERRAIN][this.terrainIndex + 9]) {
-                        let terrain = objectList[JWFramework.ObjectType.OBJ_TERRAIN][this.terrainIndex + 9].GameObject;
+                    if (objectList[JWFramework.ObjectType.OBJ_TERRAIN][this.terrainIndex + (this.row - 1)]) {
+                        let terrain = objectList[JWFramework.ObjectType.OBJ_TERRAIN][this.terrainIndex + (this.row - 1)].GameObject;
                         terrain.planeGeomatry.getAttribute('position').needsUpdate = true;
                         terrain.planeGeomatry.getAttribute('position').setY(this.segmentWidth, oldheight);
                     }
                 }
             }
             if (this.planeGeomatry.getAttribute('position').getZ(index) == 900 / 2) {
-                if (objectList[JWFramework.ObjectType.OBJ_TERRAIN][this.terrainIndex + 10]) {
-                    let terrain = objectList[JWFramework.ObjectType.OBJ_TERRAIN][this.terrainIndex + 10].GameObject;
+                if (objectList[JWFramework.ObjectType.OBJ_TERRAIN][this.terrainIndex + this.col]) {
+                    let terrain = objectList[JWFramework.ObjectType.OBJ_TERRAIN][this.terrainIndex + this.col].GameObject;
                     terrain.planeGeomatry.getAttribute('position').needsUpdate = true;
                     terrain.planeGeomatry.getAttribute('position').setY(index - (endPointIndex - this.segmentWidth), oldheight);
                 }
             }
             if (this.planeGeomatry.getAttribute('position').getZ(index) == -(900 / 2)) {
-                if (objectList[JWFramework.ObjectType.OBJ_TERRAIN][this.terrainIndex - 10]) {
-                    let terrain = objectList[JWFramework.ObjectType.OBJ_TERRAIN][this.terrainIndex - 10].GameObject;
+                if (objectList[JWFramework.ObjectType.OBJ_TERRAIN][this.terrainIndex - this.col]) {
+                    let terrain = objectList[JWFramework.ObjectType.OBJ_TERRAIN][this.terrainIndex - this.col].GameObject;
                     terrain.planeGeomatry.getAttribute('position').needsUpdate = true;
                     terrain.planeGeomatry.getAttribute('position').setY(index + (endPointIndex - this.segmentWidth), oldheight);
                 }
@@ -1584,8 +1813,6 @@ var JWFramework;
             else {
                 if (this.inSectorObject.includes(object) == false) {
                     this.inSectorObject.push(object);
-                    this.opacity = 0.5;
-                    this.material.uniforms['opacity'].value = this.opacity;
                     this.inSecter = true;
                 }
             }
@@ -1699,10 +1926,13 @@ var JWFramework;
                 console.log(error);
             });
         }
-        LoadHeightmapTerrain() {
-            for (let i = 0; i < 10; ++i) {
-                for (let j = 0; j < 10; ++j) {
+        LoadHeightmapTerrain(row = 10, col = 10) {
+            row = 15, col = 15;
+            for (let i = 0; i < col; ++i) {
+                for (let j = 0; j < row; ++j) {
                     this.terrain[i] = new JWFramework.HeightmapTerrain(j * 900, i * 900, 16, 16);
+                    this.terrain[i].row = row;
+                    this.terrain[i].col = col;
                 }
             }
         }
@@ -1969,6 +2199,9 @@ var JWFramework;
             this.fogTexture = new THREE.TextureLoader().load("Model/fog/fog.png");
             this.fogTexture.wrapS = THREE.RepeatWrapping;
             this.fogTexture.wrapT = THREE.RepeatWrapping;
+            this.missileFlameTexture = new THREE.TextureLoader().load("Model/MissileFlame/MissileFlame.png");
+            this.missileFlameTexture.wrapS = THREE.RepeatWrapping;
+            this.missileFlameTexture.wrapT = THREE.RepeatWrapping;
         }
         static getInstance() {
             if (!ShaderManager.instance) {
@@ -2111,6 +2344,29 @@ var JWFramework;
     }
     JWFramework.WorldManager = WorldManager;
 })(JWFramework || (JWFramework = {}));
+var JWFramework;
+(function (JWFramework) {
+    class UnitConvertManager {
+        static getInstance() {
+            if (!UnitConvertManager.instance) {
+                UnitConvertManager.instance = new UnitConvertManager;
+            }
+            return UnitConvertManager.instance;
+        }
+        ConvertToSpeedForKmh(distance) {
+            let meterDistance = (distance * 5760) / 900;
+            let timeInSeconds = JWFramework.WorldManager.getInstance().GetDeltaTime();
+            let speedInMeterPerSecond = meterDistance / timeInSeconds;
+            speedInMeterPerSecond = speedInMeterPerSecond * 3.6;
+            return Math.round(speedInMeterPerSecond);
+        }
+        ConvertToDistance(distance) {
+            let meterDistance = (distance * 5760) / 900;
+            return meterDistance;
+        }
+    }
+    JWFramework.UnitConvertManager = UnitConvertManager;
+})(JWFramework || (JWFramework = {}));
 {
     const worldManager = JWFramework.WorldManager.getInstance();
     worldManager.InitializeWorld();
@@ -2140,6 +2396,8 @@ var JWFramework;
                             if (intersect[0] != undefined) {
                                 if (intersect[0].distance < 1) {
                                     dst.PhysicsComponent.SetPostion(intersect[0].point.x, intersect[0].point.y + 1, intersect[0].point.z);
+                                    if (dst instanceof JWFramework.Missile)
+                                        dst.CollisionActive(JWFramework.ObjectType.OBJ_TERRAIN);
                                 }
                             }
                             else {
@@ -2276,6 +2534,7 @@ var JWFramework;
             this.AddKey(80, 'p');
             this.AddKey(82, 'r');
             this.AddKey(87, 'w');
+            this.AddKey(83, 's');
             this.AddKey(70, 'f');
             this.AddKey(84, 't');
             this.AddKey(85, 'u');

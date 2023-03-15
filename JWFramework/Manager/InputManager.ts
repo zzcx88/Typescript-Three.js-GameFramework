@@ -53,6 +53,7 @@
             this.AddKey(80, 'p');
             this.AddKey(82, 'r');
             this.AddKey(87, 'w');
+            this.AddKey(83, 's');
             this.AddKey(70, 'f');
             this.AddKey(84, 't');
             this.AddKey(85, 'u');

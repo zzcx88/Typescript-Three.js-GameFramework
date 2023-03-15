@@ -173,7 +173,7 @@ namespace JWFramework
             //this.GameObject.GameObjectInstance.updateMatrixWorld(true, true);
         }
 
-        private gameince: THREE.Object3D;
+        //private gameince: THREE.Object3D;
         private vec3Right: THREE.Vector3 = new THREE.Vector3(1, 0, 0);
         private vec3Up: THREE.Vector3 = new THREE.Vector3(0, 1, 0);
         private vec3Look: THREE.Vector3 = new THREE.Vector3(0, 0, 1);

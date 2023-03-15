@@ -30,6 +30,8 @@
                                 if (intersect[0].distance < 1)
                                 {
                                     dst.PhysicsComponent.SetPostion(intersect[0].point.x, intersect[0].point.y + 1, intersect[0].point.z);
+                                    if (dst instanceof Missile)
+                                        (dst as Missile).CollisionActive(ObjectType.OBJ_TERRAIN);
                                 }
                             }
                             else

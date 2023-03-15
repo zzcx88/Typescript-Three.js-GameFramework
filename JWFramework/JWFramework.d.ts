@@ -88,7 +88,6 @@ declare namespace JWFramework {
         Rotate(x: number, y: number, z: number): void;
         RotateVec3(axis: THREE.Vector3, angle: number): void;
         UpdateMatrix(): void;
-        private gameince;
         private vec3Right;
         private vec3Up;
         private vec3Look;
@@ -161,6 +160,8 @@ declare namespace JWFramework {
         private launchMissile;
         Animate(): void;
         private isTarget;
+        throttle: number;
+        private prevPosition;
         private axisHelper;
     }
 }
@@ -169,17 +170,72 @@ declare namespace JWFramework {
         constructor();
         InitializeAfterLoad(): void;
         CreateCollider(): void;
-        CollisionActive(): void;
+        CollisionActive(type?: ObjectType): void;
+        CollisionDeActive(): void;
+        get AirCraftSpeed(): number;
+        set AirCraftSpeed(speed: number);
+        Animate(): void;
+        protected targetObject: GameObject;
+        protected aircraftSpeed: number;
+        protected velocity: number;
+        protected velocityGain: number;
+        protected velocityBreak: number;
+        protected maxVelocity: number;
+        protected maxResultSpeed: number;
+        protected resultSpeed: number;
+        protected rotaspeed: number;
+        protected maxRotateSpeed: number;
+        protected rotateSpeedAcceletion: number;
+        protected predictionDistance: number;
+        protected endHomingStartLenge: number;
+        protected angle: number;
+        protected activeColide: boolean;
+        protected deAcceleration: boolean;
+        protected axisHelper: THREE.AxesHelper;
+        protected missileFlameMesh: THREE.Sprite;
+    }
+}
+declare namespace JWFramework {
+    class AIM9H extends Missile {
+        constructor();
+        InitializeAfterLoad(): void;
+        CreateCollider(): void;
+        CollisionActive(type: ObjectType): void;
         CollisionDeActive(): void;
         Animate(): void;
-        currentVelocity: THREE.Vector3;
-        private rotaspeed;
-        private angle;
-        private distance;
-        private startGuidenceTime;
-        private makeObbTime;
-        private activeColide;
-        private axisHelper;
+    }
+}
+declare namespace JWFramework {
+    class AIM9L extends Missile {
+        constructor();
+        InitializeAfterLoad(): void;
+        CreateCollider(): void;
+        CollisionActive(type: ObjectType): void;
+        CollisionDeActive(): void;
+        Animate(): void;
+    }
+}
+declare namespace JWFramework {
+    class R60M extends Missile {
+        constructor();
+        InitializeAfterLoad(): void;
+        CreateCollider(): void;
+        CollisionActive(type: ObjectType): void;
+        CollisionDeActive(): void;
+        Animate(): void;
+    }
+}
+declare namespace JWFramework {
+    class MissileFog extends GameObject {
+        constructor();
+        InitializeAfterLoad(): void;
+        private CreateBillboardMesh;
+        private FogStateUpdate;
+        Animate(): void;
+        private mesh;
+        private material;
+        private fogLifeTime;
+        private currentTime;
     }
 }
 declare namespace JWFramework {
@@ -199,10 +255,12 @@ declare namespace JWFramework {
     class ModelSceneEdit extends ModelSceneBase {
         constructor();
         private helmet;
-        private aim9;
         private mig29;
         private f_5e;
         private anim;
+        private aim9h;
+        private aim9l;
+        private r60m;
     }
     class ModelSceneStage {
         private static instance;
@@ -425,7 +483,7 @@ declare namespace JWFramework {
         constructor(x: number, z: number, segmentWidth: number, segmentHeight: number);
         InitializeAfterLoad(): void;
         CreateBoundingBox(): void;
-        CreateTerrainMesh(): void;
+        private CreateTerrainMesh;
         get HeightIndexBuffer(): number[];
         get HeightBuffer(): number[];
         SetHeight(index: number, value?: number, option?: TerrainOption): void;
@@ -435,11 +493,6 @@ declare namespace JWFramework {
         private planeMesh;
         private planeGeomatry;
         private material;
-        private farmTexture;
-        private mountainTexture;
-        private factoryTexture;
-        private cityTexture;
-        private gradientmap;
         private terrainIndex;
         private width;
         private height;
@@ -450,6 +503,8 @@ declare namespace JWFramework {
         inSectorObject: GameObject[];
         private vertexNormalNeedUpdate;
         private opacity;
+        row: number;
+        col: number;
         inSecter: boolean;
         cameraInSecter: boolean;
     }
@@ -465,7 +520,7 @@ declare namespace JWFramework {
         LoadScene(): void;
         LoadSceneStage(): void;
         private LoadModel;
-        LoadHeightmapTerrain(): void;
+        LoadHeightmapTerrain(row?: number, col?: number): void;
         LoadSavedScene(): void;
         private loaderManager;
         private gltfLoader;
@@ -539,6 +594,7 @@ declare namespace JWFramework {
         mountainTexture: THREE.Texture;
         factoryTexture: THREE.Texture;
         fogTexture: THREE.Texture;
+        missileFlameTexture: THREE.Texture;
         private composer;
         private renderPass;
         private savePass;
@@ -570,6 +626,14 @@ declare namespace JWFramework {
         private camera;
         private clock;
         private delta;
+    }
+}
+declare namespace JWFramework {
+    class UnitConvertManager {
+        private static instance;
+        static getInstance(): UnitConvertManager;
+        ConvertToSpeedForKmh(distance: number): number;
+        ConvertToDistance(distance: number): number;
     }
 }
 declare namespace JWFramework {

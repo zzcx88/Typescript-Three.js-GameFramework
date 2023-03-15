@@ -119,11 +119,16 @@ namespace JWFramework
 
         }
 
-        public LoadHeightmapTerrain()
+        public LoadHeightmapTerrain(row: number = 10, col: number = 10)
         {
-            for (let i = 0; i < 10; ++i) {
-                for (let j = 0; j < 10; ++j) {
+            row = 15, col =15
+            for (let i = 0; i < col; ++i)
+            {
+                for (let j = 0; j < row; ++j)
+                {
                     this.terrain[i] = new HeightmapTerrain(j * 900, i * 900, 16, 16);
+                    this.terrain[i].row = row;
+                    this.terrain[i].col = col;
                 }
             }
         }
@@ -187,6 +192,6 @@ namespace JWFramework
         private loadComplete: boolean = false;
 
         private modeltList: ModelSet[];
-        private terrain = [];
+        private terrain: HeightmapTerrain[] = [];
     }
 }

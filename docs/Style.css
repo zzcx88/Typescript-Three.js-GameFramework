@@ -38,3 +38,15 @@ canvas {
     width: flex;
     height: flex;
 }
+#speed {
+    position: absolute;
+    top: flex;
+    text-align: left;
+    z-index: 100;
+    display: block;
+    color: #ffffff;
+    font-weight: bold;
+    background-color: rgba(0, 0, 0, 0.438);
+    width: flex;
+    height: flex;
+}

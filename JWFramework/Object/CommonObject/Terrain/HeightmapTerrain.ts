@@ -36,7 +36,7 @@ namespace JWFramework {
             this.CollisionComponent.BoxHelper.box.setFromCenterAndSize(new THREE.Vector3(this.width, 2000, this.height), new THREE.Vector3(900, 5000, 900));
         }
 
-        public CreateTerrainMesh() {
+        private CreateTerrainMesh() {
             this.planeGeomatry = new THREE.PlaneGeometry(900, 900, this.segmentWidth, this.segmentHeight);
             //this.material = new THREE.MeshStandardMaterial();
 
@@ -60,7 +60,7 @@ namespace JWFramework {
                     fragmentShader: ShaderManager.getInstance().SplattingShader.fragmentShader.slice(),
                     //side: THREE.DoubleSide,
                     fog: true,
-                    transparent: true,
+                    transparent: false,
                 });
 
             //this.material.map = this.texture;
@@ -133,23 +133,30 @@ namespace JWFramework {
             let endPointIndex = this.planeGeomatry.getAttribute('position').count - 1;
             let oldheight: number = this.planeGeomatry.getAttribute('position').getY(index);
 
+            const terrainRowCount = objectList[ObjectType.OBJ_TERRAIN].length / 10; // 터레인 행 수
+            const terrainColCount = 10; // 터레인 열 수
+            const nextColIndex = this.terrainIndex % terrainColCount + 1; // 현재 인덱스의 다음 열 인덱스
+            const nextRowIndex = Math.floor(this.terrainIndex / terrainColCount) + 1; // 현재 인덱스의 다음 행 인덱스
+
             if (this.planeGeomatry.getAttribute('position').getX(index) == 900 / 2) {
                 if (objectList[ObjectType.OBJ_TERRAIN][this.terrainIndex + 1]) {
                     let terrain = objectList[ObjectType.OBJ_TERRAIN][this.terrainIndex + 1].GameObject;
                     (terrain as unknown as HeightmapTerrain).planeGeomatry.getAttribute('position').needsUpdate = true;
                     (terrain as unknown as HeightmapTerrain).planeGeomatry.getAttribute('position').setY(index - this.segmentHeight, oldheight);
 
-                    if (index == endPointIndex) {
-                        if (objectList[ObjectType.OBJ_TERRAIN][this.terrainIndex + 11]) {
-                            let terrain = objectList[ObjectType.OBJ_TERRAIN][this.terrainIndex + 11].GameObject;
+                    if (index == endPointIndex)
+                    {
+                        if (objectList[ObjectType.OBJ_TERRAIN][this.terrainIndex + (this.row + 1)])
+                        {
+                            let terrain = objectList[ObjectType.OBJ_TERRAIN][this.terrainIndex + (this.row + 1)].GameObject;
                             (terrain as unknown as HeightmapTerrain).planeGeomatry.getAttribute('position').needsUpdate = true;
                             (terrain as unknown as HeightmapTerrain).planeGeomatry.getAttribute('position').setY(0, oldheight);
                         }
                     }
 
                     else if (index == this.segmentWidth) {
-                        if (objectList[ObjectType.OBJ_TERRAIN][this.terrainIndex - 9]) {
-                            let terrain = objectList[ObjectType.OBJ_TERRAIN][this.terrainIndex - 9].GameObject;
+                        if (objectList[ObjectType.OBJ_TERRAIN][this.terrainIndex - (this.row - 1)]) {
+                            let terrain = objectList[ObjectType.OBJ_TERRAIN][this.terrainIndex - (this.row - 1)].GameObject;
                             (terrain as unknown as HeightmapTerrain).planeGeomatry.getAttribute('position').needsUpdate = true;
                             (terrain as unknown as HeightmapTerrain).planeGeomatry.getAttribute('position').setY(endPointIndex - this.segmentWidth, oldheight);
                         }
@@ -165,16 +172,16 @@ namespace JWFramework {
                 }
 
                 if (index == 0) {
-                    if (objectList[ObjectType.OBJ_TERRAIN][this.terrainIndex - 11]) {
-                        let terrain = objectList[ObjectType.OBJ_TERRAIN][this.terrainIndex - 11].GameObject;
+                    if (objectList[ObjectType.OBJ_TERRAIN][this.terrainIndex - (this.row + 1)]) {
+                        let terrain = objectList[ObjectType.OBJ_TERRAIN][this.terrainIndex - (this.row + 1)].GameObject;
                         (terrain as unknown as HeightmapTerrain).planeGeomatry.getAttribute('position').needsUpdate = true;
                         (terrain as unknown as HeightmapTerrain).planeGeomatry.getAttribute('position').setY(endPointIndex, oldheight);
                     }
                 }
 
                 else if (index == endPointIndex - this.segmentWidth) {
-                    if (objectList[ObjectType.OBJ_TERRAIN][this.terrainIndex + 9]) {
-                        let terrain = objectList[ObjectType.OBJ_TERRAIN][this.terrainIndex + 9].GameObject;
+                    if (objectList[ObjectType.OBJ_TERRAIN][this.terrainIndex + (this.row - 1)]) {
+                        let terrain = objectList[ObjectType.OBJ_TERRAIN][this.terrainIndex + (this.row - 1)].GameObject;
                         (terrain as unknown as HeightmapTerrain).planeGeomatry.getAttribute('position').needsUpdate = true;
                         (terrain as unknown as HeightmapTerrain).planeGeomatry.getAttribute('position').setY(this.segmentWidth, oldheight);
                     }
@@ -182,16 +189,16 @@ namespace JWFramework {
             }
 
             if (this.planeGeomatry.getAttribute('position').getZ(index) == 900 / 2) {
-                if (objectList[ObjectType.OBJ_TERRAIN][this.terrainIndex + 10]) {
-                    let terrain = objectList[ObjectType.OBJ_TERRAIN][this.terrainIndex + 10].GameObject;
+                if (objectList[ObjectType.OBJ_TERRAIN][this.terrainIndex + this.col]) {
+                    let terrain = objectList[ObjectType.OBJ_TERRAIN][this.terrainIndex + this.col].GameObject;
                     (terrain as unknown as HeightmapTerrain).planeGeomatry.getAttribute('position').needsUpdate = true;
                     (terrain as unknown as HeightmapTerrain).planeGeomatry.getAttribute('position').setY(index - (endPointIndex - this.segmentWidth), oldheight);
                 }
             }
 
             if (this.planeGeomatry.getAttribute('position').getZ(index) == -(900 / 2)) {
-                if (objectList[ObjectType.OBJ_TERRAIN][this.terrainIndex - 10]) {
-                    let terrain = objectList[ObjectType.OBJ_TERRAIN][this.terrainIndex - 10].GameObject;
+                if (objectList[ObjectType.OBJ_TERRAIN][this.terrainIndex - this.col]) {
+                    let terrain = objectList[ObjectType.OBJ_TERRAIN][this.terrainIndex - this.col].GameObject;
                     (terrain as unknown as HeightmapTerrain).planeGeomatry.getAttribute('position').needsUpdate = true;
                     (terrain as unknown as HeightmapTerrain).planeGeomatry.getAttribute('position').setY(index + (endPointIndex - this.segmentWidth), oldheight);
                 }
@@ -228,8 +235,8 @@ namespace JWFramework {
             else {
                 if (this.inSectorObject.includes(object) == false) {
                     this.inSectorObject.push(object);
-                    this.opacity = 0.5;
-                    this.material.uniforms['opacity'].value = this.opacity;
+                    //this.opacity = 0.5;
+                    //this.material.uniforms['opacity'].value = this.opacity;
                     this.inSecter = true;
                 }
             }
@@ -262,11 +269,6 @@ namespace JWFramework {
         private planeMesh: THREE.Mesh;
         private planeGeomatry: THREE.PlaneGeometry;
         private material: THREE.ShaderMaterial;
-        private farmTexture: THREE.Texture;
-        private mountainTexture: THREE.Texture;
-        private factoryTexture: THREE.Texture;
-        private cityTexture: THREE.Texture;
-        private gradientmap: THREE.Texture;
 
         private terrainIndex: number;
         private width: number;
@@ -281,6 +283,8 @@ namespace JWFramework {
         private vertexNormalNeedUpdate: boolean = false;
         private opacity: number = 1;
 
+        public row: number = 0;
+        public col: number = 0;
         public inSecter: boolean = false
         public cameraInSecter: boolean = false;
     }

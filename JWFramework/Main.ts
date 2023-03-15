@@ -1,4 +1,5 @@
 ﻿/// <reference path="Manager/WorldManager.ts" />
+/// <reference path="Manager/UnitConvertManager.ts" />
 {
     //initialize
     const worldManager: JWFramework.WorldManager = JWFramework.WorldManager.getInstance();

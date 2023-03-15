@@ -42,7 +42,7 @@ namespace JWFramework
         public CreateCollider()
         {
             //this.CollisionComponent.CreateBoundingBox(this.PhysicsComponent.GetScale().x, this.PhysicsComponent.GetScale().y, this.PhysicsComponent.GetScale().z);
-            this.CollisionComponent.CreateOrientedBoundingBox(this.physicsComponent.GetPosition(), new THREE.Vector3(2,2,2));
+            this.CollisionComponent.CreateOrientedBoundingBox(this.physicsComponent.GetPosition(), new THREE.Vector3(2,1,2));
             this.CollisionComponent.CreateRaycaster();
             //SceneManager.getInstance().SceneInstance.add(this.CollisionComponent.BoxHelper);
         }
@@ -60,12 +60,13 @@ namespace JWFramework
         private launchMissile()
         {
             let objectManager = ObjectManager.getInstance();
-            let cloneObject = objectManager.MakeClone(objectManager.GetObjectFromName("AIM-9"));
+            let cloneObject = objectManager.MakeClone(objectManager.GetObjectFromName("R-60M"));
             cloneObject.PhysicsComponent.SetScale(1, 1, 1);
             //cloneObject.PhysicsComponent.SetRotateVec3(new THREE.Vector3(this.GameObjectInstance.rotation.x, this.GameObjectInstance.rotation.y, this.GameObjectInstance.rotation.z));
             cloneObject.GameObjectInstance.setRotationFromEuler(this.PhysicsComponent.GetRotateEuler());
             cloneObject.PhysicsComponent.SetPostionVec3(new THREE.Vector3(this.GameObjectInstance.position.x, this.GameObjectInstance.position.y, this.GameObjectInstance.position.z));
-            cloneObject.PhysicsComponent.GetPosition().add(this.physicsComponent.Up.multiplyScalar(-2));
+            cloneObject.PhysicsComponent.GetPosition().add(this.physicsComponent.Up.multiplyScalar(-3));
+            (cloneObject as R60M).AirCraftSpeed = this.throttle;
             objectManager.AddObject(cloneObject, cloneObject.Name, cloneObject.Type);
         }
 
@@ -73,12 +74,15 @@ namespace JWFramework
         {
             if (this.isTarget == true)
             {
-                this.PhysicsComponent.MoveFoward(60);
-                this.PhysicsComponent.RotateVec3(this.PhysicsComponent.Up, 0.25);
+                this.throttle = 50;
+                this.PhysicsComponent.MoveFoward(this.throttle);
+                this.PhysicsComponent.RotateVec3(this.PhysicsComponent.Up, 0.5);
+                //this.PhysicsComponent.RotateVec3(this.PhysicsComponent.Look, 0.5);
             }
             if (this.Picked == true)
             {
                 this.IsRayOn = true;
+                this.PhysicsComponent.MoveFoward(this.throttle);
                 if (InputManager.getInstance().GetKeyState('left', KeyState.KEY_PRESS))
                 {
                     this.PhysicsComponent.RotateVec3(this.PhysicsComponent.Look, -1);
@@ -97,7 +101,17 @@ namespace JWFramework
                 }
                 if (InputManager.getInstance().GetKeyState('w', KeyState.KEY_PRESS))
                 {
-                    this.PhysicsComponent.MoveFoward(70);
+                    if (this.throttle < 100)
+                        this.throttle += 20 * WorldManager.getInstance().GetDeltaTime();
+                    else
+                        this.throttle = 100;
+                }
+                if (InputManager.getInstance().GetKeyState('s', KeyState.KEY_PRESS))
+                {
+                    if (this.throttle > 0)
+                        this.throttle -= 20 * WorldManager.getInstance().GetDeltaTime();
+                    else
+                        this.throttle = 0;
                 }
                 if (InputManager.getInstance().GetKeyState('f', KeyState.KEY_PRESS))
                 {
@@ -116,6 +130,12 @@ namespace JWFramework
                 {
                     this.launchMissile();
                 }
+                let moveDistance = this.physicsComponent.GetPosition().clone().sub(this.prevPosition).length();
+                document.getElementById("speed").innerText = "속도 : " + UnitConvertManager.getInstance().ConvertToSpeedForKmh(moveDistance);
+
+                let targetObject = (ObjectManager.getInstance().GetObjectFromName("Target") as EditObject);
+                if (targetObject != null)
+                    console.log(UnitConvertManager.getInstance().ConvertToDistance(this.physicsComponent.GetPosition().clone().sub(targetObject.physicsComponent.GetPosition().clone()).length()));
             }
             else
                 this.IsRayOn = false;
@@ -136,8 +156,13 @@ namespace JWFramework
             {
                 this.AnimationMixer.update(WorldManager.getInstance().GetDeltaTime());
             }
+            this.prevPosition = this.PhysicsComponent.GetPosition().clone();
         }
+
         private isTarget: boolean = false;
+        public throttle: number = 0;
+        private prevPosition: THREE.Vector3 = new THREE.Vector3(0, 0, 0);
         private axisHelper: THREE.AxesHelper;
+        //private raderFrustum: THREE.Frustum = new THREE.Frustum();
     }
 }

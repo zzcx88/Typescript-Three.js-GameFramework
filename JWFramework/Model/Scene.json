@@ -2623,7 +2623,7 @@
   },
   {
     "type": 1,
-    "name": "MIG_29Clone5",
+    "name": "MIG_29Clone4",
     "scale": {
       "x": 20,
       "y": 22,
@@ -2642,7 +2642,7 @@
   },
   {
     "type": 1,
-    "name": "MIG_29Clone6",
+    "name": "MIG_29Clone5",
     "scale": {
       "x": 1,
       "y": 1,
@@ -2655,13 +2655,13 @@
     },
     "position": {
       "x": -81.70315653568989,
-      "y": 9.999999999999986,
-      "z": 320.1173298842192
+      "y": 200,
+      "z": 338.384329884696
     }
   },
   {
     "type": 1,
-    "name": "MIG_29Clone7",
+    "name": "MIG_29Clone6",
     "scale": {
       "x": 1,
       "y": 1,
@@ -2680,7 +2680,7 @@
   },
   {
     "type": 1,
-    "name": "MIG_29Clone8",
+    "name": "MIG_29Clone7",
     "scale": {
       "x": 1,
       "y": 1,
@@ -2699,7 +2699,7 @@
   },
   {
     "type": 1,
-    "name": "MIG_29Clone9",
+    "name": "MIG_29Clone8",
     "scale": {
       "x": 1,
       "y": 1,
@@ -2718,7 +2718,7 @@
   },
   {
     "type": 1,
-    "name": "MIG_29Clone10",
+    "name": "MIG_29Clone9",
     "scale": {
       "x": 1,
       "y": 1,
@@ -2737,7 +2737,7 @@
   },
   {
     "type": 1,
-    "name": "MIG_29Clone11",
+    "name": "MIG_29Clone10",
     "scale": {
       "x": 1,
       "y": 1,
@@ -2756,7 +2756,7 @@
   },
   {
     "type": 1,
-    "name": "MIG_29Clone12",
+    "name": "MIG_29Clone11",
     "scale": {
       "x": 1,
       "y": 1,
@@ -2775,7 +2775,7 @@
   },
   {
     "type": 1,
-    "name": "MIG_29Clone13",
+    "name": "MIG_29Clone12",
     "scale": {
       "x": 10,
       "y": 10,
@@ -2794,7 +2794,7 @@
   },
   {
     "type": 1,
-    "name": "MIG_29Clone14",
+    "name": "MIG_29Clone13",
     "scale": {
       "x": 1,
       "y": 1,
@@ -2813,7 +2813,7 @@
   },
   {
     "type": 1,
-    "name": "MIG_29Clone15",
+    "name": "MIG_29Clone14",
     "scale": {
       "x": 1,
       "y": 1,
@@ -2828,25 +2828,6 @@
       "x": -200.0697110680431,
       "y": 9.999999999999986,
       "z": 218.97724865409924
-    }
-  },
-  {
-    "type": 1,
-    "name": "AIM-9Clone16",
-    "scale": {
-      "x": 20,
-      "y": 20,
-      "z": 26
-    },
-    "rotation": {
-      "x": 0,
-      "y": 0,
-      "z": 0
-    },
-    "position": {
-      "x": -7.612369758382471,
-      "y": 200,
-      "z": -28.27987884518835
     }
   }
 ]
