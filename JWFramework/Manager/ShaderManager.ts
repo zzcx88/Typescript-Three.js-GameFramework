@@ -29,6 +29,10 @@ namespace JWFramework
             this.fogTexture.wrapS = THREE.RepeatWrapping;
             this.fogTexture.wrapT = THREE.RepeatWrapping;
 
+            this.cloudTexture = new THREE.TextureLoader().load("Model/Cloud/cloud.png");
+            this.cloudTexture.wrapS = THREE.RepeatWrapping;
+            this.cloudTexture.wrapT = THREE.RepeatWrapping;
+
             this.missileFlameTexture = new THREE.TextureLoader().load("Model/MissileFlame/MissileFlame.png");
             this.missileFlameTexture.wrapS = THREE.RepeatWrapping;
             this.missileFlameTexture.wrapT = THREE.RepeatWrapping;
@@ -103,6 +107,7 @@ namespace JWFramework
         public mountainTexture: THREE.Texture;
         public factoryTexture: THREE.Texture;
         public fogTexture: THREE.Texture;
+        public cloudTexture: THREE.Texture;
         public missileFlameTexture: THREE.Texture;
 
         private composer: THREE.EffectComposer;

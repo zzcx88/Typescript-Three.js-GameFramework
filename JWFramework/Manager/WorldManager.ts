@@ -45,13 +45,14 @@ namespace JWFramework
                     premultipliedAlpha: true,
                     stencil: true,
                     preserveDrawingBuffer: false,
-                    logarithmicDepthBuffer: false
+                    logarithmicDepthBuffer: false,
                 }
             );
             this.renderer.setViewport(0, 0, Define.SCREEN_WIDTH, Define.SCREEN_HEIGHT);
             this.renderer.setScissor(0, 0, 0, 0);
             this.renderer.setClearColor(0x000000);
             this.renderer.shadowMap.enabled = true;
+            this.renderer.autoClearStencil = true;
             document.body.appendChild(this.renderer.domElement);
         }
 
@@ -74,7 +75,7 @@ namespace JWFramework
             this.camera.Fov = 75;
             this.camera.Aspect = this.Canvas.clientWidth / this.Canvas.clientHeight;
             this.camera.Near = 0.1;
-            this.camera.Far = 1500;
+            this.camera.Far = 3000;
             this.camera.PhysicsComponent.SetPostion(0, 22, 0);
             ObjectManager.getInstance().AddObject(this.camera, this.camera.Name, this.camera.Type);
         }
@@ -138,10 +139,10 @@ namespace JWFramework
         public Render()
         {
             //--NormalRender
-            //this.renderer.render(this.sceneManager.SceneInstance, this.camera.CameraInstance);
+            this.renderer.render(this.sceneManager.SceneInstance, this.camera.CameraInstance);
 
             //--MotionBlurRender
-            ShaderManager.getInstance().ShadedRender();
+            //ShaderManager.getInstance().ShadedRender();
         }
 
         private renderer: THREE.WebGLRenderer;

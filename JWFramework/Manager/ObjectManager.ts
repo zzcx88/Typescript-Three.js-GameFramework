@@ -79,6 +79,10 @@
             {
                 cloneObject = new R60M;
             }
+            else if (selectObject instanceof Cloud)
+            {
+                cloneObject = new Cloud;
+            }
             else {
                 if (selectObject == null)
                     alert("EmptyObject")
@@ -105,8 +109,10 @@
         {
             for (let TYPE = ObjectType.OBJ_TERRAIN; TYPE < ObjectType.OBJ_END; ++TYPE) {
                 for (let OBJ = 0; OBJ < this.objectList[TYPE].length; ++OBJ) {
-                    if (this.objectList[TYPE][OBJ].GameObject.IsClone == true || this.objectList[TYPE][OBJ].GameObject.Type == ObjectType.OBJ_TERRAIN) {
-                        this.exportObjectList.push(this.objectList[TYPE][OBJ].GameObject.ExportComponent.MakeJsonObject())
+                    if (this.objectList[TYPE][OBJ].GameObject.IsClone == true || this.objectList[TYPE][OBJ].GameObject.Type == ObjectType.OBJ_TERRAIN)
+                    {
+                        if (this.objectList[TYPE][OBJ].GameObject.ExportComponent != undefined)
+                            this.exportObjectList.push(this.objectList[TYPE][OBJ].GameObject.ExportComponent.MakeJsonObject())
                     }
                 }
             }

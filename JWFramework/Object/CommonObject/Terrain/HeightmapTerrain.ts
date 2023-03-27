@@ -1,15 +1,20 @@
 ﻿/// <reference path="../../GameObject.ts" />
 namespace JWFramework {
-    export class HeightmapTerrain extends GameObject {
-        constructor(x: number, z: number, segmentWidth: number, segmentHeight: number) {
+    export class HeightmapTerrain extends GameObject
+    {
+        constructor(x: number, z: number, segmentWidth: number, segmentHeight: number, planSize: number = 900, isDummy: boolean = false)
+        {
             super();
+            this.isDummy = isDummy;
             this.width = x;
             this.height = z;
+            this.planSize = planSize;
             this.segmentWidth = segmentWidth;
             this.segmentHeight = segmentHeight;
             this.name = "Terrain" + ObjectManager.getInstance().GetObjectList[ObjectType.OBJ_TERRAIN].length;
             this.terrainIndex = ObjectManager.getInstance().GetObjectList[ObjectType.OBJ_TERRAIN].length;
             this.type = ObjectType.OBJ_TERRAIN;
+
 
             this.isClone = true;
 
@@ -24,7 +29,11 @@ namespace JWFramework {
         public InitializeAfterLoad() {
             this.PhysicsComponent.SetPostion(this.width, 0, this.height);
 
-            this.CreateBoundingBox();
+            if (this.isDummy == false)
+            {
+                this.CreateBoundingBox();
+                this.CollisionComponent.BoxHelper.visible = false;
+            }
 
             SceneManager.getInstance().SceneInstance.add(this.gameObjectInstance);
             SceneManager.getInstance().SceneInstance.add(this.CollisionComponent.BoxHelper);
@@ -32,14 +41,14 @@ namespace JWFramework {
         }
 
         public CreateBoundingBox() {
-            this.CollisionComponent.CreateBoundingBox(900, 5000, 900);
-            this.CollisionComponent.BoxHelper.box.setFromCenterAndSize(new THREE.Vector3(this.width, 2000, this.height), new THREE.Vector3(900, 5000, 900));
+            this.CollisionComponent.CreateBoundingBox(this.planSize, 5000, this.planSize);
+            this.CollisionComponent.BoxHelper.box.setFromCenterAndSize(new THREE.Vector3(this.width, 2000, this.height), new THREE.Vector3(this.planSize, 5000, this.planSize));
         }
 
-        private CreateTerrainMesh() {
-            this.planeGeomatry = new THREE.PlaneGeometry(900, 900, this.segmentWidth, this.segmentHeight);
+        private CreateTerrainMesh()
+        {
+            this.planeGeomatry = new THREE.PlaneGeometry(this.planSize, this.planSize, this.segmentWidth, this.segmentHeight);
             //this.material = new THREE.MeshStandardMaterial();
-
             let customUniforms = {
                 farmTexture: { type: "t", value: ShaderManager.getInstance().farmTexture },
                 mountainTexture: { type: "t", value: ShaderManager.getInstance().mountainTexture },
@@ -58,6 +67,7 @@ namespace JWFramework {
                     uniforms: customUniforms,
                     vertexShader: ShaderManager.getInstance().SplattingShader.vertexShader.slice(),
                     fragmentShader: ShaderManager.getInstance().SplattingShader.fragmentShader.slice(),
+                    //wireframe: true,
                     //side: THREE.DoubleSide,
                     fog: true,
                     transparent: false,
@@ -133,12 +143,12 @@ namespace JWFramework {
             let endPointIndex = this.planeGeomatry.getAttribute('position').count - 1;
             let oldheight: number = this.planeGeomatry.getAttribute('position').getY(index);
 
-            const terrainRowCount = objectList[ObjectType.OBJ_TERRAIN].length / 10; // 터레인 행 수
-            const terrainColCount = 10; // 터레인 열 수
+            const terrainRowCount = objectList[ObjectType.OBJ_TERRAIN].length / this.row; // 터레인 행 수
+            const terrainColCount = this.col; // 터레인 열 수
             const nextColIndex = this.terrainIndex % terrainColCount + 1; // 현재 인덱스의 다음 열 인덱스
             const nextRowIndex = Math.floor(this.terrainIndex / terrainColCount) + 1; // 현재 인덱스의 다음 행 인덱스
 
-            if (this.planeGeomatry.getAttribute('position').getX(index) == 900 / 2) {
+            if (this.planeGeomatry.getAttribute('position').getX(index) == this.planSize / 2) {
                 if (objectList[ObjectType.OBJ_TERRAIN][this.terrainIndex + 1]) {
                     let terrain = objectList[ObjectType.OBJ_TERRAIN][this.terrainIndex + 1].GameObject;
                     (terrain as unknown as HeightmapTerrain).planeGeomatry.getAttribute('position').needsUpdate = true;
@@ -164,7 +174,7 @@ namespace JWFramework {
                 }
             }
 
-            if (this.planeGeomatry.getAttribute('position').getX(index) == -(900 / 2)) {
+            if (this.planeGeomatry.getAttribute('position').getX(index) == -(this.planSize / 2)) {
                 if (objectList[ObjectType.OBJ_TERRAIN][this.terrainIndex - 1]) {
                     let terrain = objectList[ObjectType.OBJ_TERRAIN][this.terrainIndex - 1].GameObject;
                     (terrain as unknown as HeightmapTerrain).planeGeomatry.getAttribute('position').needsUpdate = true;
@@ -188,7 +198,7 @@ namespace JWFramework {
                 }
             }
 
-            if (this.planeGeomatry.getAttribute('position').getZ(index) == 900 / 2) {
+            if (this.planeGeomatry.getAttribute('position').getZ(index) == this.planSize / 2) {
                 if (objectList[ObjectType.OBJ_TERRAIN][this.terrainIndex + this.col]) {
                     let terrain = objectList[ObjectType.OBJ_TERRAIN][this.terrainIndex + this.col].GameObject;
                     (terrain as unknown as HeightmapTerrain).planeGeomatry.getAttribute('position').needsUpdate = true;
@@ -196,7 +206,7 @@ namespace JWFramework {
                 }
             }
 
-            if (this.planeGeomatry.getAttribute('position').getZ(index) == -(900 / 2)) {
+            if (this.planeGeomatry.getAttribute('position').getZ(index) == -(this.planSize / 2)) {
                 if (objectList[ObjectType.OBJ_TERRAIN][this.terrainIndex - this.col]) {
                     let terrain = objectList[ObjectType.OBJ_TERRAIN][this.terrainIndex - this.col].GameObject;
                     (terrain as unknown as HeightmapTerrain).planeGeomatry.getAttribute('position').needsUpdate = true;
@@ -227,17 +237,24 @@ namespace JWFramework {
 
         }
 
-        public CollisionActive(object: GameObject) {
-            if (object.Type == ObjectType.OBJ_CAMERA) {
-                this.cameraInSecter = false;
-                // this.material.opacity = 1;
-            }
-            else {
-                if (this.inSectorObject.includes(object) == false) {
-                    this.inSectorObject.push(object);
-                    //this.opacity = 0.5;
-                    //this.material.uniforms['opacity'].value = this.opacity;
-                    this.inSecter = true;
+        public CollisionActive(object: GameObject)
+        {
+            if (this.isDummy == false)
+            {
+                if (object.Type == ObjectType.OBJ_CAMERA)
+                {
+                    this.cameraInSecter = false;
+                    // this.material.opacity = 1;
+                }
+                else
+                {
+                    if (this.inSectorObject.includes(object) == false)
+                    {
+                        this.inSectorObject.push(object);
+                        this.opacity = 0.8;
+                        this.material.uniforms['opacity'].value = this.opacity;
+                        this.inSecter = true;
+                    }
                 }
             }
         }
@@ -285,6 +302,8 @@ namespace JWFramework {
 
         public row: number = 0;
         public col: number = 0;
+        private isDummy = false;
+        private planSize: number;
         public inSecter: boolean = false
         public cameraInSecter: boolean = false;
     }

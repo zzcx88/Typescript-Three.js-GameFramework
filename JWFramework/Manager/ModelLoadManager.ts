@@ -1,4 +1,5 @@
 ﻿/// <reference path="../Object/CommonObject/Terrain/HeightmapTerrain.ts" />
+/// <reference path="../Object/InGameObject/Cloud.ts" />
 namespace JWFramework
 {
     export class ModelLoadManager
@@ -80,24 +81,26 @@ namespace JWFramework
                         if (n.isMesh) {
                             let texture = n.material.map;
                             let normal = n.material.normalMap;
-                            let color = n.material.color;
-                            if (modelSource[modelSource.length - 1] != 'b') {
-                                n.material = new THREE.MeshStandardMaterial();
-                            }
-                            else {
-                                n.material = new THREE.MeshPhongMaterial();
-                            }
+                            let opacity = n.material.opacity;
+                            let color: THREE.Color = n.material.color;
+                            let side = n.material.side;
+                            //n.material = new THREE.MeshStandardMaterial();
                             n.material.map = texture;
                             n.material.normalMap = normal;
-                            n.material.color = color/*new THREE.Color('white')*/;
+                            n.material.color = color /*new THREE.Color('white')*/;
                             //n.material.wireframe = true;
                             n.castShadow = true;
                             n.receiveShadow = true;
                             //if (n.material.map) n.material.map.anisotropy = 1;
                             //n.material.transparent = true;
-                            //n.material.opacity = 0.5;
-                            ////n.material.alphaTest = 0;
+                            if (opacity != 1)
+                            {
+                                n.material.opacity = opacity;
+                            }
+                            n.material.side = side;
+                            //n.material.alphaTest = 0.01;
                             //n.material.alphaToCoverage = true;
+                            //n.material.blending = THREE.NormalBlending;
                             //console.log(n.material);
                         }
                     });
@@ -121,14 +124,28 @@ namespace JWFramework
 
         public LoadHeightmapTerrain(row: number = 10, col: number = 10)
         {
-            row = 15, col =15
+            row = 15, col = 15;
+            this.planSize = 900;
+            let terrainIndex = 0; // 추가된 부분
             for (let i = 0; i < col; ++i)
             {
                 for (let j = 0; j < row; ++j)
                 {
-                    this.terrain[i] = new HeightmapTerrain(j * 900, i * 900, 16, 16);
-                    this.terrain[i].row = row;
-                    this.terrain[i].col = col;
+                    let terrainX = j * this.planSize;
+                    let terrainY = i * this.planSize;
+                    let terrainWidth = 16;
+                    let terrainHeight = 16;
+                    if (i == 0 || i == col - 1 || j == 0 || j == row - 1) // 추가된 부분
+                    {
+                        //terrainWidth = 1;
+                        //terrainHeight = 1;
+                        this.terrain[terrainIndex] = new HeightmapTerrain(terrainX, terrainY, terrainWidth, terrainHeight, this.planSize, true);
+                    }
+                    else
+                        this.terrain[terrainIndex] = new HeightmapTerrain(terrainX, terrainY, terrainWidth, terrainHeight, this.planSize, false);
+                    this.terrain[terrainIndex].row = row;
+                    this.terrain[terrainIndex].col = col;
+                    terrainIndex++; // 추가된 부분
                 }
             }
         }
@@ -183,9 +200,7 @@ namespace JWFramework
 
         private loaderManager: THREE.LoadingManager
         private gltfLoader: THREE.GLTFLoader;
-        //animetionTest
-        public animationMixer: THREE.AnimationMixer = null;
-        public anim;
+        public planSize: number;
         ////////////
         private loadCompletModel: number;
         private modelCount: number;

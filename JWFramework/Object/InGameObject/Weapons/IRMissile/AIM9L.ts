@@ -13,7 +13,7 @@ namespace JWFramework
             super.InitializeAfterLoad();
 
             this.velocityGain = 40;
-            this.velocityBreak = 5;
+            this.velocityBreak = 1.5;
             this.maxVelocity = 60;
             this.maxRotateSpeed = 30;
             this.rotateSpeedAcceletion = 15;

@@ -63,7 +63,7 @@
                 {
                     if (src.GameObject.IsClone && dst.GameObject.IsClone)
                     {
-                        if (src.GameObject != dst.GameObject)
+                        if ((src.GameObject != dst.GameObject) && src.GameObject.CollisionComponent.BoxHelper.box && dst.GameObject.CollisionComponent.BoxHelper.box)
                         {
                             if (src.GameObject.CollisionComponent.BoxHelper.box.intersectsBox(dst.GameObject.CollisionComponent.BoxHelper.box)) {
                                 src.GameObject.CollisionActive(dst.GameObject);
@@ -91,6 +91,7 @@
                         if (src != dst)
                         {
                             if (src.CollisionComponent != null && dst.CollisionComponent != null)
+                                if (src.CollisionComponent.OBB && dst.CollisionComponent.OBB)
                                 if (src.CollisionComponent.OBB.intersectsOBB(dst.CollisionComponent.OBB))
                                 {
                                     if (!(dst.GameObject instanceof HeightmapTerrain) || !(src.GameObject instanceof HeightmapTerrain))
@@ -118,7 +119,9 @@
                 destination.forEach(function (dst)
                 {
                     if (src.GameObject.IsClone && dst.GameObject.IsClone) {
-                        if (src.GameObject != dst.GameObject) {
+                        if (src.GameObject != dst.GameObject)
+                        {
+                            if (src.GameObject.CollisionComponent.OBB && dst.GameObject.CollisionComponent.BoundingBox)
                             if (src.GameObject.CollisionComponent.OBB.intersectsBox3(dst.GameObject.CollisionComponent.BoundingBox))
                             {
                                 if (!(dst.GameObject instanceof HeightmapTerrain))

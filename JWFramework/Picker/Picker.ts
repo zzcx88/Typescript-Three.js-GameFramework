@@ -33,23 +33,32 @@
         private CreateOrtbitControl()
         {
             this.orbitControl = new THREE.OrbitControls(WorldManager.getInstance().MainCamera.CameraInstance, WorldManager.getInstance().Canvas);
-            this.orbitControl.maxDistance = 2000;
-            this.orbitControl.minDistance = -2000;
+            this.orbitControl.maxDistance = 4000;
+            this.orbitControl.minDistance = -4000;
             this.orbitControl.zoomSpeed = 2;
-            this.orbitControl.maxZoom = -2000;
+            this.orbitControl.maxZoom = -4000;
             this.orbitControl.panSpeed = 3;
         }
 
-        private GetParentName(intersectedObjects: THREE.Object3D)
+        private GetParentName(intersectedObjects)
         {
-            if (intersectedObjects != null) {
-                if (intersectedObjects.type == "Mesh") {
+            if (intersectedObjects != null)
+            {
+                if (intersectedObjects.type == "Mesh")
+                {
+                    if (intersectedObjects.name.includes("ObbHelper"))
+                    {
+                        let parentName = (intersectedObjects.name as string).replace("ObbHelper", "")
+                        this.pickedParentName = parentName;
+                        return;
+                    }
                     this.pickedParentName = undefined;
                 }
                 if (intersectedObjects.type != "Group") {
                     this.GetParentName(intersectedObjects.parent);
                 }
-                else {
+                else
+                {
                     this.pickedParentName = intersectedObjects.name;
                     this.pickedObject = intersectedObjects;
                 }
@@ -80,7 +89,7 @@
 
             if (this.pickMode == PickMode.PICK_CLONE) {
                 let objectManager = ObjectManager.getInstance();
-                let intersectedObject = this.raycaster.intersectObject(SceneManager.getInstance().SceneInstance, true);
+                let intersectedObject = this.raycaster.intersectObjects(SceneManager.getInstance().SceneInstance.children.filter(o => !o.name.includes("CloudClone")), true);
 
                 //클론된 오브젝트를 생성한다.
                 if (intersectedObject[0] != undefined) {
@@ -101,7 +110,7 @@
                 GUIManager.getInstance().GUI_Terrain.SetTerrainOptionList();
                 let heightOffset = GUIManager.getInstance().GUI_Terrain.GetHeightOffset();
                 let objectManager = ObjectManager.getInstance();
-                let intersectedObject = this.raycaster.intersectObject(SceneManager.getInstance().SceneInstance, true);
+                let intersectedObject = this.raycaster.intersectObjects(SceneManager.getInstance().SceneInstance.children.filter(o => !o.name.includes("CloudClone")), true);
                 if (intersectedObject[0] != undefined) {
                     terrain = objectManager.GetObjectFromName(intersectedObject[0].object.name);
                     if (terrain != null && terrain.Type == ObjectType.OBJ_TERRAIN)
@@ -115,7 +124,7 @@
                 //SceneManager.getInstance().SceneInstance.add(objectManager.GetInSectorTerrain());
             }
             else if (this.pickMode == PickMode.PICK_REMOVE) {
-                let intersectedObjects = this.raycaster.intersectObjects(SceneManager.getInstance().SceneInstance.children);
+                let intersectedObjects = this.raycaster.intersectObjects(SceneManager.getInstance().SceneInstance.children.filter(o => !o.name.includes("CloudClone")));
                 if (intersectedObjects.length) {
                     this.GetParentName(intersectedObjects[0].object);
                     this.pickedParent = ObjectManager.getInstance().GetObjectFromName(this.pickedParentName);
@@ -124,13 +133,15 @@
                         this.pickedParent.DeleteObject();
                 }
             }
-            else {
-                let intersectedObjects = this.raycaster.intersectObject(SceneManager.getInstance().SceneInstance);
+            else
+            {
+                let intersectedObjects = this.raycaster.intersectObjects(SceneManager.getInstance().SceneInstance.children.filter(o => !o.name.includes("CloudClone")));
                 if (intersectedObjects.length) {
                     this.GetParentName(intersectedObjects[0].object);
                     this.pickedParent = ObjectManager.getInstance().GetObjectFromName(this.pickedParentName);
                     console.log(this.pickedParentName);
-                    if (this.pickedParentName != undefined) {
+                    if (this.pickedParentName != undefined && this.pickedParent != undefined)
+                    {
                         this.pickedParent.Picked = true;
                         GUIManager.getInstance().GUI_SRT.SetGameObject(this.pickedParent);
                     }

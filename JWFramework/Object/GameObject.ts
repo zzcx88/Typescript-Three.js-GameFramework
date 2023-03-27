@@ -168,6 +168,11 @@
 
             delete this.graphicComponent;
             this.graphicComponent = null;
+
+            if (this.guiComponent)
+                this.guiComponent.Dispose();
+            delete this.guiComponent;
+            this.guiComponent = null;
         }
 
         protected gameObjectInstance;

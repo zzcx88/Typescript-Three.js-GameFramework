@@ -45,57 +45,6 @@ declare namespace JWFramework {
     }
 }
 declare namespace JWFramework {
-    class GUIComponent {
-        constructor(gameObject: GameObject);
-        UpdateDisplay(): void;
-        ShowGUI(show: boolean): void;
-        private gameObject;
-    }
-}
-declare namespace JWFramework {
-    class CameraManager {
-        private static instance;
-        static getInstance(): CameraManager;
-        get CameraMode(): CameraMode;
-        SetCameraSavedPosition(cameraMode: CameraMode): void;
-        private ChangeThridPersonCamera;
-        private ChangeOrbitCamera;
-        private cameraMode;
-    }
-}
-declare namespace JWFramework {
-    class PhysicsComponent {
-        constructor(gameObject: JWFramework.GameObject);
-        get Up(): THREE.Vector3;
-        get Right(): THREE.Vector3;
-        get Look(): THREE.Vector3;
-        set Up(vec3Up: THREE.Vector3);
-        set Right(vec3Right: THREE.Vector3);
-        set Look(vec3Look: THREE.Vector3);
-        SetPostion(x: number, y: number, z: number): void;
-        SetPostionVec3(vec3: THREE.Vector3): void;
-        SetScale(x: number, y: number, z: number): void;
-        SetScaleScalar(scalar: number): void;
-        MoveFoward(distance: number): void;
-        MoveDirection(direction: THREE.Vector3, distance: number): void;
-        GetPosition(): THREE.Vector3;
-        GetRotateEuler(): THREE.Euler;
-        GetRotateMatrix3(): THREE.Matrix3;
-        GetScale(): THREE.Vector3;
-        GetMatrix4(): THREE.Matrix4;
-        SetRotate(x: number, y: number, z: number): void;
-        SetRotateVec3(vec3: THREE.Vector3): void;
-        Rotate(x: number, y: number, z: number): void;
-        RotateVec3(axis: THREE.Vector3, angle: number): void;
-        UpdateMatrix(): void;
-        private vec3Right;
-        private vec3Up;
-        private vec3Look;
-        private vec3Position;
-        private GameObject;
-    }
-}
-declare namespace JWFramework {
     class GameObject {
         InitializeAfterLoad(): void;
         get Type(): ObjectType;
@@ -151,6 +100,76 @@ declare namespace JWFramework {
     }
 }
 declare namespace JWFramework {
+    class ObjectLabel extends GameObject {
+        constructor();
+        get ReferenceObject(): GameObject;
+        set ReferenceObject(object: GameObject);
+        InitializeAfterLoad(): void;
+        private CreateBillboardMesh;
+        private MakeCanvasTexture;
+        Animate(): void;
+        private mesh;
+        private material;
+        private labelContext;
+        private referenceObject;
+    }
+}
+declare namespace JWFramework {
+    class GUIComponent {
+        constructor(gameObject: GameObject);
+        GetLabel(): ObjectLabel;
+        Dispose(): void;
+        private DisposeLabel;
+        UpdateDisplay(): void;
+        ShowGUI(show: boolean): void;
+        private gameObject;
+        private objectLabel;
+    }
+}
+declare namespace JWFramework {
+    class CameraManager {
+        private static instance;
+        static getInstance(): CameraManager;
+        get CameraMode(): CameraMode;
+        SetCameraSavedPosition(cameraMode: CameraMode): void;
+        private ChangeThridPersonCamera;
+        private ChangeOrbitCamera;
+        private cameraMode;
+    }
+}
+declare namespace JWFramework {
+    class PhysicsComponent {
+        constructor(gameObject: JWFramework.GameObject);
+        get Up(): THREE.Vector3;
+        get Right(): THREE.Vector3;
+        get Look(): THREE.Vector3;
+        set Up(vec3Up: THREE.Vector3);
+        set Right(vec3Right: THREE.Vector3);
+        set Look(vec3Look: THREE.Vector3);
+        SetPostion(x: number, y: number, z: number): void;
+        SetPostionVec3(vec3: THREE.Vector3): void;
+        SetScale(x: number, y: number, z: number): void;
+        SetScaleScalar(scalar: number): void;
+        MoveFoward(distance: number): void;
+        MoveDirection(direction: THREE.Vector3, distance: number): void;
+        GetPosition(): THREE.Vector3;
+        GetRotateEuler(): THREE.Euler;
+        GetRotateMatrix3(): THREE.Matrix3;
+        GetScale(): THREE.Vector3;
+        GetMatrix4(): THREE.Matrix4;
+        SetRotate(x: number, y: number, z: number): void;
+        SetRotateVec3(vec3: THREE.Vector3): void;
+        Rotate(x: number, y: number, z: number): void;
+        RotateVec3(axis: THREE.Vector3, angle: number): void;
+        UpdateMatrix(): void;
+        private vec3Right;
+        private vec3Up;
+        private vec3Look;
+        private vec3Position;
+        private GameObject;
+    }
+}
+declare namespace JWFramework {
     class EditObject extends GameObject {
         constructor();
         InitializeAfterLoad(): void;
@@ -161,6 +180,7 @@ declare namespace JWFramework {
         Animate(): void;
         private isTarget;
         throttle: number;
+        private canLaunch;
         private prevPosition;
         private axisHelper;
     }
@@ -258,6 +278,7 @@ declare namespace JWFramework {
         private mig29;
         private f_5e;
         private anim;
+        private cloud;
         private aim9h;
         private aim9l;
         private r60m;
@@ -480,7 +501,7 @@ declare namespace JWFramework {
 }
 declare namespace JWFramework {
     class HeightmapTerrain extends GameObject {
-        constructor(x: number, z: number, segmentWidth: number, segmentHeight: number);
+        constructor(x: number, z: number, segmentWidth: number, segmentHeight: number, planSize?: number, isDummy?: boolean);
         InitializeAfterLoad(): void;
         CreateBoundingBox(): void;
         private CreateTerrainMesh;
@@ -505,8 +526,26 @@ declare namespace JWFramework {
         private opacity;
         row: number;
         col: number;
+        private isDummy;
+        private planSize;
         inSecter: boolean;
         cameraInSecter: boolean;
+    }
+}
+declare namespace JWFramework {
+    class Cloud extends GameObject {
+        constructor();
+        BuildClouds(): void;
+        InitializeAfterLoad(): void;
+        private SetMaterial;
+        private CreateBillboardMesh;
+        Animate(): void;
+        private geometry;
+        private mesh;
+        private material;
+        private positions;
+        private scales;
+        private prevMatrix;
     }
 }
 declare namespace JWFramework {
@@ -524,8 +563,7 @@ declare namespace JWFramework {
         LoadSavedScene(): void;
         private loaderManager;
         private gltfLoader;
-        animationMixer: THREE.AnimationMixer;
-        anim: any;
+        planSize: number;
         private loadCompletModel;
         private modelCount;
         private loadComplete;
@@ -556,6 +594,7 @@ declare namespace JWFramework {
         private light;
         private light2;
         private light3;
+        private makedCloud;
     }
 }
 declare namespace JWFramework {
@@ -594,6 +633,7 @@ declare namespace JWFramework {
         mountainTexture: THREE.Texture;
         factoryTexture: THREE.Texture;
         fogTexture: THREE.Texture;
+        cloudTexture: THREE.Texture;
         missileFlameTexture: THREE.Texture;
         private composer;
         private renderPass;

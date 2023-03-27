@@ -141,12 +141,14 @@
     <TypeScriptCompile Include="Object\Camera\Camera.ts" />
     <TypeScriptCompile Include="Object\GameObject.ts" />
     <TypeScriptCompile Include="Object\InGameObject\AircraftObject.ts" />
+    <TypeScriptCompile Include="Object\InGameObject\Cloud.ts" />
     <TypeScriptCompile Include="Object\InGameObject\F16Object.ts" />
     <TypeScriptCompile Include="Object\InGameObject\Weapons\IRMissile\AIM9H.ts" />
     <TypeScriptCompile Include="Object\InGameObject\Weapons\IRMissile\AIM9L.ts" />
     <TypeScriptCompile Include="Object\InGameObject\Weapons\IRMissile\R60M.ts" />
     <TypeScriptCompile Include="Object\InGameObject\Weapons\Missile.ts" />
     <TypeScriptCompile Include="Object\InGameObject\MissileFog.ts" />
+    <TypeScriptCompile Include="Object\InGameUI\ObjectLabel.ts" />
     <TypeScriptCompile Include="Object\Light\Light.ts" />
     <TypeScriptCompile Include="Picker\Picker.ts" />
     <TypeScriptCompile Include="Scene\SceneBase.ts" />

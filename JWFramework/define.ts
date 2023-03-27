@@ -52,15 +52,17 @@ namespace JWFramework
             this.aim9h.Name = "AIM-9H";
             this.aim9l.Name = "AIM-9L";
             this.r60m.Name = "R-60M";
+            this.cloud.Name = "Cloud";
             this.sceneModelData = [
                 //{ model: this.F16, url: 'Model/F-16D/F-16.gltf' },
                 { model: this.aim9h, url: 'Model/aim-9.glb' },
                 { model: this.aim9l, url: 'Model/aim-9.glb' },
                 { model: this.r60m, url: 'Model/aim-9.glb' },
-                { model: this.mig29, url: 'Model/mig_29.glb' },
+                { model: this.mig29, url: 'Model/mig_29_1.glb' },
                 { model: this.helmet, url: 'Model/DamagedHelmet.gltf' },
                 { model: this.f_5e, url: 'Model/F-5E.glb' },
-                { model: this.anim, url: 'Model/Sprint.glb' }
+                { model: this.anim, url: 'Model/Sprint.glb' },
+                { model: this.cloud, url: 'Model/cloud.glb' },
             ];
             this.modelNumber = this.sceneModelData.length;
         }
@@ -69,6 +71,7 @@ namespace JWFramework
         private mig29: EditObject = new EditObject;
         private f_5e: EditObject = new EditObject;
         private anim: EditObject = new EditObject;
+        private cloud: Cloud = new Cloud;
         private aim9h: AIM9H = new AIM9H;
         private aim9l: AIM9L = new AIM9L;
         private r60m: R60M = new R60M;

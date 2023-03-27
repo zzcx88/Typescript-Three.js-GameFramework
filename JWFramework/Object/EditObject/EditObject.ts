@@ -12,6 +12,7 @@ namespace JWFramework
             this.graphicComponent = new GraphComponent(this);
             this.exportComponent = new ExportComponent(this);
             this.collisionComponent = new CollisionComponent(this);
+            this.guiComponent = new GUIComponent(this);
         }
 
         public InitializeAfterLoad()
@@ -34,6 +35,7 @@ namespace JWFramework
                     this.axisHelper = new THREE.AxesHelper(10);
                     this.GameObjectInstance.add(this.axisHelper);
                     //this.GameObjectInstance.add(this.CollisionComponent.BoxHelper);
+                    this.guiComponent.GetLabel();
                 }
                 //this.AnimationMixer.clipAction(this.ModelData.animations[0]).play();
             }
@@ -59,15 +61,18 @@ namespace JWFramework
 
         private launchMissile()
         {
-            let objectManager = ObjectManager.getInstance();
-            let cloneObject = objectManager.MakeClone(objectManager.GetObjectFromName("R-60M"));
-            cloneObject.PhysicsComponent.SetScale(1, 1, 1);
-            //cloneObject.PhysicsComponent.SetRotateVec3(new THREE.Vector3(this.GameObjectInstance.rotation.x, this.GameObjectInstance.rotation.y, this.GameObjectInstance.rotation.z));
-            cloneObject.GameObjectInstance.setRotationFromEuler(this.PhysicsComponent.GetRotateEuler());
-            cloneObject.PhysicsComponent.SetPostionVec3(new THREE.Vector3(this.GameObjectInstance.position.x, this.GameObjectInstance.position.y, this.GameObjectInstance.position.z));
-            cloneObject.PhysicsComponent.GetPosition().add(this.physicsComponent.Up.multiplyScalar(-3));
-            (cloneObject as R60M).AirCraftSpeed = this.throttle;
-            objectManager.AddObject(cloneObject, cloneObject.Name, cloneObject.Type);
+            if (this.canLaunch)
+            {
+                let objectManager = ObjectManager.getInstance();
+                let cloneObject = objectManager.MakeClone(objectManager.GetObjectFromName("R-60M"));
+                cloneObject.PhysicsComponent.SetScale(1, 1, 1);
+                //cloneObject.PhysicsComponent.SetRotateVec3(new THREE.Vector3(this.GameObjectInstance.rotation.x, this.GameObjectInstance.rotation.y, this.GameObjectInstance.rotation.z));
+                cloneObject.GameObjectInstance.setRotationFromEuler(this.PhysicsComponent.GetRotateEuler());
+                cloneObject.PhysicsComponent.SetPostionVec3(new THREE.Vector3(this.GameObjectInstance.position.x, this.GameObjectInstance.position.y, this.GameObjectInstance.position.z));
+                cloneObject.PhysicsComponent.GetPosition().add(this.physicsComponent.Up.multiplyScalar(-3));
+                (cloneObject as R60M).AirCraftSpeed = this.throttle;
+                objectManager.AddObject(cloneObject, cloneObject.Name, cloneObject.Type);
+            }
         }
 
         public Animate()
@@ -133,9 +138,22 @@ namespace JWFramework
                 let moveDistance = this.physicsComponent.GetPosition().clone().sub(this.prevPosition).length();
                 document.getElementById("speed").innerText = "속도 : " + UnitConvertManager.getInstance().ConvertToSpeedForKmh(moveDistance);
 
-                let targetObject = (ObjectManager.getInstance().GetObjectFromName("Target") as EditObject);
+                let targetObject = ObjectManager.getInstance().GetObjectFromName("Target") as EditObject;
                 if (targetObject != null)
-                    console.log(UnitConvertManager.getInstance().ConvertToDistance(this.physicsComponent.GetPosition().clone().sub(targetObject.physicsComponent.GetPosition().clone()).length()));
+                {
+                    let targetPos = targetObject.physicsComponent.GetPosition().clone();
+                    let playerPos = this.physicsComponent.GetPosition().clone();
+                    let lookVec = this.physicsComponent.Look.clone().normalize();
+                    let targetVec = targetPos.clone().sub(playerPos).normalize();
+                    let angleRad = Math.acos(lookVec.dot(targetVec));
+                    let angleDeg = THREE.MathUtils.radToDeg(angleRad);
+                    if (angleDeg <= 10)
+                    {
+                        this.canLaunch = true;
+                    }
+                    else
+                        this.canLaunch = false;
+                }
             }
             else
                 this.IsRayOn = false;
@@ -161,8 +179,12 @@ namespace JWFramework
 
         private isTarget: boolean = false;
         public throttle: number = 0;
+        private canLaunch: boolean = false;
         private prevPosition: THREE.Vector3 = new THREE.Vector3(0, 0, 0);
         private axisHelper: THREE.AxesHelper;
+
+        //private fixedSeeker: SeekerCircle;
+
         //private raderFrustum: THREE.Frustum = new THREE.Frustum();
     }
 }

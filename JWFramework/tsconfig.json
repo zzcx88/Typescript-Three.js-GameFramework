@@ -49,7 +49,7 @@
     // "emitDeclarationOnly": true,                      /* Only output d.ts files and not JavaScript files. */
      "sourceMap": false,                                /* Create source map files for emitted JavaScript files. */
      "outFile": "./JWFramework.js",                                  /* Specify a file that bundles all outputs into one JavaScript file. If 'declaration' is true, also designates a file that bundles all .d.ts output. */
-    // "outDir": "./",                                   /* Specify an output folder for all emitted files. */
+     //"outDir": "JWFramework",                                   /* Specify an output folder for all emitted files. */
      "removeComments": true,                           /* Disable emitting comments. */
     // "noEmit": true,                                   /* Disable emitting files from a compilation. */
     // "importHelpers": true,                            /* Allow importing helper functions from tslib once per project, instead of including them per-file. */
@@ -101,53 +101,56 @@
     "skipLibCheck": true                                 /* Skip type checking all .d.ts files. */
   },
     "include": [
-
-      "Lib/**/*"
-, "Shader/SplettingShader.ts"    //  "Manager/**/*",
-    //  "Object",
-    //  "GUI/**/*",
-    //  "Picker/**/*",
-    //  "Scene/**/*",
-    //  "Component/**/*",
-    //"Main/**/*"
-    ],
-    "files": [
-    
-    "Component/GraphicCompnent.ts",
-    "Component/PhysicsComponent.ts",
-    "Component/GUIComponent.ts",
-    "Component/ExportComponent.ts",
-    "Component/CollisionComponent.ts",
-
-    "Scene/SceneBase.ts",
-    "Scene/EditScene.ts",
-
-    "Picker/Picker.ts",
-    "GUI/GUIControls/GUI_Base.ts",
-    "GUI/GUIControls/GUI_SRT.ts",
-    "GUI/GUIControls/GUI_Select.ts",
-    "GUI/GUIControls/GUI_Terrain.ts",
-
-    "Object/GameObject.ts",
-    "Object/Camera/Camera.ts",
-    "Object/EditObject/TestCube.ts",
-    "Object/EditObject/EditObject.ts",
-    "Object/CommonObject/Terrain/HeightmapTerrain.ts",
-    "Object/Light/Light.ts",
-
-    "Manager/InputManager.ts",
-    "Manager/WorldManager.ts",
-    "Manager/SceneManager.ts",
-    "Manager/ModelLoadManager.ts",
-    "Manager/ObjectManager.ts",
-    "Manager/CameraManager.ts",
-    "Manager/GUIManager.ts",
-    "Manager/ShaderManager.ts",
-    "Manager/CollisionManager.ts",
-
-    "enum.ts",
-    "define.ts",
-    "Main.ts"
+      "Component/**/*",
+      "GUI/**/*",
+      "Lib/**/*",
+      "Manager/**/*",
+      "Picker/**/*",
+      "Scene/**/*",
+      "Shader/**/*",
+      "Object/**/*",
+      "enum.ts",
+      "define.ts",
+      "Main.ts"
     ]
+    //  ,
+    //  "files": [
+    
+    // "Component/GraphicCompnent.ts",
+    // "Component/PhysicsComponent.ts",
+    // "Component/GUIComponent.ts",
+    // "Component/ExportComponent.ts",
+    // "Component/CollisionComponent.ts",
+
+    // "Scene/SceneBase.ts",
+    // "Scene/EditScene.ts",
+
+    // "Picker/Picker.ts",
+    // "GUI/GUIControls/GUI_Base.ts",
+    // "GUI/GUIControls/GUI_SRT.ts",
+    // "GUI/GUIControls/GUI_Select.ts",
+    // "GUI/GUIControls/GUI_Terrain.ts",
+
+    // "Object/GameObject.ts",
+    // "Object/Camera/Camera.ts",
+    // "Object/EditObject/TestCube.ts",
+    // "Object/EditObject/EditObject.ts",
+    // "Object/CommonObject/Terrain/HeightmapTerrain.ts",
+    // "Object/Light/Light.ts",
+
+    // "Manager/InputManager.ts",
+    // "Manager/WorldManager.ts",
+    // "Manager/SceneManager.ts",
+    // "Manager/ModelLoadManager.ts",
+    // "Manager/ObjectManager.ts",
+    // "Manager/CameraManager.ts",
+    // "Manager/GUIManager.ts",
+    // "Manager/ShaderManager.ts",
+    // "Manager/CollisionManager.ts",
+
+    //  "enum.ts",
+    //  "define.ts",
+    //  "Main.ts"
+    //  ]
   
 }

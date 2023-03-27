@@ -21,17 +21,18 @@ namespace JWFramework
         {
             ////Directional Light
             this.light = new Light(LightType.LIGHT_DIRECTIONAL);
-            this.light.SetColor(0xefefff);
+            this.light.SetColor(0xFFFFFF);
             this.light.Intensity = 0.8;
-            this.light.GameObjectInstance.position.set(0, 10, 0);
+            this.light.GameObjectInstance.position.set(1, 1, 0);
+            //this.light.GameObjectInstance.rotation.set(30, 0, 0);
             this.SceneManager.SceneInstance.add(this.light.GameObjectInstance);
 
             //Sub Directional Light
-            //this.light2 = new Light(LightType.LIGHT_DIRECTIONAL);
-            //this.light2.SetColor(0xFFFFFF);
-            //this.light2.Intensity = 0.5;
-            //this.light2.GameObjectInstance.position.set(0, 10, 0);
-            //this.SceneManager.SceneInstance.add(this.light2.GameObjectInstance);
+            this.light2 = new Light(LightType.LIGHT_DIRECTIONAL);
+            this.light2.SetColor(0xFFFFFF);
+            this.light2.Intensity = 0.5;
+            this.light2.GameObjectInstance.position.set(-1, 1, 1);
+            this.SceneManager.SceneInstance.add(this.light2.GameObjectInstance);
 
             //AmbientLight
             this.light3 = new Light(LightType.LIGHT_AMBIENT);
@@ -43,14 +44,21 @@ namespace JWFramework
         {
             let sceneInstance = this.SceneManager.SceneInstance;
             let color = 0xdefdff;
-            sceneInstance.fog = new THREE.Fog(color, 10, 1400);
+            sceneInstance.fog = new THREE.Fog(color, 300, 2900);
         }
 
         public Animate()
         {
-            if (ModelLoadManager.getInstance().LoadComplete == true) {
+            if (ModelLoadManager.getInstance().LoadComplete == true)
+            {
+                if (this.makedCloud == false)
+                {
+                    ObjectManager.getInstance().MakeClone(ObjectManager.getInstance().GetObjectFromName("Cloud"));
+                    this.makedCloud = true;
+                }
                 ObjectManager.getInstance().Animate();
-
+                //this.SceneManager.SceneInstance.fog.color.lerpColors(this.SceneManager.SceneInstance.fog.color, new THREE.Color(0xb7dcfd), 1)
+                
                 if (InputManager.getInstance().GetKeyState('1', KeyState.KEY_DOWN)) {
                     this.Picker.ChangePickModeModify();
                 }
@@ -99,6 +107,7 @@ namespace JWFramework
                     ModelLoadManager.getInstance().LoadHeightmapTerrain();
                     ModelLoadManager.getInstance().LoadSavedScene();
                     WorldManager.getInstance().Renderer.clear();
+                    this.makedCloud = false;
                     this.reloadScene = false;
                 }
         }
@@ -106,5 +115,6 @@ namespace JWFramework
         private light: Light;
         private light2: Light;
         private light3: Light;
+        private makedCloud: boolean = false;
     }
 }

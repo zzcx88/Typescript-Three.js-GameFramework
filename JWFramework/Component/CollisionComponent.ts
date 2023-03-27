@@ -38,6 +38,7 @@
             let material = new THREE.MeshBasicMaterial({ color });
             material.wireframe = true;
             this.obbBoxHelper = new THREE.Mesh(obbGeometry, material);
+            this.obbBoxHelper.name = this.gameObject.Name + "ObbHelper";
 
             //this.gameObject.GameObjectInstance.add(this.obbBoxHelper);
             if (SceneManager.getInstance().SceneInstance != null)

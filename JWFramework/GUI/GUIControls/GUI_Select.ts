@@ -28,7 +28,8 @@
             {
                 for (let OBJ = 0; OBJ < objectList[TYPE].length; ++OBJ)
                 {
-                    item.push(objectList[TYPE][OBJ].Name);
+                    if (objectList[TYPE][OBJ].GameObject instanceof EditObject)
+                        item.push(objectList[TYPE][OBJ].Name);
                 }
             }
             ////
