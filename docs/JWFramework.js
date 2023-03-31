@@ -122,6 +122,7 @@ var JWFramework;
                     {
                         type: this.gameObject.Type,
                         name: this.gameObject.Name,
+                        isDummy: this.gameObject.IsDummy,
                         vertexIndex: this.gameObject.HeightIndexBuffer,
                         vertexHeight: this.gameObject.HeightBuffer,
                         scale: {
@@ -339,6 +340,7 @@ var JWFramework;
             this.material = new THREE.SpriteMaterial({
                 map: labelTexture,
                 transparent: true,
+                depthWrite: false,
                 depthTest: false,
                 fog: false,
                 sizeAttenuation: false,
@@ -385,7 +387,7 @@ var JWFramework;
         }
         Animate() {
             if (this.referenceObject != undefined) {
-                if (this.referenceObject.Picked == false) {
+                if (this.referenceObject.Picked == false && this.mesh.visible == true) {
                     this.material.visible = true;
                     let refObjectPosition = this.referenceObject.PhysicsComponent.GetPosition().clone();
                     this.physicsComponent.SetPostion(refObjectPosition.x, refObjectPosition.y, refObjectPosition.z);
@@ -393,7 +395,9 @@ var JWFramework;
                     if (pickObject[0] != undefined) {
                         let length = JWFramework.UnitConvertManager.getInstance().ConvertToDistance(this.referenceObject.PhysicsComponent.GetPosition().clone().sub(pickObject[0].GameObject.PhysicsComponent.GetPosition().clone()).length());
                         length = Math.round(length);
-                        if (length > 10000)
+                        if (length > 100000)
+                            this.MakeCanvasTexture(length.toString()[0] + length.toString()[1] + length.toString()[2] + " km");
+                        else if (length > 10000)
                             this.MakeCanvasTexture(length.toString()[0] + length.toString()[1] + " km");
                         else if (length > 1000)
                             this.MakeCanvasTexture(length.toString()[0] + "." + length.toString()[1] + length.toString()[2] + " km");
@@ -658,6 +662,19 @@ var JWFramework;
             }
         }
         Animate() {
+            let cameraPosition = JWFramework.WorldManager.getInstance().MainCamera.PhysicsComponent.GetPosition().clone();
+            if (JWFramework.CameraManager.getInstance().CameraMode === JWFramework.CameraMode.CAMERA_3RD)
+                JWFramework.WorldManager.getInstance().MainCamera.CameraInstance.localToWorld(cameraPosition);
+            if (this.GUIComponent.GetLabel().GameObjectInstance != null) {
+                if (cameraPosition.sub(this.physicsComponent.GetPosition()).length() > 3000) {
+                    this.GUIComponent.GetLabel().GameObjectInstance.visible = false;
+                    this.GameObjectInstance.visible = false;
+                }
+                else {
+                    this.GUIComponent.GetLabel().GameObjectInstance.visible = true;
+                    this.GameObjectInstance.visible = true;
+                }
+            }
             if (this.isTarget == true) {
                 this.throttle = 50;
                 this.PhysicsComponent.MoveFoward(this.throttle);
@@ -1139,7 +1156,8 @@ var JWFramework;
         PickMode[PickMode["PICK_MODIFY"] = 0] = "PICK_MODIFY";
         PickMode[PickMode["PICK_CLONE"] = 1] = "PICK_CLONE";
         PickMode[PickMode["PICK_TERRAIN"] = 2] = "PICK_TERRAIN";
-        PickMode[PickMode["PICK_REMOVE"] = 3] = "PICK_REMOVE";
+        PickMode[PickMode["PICK_DUMMYTERRAIN"] = 3] = "PICK_DUMMYTERRAIN";
+        PickMode[PickMode["PICK_REMOVE"] = 4] = "PICK_REMOVE";
     })(PickMode = JWFramework.PickMode || (JWFramework.PickMode = {}));
     let TerrainOption;
     (function (TerrainOption) {
@@ -1581,8 +1599,8 @@ var JWFramework;
                     }
                 }
             }
-            JWFramework.CollisionManager.getInstance().CollideObbToBox(this.objectList[JWFramework.ObjectType.OBJ_OBJECT3D], this.objectList[JWFramework.ObjectType.OBJ_TERRAIN]);
-            JWFramework.CollisionManager.getInstance().CollideObbToBox(this.objectList[JWFramework.ObjectType.OBJ_MISSILE], this.objectList[JWFramework.ObjectType.OBJ_TERRAIN]);
+            JWFramework.CollisionManager.getInstance().CollideObbToBox(this.objectList[JWFramework.ObjectType.OBJ_OBJECT3D], this.objectList[JWFramework.ObjectType.OBJ_TERRAIN].filter(o => o.GameObject.IsDummy == false));
+            JWFramework.CollisionManager.getInstance().CollideObbToBox(this.objectList[JWFramework.ObjectType.OBJ_MISSILE], this.objectList[JWFramework.ObjectType.OBJ_TERRAIN].filter(o => o.GameObject.IsDummy == false));
             let sectoredTerrain = this.objectList[JWFramework.ObjectType.OBJ_TERRAIN].filter((element) => element.GameObject.inSecter == true);
             JWFramework.CollisionManager.getInstance().CollideRayToTerrain(sectoredTerrain);
             sectoredTerrain.forEach(function (src) {
@@ -1662,7 +1680,7 @@ var JWFramework;
             this.raycaster.setFromCamera({ x: this.pickPositionX, y: this.pickPositionY }, JWFramework.WorldManager.getInstance().MainCamera.CameraInstance);
             if (this.pickMode == JWFramework.PickMode.PICK_CLONE) {
                 let objectManager = JWFramework.ObjectManager.getInstance();
-                let intersectedObject = this.raycaster.intersectObjects(JWFramework.SceneManager.getInstance().SceneInstance.children.filter(o => !o.name.includes("CloudClone")), true);
+                let intersectedObject = this.raycaster.intersectObjects(JWFramework.SceneManager.getInstance().SceneInstance.children.filter(o => !o.name.includes("cloud")), true);
                 if (intersectedObject[0] != undefined) {
                     let terrain = objectManager.GetObjectFromName(intersectedObject[0].object.name);
                     if (terrain != undefined && terrain.Type == JWFramework.ObjectType.OBJ_TERRAIN) {
@@ -1678,7 +1696,7 @@ var JWFramework;
                 JWFramework.GUIManager.getInstance().GUI_Terrain.SetTerrainOptionList();
                 let heightOffset = JWFramework.GUIManager.getInstance().GUI_Terrain.GetHeightOffset();
                 let objectManager = JWFramework.ObjectManager.getInstance();
-                let intersectedObject = this.raycaster.intersectObjects(JWFramework.SceneManager.getInstance().SceneInstance.children.filter(o => !o.name.includes("CloudClone")), true);
+                let intersectedObject = this.raycaster.intersectObjects(JWFramework.SceneManager.getInstance().SceneInstance.children.filter(o => !o.name.includes("cloud")), true);
                 if (intersectedObject[0] != undefined) {
                     terrain = objectManager.GetObjectFromName(intersectedObject[0].object.name);
                     if (terrain != null && terrain.Type == JWFramework.ObjectType.OBJ_TERRAIN) {
@@ -1689,8 +1707,19 @@ var JWFramework;
                     }
                 }
             }
+            else if (this.pickMode == JWFramework.PickMode.PICK_DUMMYTERRAIN) {
+                let objectManager = JWFramework.ObjectManager.getInstance();
+                let intersectedObject = this.raycaster.intersectObjects(JWFramework.SceneManager.getInstance().SceneInstance.children.filter(o => !o.name.includes("cloud")), true);
+                if (intersectedObject[0] != undefined) {
+                    terrain = objectManager.GetObjectFromName(intersectedObject[0].object.name);
+                    if (terrain != null && terrain.Type == JWFramework.ObjectType.OBJ_TERRAIN) {
+                        if (terrain.IsDummy == false)
+                            terrain.IsDummy = true;
+                    }
+                }
+            }
             else if (this.pickMode == JWFramework.PickMode.PICK_REMOVE) {
-                let intersectedObjects = this.raycaster.intersectObjects(JWFramework.SceneManager.getInstance().SceneInstance.children.filter(o => !o.name.includes("CloudClone")));
+                let intersectedObjects = this.raycaster.intersectObjects(JWFramework.SceneManager.getInstance().SceneInstance.children.filter(o => !o.name.includes("cloud")));
                 if (intersectedObjects.length) {
                     this.GetParentName(intersectedObjects[0].object);
                     this.pickedParent = JWFramework.ObjectManager.getInstance().GetObjectFromName(this.pickedParentName);
@@ -1700,7 +1729,7 @@ var JWFramework;
                 }
             }
             else {
-                let intersectedObjects = this.raycaster.intersectObjects(JWFramework.SceneManager.getInstance().SceneInstance.children.filter(o => !o.name.includes("CloudClone")));
+                let intersectedObjects = this.raycaster.intersectObjects(JWFramework.SceneManager.getInstance().SceneInstance.children.filter(o => !o.name.includes("cloud")));
                 if (intersectedObjects.length) {
                     this.GetParentName(intersectedObjects[0].object);
                     this.pickedParent = JWFramework.ObjectManager.getInstance().GetObjectFromName(this.pickedParentName);
@@ -1739,6 +1768,9 @@ var JWFramework;
         }
         ChangePickModeTerrain() {
             this.pickMode = JWFramework.PickMode.PICK_TERRAIN;
+        }
+        ChangePickModeDummyTerrain() {
+            this.pickMode = JWFramework.PickMode.PICK_DUMMYTERRAIN;
         }
         ChangePickModeRemove() {
             this.pickMode = JWFramework.PickMode.PICK_REMOVE;
@@ -1823,7 +1855,6 @@ var JWFramework;
             this.PhysicsComponent.SetPostion(this.width, 0, this.height);
             if (this.isDummy == false) {
                 this.CreateBoundingBox();
-                this.CollisionComponent.BoxHelper.visible = false;
             }
             JWFramework.SceneManager.getInstance().SceneInstance.add(this.gameObjectInstance);
             JWFramework.SceneManager.getInstance().SceneInstance.add(this.CollisionComponent.BoxHelper);
@@ -1832,9 +1863,13 @@ var JWFramework;
         CreateBoundingBox() {
             this.CollisionComponent.CreateBoundingBox(this.planSize, 5000, this.planSize);
             this.CollisionComponent.BoxHelper.box.setFromCenterAndSize(new THREE.Vector3(this.width, 2000, this.height), new THREE.Vector3(this.planSize, 5000, this.planSize));
+            this.CollisionComponent.BoxHelper.visible = false;
         }
         CreateTerrainMesh() {
-            this.planeGeomatry = new THREE.PlaneGeometry(this.planSize, this.planSize, this.segmentWidth, this.segmentHeight);
+            if (this.isDummy == false)
+                this.planeGeomatry = new THREE.PlaneGeometry(this.planSize, this.planSize, this.segmentWidth, this.segmentHeight);
+            else
+                this.planeGeomatry = new THREE.PlaneGeometry(this.planSize, this.planSize, 1, 1);
             let customUniforms = {
                 farmTexture: { type: "t", value: JWFramework.ShaderManager.getInstance().farmTexture },
                 mountainTexture: { type: "t", value: JWFramework.ShaderManager.getInstance().mountainTexture },
@@ -1874,6 +1909,12 @@ var JWFramework;
             this.heigtBuffer.length = 0;
             this.heigtIndexBuffer.forEach(element => this.heigtBuffer.push(this.planeGeomatry.getAttribute('position').getY(element)));
             return this.heigtBuffer;
+        }
+        get IsDummy() {
+            return this.isDummy;
+        }
+        set IsDummy(flag) {
+            this.isDummy = flag;
         }
         SetHeight(index, value = undefined, option = JWFramework.TerrainOption.TERRAIN_UP) {
             this.planeGeomatry.getAttribute('position').needsUpdate = true;
@@ -1967,8 +2008,6 @@ var JWFramework;
                 else {
                     if (this.inSectorObject.includes(object) == false) {
                         this.inSectorObject.push(object);
-                        this.opacity = 0.8;
-                        this.material.uniforms['opacity'].value = this.opacity;
                         this.inSecter = true;
                     }
                 }
@@ -1985,14 +2024,27 @@ var JWFramework;
             }
         }
         Animate() {
+            if (this.isDummy == true) {
+                if (this.collisionComponent.BoundingBox != null) {
+                    this.collisionComponent.DeleteCollider();
+                    this.planeGeomatry.dispose();
+                    this.planeGeomatry = new THREE.PlaneGeometry(this.planSize, this.planSize, 1, 1);
+                    this.planeMesh.geometry = this.planeGeomatry;
+                    let rotation = new THREE.Matrix4().makeRotationX(-Math.PI / 2);
+                    this.planeGeomatry.applyMatrix4(rotation);
+                    this.material.wireframe = true;
+                }
+            }
+            else {
+                if (this.collisionComponent.BoundingBox == null)
+                    this.CreateBoundingBox();
+            }
             if (this.vertexNormalNeedUpdate) {
                 this.planeGeomatry.computeVertexNormals();
                 this.vertexNormalNeedUpdate = false;
             }
             this.inSectorObject = this.inSectorObject.filter((element) => (element.IsDead == false));
             if (this.inSectorObject.length == 0) {
-                this.opacity = 1;
-                this.material.uniforms['opacity'].value = this.opacity;
                 this.inSecter = false;
             }
         }
@@ -2034,7 +2086,6 @@ var JWFramework;
                         node.material.transparent = true;
                         node.material.opacity = 0.9;
                         node.material.alphaTest = 0.01;
-                        console.log(node.material.alphaTest);
                         node.material.depthWrite = false;
                         node.material.side = THREE.DoubleSide;
                     }
@@ -2074,6 +2125,7 @@ var JWFramework;
 (function (JWFramework) {
     class ModelLoadManager {
         constructor() {
+            this.animationMixer = null;
             this.loadComplete = false;
             this.terrain = [];
             this.loaderManager = new THREE.LoadingManager;
@@ -2109,7 +2161,7 @@ var JWFramework;
             for (let i = 0; i < this.modeltList.length; ++i) {
                 this.LoadModel(this.modeltList[i].url, this.modeltList[i].model);
             }
-            this.LoadHeightmapTerrain();
+            this.LoadHeightmapTerrain(20, 20);
         }
         LoadSceneStage() {
             this.modeltList = JWFramework.ModelSceneStage.getInstance().ModelScene;
@@ -2153,21 +2205,19 @@ var JWFramework;
                 console.log(error);
             });
         }
-        LoadHeightmapTerrain(row = 10, col = 10) {
-            row = 15, col = 15;
-            this.planSize = 900;
+        LoadHeightmapTerrain(row = 20, col = 20) {
             let terrainIndex = 0;
             for (let i = 0; i < col; ++i) {
                 for (let j = 0; j < row; ++j) {
-                    let terrainX = j * this.planSize;
-                    let terrainY = i * this.planSize;
+                    let terrainX = j * 900;
+                    let terrainY = i * 900;
                     let terrainWidth = 16;
                     let terrainHeight = 16;
                     if (i == 0 || i == col - 1 || j == 0 || j == row - 1) {
-                        this.terrain[terrainIndex] = new JWFramework.HeightmapTerrain(terrainX, terrainY, terrainWidth, terrainHeight, this.planSize, true);
+                        this.terrain[terrainIndex] = new JWFramework.HeightmapTerrain(terrainX, terrainY, terrainWidth, terrainHeight, 900, true);
                     }
                     else
-                        this.terrain[terrainIndex] = new JWFramework.HeightmapTerrain(terrainX, terrainY, terrainWidth, terrainHeight, this.planSize, false);
+                        this.terrain[terrainIndex] = new JWFramework.HeightmapTerrain(terrainX, terrainY, terrainWidth, terrainHeight, 900, false);
                     this.terrain[terrainIndex].row = row;
                     this.terrain[terrainIndex].col = col;
                     terrainIndex++;
@@ -2184,6 +2234,8 @@ var JWFramework;
                 for (let data of jsondata) {
                     if (data.name.includes("Terrain")) {
                         let terrain = objectManager.GetObjectFromName(data.name);
+                        if (data.isDummy != undefined)
+                            terrain.IsDummy = data.isDummy;
                         for (let i = 0; i < data.vertexIndex.length; ++i) {
                             terrain.SetHeight(data.vertexIndex[i], data.vertexHeight[i], JWFramework.TerrainOption.TERRAIN_LOAD);
                         }
@@ -2288,7 +2340,14 @@ var JWFramework;
         Animate() {
             if (JWFramework.ModelLoadManager.getInstance().LoadComplete == true) {
                 if (this.makedCloud == false) {
-                    JWFramework.ObjectManager.getInstance().MakeClone(JWFramework.ObjectManager.getInstance().GetObjectFromName("Cloud"));
+                    for (let i = 0; i < 30; ++i) {
+                        let lowCloud = new JWFramework.LowCloud();
+                        lowCloud.IsClone = true;
+                        let x = -5000 + Math.random() * 20000;
+                        let y = 200 + Math.random() * 200;
+                        let z = -5000 + Math.random() * 20000;
+                        lowCloud.BuildClouds(x, y, z);
+                    }
                     this.makedCloud = true;
                 }
                 JWFramework.ObjectManager.getInstance().Animate();
@@ -2304,10 +2363,14 @@ var JWFramework;
                 if (JWFramework.InputManager.getInstance().GetKeyState('4', JWFramework.KeyState.KEY_DOWN)) {
                     this.Picker.ChangePickModeRemove();
                 }
+                if (JWFramework.InputManager.getInstance().GetKeyState('6', JWFramework.KeyState.KEY_DOWN)) {
+                    this.Picker.ChangePickModeDummyTerrain();
+                }
                 if (JWFramework.InputManager.getInstance().GetKeyState('r', JWFramework.KeyState.KEY_DOWN)) {
                     JWFramework.GUIManager.getInstance().GUI_Terrain.ChangeTerrainOption();
                 }
-                if (JWFramework.SceneManager.getInstance().CurrentScene.Picker.PickMode == JWFramework.PickMode.PICK_TERRAIN)
+                if (JWFramework.SceneManager.getInstance().CurrentScene.Picker.PickMode == JWFramework.PickMode.PICK_TERRAIN ||
+                    JWFramework.SceneManager.getInstance().CurrentScene.Picker.PickMode == JWFramework.PickMode.PICK_DUMMYTERRAIN)
                     if (JWFramework.InputManager.getInstance().GetKeyState('t', JWFramework.KeyState.KEY_PRESS))
                         this.Picker.SetPickPosition(this.Picker.MouseEvent);
                 if (JWFramework.InputManager.getInstance().GetKeyState('u', JWFramework.KeyState.KEY_PRESS)) {
@@ -2316,9 +2379,6 @@ var JWFramework;
                 }
                 else
                     JWFramework.SceneManager.getInstance().CurrentScene.NeedOnTerrain = false;
-                if (JWFramework.InputManager.getInstance().GetKeyState('5', JWFramework.KeyState.KEY_DOWN)) {
-                    JWFramework.ModelLoadManager.getInstance().LoadSavedScene();
-                }
                 if (JWFramework.InputManager.getInstance().GetKeyState('delete', JWFramework.KeyState.KEY_PRESS)) {
                     JWFramework.ObjectManager.getInstance().DeleteAllObject();
                     this.reloadScene = true;
@@ -2449,7 +2509,7 @@ var JWFramework;
             this.fogTexture = new THREE.TextureLoader().load("Model/fog/fog.png");
             this.fogTexture.wrapS = THREE.RepeatWrapping;
             this.fogTexture.wrapT = THREE.RepeatWrapping;
-            this.cloudTexture = new THREE.TextureLoader().load("Model/Cloud/cloud.png");
+            this.cloudTexture = new THREE.TextureLoader().load("Model/Cloud/cloud3.png");
             this.cloudTexture.wrapS = THREE.RepeatWrapping;
             this.cloudTexture.wrapT = THREE.RepeatWrapping;
             this.missileFlameTexture = new THREE.TextureLoader().load("Model/MissileFlame/MissileFlame.png");
@@ -2549,7 +2609,7 @@ var JWFramework;
             this.camera.Fov = 75;
             this.camera.Aspect = this.Canvas.clientWidth / this.Canvas.clientHeight;
             this.camera.Near = 0.1;
-            this.camera.Far = 3000;
+            this.camera.Far = 10000;
             this.camera.PhysicsComponent.SetPostion(0, 22, 0);
             JWFramework.ObjectManager.getInstance().AddObject(this.camera, this.camera.Name, this.camera.Type);
         }
@@ -2608,14 +2668,14 @@ var JWFramework;
             return UnitConvertManager.instance;
         }
         ConvertToSpeedForKmh(distance) {
-            let meterDistance = (distance * 5760) / JWFramework.ModelLoadManager.getInstance().planSize;
+            let meterDistance = (distance * 5760) / 900;
             let timeInSeconds = JWFramework.WorldManager.getInstance().GetDeltaTime();
             let speedInMeterPerSecond = meterDistance / timeInSeconds;
             speedInMeterPerSecond = speedInMeterPerSecond * 3.6;
             return Math.round(speedInMeterPerSecond);
         }
         ConvertToDistance(distance) {
-            let meterDistance = (distance * 5760) / JWFramework.ModelLoadManager.getInstance().planSize;
+            let meterDistance = (distance * 5760) / 900;
             return meterDistance;
         }
     }
@@ -2624,9 +2684,16 @@ var JWFramework;
 {
     const worldManager = JWFramework.WorldManager.getInstance();
     worldManager.InitializeWorld();
+    let stats = new Stats();
+    stats.showPanel(0);
+    stats.dom.style.top = "450px";
+    stats.dom.style.left = "5px";
+    document.body.appendChild(stats.dom);
     const main = function () {
+        stats.begin();
         worldManager.Animate();
         worldManager.Render();
+        stats.end();
         requestAnimationFrame(main);
     };
     main();
@@ -2799,6 +2866,7 @@ var JWFramework;
             this.AddKey(51, '3');
             this.AddKey(52, '4');
             this.AddKey(53, '5');
+            this.AddKey(54, '6');
         }
         static getInstance() {
             if (!InputManager.instance) {
@@ -3028,5 +3096,97 @@ var JWFramework;
         }
     }
     JWFramework.StageScene = StageScene;
+})(JWFramework || (JWFramework = {}));
+var JWFramework;
+(function (JWFramework) {
+    class LowCloud extends JWFramework.GameObject {
+        constructor() {
+            super();
+            this.instanceCount = 400;
+            this.positions = [];
+            this.scales = [];
+            this.prevMatrix = [];
+            this.type = JWFramework.ObjectType.OBJ_OBJECT2D;
+            this.name = "cloud" + JWFramework.ObjectManager.getInstance().GetObjectList[JWFramework.ObjectType.OBJ_OBJECT2D].length;
+            this.physicsComponent = new JWFramework.PhysicsComponent(this);
+            this.graphicComponent = new JWFramework.GraphComponent(this);
+        }
+        BuildClouds(x, y, z) {
+            this.center = new THREE.Vector3(x, y, z);
+            this.CreateBillboardMesh();
+        }
+        InitializeAfterLoad() {
+            this.GameObjectInstance.matrixAutoUpdate = true;
+            this.PhysicsComponent.SetScaleScalar(1);
+            this.GameObjectInstance.name = this.name;
+            JWFramework.SceneManager.getInstance().SceneInstance.add(this.gameObjectInstance);
+            JWFramework.ObjectManager.getInstance().AddObject(this, this.name, this.Type);
+        }
+        CreateBillboardMesh() {
+            this.material = new THREE.MeshBasicMaterial({
+                map: JWFramework.ShaderManager.getInstance().cloudTexture,
+                color: new THREE.Color("white"),
+                fog: false,
+                transparent: true,
+                alphaTest: 0.01,
+                depthWrite: false,
+                side: THREE.DoubleSide,
+                blending: THREE.NormalBlending
+            });
+            let geometry = new THREE.PlaneGeometry(1, 1, 1, 1);
+            this.mesh = new THREE.InstancedMesh(geometry, this.material, this.instanceCount);
+            this.GameObjectInstance = this.mesh;
+            const radius = 800;
+            const displacement = new THREE.Vector3();
+            for (let i = 0; i < this.instanceCount; ++i) {
+                const scale = new THREE.Vector3(600 + Math.random() * 600, 300 + Math.random() * 300, 1);
+                const position = new THREE.Vector3();
+                const angle = Math.random() * Math.PI * 2;
+                const distance = Math.random() * radius;
+                position.set(this.center.x + Math.sin(angle) * distance + displacement.x, (this.center.y + 700) + Math.cos(angle) * (distance - 500) + displacement.y, this.center.z + (Math.random() - 0.5) * 2 * displacement.z);
+                displacement.x = (Math.random() - 0.5) * 2 * radius;
+                displacement.y = (Math.random() - 0.5) * 0.1 * radius;
+                displacement.z = (Math.random() - 0.5) * 2 * radius;
+                this.positions.push(position);
+                this.positions.push(position);
+                this.scales.push(scale);
+                let matrix = new THREE.Matrix4();
+                matrix.scale(this.scales[i]);
+                matrix.setPosition(position);
+                this.prevMatrix[i] = matrix.clone();
+            }
+            this.InitializeAfterLoad();
+        }
+        Animate() {
+            let cameraPos = JWFramework.WorldManager.getInstance().MainCamera.PhysicsComponent.GetPosition().clone();
+            if (JWFramework.CameraManager.getInstance().CameraMode === JWFramework.CameraMode.CAMERA_3RD)
+                JWFramework.WorldManager.getInstance().MainCamera.CameraInstance.localToWorld(cameraPos);
+            if (cameraPos.sub(this.center).length() > 6000) {
+                this.GameObjectInstance.visible = false;
+            }
+            else {
+                this.GameObjectInstance.visible = true;
+            }
+            if (this.GameObjectInstance.visible == true)
+                for (let i = 0; i < this.instanceCount; ++i) {
+                    let cameraPosition = JWFramework.WorldManager.getInstance().MainCamera.PhysicsComponent.GetPosition().clone();
+                    if (JWFramework.CameraManager.getInstance().CameraMode === JWFramework.CameraMode.CAMERA_3RD)
+                        JWFramework.WorldManager.getInstance().MainCamera.CameraInstance.localToWorld(cameraPosition);
+                    let position = this.positions[i].clone();
+                    let matrix = new THREE.Matrix4();
+                    matrix.lookAt(position, cameraPosition, new THREE.Vector3(0, 1, 0));
+                    matrix.scale(this.scales[i]);
+                    matrix.setPosition(position);
+                    if (cameraPosition.sub(position).length() > 1000) {
+                        this.mesh.setMatrixAt(i, matrix);
+                        this.prevMatrix[i] = matrix.clone();
+                    }
+                    else
+                        this.mesh.setMatrixAt(i, this.prevMatrix[i]);
+                }
+            this.mesh.instanceMatrix.needsUpdate = true;
+        }
+    }
+    JWFramework.LowCloud = LowCloud;
 })(JWFramework || (JWFramework = {}));
 //# sourceMappingURL=JWFramework.js.map
