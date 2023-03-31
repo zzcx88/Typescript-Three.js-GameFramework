@@ -77,6 +77,24 @@ namespace JWFramework
 
         public Animate()
         {
+            let cameraPosition = WorldManager.getInstance().MainCamera.PhysicsComponent.GetPosition().clone();
+            if (CameraManager.getInstance().CameraMode === CameraMode.CAMERA_3RD)
+                WorldManager.getInstance().MainCamera.CameraInstance.localToWorld(cameraPosition);
+            if (this.GUIComponent.GetLabel().GameObjectInstance != null)
+            {
+                if (cameraPosition.sub(this.physicsComponent.GetPosition()).length() > 3000)
+                {
+
+                    this.GUIComponent.GetLabel().GameObjectInstance.visible = false;
+                    this.GameObjectInstance.visible = false;
+                }
+                else
+                {
+                    this.GUIComponent.GetLabel().GameObjectInstance.visible = true;
+                    this.GameObjectInstance.visible = true;
+                }
+            }
+
             if (this.isTarget == true)
             {
                 this.throttle = 50;

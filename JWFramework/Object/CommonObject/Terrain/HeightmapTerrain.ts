@@ -32,7 +32,6 @@ namespace JWFramework {
             if (this.isDummy == false)
             {
                 this.CreateBoundingBox();
-                this.CollisionComponent.BoxHelper.visible = false;
             }
 
             SceneManager.getInstance().SceneInstance.add(this.gameObjectInstance);
@@ -40,14 +39,19 @@ namespace JWFramework {
             ObjectManager.getInstance().AddObject(this, this.name, this.type);
         }
 
-        public CreateBoundingBox() {
+        public CreateBoundingBox() 
+        {
             this.CollisionComponent.CreateBoundingBox(this.planSize, 5000, this.planSize);
             this.CollisionComponent.BoxHelper.box.setFromCenterAndSize(new THREE.Vector3(this.width, 2000, this.height), new THREE.Vector3(this.planSize, 5000, this.planSize));
+            this.CollisionComponent.BoxHelper.visible = false;
         }
 
         private CreateTerrainMesh()
         {
-            this.planeGeomatry = new THREE.PlaneGeometry(this.planSize, this.planSize, this.segmentWidth, this.segmentHeight);
+            if (this.isDummy == false)
+                this.planeGeomatry = new THREE.PlaneGeometry(this.planSize, this.planSize, this.segmentWidth, this.segmentHeight);
+            else
+                this.planeGeomatry = new THREE.PlaneGeometry(this.planSize, this.planSize, 1, 1);
             //this.material = new THREE.MeshStandardMaterial();
             let customUniforms = {
                 farmTexture: { type: "t", value: ShaderManager.getInstance().farmTexture },
@@ -112,6 +116,16 @@ namespace JWFramework {
             this.heigtIndexBuffer.forEach(element =>
                 this.heigtBuffer.push(this.planeGeomatry.getAttribute('position').getY(element)));
             return this.heigtBuffer;
+        }
+
+        public get IsDummy()
+        {
+            return this.isDummy;
+        }
+
+        public set IsDummy(flag: boolean)
+        {
+            this.isDummy = flag;
         }
 
         public SetHeight(index: number, value: number = undefined, option: TerrainOption = TerrainOption.TERRAIN_UP) {
@@ -251,8 +265,8 @@ namespace JWFramework {
                     if (this.inSectorObject.includes(object) == false)
                     {
                         this.inSectorObject.push(object);
-                        this.opacity = 0.8;
-                        this.material.uniforms['opacity'].value = this.opacity;
+                        //this.opacity = 0.5;
+                        //this.material.uniforms['opacity'].value = this.opacity;
                         this.inSecter = true;
                     }
                 }
@@ -270,15 +284,35 @@ namespace JWFramework {
             }
         }
 
-        public Animate() {
+        public Animate()
+        {
+            if (this.isDummy == true)
+            {
+                if (this.collisionComponent.BoundingBox != null)
+                {
+                    this.collisionComponent.DeleteCollider();
+                    this.planeGeomatry.dispose();
+                    this.planeGeomatry = new THREE.PlaneGeometry(this.planSize, this.planSize, 1, 1);
+                    this.planeMesh.geometry = this.planeGeomatry;
+                    let rotation = new THREE.Matrix4().makeRotationX(-Math.PI / 2);
+                    this.planeGeomatry.applyMatrix4(rotation);
+                    this.material.wireframe = true;
+                }
+            }
+            else
+            {
+                if (this.collisionComponent.BoundingBox == null)
+                    this.CreateBoundingBox();
+            }
+
             if (/*SceneManager.getInstance().CurrentScene.Picker.PickMode != PickMode.PICK_TERRAIN &&*/ this.vertexNormalNeedUpdate) {
                 this.planeGeomatry.computeVertexNormals();
                 this.vertexNormalNeedUpdate = false;
             }
             this.inSectorObject = this.inSectorObject.filter((element) => (element.IsDead == false));
             if (this.inSectorObject.length == 0) {
-                this.opacity = 1;
-                this.material.uniforms['opacity'].value = this.opacity;
+                //this.opacity = 1;
+                //this.material.uniforms['opacity'].value = this.opacity;
                 this.inSecter = false;
             }
         }

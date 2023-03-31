@@ -16,7 +16,7 @@
         public ConvertToSpeedForKmh(distance: number): number
         {
             // 게임 세계에서 측정된 거리를 미터 단위로 변환
-            let meterDistance = (distance * 5760) / ModelLoadManager.getInstance().planSize;
+            let meterDistance = (distance * 5760) / 900;
 
             // 시간을 초 단위로 계산
             let timeInSeconds = WorldManager.getInstance().GetDeltaTime();
@@ -31,7 +31,7 @@
 
         public ConvertToDistance(distance: number): number
         {
-            let meterDistance = (distance * 5760) / ModelLoadManager.getInstance().planSize;
+            let meterDistance = (distance * 5760) / 900;
             return meterDistance;
         }
     }

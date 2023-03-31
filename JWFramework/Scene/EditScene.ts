@@ -53,8 +53,17 @@ namespace JWFramework
             {
                 if (this.makedCloud == false)
                 {
-                    ObjectManager.getInstance().MakeClone(ObjectManager.getInstance().GetObjectFromName("Cloud"));
+                    for (let i = 0; i < 30; ++i)
+                    {
+                        let lowCloud = new LowCloud();
+                        lowCloud.IsClone = true;
+                        let x = -5000 + Math.random() * 20000;
+                        let y = 200 + Math.random() * 200;
+                        let z = -5000 + Math.random() * 20000;
+                        lowCloud.BuildClouds(x, y, z);
+                    }
                     this.makedCloud = true;
+
                 }
                 ObjectManager.getInstance().Animate();
                 //this.SceneManager.SceneInstance.fog.color.lerpColors(this.SceneManager.SceneInstance.fog.color, new THREE.Color(0xb7dcfd), 1)
@@ -71,10 +80,15 @@ namespace JWFramework
                 if (InputManager.getInstance().GetKeyState('4', KeyState.KEY_DOWN)) {
                     this.Picker.ChangePickModeRemove();
                 }
+                if (InputManager.getInstance().GetKeyState('6', KeyState.KEY_DOWN))
+                {
+                    this.Picker.ChangePickModeDummyTerrain();
+                }
                 if (InputManager.getInstance().GetKeyState('r', KeyState.KEY_DOWN)) {
                     GUIManager.getInstance().GUI_Terrain.ChangeTerrainOption();
                 }
-                if (SceneManager.getInstance().CurrentScene.Picker.PickMode == PickMode.PICK_TERRAIN)
+                if (SceneManager.getInstance().CurrentScene.Picker.PickMode == PickMode.PICK_TERRAIN ||
+                    SceneManager.getInstance().CurrentScene.Picker.PickMode == PickMode.PICK_DUMMYTERRAIN)
                     if (InputManager.getInstance().GetKeyState('t', KeyState.KEY_PRESS))
                         this.Picker.SetPickPosition(this.Picker.MouseEvent);
 
@@ -86,11 +100,6 @@ namespace JWFramework
                 else
                     SceneManager.getInstance().CurrentScene.NeedOnTerrain = false;
                     
-
-                if (InputManager.getInstance().GetKeyState('5', KeyState.KEY_DOWN))
-                {
-                    ModelLoadManager.getInstance().LoadSavedScene();
-                }
                 if (InputManager.getInstance().GetKeyState('delete', KeyState.KEY_PRESS))
                 {
                     ObjectManager.getInstance().DeleteAllObject();

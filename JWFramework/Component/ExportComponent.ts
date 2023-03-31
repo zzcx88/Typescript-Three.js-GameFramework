@@ -15,6 +15,7 @@
                 {
                     type: this.gameObject.Type,
                     name: this.gameObject.Name,
+                    isDummy: (this.gameObject as HeightmapTerrain).IsDummy,
                     vertexIndex: (this.gameObject as unknown as HeightmapTerrain).HeightIndexBuffer,
                     vertexHeight: (this.gameObject as unknown as HeightmapTerrain).HeightBuffer,
                     scale:

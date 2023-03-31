@@ -89,7 +89,7 @@
 
             if (this.pickMode == PickMode.PICK_CLONE) {
                 let objectManager = ObjectManager.getInstance();
-                let intersectedObject = this.raycaster.intersectObjects(SceneManager.getInstance().SceneInstance.children.filter(o => !o.name.includes("CloudClone")), true);
+                let intersectedObject = this.raycaster.intersectObjects(SceneManager.getInstance().SceneInstance.children.filter(o => !o.name.includes("cloud")), true);
 
                 //클론된 오브젝트를 생성한다.
                 if (intersectedObject[0] != undefined) {
@@ -110,7 +110,7 @@
                 GUIManager.getInstance().GUI_Terrain.SetTerrainOptionList();
                 let heightOffset = GUIManager.getInstance().GUI_Terrain.GetHeightOffset();
                 let objectManager = ObjectManager.getInstance();
-                let intersectedObject = this.raycaster.intersectObjects(SceneManager.getInstance().SceneInstance.children.filter(o => !o.name.includes("CloudClone")), true);
+                let intersectedObject = this.raycaster.intersectObjects(SceneManager.getInstance().SceneInstance.children.filter(o => !o.name.includes("cloud")), true);
                 if (intersectedObject[0] != undefined) {
                     terrain = objectManager.GetObjectFromName(intersectedObject[0].object.name);
                     if (terrain != null && terrain.Type == ObjectType.OBJ_TERRAIN)
@@ -123,8 +123,23 @@
                 }
                 //SceneManager.getInstance().SceneInstance.add(objectManager.GetInSectorTerrain());
             }
+            else if (this.pickMode == PickMode.PICK_DUMMYTERRAIN)
+            {
+                let objectManager = ObjectManager.getInstance();
+                let intersectedObject = this.raycaster.intersectObjects(SceneManager.getInstance().SceneInstance.children.filter(o => !o.name.includes("cloud")), true);
+                if (intersectedObject[0] != undefined)
+                {
+                    terrain = objectManager.GetObjectFromName(intersectedObject[0].object.name);
+                    if (terrain != null && terrain.Type == ObjectType.OBJ_TERRAIN)
+                    {
+                        if ((terrain as unknown as HeightmapTerrain).IsDummy == false)
+                            (terrain as unknown as HeightmapTerrain).IsDummy = true;
+                    }
+                }
+                //SceneManager.getInstance().SceneInstance.add(objectManager.GetInSectorTerrain());
+            }
             else if (this.pickMode == PickMode.PICK_REMOVE) {
-                let intersectedObjects = this.raycaster.intersectObjects(SceneManager.getInstance().SceneInstance.children.filter(o => !o.name.includes("CloudClone")));
+                let intersectedObjects = this.raycaster.intersectObjects(SceneManager.getInstance().SceneInstance.children.filter(o => !o.name.includes("cloud")));
                 if (intersectedObjects.length) {
                     this.GetParentName(intersectedObjects[0].object);
                     this.pickedParent = ObjectManager.getInstance().GetObjectFromName(this.pickedParentName);
@@ -135,7 +150,7 @@
             }
             else
             {
-                let intersectedObjects = this.raycaster.intersectObjects(SceneManager.getInstance().SceneInstance.children.filter(o => !o.name.includes("CloudClone")));
+                let intersectedObjects = this.raycaster.intersectObjects(SceneManager.getInstance().SceneInstance.children.filter(o => !o.name.includes("cloud")));
                 if (intersectedObjects.length) {
                     this.GetParentName(intersectedObjects[0].object);
                     this.pickedParent = ObjectManager.getInstance().GetObjectFromName(this.pickedParentName);
@@ -189,6 +204,11 @@
         public ChangePickModeTerrain()
         {
             this.pickMode = PickMode.PICK_TERRAIN;
+        }
+
+        public ChangePickModeDummyTerrain()
+        {
+            this.pickMode = PickMode.PICK_DUMMYTERRAIN;
         }
 
         public ChangePickModeRemove()

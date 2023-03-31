@@ -55,7 +55,7 @@ namespace JWFramework
             for (let i = 0; i < this.modeltList.length; ++i) {
                 this.LoadModel(this.modeltList[i].url, this.modeltList[i].model);
             }
-            this.LoadHeightmapTerrain();
+            this.LoadHeightmapTerrain(20, 20);
         }
 
         public LoadSceneStage()
@@ -122,27 +122,25 @@ namespace JWFramework
 
         }
 
-        public LoadHeightmapTerrain(row: number = 10, col: number = 10)
+        public LoadHeightmapTerrain(row: number = 20, col: number = 20)
         {
-            row = 15, col = 15;
-            this.planSize = 900;
             let terrainIndex = 0; // 추가된 부분
             for (let i = 0; i < col; ++i)
             {
                 for (let j = 0; j < row; ++j)
                 {
-                    let terrainX = j * this.planSize;
-                    let terrainY = i * this.planSize;
+                    let terrainX = j * 900;
+                    let terrainY = i * 900;
                     let terrainWidth = 16;
                     let terrainHeight = 16;
                     if (i == 0 || i == col - 1 || j == 0 || j == row - 1) // 추가된 부분
                     {
                         //terrainWidth = 1;
                         //terrainHeight = 1;
-                        this.terrain[terrainIndex] = new HeightmapTerrain(terrainX, terrainY, terrainWidth, terrainHeight, this.planSize, true);
+                        this.terrain[terrainIndex] = new HeightmapTerrain(terrainX, terrainY, terrainWidth, terrainHeight, 900, true);
                     }
                     else
-                        this.terrain[terrainIndex] = new HeightmapTerrain(terrainX, terrainY, terrainWidth, terrainHeight, this.planSize, false);
+                        this.terrain[terrainIndex] = new HeightmapTerrain(terrainX, terrainY, terrainWidth, terrainHeight, 900, false);
                     this.terrain[terrainIndex].row = row;
                     this.terrain[terrainIndex].col = col;
                     terrainIndex++; // 추가된 부분
@@ -165,6 +163,8 @@ namespace JWFramework
                         if (data.name.includes("Terrain"))
                         {
                             let terrain = objectManager.GetObjectFromName(data.name);
+                            if (data.isDummy != undefined)
+                                (terrain as unknown as HeightmapTerrain).IsDummy = data.isDummy;
                             for (let i = 0; i < data.vertexIndex.length; ++i)
                             {
                                 (terrain as unknown as HeightmapTerrain).SetHeight(data.vertexIndex[i], data.vertexHeight[i], TerrainOption.TERRAIN_LOAD);
@@ -200,7 +200,9 @@ namespace JWFramework
 
         private loaderManager: THREE.LoadingManager
         private gltfLoader: THREE.GLTFLoader;
-        public planSize: number;
+        //animetionTest
+        public animationMixer: THREE.AnimationMixer = null;
+        public anim;
         ////////////
         private loadCompletModel: number;
         private modelCount: number;

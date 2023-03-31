@@ -334,7 +334,8 @@ declare namespace JWFramework {
         PICK_MODIFY = 0,
         PICK_CLONE = 1,
         PICK_TERRAIN = 2,
-        PICK_REMOVE = 3
+        PICK_DUMMYTERRAIN = 3,
+        PICK_REMOVE = 4
     }
     enum TerrainOption {
         TERRAIN_UP = 0,
@@ -466,6 +467,7 @@ declare namespace JWFramework {
         ChangePickModeModify(): void;
         ChangePickModeClone(): void;
         ChangePickModeTerrain(): void;
+        ChangePickModeDummyTerrain(): void;
         ChangePickModeRemove(): void;
         get PickMode(): PickMode;
         get OrbitControl(): THREE.OrbitControls;
@@ -507,6 +509,8 @@ declare namespace JWFramework {
         private CreateTerrainMesh;
         get HeightIndexBuffer(): number[];
         get HeightBuffer(): number[];
+        get IsDummy(): boolean;
+        set IsDummy(flag: boolean);
         SetHeight(index: number, value?: number, option?: TerrainOption): void;
         CollisionActive(object: GameObject): void;
         CollisionDeActive(object: GameObject): void;
@@ -563,7 +567,8 @@ declare namespace JWFramework {
         LoadSavedScene(): void;
         private loaderManager;
         private gltfLoader;
-        planSize: number;
+        animationMixer: THREE.AnimationMixer;
+        anim: any;
         private loadCompletModel;
         private modelCount;
         private loadComplete;
@@ -755,5 +760,21 @@ declare namespace JWFramework {
         private light;
         private light2;
         private terrain;
+    }
+}
+declare namespace JWFramework {
+    class LowCloud extends GameObject {
+        constructor();
+        BuildClouds(x: number, y: number, z: number): void;
+        InitializeAfterLoad(): void;
+        private CreateBillboardMesh;
+        Animate(): void;
+        private center;
+        private instanceCount;
+        private mesh;
+        private material;
+        private positions;
+        private scales;
+        private prevMatrix;
     }
 }

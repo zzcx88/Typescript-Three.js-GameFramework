@@ -30,6 +30,7 @@
         PICK_MODIFY,
         PICK_CLONE,
         PICK_TERRAIN,
+        PICK_DUMMYTERRAIN,
         PICK_REMOVE
     }
 

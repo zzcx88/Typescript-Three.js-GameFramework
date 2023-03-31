@@ -47,7 +47,6 @@ namespace JWFramework
                         node.material.transparent = true;
                         node.material.opacity = 0.9;
                         node.material.alphaTest = 0.01;
-                        console.log(node.material.alphaTest);
                         node.material.depthWrite = false;
                         node.material.side = THREE.DoubleSide;
                         //node.material.wireframe = true;

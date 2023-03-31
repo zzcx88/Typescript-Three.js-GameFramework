@@ -41,6 +41,7 @@ namespace JWFramework
             this.material = new THREE.SpriteMaterial({
                 map: labelTexture,
                 transparent: true,
+                depthWrite: false,
                 depthTest: false,
                 fog: false,
                 sizeAttenuation: false,
@@ -106,7 +107,7 @@ namespace JWFramework
         {
             if (this.referenceObject != undefined)
             {
-                if (this.referenceObject.Picked == false)
+                if (this.referenceObject.Picked == false && this.mesh.visible == true)
                 {
                     this.material.visible = true;
                     let refObjectPosition = this.referenceObject.PhysicsComponent.GetPosition().clone();
@@ -116,7 +117,9 @@ namespace JWFramework
                     {
                         let length = UnitConvertManager.getInstance().ConvertToDistance(this.referenceObject.PhysicsComponent.GetPosition().clone().sub(pickObject[0].GameObject.PhysicsComponent.GetPosition().clone()).length())
                         length = Math.round(length);
-                        if (length > 10000)
+                        if (length > 100000)
+                            this.MakeCanvasTexture(length.toString()[0] + length.toString()[1] +  length.toString()[2] + " km");
+                        else if (length > 10000)
                             this.MakeCanvasTexture(length.toString()[0] + length.toString()[1] + " km");
                         else if (length > 1000)
                             this.MakeCanvasTexture(length.toString()[0] + "." + length.toString()[1] + length.toString()[2] + " km");

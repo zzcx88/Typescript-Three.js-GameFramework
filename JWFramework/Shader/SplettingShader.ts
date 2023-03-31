@@ -26,6 +26,7 @@ namespace JWFramework {
          uniform sampler2D mountainTexture;
          uniform sampler2D factoryTexture;
          uniform float opacity;
+         uniform float uvCell;
 
          varying vec2 vUV;
          varying vec4 Position;

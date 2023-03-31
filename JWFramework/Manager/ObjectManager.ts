@@ -213,8 +213,8 @@
             }
             //CollisionManager.getInstance().CollideBoxToBox(this.objectList[ObjectType.OBJ_TERRAIN], this.objectList[ObjectType.OBJ_CAMERA]);
             //CollisionManager.getInstance().CollideObbToObb(this.objectList[ObjectType.OBJ_OBJECT3D], this.objectList[ObjectType.OBJ_OBJECT3D]);
-            CollisionManager.getInstance().CollideObbToBox(this.objectList[ObjectType.OBJ_OBJECT3D], this.objectList[ObjectType.OBJ_TERRAIN]);
-            CollisionManager.getInstance().CollideObbToBox(this.objectList[ObjectType.OBJ_MISSILE], this.objectList[ObjectType.OBJ_TERRAIN]);
+            CollisionManager.getInstance().CollideObbToBox(this.objectList[ObjectType.OBJ_OBJECT3D], this.objectList[ObjectType.OBJ_TERRAIN].filter(o => (o.GameObject as HeightmapTerrain).IsDummy == false));
+            CollisionManager.getInstance().CollideObbToBox(this.objectList[ObjectType.OBJ_MISSILE], this.objectList[ObjectType.OBJ_TERRAIN].filter(o => (o.GameObject as HeightmapTerrain).IsDummy == false));
             let sectoredTerrain = this.objectList[ObjectType.OBJ_TERRAIN].filter((element) => (element.GameObject as unknown as HeightmapTerrain).inSecter == true);
             CollisionManager.getInstance().CollideRayToTerrain(sectoredTerrain);
             sectoredTerrain.forEach(function (src)

@@ -62,6 +62,7 @@
             this.AddKey(51, '3');
             this.AddKey(52, '4');
             this.AddKey(53, '5');
+            this.AddKey(54, '6');
         }
 
         private AddKey = (Code: number, name: string) =>

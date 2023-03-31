@@ -29,7 +29,7 @@ namespace JWFramework
             this.fogTexture.wrapS = THREE.RepeatWrapping;
             this.fogTexture.wrapT = THREE.RepeatWrapping;
 
-            this.cloudTexture = new THREE.TextureLoader().load("Model/Cloud/cloud.png");
+            this.cloudTexture = new THREE.TextureLoader().load("Model/Cloud/cloud3.png");
             this.cloudTexture.wrapS = THREE.RepeatWrapping;
             this.cloudTexture.wrapT = THREE.RepeatWrapping;
 
