@@ -166,7 +166,7 @@
 
             delete gameObject.ModelData;
             gameObject.ModelData = null;
-            gameObject.GameObjectInstance.clear();
+            delete gameObject.GameObjectInstance.children;
             gameObject.GameObjectInstance.removeFromParent();
             SceneManager.getInstance().SceneInstance.remove(gameObject.GameObjectInstance);
             delete gameObject.GameObjectInstance;
@@ -213,13 +213,21 @@
             }
             //CollisionManager.getInstance().CollideBoxToBox(this.objectList[ObjectType.OBJ_TERRAIN], this.objectList[ObjectType.OBJ_CAMERA]);
             //CollisionManager.getInstance().CollideObbToObb(this.objectList[ObjectType.OBJ_OBJECT3D], this.objectList[ObjectType.OBJ_OBJECT3D]);
-            CollisionManager.getInstance().CollideObbToBox(this.objectList[ObjectType.OBJ_OBJECT3D], this.objectList[ObjectType.OBJ_TERRAIN].filter(o => (o.GameObject as HeightmapTerrain).IsDummy == false));
-            CollisionManager.getInstance().CollideObbToBox(this.objectList[ObjectType.OBJ_MISSILE], this.objectList[ObjectType.OBJ_TERRAIN].filter(o => (o.GameObject as HeightmapTerrain).IsDummy == false));
+            CollisionManager.getInstance().CollideObbToBox(
+                this.objectList[ObjectType.OBJ_OBJECT3D],
+                this.objectList[ObjectType.OBJ_TERRAIN].filter(o => (o.GameObject as HeightmapTerrain).IsDummy == false));
+
+            CollisionManager.getInstance().CollideObbToBox(
+                this.objectList[ObjectType.OBJ_MISSILE],
+                this.objectList[ObjectType.OBJ_TERRAIN].filter(o => (o.GameObject as HeightmapTerrain).IsDummy == false));
+
             let sectoredTerrain = this.objectList[ObjectType.OBJ_TERRAIN].filter((element) => (element.GameObject as unknown as HeightmapTerrain).inSecter == true);
             CollisionManager.getInstance().CollideRayToTerrain(sectoredTerrain);
             sectoredTerrain.forEach(function (src)
             {
-                CollisionManager.getInstance().CollideObbToObb((src.GameObject as HeightmapTerrain).inSectorObject, (src.GameObject as HeightmapTerrain).inSectorObject);
+                CollisionManager.getInstance().CollideObbToObb(
+                    (src.GameObject as HeightmapTerrain).inSectorObject,
+                    (src.GameObject as HeightmapTerrain).inSectorObject);
             });
             InputManager.getInstance().UpdateKey();
         }
@@ -227,7 +235,7 @@
         public Render() { }
 
         private terrainList = new THREE.Group();
-        private objectList: ObjectSet[][] = [[], [], [], [], [], []];
+        private objectList: ObjectSet[][] = [[], [], [], [], [], [], []];
         private exportObjectList = [];
     }
 }

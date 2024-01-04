@@ -7,6 +7,11 @@
             super(sceneManager);
         }
 
+        BuildSkyBox()
+        {
+            
+        }
+
         BuildObject()
         {
             ModelLoadManager.getInstance().LoadScene();

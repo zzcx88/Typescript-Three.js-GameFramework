@@ -45,9 +45,7 @@
             {
                 this.isPlayer = function ()
                 {
-                    console.log(GUIManager.getInstance().GUI_SRT.gameObject.IsPlayer);
                     GUIManager.getInstance().GUI_SRT.gameObject.IsPlayer = true;
-                    console.log(GUIManager.getInstance().GUI_SRT.gameObject.IsPlayer);
                 }
             }
 

@@ -122,7 +122,7 @@ namespace JWFramework
         }
 
         private center: THREE.Vector3;
-        private instanceCount: number = 400;
+        private instanceCount: number = 200;
         private mesh: THREE.InstancedMesh;
         private material: THREE.MeshBasicMaterial;
         private positions: THREE.Vector3[] = [];

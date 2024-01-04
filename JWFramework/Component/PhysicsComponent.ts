@@ -142,7 +142,6 @@ namespace JWFramework
         {
             this.GameObject.GameObjectInstance.rotateOnWorldAxis(axis, angle * WorldManager.getInstance().GetDeltaTime());
             this.UpdateMatrix();
-            //console.log(this.GameObject.GameObjectInstance.matrix);
         }
 
         public UpdateMatrix()

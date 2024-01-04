@@ -38,7 +38,6 @@ namespace JWFramework
         public get LoadComplete(): boolean
         {
             if (this.loadComplete == true && SceneManager.getInstance().SceneType == SceneType.SCENE_EDIT) {
-                //에디트 모드에서만 DatGUI를 사용함
                 GUIManager.getInstance().GUI_Select;
             }
             return this.loadComplete;
@@ -74,7 +73,6 @@ namespace JWFramework
                 (gltf) =>
                 {
                     console.log('success')
-                    console.log(gltf);
                     gameObject.ModelData = gltf;
                     (gltf.scene as any).traverse(n =>
                     {
@@ -84,28 +82,19 @@ namespace JWFramework
                             let opacity = n.material.opacity;
                             let color: THREE.Color = n.material.color;
                             let side = n.material.side;
-                            //n.material = new THREE.MeshStandardMaterial();
                             n.material.map = texture;
                             n.material.normalMap = normal;
-                            n.material.color = color /*new THREE.Color('white')*/;
-                            //n.material.wireframe = true;
+                            n.material.color = color;
                             n.castShadow = true;
                             n.receiveShadow = true;
-                            //if (n.material.map) n.material.map.anisotropy = 1;
-                            //n.material.transparent = true;
                             if (opacity != 1)
                             {
                                 n.material.opacity = opacity;
                             }
                             n.material.side = side;
-                            //n.material.alphaTest = 0.01;
-                            //n.material.alphaToCoverage = true;
-                            //n.material.blending = THREE.NormalBlending;
-                            //console.log(n.material);
                         }
                     });
                     gameObject.GameObjectInstance = gltf.scene;
-                    //SceneManager.getInstance().SceneInstance.add(gameObject.GameObjectInstance);
                     gameObject.InitializeAfterLoad();
                     this.SetLoadComplete();
                 },
@@ -134,11 +123,7 @@ namespace JWFramework
                     let terrainWidth = 16;
                     let terrainHeight = 16;
                     if (i == 0 || i == col - 1 || j == 0 || j == row - 1) // 추가된 부분
-                    {
-                        //terrainWidth = 1;
-                        //terrainHeight = 1;
                         this.terrain[terrainIndex] = new HeightmapTerrain(terrainX, terrainY, terrainWidth, terrainHeight, 900, true);
-                    }
                     else
                         this.terrain[terrainIndex] = new HeightmapTerrain(terrainX, terrainY, terrainWidth, terrainHeight, 900, false);
                     this.terrain[terrainIndex].row = row;
@@ -200,10 +185,7 @@ namespace JWFramework
 
         private loaderManager: THREE.LoadingManager
         private gltfLoader: THREE.GLTFLoader;
-        //animetionTest
-        public animationMixer: THREE.AnimationMixer = null;
-        public anim;
-        ////////////
+
         private loadCompletModel: number;
         private modelCount: number;
         private loadComplete: boolean = false;

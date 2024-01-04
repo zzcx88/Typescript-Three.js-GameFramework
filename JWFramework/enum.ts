@@ -16,6 +16,7 @@
         OBJ_AIRCRAFT,
         OBJ_MISSILE,
         OBJ_CAMERA,
+        OBJ_LIGHT,
         OBJ_END
     }
 

@@ -35,7 +35,7 @@ namespace JWFramework {
             }
 
             SceneManager.getInstance().SceneInstance.add(this.gameObjectInstance);
-            SceneManager.getInstance().SceneInstance.add(this.CollisionComponent.BoxHelper);
+            //SceneManager.getInstance().SceneInstance.add(this.CollisionComponent.BoxHelper);
             ObjectManager.getInstance().AddObject(this, this.name, this.type);
         }
 
@@ -132,8 +132,6 @@ namespace JWFramework {
             this.planeGeomatry.getAttribute('position').needsUpdate = true;
             let height: number = this.planeGeomatry.getAttribute('position').getY(index);
 
-            //////////////////////
-
             if (value != undefined && option == TerrainOption.TERRAIN_UP) {
                 value = Math.abs(value);
             }
@@ -150,17 +148,9 @@ namespace JWFramework {
                 this.planeGeomatry.getAttribute('position').setY(index, height += value);
             }
 
-            //   this.planeGeomatry.getAttribute('position').setY(index, value);
-            //////////////////////
-
             let objectList = ObjectManager.getInstance().GetObjectList;
             let endPointIndex = this.planeGeomatry.getAttribute('position').count - 1;
             let oldheight: number = this.planeGeomatry.getAttribute('position').getY(index);
-
-            const terrainRowCount = objectList[ObjectType.OBJ_TERRAIN].length / this.row; // 터레인 행 수
-            const terrainColCount = this.col; // 터레인 열 수
-            const nextColIndex = this.terrainIndex % terrainColCount + 1; // 현재 인덱스의 다음 열 인덱스
-            const nextRowIndex = Math.floor(this.terrainIndex / terrainColCount) + 1; // 현재 인덱스의 다음 행 인덱스
 
             if (this.planeGeomatry.getAttribute('position').getX(index) == this.planSize / 2) {
                 if (objectList[ObjectType.OBJ_TERRAIN][this.terrainIndex + 1]) {
@@ -228,23 +218,6 @@ namespace JWFramework {
                 }
             }
 
-
-            //로컬좌표
-            //console.log(this.planeGeomatry.getAttribute('position').getX(index));
-
-
-            //월드좌표
-            //let vertex = new THREE.Vector3();
-            //vertex.fromBufferAttribute(this.planeGeomatry.getAttribute('color'), index);
-            //console.log(this.planeMesh.localToWorld(vertex));
-
-            //for (let i = 33; i < 66; ++i) {
-            //    console.log(i);
-            //    this.planeGeomatry.getAttribute('position').needsUpdate = true;
-            //    let height: number = this.planeGeomatry.getAttribute('position').getY(i);
-            //    this.planeGeomatry.getAttribute('position').setY(i, height += 20);
-            //} 
-
             if (this.heigtIndexBuffer.indexOf(index) == -1)
                 this.heigtIndexBuffer.push(index);
             this.vertexNormalNeedUpdate = true;
@@ -290,7 +263,7 @@ namespace JWFramework {
             {
                 if (this.collisionComponent.BoundingBox != null)
                 {
-                    this.collisionComponent.DeleteCollider();
+                    this.collisionComponent.DeleteCollider(); 
                     this.planeGeomatry.dispose();
                     this.planeGeomatry = new THREE.PlaneGeometry(this.planSize, this.planSize, 1, 1);
                     this.planeMesh.geometry = this.planeGeomatry;

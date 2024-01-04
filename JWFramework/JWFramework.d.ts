@@ -178,6 +178,12 @@ declare namespace JWFramework {
         CollisionDeActive(): void;
         private launchMissile;
         Animate(): void;
+        private SpeedIndicaterProcess;
+        private SeekerProcess;
+        private TargetTest;
+        private LabelOnOff;
+        private InputProcess;
+        private EditHelperProcess;
         private isTarget;
         throttle: number;
         private canLaunch;
@@ -324,7 +330,8 @@ declare namespace JWFramework {
         OBJ_AIRCRAFT = 3,
         OBJ_MISSILE = 4,
         OBJ_CAMERA = 5,
-        OBJ_END = 6
+        OBJ_LIGHT = 6,
+        OBJ_END = 7
     }
     enum LightType {
         LIGHT_DIRECTIONAL = 0,
@@ -486,6 +493,7 @@ declare namespace JWFramework {
 declare namespace JWFramework {
     class SceneBase {
         constructor(sceneManager: SceneManager);
+        protected BuildSkyBox(): void;
         protected BuildObject(): void;
         protected BuildLight(): void;
         protected BuildFog(): void;
@@ -567,8 +575,6 @@ declare namespace JWFramework {
         LoadSavedScene(): void;
         private loaderManager;
         private gltfLoader;
-        animationMixer: THREE.AnimationMixer;
-        anim: any;
         private loadCompletModel;
         private modelCount;
         private loadComplete;
@@ -590,15 +596,31 @@ declare namespace JWFramework {
     }
 }
 declare namespace JWFramework {
+    interface Resettable {
+        reset(): void;
+    }
+    export class ObjectPool<T extends Resettable> {
+        private objects;
+        private objectClass;
+        constructor(objectClass: new () => T);
+        getObject(): T;
+        releaseObject(obj: T): void;
+    }
+    export {};
+}
+declare namespace JWFramework {
     class EditScene extends SceneBase {
         constructor(sceneManager: SceneManager);
+        BuildSkyBox(): void;
         BuildObject(): void;
         BuildLight(): void;
         BuildFog(): void;
         Animate(): void;
-        private light;
-        private light2;
-        private light3;
+        private MakeSceneCloud;
+        private InputProcess;
+        private ReloadProcess;
+        private directionalLight;
+        private ambientLight;
         private makedCloud;
     }
 }
@@ -751,8 +773,21 @@ declare namespace JWFramework {
     }
 }
 declare namespace JWFramework {
+    class IRCircle extends GameObject {
+        constructor();
+        InitializeAfterLoad(): void;
+        private CreateMesh;
+        Animate(): void;
+        private mesh;
+        private material;
+        private geometry;
+        private player;
+    }
+}
+declare namespace JWFramework {
     class StageScene extends SceneBase {
         constructor(sceneManager: SceneManager);
+        BuildSkyBox(): void;
         BuildObject(): void;
         BuildLight(): void;
         BuildFog(): void;

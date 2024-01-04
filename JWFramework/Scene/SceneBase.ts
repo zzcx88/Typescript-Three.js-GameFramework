@@ -7,11 +7,14 @@ namespace JWFramework
         constructor(sceneManager: SceneManager)
         {
             this.sceneManager = sceneManager;
+            this.BuildSkyBox();
             this.BuildObject();
             this.BuildLight();
             this.BuildFog();
             this.SetPicker();
         }
+
+        protected BuildSkyBox() { }
 
         protected BuildObject() { }
 

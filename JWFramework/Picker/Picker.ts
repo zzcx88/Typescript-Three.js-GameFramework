@@ -99,9 +99,7 @@
                         cloneObject.GameObjectInstance.position.set(0, 0, 0);
                         let clonePosition: THREE.Vector3 = new THREE.Vector3(intersectedObject[0].point.x, intersectedObject[0].point.y + 10, intersectedObject[0].point.z);
                         cloneObject.GameObjectInstance.position.copy(clonePosition);
-
                         objectManager.AddObject(cloneObject, cloneObject.Name, cloneObject.Type);
-                        //SceneManager.getInstance().SceneInstance.add(objectManager.GetInSectorTerrain());
                     }
                 }
             }
@@ -115,7 +113,6 @@
                     terrain = objectManager.GetObjectFromName(intersectedObject[0].object.name);
                     if (terrain != null && terrain.Type == ObjectType.OBJ_TERRAIN)
                     {
-                        console.log(intersectedObject[0].uv);
                         (terrain as unknown as HeightmapTerrain).SetHeight(intersectedObject[0].face.a, heightOffset, GUIManager.getInstance().GUI_Terrain.GetTerrainOption());
                         (terrain as unknown as HeightmapTerrain).SetHeight(intersectedObject[0].face.b, heightOffset, GUIManager.getInstance().GUI_Terrain.GetTerrainOption());
                         (terrain as unknown as HeightmapTerrain).SetHeight(intersectedObject[0].face.c, heightOffset, GUIManager.getInstance().GUI_Terrain.GetTerrainOption());
@@ -143,7 +140,6 @@
                 if (intersectedObjects.length) {
                     this.GetParentName(intersectedObjects[0].object);
                     this.pickedParent = ObjectManager.getInstance().GetObjectFromName(this.pickedParentName);
-                    console.log(this.pickedParentName);
                     if (this.pickedParentName != undefined)
                         this.pickedParent.DeleteObject();
                 }
@@ -154,7 +150,6 @@
                 if (intersectedObjects.length) {
                     this.GetParentName(intersectedObjects[0].object);
                     this.pickedParent = ObjectManager.getInstance().GetObjectFromName(this.pickedParentName);
-                    console.log(this.pickedParentName);
                     if (this.pickedParentName != undefined && this.pickedParent != undefined)
                     {
                         this.pickedParent.Picked = true;

@@ -172,7 +172,7 @@ namespace JWFramework
         protected velocity: number = 0;
         protected velocityGain: number = 0;
         protected velocityBreak: number = 0;
-        protected maxVelocity: number = 80
+        protected maxVelocity: number = 80;
         protected maxResultSpeed: number = 0;
         protected resultSpeed: number = 0;
 

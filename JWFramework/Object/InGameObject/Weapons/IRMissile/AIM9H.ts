@@ -14,7 +14,7 @@ namespace JWFramework
 
             this.velocityGain = 40;
             this.velocityBreak = 1;
-            this.maxVelocity = 60;
+            this.maxVelocity = 80;
             this.maxRotateSpeed = 18;
             this.rotateSpeedAcceletion = 5;
         }

@@ -85,7 +85,6 @@
     <Content Include="Model\DamagedHelmet.gltf" />
     <Content Include="Model\Flower.glb" />
     <Content Include="Model\F-5E.glb" />
-    <Content Include="Model\mig_23_mld.glb" />
     <Content Include="Model\mig_29.glb" />
     <Content Include="Model\Sprint.glb" />
     <None Include="Web.Debug.config">
@@ -137,6 +136,7 @@
     <TypeScriptCompile Include="Manager\ShaderManager.ts" />
     <TypeScriptCompile Include="Manager\UnitConvertManager.ts" />
     <TypeScriptCompile Include="Manager\WorldManager.ts" />
+    <TypeScriptCompile Include="ObjectPool\ObjectPool.ts" />
     <TypeScriptCompile Include="Object\CommonObject\Terrain\HeightmapTerrain.ts" />
     <TypeScriptCompile Include="Object\EditObject\TestCube.ts" />
     <TypeScriptCompile Include="Object\EditObject\EditObject.ts" />
@@ -150,6 +150,7 @@
     <TypeScriptCompile Include="Object\InGameObject\Weapons\IRMissile\R60M.ts" />
     <TypeScriptCompile Include="Object\InGameObject\Weapons\Missile.ts" />
     <TypeScriptCompile Include="Object\InGameObject\MissileFog.ts" />
+    <TypeScriptCompile Include="Object\InGameUI\IRCircle.ts" />
     <TypeScriptCompile Include="Object\InGameUI\ObjectLabel.ts" />
     <TypeScriptCompile Include="Object\Light\Light.ts" />
     <TypeScriptCompile Include="Picker\Picker.ts" />

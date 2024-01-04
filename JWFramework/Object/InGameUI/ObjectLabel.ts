@@ -41,7 +41,7 @@ namespace JWFramework
             this.material = new THREE.SpriteMaterial({
                 map: labelTexture,
                 transparent: true,
-                depthWrite: false,
+                depthWrite: true,
                 depthTest: false,
                 fog: false,
                 sizeAttenuation: false,

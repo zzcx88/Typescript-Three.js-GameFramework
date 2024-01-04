@@ -4,6 +4,7 @@
     //initialize
     const worldManager: JWFramework.WorldManager = JWFramework.WorldManager.getInstance();
     worldManager.InitializeWorld();
+
     let stats = new Stats();
     stats.showPanel(0); // 0: fps, 1: ms, 2: mb, 3+: custom
     stats.dom.style.top = "450px";

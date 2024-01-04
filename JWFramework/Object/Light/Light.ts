@@ -5,6 +5,9 @@
         constructor(type: LightType)
         {
             super();
+            this.type = ObjectType.OBJ_LIGHT;
+            this.physicsComponent = new PhysicsComponent(this);
+            this.isClone = true;
             this.color = 0x000000;
             this.intensity = 0;
             if (type == LightType.LIGHT_DIRECTIONAL)

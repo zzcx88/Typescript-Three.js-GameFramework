@@ -53,6 +53,7 @@ namespace JWFramework
             this.renderer.setClearColor(0x000000);
             this.renderer.shadowMap.enabled = true;
             this.renderer.autoClearStencil = true;
+            console.log("is webgl2?: ", this.renderer.capabilities.isWebGL2);
             document.body.appendChild(this.renderer.domElement);
         }
 
@@ -84,18 +85,6 @@ namespace JWFramework
         {
             this.sceneManager = SceneManager.getInstance();
             this.sceneManager.BuildScene();
-
-            //씬 빌드하는 작업으로 옮길것
-            this.sceneManager.SceneInstance.background = new THREE.CubeTextureLoader()
-                .setPath('Model/SkyBox/')
-                .load([
-                    'Right.bmp',
-                    'Left.bmp',
-                    'Up.bmp',
-                    'Down.bmp',
-                    'Front.bmp',
-                    'Back.bmp'
-                ]);
         }
 
         private CreateDeltaTime()

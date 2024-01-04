@@ -12,9 +12,7 @@ namespace JWFramework {
             #include <project_vertex>
             #include <fog_vertex>
             vUV = uv;
-            gl_Position = projectionMatrix * modelViewMatrix  * vec4(position,1.0);
             Position = vec4(position,1.0);
-         
            }
          `
 
