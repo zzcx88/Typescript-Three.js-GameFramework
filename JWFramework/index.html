@@ -12,18 +12,18 @@
         <br> 2: Add Object Mode
         <br>
         <br> 3: Modifiy Terrain Vertex Height Mode
-        <br> (0 Farm, -1 Factory, 1~ mountain)
-        <br>
+        <br> (~-2 Desert, 0 Farm, -1 Factory, 1 City, 1~ mountain)
         <br> 4: Delete Object Mode
-        <br> 5: Load Scene
+        <br> 6: DummyTerrain Mode
         <br>
+        <br> Q: Gizmo On/Off
         <br> F: 3rd Cam Mode
         <br> (only Selected Object)
         <br>
         <br> R: Release 3rd Cam Mode
         <br> (only Selected Object)
         <br>
-        <br> R: Terrain Modify Option
+        <br> O: Terrain Modify Option
         <br> T: Terrain Brush
         <br> U: Object Set On Terrain
         <br> Del: Clear & Load
@@ -38,8 +38,10 @@
     <script src="Lib/GLTFLoader/GLTFLoader.js"></script>
     <script src="Lib/datGUI/dat.gui.js"></script>
     <script src="Lib/Three/Controls/OrbitControls.js"></script>
+    <script type="module" src="Lib/Three/Controls/TransformControls.js"></script>
     <script src="Lib/Three/MathClass/OBB.js"></script>
     <script src="Lib/Three/SkeletonUtils.js"></script>
+    <script type="module" src="Lib/Three/Object/Water.js"></script>
 
     <script src="Lib/Three/Shader/Pass.js"></script>
     <script src="Lib/Three/Shader/ShaderPass.js"></script>

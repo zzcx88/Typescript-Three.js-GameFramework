@@ -1,4 +1,4 @@
-﻿/// <reference path="../GameObject.ts" />
+﻿/// <reference path=".././../GameObject.ts" />
 namespace JWFramework
 {
     export class Cloud extends GameObject

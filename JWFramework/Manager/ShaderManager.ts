@@ -25,6 +25,14 @@ namespace JWFramework
             this.factoryTexture.wrapS = THREE.RepeatWrapping;
             this.factoryTexture.wrapT = THREE.RepeatWrapping;
 
+            this.cityTexture = new THREE.TextureLoader().load("Model/Heightmap/city.jpg");
+            this.cityTexture.wrapS = THREE.RepeatWrapping;
+            this.cityTexture.wrapT = THREE.RepeatWrapping;
+
+            this.desertTexture = new THREE.TextureLoader().load("Model/Heightmap/desert.jpg");
+            this.desertTexture.wrapS = THREE.RepeatWrapping;
+            this.desertTexture.wrapT = THREE.RepeatWrapping;
+
             this.fogTexture = new THREE.TextureLoader().load("Model/fog/fog.png");
             this.fogTexture.wrapS = THREE.RepeatWrapping;
             this.fogTexture.wrapT = THREE.RepeatWrapping;
@@ -106,7 +114,9 @@ namespace JWFramework
         public farmTexture: THREE.Texture;
         public mountainTexture: THREE.Texture;
         public factoryTexture: THREE.Texture;
+        public cityTexture: THREE.Texture;
         public fogTexture: THREE.Texture;
+        public desertTexture: THREE.Texture;
         public cloudTexture: THREE.Texture;
         public missileFlameTexture: THREE.Texture;
 

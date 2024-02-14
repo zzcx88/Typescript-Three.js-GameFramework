@@ -50,7 +50,10 @@
             this.AddKey(40, 'down');
             this.AddKey(32, 'space');
             this.AddKey(46, 'delete');
+            this.AddKey(69, 'e');
+            this.AddKey(79, 'o');
             this.AddKey(80, 'p');
+            this.AddKey(81, 'q');
             this.AddKey(82, 'r');
             this.AddKey(87, 'w');
             this.AddKey(83, 's');

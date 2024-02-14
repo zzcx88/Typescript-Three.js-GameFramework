@@ -84,10 +84,10 @@ namespace JWFramework
                 let targetDirection;
 
 
-                if (length < 20)
-                {
+                //if (length < 100)
+                //{
                     this.activeColide = true;
-                }
+                //}
                 
 
                 //일반유도

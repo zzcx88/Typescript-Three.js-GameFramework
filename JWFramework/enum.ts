@@ -11,6 +11,7 @@
     export enum ObjectType
     {
         OBJ_TERRAIN,
+        OBJ_WATER,
         OBJ_OBJECT3D,
         OBJ_OBJECT2D,
         OBJ_AIRCRAFT,

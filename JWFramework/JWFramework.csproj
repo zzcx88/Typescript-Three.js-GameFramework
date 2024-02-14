@@ -73,7 +73,9 @@
     <Content Include="Lib\GLTFLoader\GLTFLoader.js" />
     <Content Include="Lib\Stats\stats.js" />
     <Content Include="Lib\Three\Controls\OrbitControls.js" />
+    <Content Include="Lib\Three\Controls\TransformControls.js" />
     <Content Include="Lib\Three\MathClass\OBB.js" />
+    <Content Include="Lib\Three\Object\Water.js" />
     <Content Include="Lib\Three\Shader\BlendShader.js" />
     <Content Include="Lib\Three\Shader\CopyShader.js" />
     <Content Include="Lib\Three\Shader\EffectComposer.js" />
@@ -143,7 +145,8 @@
     <TypeScriptCompile Include="Object\Camera\Camera.ts" />
     <TypeScriptCompile Include="Object\GameObject.ts" />
     <TypeScriptCompile Include="Object\InGameObject\AircraftObject.ts" />
-    <TypeScriptCompile Include="Object\InGameObject\Cloud.ts" />
+    <TypeScriptCompile Include="Object\InGameObject\Envirument\Cloud.ts" />
+    <TypeScriptCompile Include="Object\InGameObject\Envirument\Water.ts" />
     <TypeScriptCompile Include="Object\InGameObject\F16Object.ts" />
     <TypeScriptCompile Include="Object\InGameObject\Weapons\IRMissile\AIM9H.ts" />
     <TypeScriptCompile Include="Object\InGameObject\Weapons\IRMissile\AIM9L.ts" />

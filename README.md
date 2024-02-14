@@ -19,9 +19,16 @@ This is the url where you can see the current work status.
 
 https://zzcx88.github.io/Typescript-Three.js-GameFramework/
 
-If an object is selected
+Del: Sample Scene Load
 
-W: move forward
+
+If an object is selected
+Q: Gizmo On/Off
+
+and if Gizmo Off
+
+W: accelation
+S: deaccelation
 
 Directional keys: roll or pitch
 

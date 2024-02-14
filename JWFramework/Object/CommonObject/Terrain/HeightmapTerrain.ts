@@ -52,18 +52,22 @@ namespace JWFramework {
                 this.planeGeomatry = new THREE.PlaneGeometry(this.planSize, this.planSize, this.segmentWidth, this.segmentHeight);
             else
                 this.planeGeomatry = new THREE.PlaneGeometry(this.planSize, this.planSize, 1, 1);
-            //this.material = new THREE.MeshStandardMaterial();
+
             let customUniforms = {
                 farmTexture: { type: "t", value: ShaderManager.getInstance().farmTexture },
                 mountainTexture: { type: "t", value: ShaderManager.getInstance().mountainTexture },
                 factoryTexture: { type: "t", value: ShaderManager.getInstance().factoryTexture },
+                cityTexture: { type: "t", value: ShaderManager.getInstance().cityTexture },
+                desertTexture: { type: "t", value: ShaderManager.getInstance().desertTexture },
 
+                cityUVFactor: { type: "f", value: this.cityUVFactor },
                 fogColor: { type: "c", value: THREE.UniformsLib['fog'].fogColor },
                 fogDensity: { type: "f", value: THREE.UniformsLib['fog'].fogDensity },
                 fogFar: { type: "f", value: THREE.UniformsLib['fog'].fogFar },
                 fogNear: { type: "f", value: THREE.UniformsLib['fog'].fogNear },
                 opacity: { type: "f", value: this.opacity }
             };
+            
             // create custom material from the shader code above
             //   that is within specially labelled script tags
             this.material = new THREE.ShaderMaterial(
@@ -128,7 +132,21 @@ namespace JWFramework {
             this.isDummy = flag;
         }
 
-        public SetHeight(index: number, value: number = undefined, option: TerrainOption = TerrainOption.TERRAIN_UP) {
+        public SetHeight(index: number, value: number = undefined, option: TerrainOption = TerrainOption.TERRAIN_UP)
+        {
+            if (this.isDummy == true)
+            {
+                if (this.collisionComponent.BoundingBox != null)
+                {
+                    this.collisionComponent.DeleteCollider();
+                    this.planeGeomatry.dispose();
+                    this.planeGeomatry = new THREE.PlaneGeometry(this.planSize, this.planSize, 1, 1);
+                    this.planeMesh.geometry = this.planeGeomatry;
+                    let rotation = new THREE.Matrix4().makeRotationX(-Math.PI / 2);
+                    this.planeGeomatry.applyMatrix4(rotation);
+                    //this.material.wireframe = true;
+                }
+            }
             this.planeGeomatry.getAttribute('position').needsUpdate = true;
             let height: number = this.planeGeomatry.getAttribute('position').getY(index);
 
@@ -222,6 +240,31 @@ namespace JWFramework {
                 this.heigtIndexBuffer.push(index);
             this.vertexNormalNeedUpdate = true;
 
+            let positionLength = this.planeGeomatry.getAttribute('position').count;
+            let cnt = 0;
+            for (let i = 0; i < positionLength; ++i)
+            {
+                if (this.planeGeomatry.getAttribute('position').getY(i) <= -3)
+                {
+                    this.useDirtTexture = true;
+                }
+                else if (i == positionLength - 1 && !this.useDirtTexture)
+                    this.useDirtTexture = false
+
+                if (this.planeGeomatry.getAttribute('position').getY(i) == 1)
+                    ++cnt;
+                if (cnt >= 30 && this.physicsComponent.GetMaxVertex().y <= 110)
+                {
+                    this.useCityTexture = true;
+                    this.material.uniforms.cityUVFactor.value = 6;
+                }
+                else
+                {
+                    this.useCityTexture = false;
+                    this.material.uniforms.cityUVFactor.value = 1;
+                }
+            }
+
         }
 
         public CollisionActive(object: GameObject)
@@ -269,11 +312,19 @@ namespace JWFramework {
                     this.planeMesh.geometry = this.planeGeomatry;
                     let rotation = new THREE.Matrix4().makeRotationX(-Math.PI / 2);
                     this.planeGeomatry.applyMatrix4(rotation);
-                    this.material.wireframe = true;
+                    //this.material.wireframe = true;
                 }
             }
             else
             {
+                if (this.useDirtTexture)
+                    this.material.uniforms.factoryTexture.value = ShaderManager.getInstance().desertTexture;
+                else
+                    this.material.uniforms.factoryTexture.value = ShaderManager.getInstance().factoryTexture;
+                if (this.useCityTexture)
+                    this.material.uniforms.cityTexture.value = ShaderManager.getInstance().cityTexture;
+                else
+                    this.material.uniforms.cityTexture.value = ShaderManager.getInstance().farmTexture;
                 if (this.collisionComponent.BoundingBox == null)
                     this.CreateBoundingBox();
             }
@@ -306,6 +357,7 @@ namespace JWFramework {
 
         private vertexNormalNeedUpdate: boolean = false;
         private opacity: number = 1;
+        private cityUVFactor: number = 1;
 
         public row: number = 0;
         public col: number = 0;
@@ -313,5 +365,7 @@ namespace JWFramework {
         private planSize: number;
         public inSecter: boolean = false
         public cameraInSecter: boolean = false;
+        private useDirtTexture: boolean = false;
+        private useCityTexture: boolean = false;
     }
 }

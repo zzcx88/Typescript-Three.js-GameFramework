@@ -3,11 +3,14 @@ namespace JWFramework
 {
     export class ObjectLabel extends GameObject
     {
-        constructor()
+        constructor(name: string = null)
         {
             super();
             this.type = ObjectType.OBJ_OBJECT2D;
-            this.name = "ObjectLabel" + ObjectManager.getInstance().GetObjectList[ObjectType.OBJ_OBJECT2D].length;
+            if (name != null)
+                this.name = name;
+            else
+                this.name = "ObjectLabel" + ObjectManager.getInstance().GetObjectList[ObjectType.OBJ_OBJECT2D].length;
             this.physicsComponent = new PhysicsComponent(this);
             this.graphicComponent = new GraphComponent(this);
             this.CreateBillboardMesh();

@@ -2,6 +2,7 @@
 /// <reference path="Object/InGameObject/Weapons/IRMissile/AIM9H.ts" />
 /// <reference path="Object/InGameObject/Weapons/IRMissile/AIM9L.ts" />
 /// <reference path="Object/InGameObject/Weapons/IRMissile/R60M.ts" />
+/// <reference path="Object/InGameObject/Envirument/Water.ts" />
 /// <reference path="Object/InGameObject/MissileFog.ts" />
 namespace JWFramework
 {
@@ -22,8 +23,7 @@ namespace JWFramework
         }
 
         public constructor() {
-            this.sceneModelData = [
-            ];
+            this.sceneModelData = [];
             this.modelNumber = this.sceneModelData.length;
         }
         public get ModelScene(): ModelSet[] {
@@ -46,35 +46,25 @@ namespace JWFramework
         {
             super();
             this.mig29.Name = "MIG_29";
-            this.helmet.Name = "helmet";
+            this.tree.Name = "Tree";
             this.f_5e.Name = "F-5E";
-            this.anim.Name = "animation";
-            this.aim9h.Name = "AIM-9H";
-            this.aim9l.Name = "AIM-9L";
-            this.r60m.Name = "R-60M";
-            this.cloud.Name = "Cloud";
+            this.anim.Name = "Animation";
+            this.water.Name = "Water";
             this.sceneModelData = [
-                //{ model: this.F16, url: 'Model/F-16D/F-16.gltf' },
-                { model: this.aim9h, url: 'Model/aim-9.glb' },
-                { model: this.aim9l, url: 'Model/aim-9.glb' },
-                { model: this.r60m, url: 'Model/aim-9.glb' },
                 { model: this.mig29, url: 'Model/mig_29_1.glb' },
-                { model: this.helmet, url: 'Model/DamagedHelmet.gltf' },
+                { model: this.tree, url: 'Model/Tree/tree_lv3.glb' },
                 { model: this.f_5e, url: 'Model/F-5E.glb' },
                 { model: this.anim, url: 'Model/Sprint.glb' },
-                { model: this.cloud, url: 'Model/cloud.glb' },
+                { model: this.water, url: null },
             ];
             this.modelNumber = this.sceneModelData.length;
         }
 
-        private helmet: EditObject = new EditObject;
+        private tree: EditObject = new EditObject;
         private mig29: EditObject = new EditObject;
         private f_5e: EditObject = new EditObject;
         private anim: EditObject = new EditObject;
-        private cloud: Cloud = new Cloud;
-        private aim9h: AIM9H = new AIM9H;
-        private aim9l: AIM9L = new AIM9L;
-        private r60m: R60M = new R60M;
+        private water: Water = new Water;
     }
 
 

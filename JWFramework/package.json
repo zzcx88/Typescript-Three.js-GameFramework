@@ -13,5 +13,6 @@
     "stats": "^1.0.0",
     "stats-js": "^1.0.1",
     "stats.ts": "^1.1.0"
-  }
+  },
+  "type": "module"
 }

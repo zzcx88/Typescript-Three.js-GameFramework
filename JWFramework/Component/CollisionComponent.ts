@@ -33,8 +33,8 @@
             this.halfSize = halfSize;
             this.orientedBoundingBox = new THREE.OBB();
             let color = new THREE.Color().setColorName("Red");
-            let obbGeometry = new THREE.BoxGeometry(halfSize.x, halfSize.y, halfSize.z);
-            obbGeometry.userData.obb = new THREE.OBB(center.clone(), halfSize.clone());
+            let obbGeometry = new THREE.BoxGeometry(this.halfSize.x, this.halfSize.y, this.halfSize.z);
+            obbGeometry.userData.obb = new THREE.OBB(center, this.halfSize);
             let material = new THREE.MeshBasicMaterial({ color });
             material.wireframe = true;
             this.obbBoxHelper = new THREE.Mesh(obbGeometry, material);
@@ -69,6 +69,26 @@
         public get BoxHelper(): THREE.Box3Helper
         {
             return this.boxHelper;
+        }
+
+        public get IsEditable()
+        {
+            return this.isEditable;
+        }
+
+        public set IsEditable(value: boolean)
+        {
+            this.isEditable = value;
+        }
+
+        public get HalfSize()
+        {
+            return this.halfSize;
+        }
+
+        public set HalfSize(value: THREE.Vector3)
+        {
+            this.halfSize = value;
         }
 
         public get OBB(): THREE.OBB {
@@ -128,6 +148,9 @@
             }
             if (this.orientedBoundingBox)
             {
+                //if (this.IsEditable == true)
+                //    this.halfSize = this.halfSize.multiplyScalar(1);
+
                 this.obbBoxHelper.scale.set(this.halfSize.x, this.halfSize.y, this.halfSize.z)
                 this.obbBoxHelper.rotation.set(this.gameObject.PhysicsComponent.GetRotateEuler().x, this.gameObject.PhysicsComponent.GetRotateEuler().y, this.gameObject.PhysicsComponent.GetRotateEuler().z);
                 this.obbBoxHelper.position.set(this.gameObject.PhysicsComponent.GetPosition().x, this.gameObject.PhysicsComponent.GetPosition().y, this.gameObject.PhysicsComponent.GetPosition().z);
@@ -152,8 +175,9 @@
         private boundingSphere: THREE.Sphere = null;
         private raycaster: THREE.Raycaster = null;
 
-        private halfSize: THREE.Vector3;
+        public halfSize: THREE.Vector3;
 
+        private isEditable: boolean = false;
         private boundingBoxInclude: boolean;
         private orientedBoundingBoxInlcude: boolean;
         private boundingSphereInclude: boolean;

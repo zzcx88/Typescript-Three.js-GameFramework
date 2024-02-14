@@ -2,7 +2,7 @@
 {
     export class ObjectManager
     {
-
+        private objectId: number = 0;
         private static instance: ObjectManager;
 
         public constructor(){}
@@ -45,6 +45,14 @@
             return this.objectList;
         }
 
+        public get PickableObjectList()
+        {
+            let obj2d = this.objectList[ObjectType.OBJ_OBJECT2D].filter(o_ => o_.GameObject.IsClone);
+            let obj3d = this.objectList[ObjectType.OBJ_OBJECT3D].filter(o_ => o_.GameObject.IsClone);
+            let water = this.objectList[ObjectType.OBJ_WATER].filter(o_ => o_.GameObject.IsClone);
+            return obj2d.concat(obj3d).filter(o_ => !o_.Name.includes("cloud") && o_.GameObject.IsClone).concat(water);
+        }
+
         public ClearExportObjectList()
         {
             this.exportObjectList = [];
@@ -83,6 +91,10 @@
             {
                 cloneObject = new Cloud;
             }
+            else if (selectObject instanceof Water)
+            {
+                cloneObject = new Water;
+            }
             else {
                 if (selectObject == null)
                     alert("EmptyObject")
@@ -92,16 +104,21 @@
             }
 
             cloneObject.IsClone = true;
-            cloneObject.Name = selectObject.Name + "Clone" + ObjectManager.getInstance().GetObjectList[cloneObject.Type].length.toString();
-            if (selectObject.ModelData.animations.length != 0) {
-                cloneObject.ModelData = selectObject.ModelData;
-                cloneObject.GameObjectInstance = THREE.SkeletonUtils.clone(cloneObject.ModelData.scene);
-                cloneObject.AnimationMixer = new THREE.AnimationMixer(cloneObject.GameObjectInstance);
-                cloneObject.AnimationMixer.clipAction(cloneObject.ModelData.animations[0]).play();
+            cloneObject.Name = selectObject.Name + "Clone" + this.objectId;
+            if (selectObject.ModelData != null)
+            {
+                if (selectObject.ModelData.animations.length != 0)
+                {
+                    cloneObject.ModelData = selectObject.ModelData;
+                    cloneObject.GameObjectInstance = THREE.SkeletonUtils.clone(cloneObject.ModelData.scene);
+                    cloneObject.AnimationMixer = new THREE.AnimationMixer(cloneObject.GameObjectInstance);
+                    cloneObject.AnimationMixer.clipAction(cloneObject.ModelData.animations[0]).play();
+                }
+                else
+                    cloneObject.GameObjectInstance = selectObject.ModelData.scene.clone();
             }
-            else
-                cloneObject.GameObjectInstance = selectObject.ModelData.scene.clone();
             cloneObject.InitializeAfterLoad();
+            this.objectId++;
             return cloneObject;
         }
 
@@ -126,7 +143,7 @@
             document.body.removeChild(a);
             this.ClearExportObjectList();
         }
-
+        
         public DeleteObject(gameObject: GameObject)
         {
             gameObject.GameObjectInstance.traverse(node =>
@@ -223,6 +240,7 @@
 
             let sectoredTerrain = this.objectList[ObjectType.OBJ_TERRAIN].filter((element) => (element.GameObject as unknown as HeightmapTerrain).inSecter == true);
             CollisionManager.getInstance().CollideRayToTerrain(sectoredTerrain);
+            CollisionManager.getInstance().CollideRayToWater(this.objectList[ObjectType.OBJ_WATER].filter(o_ => o_.GameObject.IsClone));
             sectoredTerrain.forEach(function (src)
             {
                 CollisionManager.getInstance().CollideObbToObb(
@@ -235,7 +253,7 @@
         public Render() { }
 
         private terrainList = new THREE.Group();
-        private objectList: ObjectSet[][] = [[], [], [], [], [], [], []];
+        private objectList: ObjectSet[][] = [[], [], [], [], [], [], [],[]];
         private exportObjectList = [];
     }
 }

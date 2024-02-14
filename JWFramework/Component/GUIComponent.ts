@@ -23,7 +23,7 @@ namespace JWFramework
                 return this.objectLabel;
             else
             {
-                this.objectLabel = new ObjectLabel();
+                this.objectLabel = new ObjectLabel(this.gameObject.Name);
                 this.objectLabel.IsClone = true;
                 this.objectLabel.ReferenceObject = this.gameObject;
                 this.objectLabel.Name = this.gameObject.Name;

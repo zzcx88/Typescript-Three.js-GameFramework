@@ -106,6 +106,60 @@ namespace JWFramework
             return this.GameObject.GameObjectInstance.scale;
         }
 
+        public GetMaxVertex(): THREE.Vector3
+        {
+            let vertices: THREE.Vector3 = new THREE.Vector3();
+            let max = new THREE.Vector3(-Infinity, -Infinity, -Infinity);
+            this.GameObject.GameObjectInstance.traverse(function (child)
+            {
+                if (child.geometry != undefined)
+                {
+                    let geo: THREE.BufferGeometry = child.geometry;
+
+                    const position = geo.attributes.position;
+
+                    // 정점을 반복하여 최소 및 최대 정점을 찾음
+                    for (let i = 0; i < position.count; i++)
+                    {
+                        vertices.fromBufferAttribute(position, i);
+                        max.max(vertices);
+                    }
+
+                    //geo.computeBoundingBox();
+                    //const objMax = geo.boundingBox.max.clone();
+                    //objMax.applyMatrix4(child.matrixWorld);
+
+                    // 최대 정점 갱신
+                   // max.max(objMax);
+                }
+            });
+            return max;
+        }
+
+        public GetMinVertex(): THREE.Vector3
+        {
+            let vertices: THREE.Vector3 = new THREE.Vector3();
+            let min = new THREE.Vector3(+Infinity, +Infinity, +Infinity);
+            this.GameObject.GameObjectInstance.traverse(function (child)
+            {
+                if (child.geometry != undefined)
+                {
+                    let geo: THREE.BufferGeometry = child.geometry;
+
+                    const position = geo.attributes.position;
+
+                    // 정점을 반복하여 최소 및 최대 정점을 찾음
+                    for (let i = 0; i < position.count; i++)
+                    {
+                        vertices.fromBufferAttribute(position, i);
+                        min.min(vertices);
+                    }
+                    //min.min(objMin);
+                }
+            });
+            return min;
+        }
+
         public GetMatrix4(): THREE.Matrix4
         {
             return this.GameObject.GameObjectInstance.matrixWorld;

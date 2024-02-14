@@ -1,4 +1,5 @@
 ﻿/// <reference path="../GameObject.ts" />
+/// <reference path="../../Manager/GUIManager.ts" />
 namespace JWFramework
 {
     export class EditObject extends GameObject
@@ -18,16 +19,33 @@ namespace JWFramework
         public InitializeAfterLoad()
         {
             this.GameObjectInstance.matrixAutoUpdate = true;
-            this.PhysicsComponent.SetScaleScalar(1);
+            let guiSrt = GUIManager.getInstance().GUI_SRT;
+            
             this.GameObjectInstance.name = this.name;
 
             if (this.IsClone == false)
                 ObjectManager.getInstance().AddObject(this, this.name, this.Type);
             else
             {
-                this.CreateCollider();
+                if (guiSrt.DefaultEditableBounding == true)
+                {
+                    this.PhysicsComponent.SetScaleScalar(1);
+                    this.PhysicsComponent.SetRotateVec3(guiSrt.DefaultRotate);
+                    this.PhysicsComponent.SetScale(guiSrt.DefaultScale.x, guiSrt.DefaultScale.y, guiSrt.DefaultScale.z);
+                    this.CollisionComponent.IsEditable = guiSrt.DefaultEditableBounding;
+                    this.CollisionComponent.CreateOrientedBoundingBox(this.PhysicsComponent.GetPosition(), guiSrt.DefaultBounding.clone());
+                    this.collisionComponent.IsEditable = true;
+                    this.CollisionComponent.CreateRaycaster();
+                }
+                else
+                {
+                    this.PhysicsComponent.SetScaleScalar(1);
+                    this.CreateCollider();
+                }
                 if (SceneManager.getInstance().SceneType == SceneType.SCENE_EDIT) {
                     this.axisHelper = new THREE.AxesHelper(10);
+                    (this.axisHelper.material as THREE.Material).fog = false;
+                    (this.axisHelper.material as THREE.Material).depthTest = false;
                     this.GameObjectInstance.add(this.axisHelper);
                     this.guiComponent.GetLabel();
                 }
@@ -37,7 +55,9 @@ namespace JWFramework
         public CreateCollider()
         {
             //this.CollisionComponent.CreateBoundingBox(this.PhysicsComponent.GetScale().x, this.PhysicsComponent.GetScale().y, this.PhysicsComponent.GetScale().z);
-            this.CollisionComponent.CreateOrientedBoundingBox(this.physicsComponent.GetPosition(), new THREE.Vector3(2,1,2));
+            //let size = new THREE.Vector3().subVectors(this.PhysicsComponent.GetMaxVertex(), this.PhysicsComponent.GetMinVertex());
+            this.CollisionComponent.CreateOrientedBoundingBox(this.physicsComponent.GetPosition());
+            this.collisionComponent.IsEditable = false;
             this.CollisionComponent.CreateRaycaster();
             //SceneManager.getInstance().SceneInstance.add(this.CollisionComponent.BoxHelper);
         }
@@ -81,7 +101,10 @@ namespace JWFramework
                 this.SeekerProcess();
             }
             else
+            {
                 this.IsRayOn = false;
+                this.throttle = 0;
+            }
 
             this.EditHelperProcess();
 
@@ -152,50 +175,54 @@ namespace JWFramework
 
         private InputProcess()
         {
-            if (InputManager.getInstance().GetKeyState('left', KeyState.KEY_PRESS))
+            let inputManager = InputManager.getInstance();
+            if ((SceneManager.getInstance().CurrentScene as EditScene).GizmoOnOff == false)
             {
-                this.PhysicsComponent.RotateVec3(this.PhysicsComponent.Look, -1);
+                if (inputManager.GetKeyState('left', KeyState.KEY_PRESS))
+                {
+                    this.PhysicsComponent.RotateVec3(this.PhysicsComponent.Look, -1);
+                }
+                if (inputManager.GetKeyState('right', KeyState.KEY_PRESS))
+                {
+                    this.PhysicsComponent.RotateVec3(this.PhysicsComponent.Look, 1);
+                }
+                if (inputManager.GetKeyState('down', KeyState.KEY_PRESS))
+                {
+                    this.PhysicsComponent.RotateVec3(this.PhysicsComponent.Right, -1);
+                }
+                if (inputManager.GetKeyState('up', KeyState.KEY_PRESS))
+                {
+                    this.PhysicsComponent.RotateVec3(this.PhysicsComponent.Right, 1);
+                }
+                if (inputManager.GetKeyState('w', KeyState.KEY_PRESS))
+                {
+                    if (this.throttle < 100)
+                        this.throttle += 20 * WorldManager.getInstance().GetDeltaTime();
+                    else
+                        this.throttle = 100;
+                }
+                if (inputManager.GetKeyState('s', KeyState.KEY_PRESS))
+                {
+                    if (this.throttle > 0)
+                        this.throttle -= 20 * WorldManager.getInstance().GetDeltaTime();
+                    else
+                        this.throttle = 0;
+                }
+                if (inputManager.GetKeyState('f', KeyState.KEY_PRESS))
+                {
+                    CameraManager.getInstance().SetCameraSavedPosition(CameraMode.CAMERA_3RD);
+                }
+                if (inputManager.GetKeyState('r', KeyState.KEY_PRESS))
+                {
+                    CameraManager.getInstance().SetCameraSavedPosition(CameraMode.CAMERA_ORBIT);
+                }
             }
-            if (InputManager.getInstance().GetKeyState('right', KeyState.KEY_PRESS))
-            {
-                this.PhysicsComponent.RotateVec3(this.PhysicsComponent.Look, 1);
-            }
-            if (InputManager.getInstance().GetKeyState('down', KeyState.KEY_PRESS))
-            {
-                this.PhysicsComponent.RotateVec3(this.PhysicsComponent.Right, -1);
-            }
-            if (InputManager.getInstance().GetKeyState('up', KeyState.KEY_PRESS))
-            {
-                this.PhysicsComponent.RotateVec3(this.PhysicsComponent.Right, 1);
-            }
-            if (InputManager.getInstance().GetKeyState('w', KeyState.KEY_PRESS))
-            {
-                if (this.throttle < 100)
-                    this.throttle += 20 * WorldManager.getInstance().GetDeltaTime();
-                else
-                    this.throttle = 100;
-            }
-            if (InputManager.getInstance().GetKeyState('s', KeyState.KEY_PRESS))
-            {
-                if (this.throttle > 0)
-                    this.throttle -= 20 * WorldManager.getInstance().GetDeltaTime();
-                else
-                    this.throttle = 0;
-            }
-            if (InputManager.getInstance().GetKeyState('f', KeyState.KEY_PRESS))
-            {
-                CameraManager.getInstance().SetCameraSavedPosition(CameraMode.CAMERA_3RD);
-            }
-            if (InputManager.getInstance().GetKeyState('r', KeyState.KEY_PRESS))
-            {
-                CameraManager.getInstance().SetCameraSavedPosition(CameraMode.CAMERA_ORBIT);
-            }
-            if (InputManager.getInstance().GetKeyState('p', KeyState.KEY_DOWN))
+            if (inputManager.GetKeyState('p', KeyState.KEY_DOWN))
             {
                 this.isTarget = true;
                 this.name = "Target";
             }
-            if (InputManager.getInstance().GetKeyState('space', KeyState.KEY_DOWN))
+            if (inputManager.GetKeyState('space', KeyState.KEY_DOWN))
             {
                 this.launchMissile();
             }
@@ -205,10 +232,21 @@ namespace JWFramework
         {
             if (SceneManager.getInstance().SceneType == SceneType.SCENE_EDIT && this.Picked == true)
             {
+                (SceneManager.getInstance().CurrentScene as EditScene).AttachGizmo(this);
+
                 this.axisHelper.visible = true;
+                let cameraPosition = WorldManager.getInstance().MainCamera.PhysicsComponent.GetPosition().clone();
+                if (this.GUIComponent.GetLabel().GameObjectInstance != null)
+                {
+                    let size = cameraPosition.sub(this.physicsComponent.GetPosition()).length() / 100;
+                    if (size <= 3)
+                        size = 3;
+                    this.axisHelper.scale.set(size, size, size);
+                }
             }
             if (SceneManager.getInstance().SceneType == SceneType.SCENE_EDIT && this.Picked == false)
             {
+                (SceneManager.getInstance().CurrentScene as EditScene).DetachGizmo(this);
                 this.axisHelper.visible = false;
             }
         }

@@ -1,7 +1,7 @@
 ﻿/// <reference path="SceneBase.ts" />
 /// <reference path="../Manager/ModelLoadManager.ts" />
 /// <reference path="../Object/Light/Light.ts" />
-/// <reference path="../ObjectPool/ObjectPool.ts" />
+/*/// <reference path="../ObjectPool/ObjectPool.ts" />*/
 
 namespace JWFramework
 {
@@ -40,15 +40,14 @@ namespace JWFramework
             this.directionalLight = new Light(LightType.LIGHT_DIRECTIONAL);
             ObjectManager.getInstance().AddObject(this.directionalLight, "directionalLight", this.directionalLight.Type);
             this.directionalLight.SetColor(0xFFFFFF);
-            this.directionalLight.Intensity = 1.0;
+            this.directionalLight.Intensity = 0.6;
             this.directionalLight.PhysicsComponent.SetPostionVec3(new THREE.Vector3(1, 1, 0));
             
             //AmbientLight
             this.ambientLight = new Light(LightType.LIGHT_AMBIENT);
             ObjectManager.getInstance().AddObject(this.ambientLight, "ambientlLight", this.ambientLight.Type);
             this.ambientLight.SetColor(0xFFFFFF);
-            this.ambientLight.Intensity = 1.0;
-            
+            this.ambientLight.Intensity = 0.5;
         }
 
         BuildFog()
@@ -62,6 +61,7 @@ namespace JWFramework
         {
             if (ModelLoadManager.getInstance().LoadComplete == true)
             {
+                this.MakeGizmo();
                 this.MakeSceneCloud();
                 ObjectManager.getInstance().Animate();
                 this.InputProcess();
@@ -69,6 +69,37 @@ namespace JWFramework
             }
         }
 
+        private MakeGizmo()
+        {
+            if (this.gizmo == null)
+            {
+                let worldManager = WorldManager.getInstance();
+                this.gizmo = new THREE.TransformControls(worldManager.MainCamera.CameraInstance, worldManager.Renderer.domElement);
+                this.gizmo.addEventListener('dragging-changed', function (event)
+                {
+                    SceneManager.getInstance().CurrentScene.Picker.OrbitControl.enabled = !event.value;
+                    SceneManager.getInstance().CurrentScene.Picker.EnablePickOff = false;
+                });
+                this.sceneManager.SceneInstance.add(this.gizmo);
+            }
+        }
+
+        public AttachGizmo(gameObject: GameObject)
+        {
+            if (this.gizmoOnOff)
+                this.gizmo.attach(gameObject.GameObjectInstance);
+        }
+
+        public DetachGizmo(gameObject: GameObject)
+        {
+            if (this.gizmo.object == gameObject.GameObjectInstance)
+                this.gizmo.detach();
+        }
+
+        public get GizmoOnOff()
+        {
+            return this.gizmoOnOff;
+        }
         private MakeSceneCloud()
         {
             if (this.makedCloud == false)
@@ -88,49 +119,76 @@ namespace JWFramework
 
         private InputProcess()
         {
-            if (InputManager.getInstance().GetKeyState('1', KeyState.KEY_DOWN))
+            let inputManager = InputManager.getInstance();
+            let sceneManager = SceneManager.getInstance();
+            if (inputManager.GetKeyState('1', KeyState.KEY_DOWN))
             {
                 this.Picker.ChangePickModeModify();
             }
-            if (InputManager.getInstance().GetKeyState('2', KeyState.KEY_DOWN))
+            if (inputManager.GetKeyState('2', KeyState.KEY_DOWN))
             {
                 this.Picker.ChangePickModeClone();
             }
-            if (InputManager.getInstance().GetKeyState('3', KeyState.KEY_DOWN))
+            if (sceneManager.CurrentScene.Picker.PickMode == PickMode.PICK_CLONE)
+            {
+                if (inputManager.GetKeyState('t', KeyState.KEY_PRESS))
+                    this.Picker.SetPickPosition(this.Picker.MouseEvent);
+            }
+            if (inputManager.GetKeyState('3', KeyState.KEY_DOWN))
             {
                 this.Picker.ChangePickModeTerrain();
             }
-            if (InputManager.getInstance().GetKeyState('4', KeyState.KEY_DOWN))
+            if (inputManager.GetKeyState('4', KeyState.KEY_DOWN))
             {
                 this.Picker.ChangePickModeRemove();
             }
-            if (InputManager.getInstance().GetKeyState('6', KeyState.KEY_DOWN))
+            if (inputManager.GetKeyState('6', KeyState.KEY_DOWN))
             {
                 this.Picker.ChangePickModeDummyTerrain();
             }
-            if (InputManager.getInstance().GetKeyState('r', KeyState.KEY_DOWN))
+            if (inputManager.GetKeyState('q', KeyState.KEY_DOWN))
+            {
+                this.gizmoOnOff = !this.gizmoOnOff;
+                if (this.gizmoOnOff == false && this.Picker.GetPickParents() != null)
+                    this.DetachGizmo(this.Picker.GetPickParents());
+            }
+            if (inputManager.GetKeyState('w', KeyState.KEY_DOWN))
+            {
+                this.gizmo.setMode("translate");
+            }
+            if (inputManager.GetKeyState('e', KeyState.KEY_DOWN))
+            {
+                this.gizmo.setMode("rotate");
+            }
+            if (inputManager.GetKeyState('r', KeyState.KEY_DOWN))
+            {
+                this.gizmo.setMode("scale");
+            }
+            if (inputManager.GetKeyState('o', KeyState.KEY_DOWN))
             {
                 GUIManager.getInstance().GUI_Terrain.ChangeTerrainOption();
             }
-            if (SceneManager.getInstance().CurrentScene.Picker.PickMode == PickMode.PICK_TERRAIN ||
-                SceneManager.getInstance().CurrentScene.Picker.PickMode == PickMode.PICK_DUMMYTERRAIN)
-                if (InputManager.getInstance().GetKeyState('t', KeyState.KEY_PRESS))
+            if (sceneManager.CurrentScene.Picker.PickMode == PickMode.PICK_TERRAIN ||
+                sceneManager.CurrentScene.Picker.PickMode == PickMode.PICK_DUMMYTERRAIN)
+                if (inputManager.GetKeyState('t', KeyState.KEY_PRESS))
                     this.Picker.SetPickPosition(this.Picker.MouseEvent);
 
-            if (InputManager.getInstance().GetKeyState('u', KeyState.KEY_PRESS))
+            if (inputManager.GetKeyState('u', KeyState.KEY_PRESS))
             {
-                SceneManager.getInstance().CurrentScene.NeedOnTerrain = true;
+                sceneManager.CurrentScene.NeedOnTerrain = true;
                 GUIManager.getInstance().GUI_Terrain.ChangeHeightOffset();
             }
             else
-                SceneManager.getInstance().CurrentScene.NeedOnTerrain = false;
+                sceneManager.CurrentScene.NeedOnTerrain = false;
 
-            if (InputManager.getInstance().GetKeyState('delete', KeyState.KEY_PRESS))
+            if (inputManager.GetKeyState('delete', KeyState.KEY_DOWN))
             {
                 ObjectManager.getInstance().DeleteAllObject();
+                this.gizmo.detach();
+                this.sceneManager.SceneInstance.remove(this.gizmo);
                 this.reloadScene = true;
             }
-            if (InputManager.getInstance().GetKeyState('p', KeyState.KEY_PRESS))
+            if (inputManager.GetKeyState('p', KeyState.KEY_PRESS))
             {
                 console.log(WorldManager.getInstance().Renderer.info);
             }
@@ -146,14 +204,18 @@ namespace JWFramework
                     ModelLoadManager.getInstance().LoadSavedScene();
                     WorldManager.getInstance().Renderer.clear();
                     this.BuildLight();
+                    this.gizmo.dispose();
+                    this.gizmo = null;
                     this.makedCloud = false;
                     this.reloadScene = false;
                 }
             }
         }
-        
+
         private directionalLight: Light;
         private ambientLight: Light;
         private makedCloud: boolean = false;
+        private gizmo: THREE.TransformControls;
+        private gizmoOnOff: boolean = true;
     }
 }

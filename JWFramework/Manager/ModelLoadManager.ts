@@ -1,5 +1,5 @@
 ﻿/// <reference path="../Object/CommonObject/Terrain/HeightmapTerrain.ts" />
-/// <reference path="../Object/InGameObject/Cloud.ts" />
+/// <reference path="../Object/InGameObject/Envirument/Cloud.ts" />
 namespace JWFramework
 {
     export class ModelLoadManager
@@ -27,7 +27,7 @@ namespace JWFramework
         {
             this.loadCompletModel++;
             if (this.loadCompletModel == this.modelCount)
-                this.loadComplete = true;
+                this.LoadComplete = true;
         }
 
         public set LoadComplete(flag: boolean)
@@ -69,46 +69,59 @@ namespace JWFramework
 
         private LoadModel(modelSource: string, gameObject: GameObject)
         {
-            this.gltfLoader.load(modelSource,
-                (gltf) =>
-                {
-                    console.log('success')
-                    gameObject.ModelData = gltf;
-                    (gltf.scene as any).traverse(n =>
+            if (modelSource != null)
+            {
+                this.gltfLoader.load(modelSource,
+                    (gltf) =>
                     {
-                        if (n.isMesh) {
-                            let texture = n.material.map;
-                            let normal = n.material.normalMap;
-                            let opacity = n.material.opacity;
-                            let color: THREE.Color = n.material.color;
-                            let side = n.material.side;
-                            n.material.map = texture;
-                            n.material.normalMap = normal;
-                            n.material.color = color;
-                            n.castShadow = true;
-                            n.receiveShadow = true;
-                            if (opacity != 1)
+                        console.log('success')
+                        gameObject.ModelData = gltf;
+                        (gltf.scene as any).traverse(n =>
+                        {
+                            if (n.isMesh)
                             {
-                                n.material.opacity = opacity;
+                                let texture = n.material.map;
+                                let normal = n.material.normalMap;
+                                let opacity = n.material.opacity;
+                                let color: THREE.Color = n.material.color;
+                                let side = n.material.side;
+                                let roughness = n.material.roughness
+                                let metalness = n.material.metalness
+                                n.material.map = texture;
+                                n.material.normalMap = normal;
+                                n.material.color = color;
+                                n.material.roughness = roughness;
+                                n.material.metalness = metalness;
+                                n.material.envMap = SceneManager.getInstance().SceneInstance.environment;
+                                n.castShadow = true;
+                                n.receiveShadow = true;
+                                if (opacity != 1)
+                                {
+                                    n.material.opacity = opacity;
+                                }
+                                n.material.side = side;
                             }
-                            n.material.side = side;
-                        }
+                        });
+                        gameObject.GameObjectInstance = gltf.scene;
+                        gameObject.InitializeAfterLoad();
+                        this.SetLoadComplete();
+                    },
+                    (progress) =>
+                    {
+                        console.log('progress')
+                        console.log(progress)
+                    },
+                    (error) =>
+                    {
+                        console.log('error')
+                        console.log(error)
                     });
-                    gameObject.GameObjectInstance = gltf.scene;
-                    gameObject.InitializeAfterLoad();
-                    this.SetLoadComplete();
-                },
-                (progress) =>
-                {
-                    console.log('progress')
-                    console.log(progress)
-                },
-                (error) =>
-                {
-                    console.log('error')
-                    console.log(error)
-                });
-
+            }
+            else
+            {
+                gameObject.InitializeAfterLoad();
+                this.SetLoadComplete();
+            }
         }
 
         public LoadHeightmapTerrain(row: number = 20, col: number = 20)
@@ -161,6 +174,8 @@ namespace JWFramework
                             cloneObject.PhysicsComponent.SetScale(data.scale.x, data.scale.y, data.scale.z);
                             cloneObject.PhysicsComponent.SetRotate(data.rotation.x, data.rotation.y, data.rotation.z);
                             cloneObject.PhysicsComponent.SetPostion(data.position.x, data.position.y, data.position.z);
+                            if (data.obbSize != null)
+                                cloneObject.CollisionComponent.HalfSize = new THREE.Vector3(data.obbSize.x, data.obbSize.y, data.obbSize.z);
                             objectManager.AddObject(cloneObject, cloneObject.Name, cloneObject.Type);
                         }
                         else if (data.name.includes("F-5E"))
@@ -168,6 +183,15 @@ namespace JWFramework
                             let cloneObject = objectManager.MakeClone(objectManager.GetObjectFromName("F-5E"));
                             cloneObject.PhysicsComponent.SetScale(data.scale.x, data.scale.y, data.scale.z);
                             cloneObject.PhysicsComponent.SetRotate(data.rotation.x, data.rotation.y, data.rotation.z);
+                            cloneObject.PhysicsComponent.SetPostion(data.position.x, data.position.y, data.position.z);
+                            cloneObject.CollisionComponent.HalfSize = new THREE.Vector3(data.obbSize.x, data.obbSize.y, data.obbSize.z);
+                            objectManager.AddObject(cloneObject, cloneObject.Name, cloneObject.Type);
+                        }
+                        else if (data.name.includes("Water"))
+                        {
+                            let cloneObject = objectManager.MakeClone(objectManager.GetObjectFromName("Water"));
+                            cloneObject.PhysicsComponent.SetScale(data.scale.x, data.scale.y, data.scale.z);
+                            //cloneObject.PhysicsComponent.SetRotate(data.rotation.x, data.rotation.y, data.rotation.z);
                             cloneObject.PhysicsComponent.SetPostion(data.position.x, data.position.y, data.position.z);
                             objectManager.AddObject(cloneObject, cloneObject.Name, cloneObject.Type);
                         }

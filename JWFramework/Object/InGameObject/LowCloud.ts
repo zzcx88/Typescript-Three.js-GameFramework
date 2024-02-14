@@ -110,7 +110,7 @@ namespace JWFramework
                     matrix.lookAt(position, cameraPosition, new THREE.Vector3(0, 1, 0));
                     matrix.scale(this.scales[i]);
                     matrix.setPosition(position);
-                    if (cameraPosition.sub(position).length() > 1000)
+                    if (cameraPosition.sub(position).length() > 200)
                     {
                         this.mesh.setMatrixAt(i, matrix);
                         this.prevMatrix[i] = matrix.clone();

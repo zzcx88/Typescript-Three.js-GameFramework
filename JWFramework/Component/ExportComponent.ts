@@ -47,7 +47,7 @@
                     {
                         x: this.gameObject.PhysicsComponent.GetScale().x,
                         y: this.gameObject.PhysicsComponent.GetScale().y,
-                        z: this.gameObject.PhysicsComponent.GetScale().z,
+                        z: this.gameObject.PhysicsComponent.GetScale().z
                     },
                     rotation:
                     {
@@ -60,6 +60,12 @@
                         x: this.gameObject.PhysicsComponent.GetPosition().x,
                         y: this.gameObject.PhysicsComponent.GetPosition().y,
                         z: this.gameObject.PhysicsComponent.GetPosition().z
+                    },
+                    obbSize:
+                    {
+                        x: this.gameObject.CollisionComponent ? this.gameObject.CollisionComponent.HalfSize.x: 1,
+                        y: this.gameObject.CollisionComponent ? this.gameObject.CollisionComponent.HalfSize.y : 1,
+                        z: this.gameObject.CollisionComponent ? this.gameObject.CollisionComponent.HalfSize.z : 1,
                     }
                 }
             }

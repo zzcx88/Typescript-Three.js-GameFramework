@@ -7,6 +7,10 @@ declare namespace JWFramework {
         CreateRaycaster(): void;
         get BoundingBox(): THREE.Box3;
         get BoxHelper(): THREE.Box3Helper;
+        get IsEditable(): boolean;
+        set IsEditable(value: boolean);
+        get HalfSize(): THREE.Vector3;
+        set HalfSize(value: THREE.Vector3);
         get OBB(): THREE.OBB;
         get ObbBoxHelper(): THREE.Mesh;
         get BoundingSphere(): THREE.Sphere;
@@ -20,7 +24,8 @@ declare namespace JWFramework {
         private orientedBoundingBox;
         private boundingSphere;
         private raycaster;
-        private halfSize;
+        halfSize: THREE.Vector3;
+        private isEditable;
         private boundingBoxInclude;
         private orientedBoundingBoxInlcude;
         private boundingSphereInclude;
@@ -101,7 +106,7 @@ declare namespace JWFramework {
 }
 declare namespace JWFramework {
     class ObjectLabel extends GameObject {
-        constructor();
+        constructor(name?: string);
         get ReferenceObject(): GameObject;
         set ReferenceObject(object: GameObject);
         InitializeAfterLoad(): void;
@@ -130,6 +135,7 @@ declare namespace JWFramework {
     class CameraManager {
         private static instance;
         static getInstance(): CameraManager;
+        get MainCamera(): Camera;
         get CameraMode(): CameraMode;
         SetCameraSavedPosition(cameraMode: CameraMode): void;
         private ChangeThridPersonCamera;
@@ -156,6 +162,8 @@ declare namespace JWFramework {
         GetRotateEuler(): THREE.Euler;
         GetRotateMatrix3(): THREE.Matrix3;
         GetScale(): THREE.Vector3;
+        GetMaxVertex(): THREE.Vector3;
+        GetMinVertex(): THREE.Vector3;
         GetMatrix4(): THREE.Matrix4;
         SetRotate(x: number, y: number, z: number): void;
         SetRotateVec3(vec3: THREE.Vector3): void;
@@ -167,6 +175,18 @@ declare namespace JWFramework {
         private vec3Look;
         private vec3Position;
         private GameObject;
+    }
+}
+declare namespace JWFramework {
+    class GUIManager {
+        private static instance;
+        static getInstance(): GUIManager;
+        get GUI_Select(): GUI_Select;
+        get GUI_SRT(): GUI_SRT;
+        get GUI_Terrain(): GUI_Terrain;
+        private gui_Select;
+        private gui_SRT;
+        private gui_Terrain;
     }
 }
 declare namespace JWFramework {
@@ -252,6 +272,16 @@ declare namespace JWFramework {
     }
 }
 declare namespace JWFramework {
+    class Water extends GameObject {
+        constructor();
+        InitializeAfterLoad(): void;
+        private CreateWaterMesh;
+        Animate(): void;
+        private geometry;
+        private mesh;
+    }
+}
+declare namespace JWFramework {
     class MissileFog extends GameObject {
         constructor();
         InitializeAfterLoad(): void;
@@ -280,14 +310,11 @@ declare namespace JWFramework {
     }
     class ModelSceneEdit extends ModelSceneBase {
         constructor();
-        private helmet;
+        private tree;
         private mig29;
         private f_5e;
         private anim;
-        private cloud;
-        private aim9h;
-        private aim9l;
-        private r60m;
+        private water;
     }
     class ModelSceneStage {
         private static instance;
@@ -325,13 +352,14 @@ declare namespace JWFramework {
     }
     enum ObjectType {
         OBJ_TERRAIN = 0,
-        OBJ_OBJECT3D = 1,
-        OBJ_OBJECT2D = 2,
-        OBJ_AIRCRAFT = 3,
-        OBJ_MISSILE = 4,
-        OBJ_CAMERA = 5,
-        OBJ_LIGHT = 6,
-        OBJ_END = 7
+        OBJ_WATER = 1,
+        OBJ_OBJECT3D = 2,
+        OBJ_OBJECT2D = 3,
+        OBJ_AIRCRAFT = 4,
+        OBJ_MISSILE = 5,
+        OBJ_CAMERA = 6,
+        OBJ_LIGHT = 7,
+        OBJ_END = 8
     }
     enum LightType {
         LIGHT_DIRECTIONAL = 0,
@@ -388,12 +416,22 @@ declare namespace JWFramework {
         SetGameObject(gameObject: GameObject): void;
         UpdateDisplay(): void;
         ShowGUI(show: boolean): void;
+        get DefaultRotate(): THREE.Vector3;
+        get DefaultScale(): THREE.Vector3;
+        get DefaultBounding(): THREE.Vector3;
+        get DefaultEditableBounding(): boolean;
         private datGui;
         private gameObject;
         private positionFolder;
         private rotateFolder;
         private scaleFolder;
+        private boundingBoxFolder;
         private isPlayerFolder;
+        private defaultRotate;
+        private defaultScale;
+        private defaultBounding;
+        private defaultEditableBounding;
+        private isBoundingEditableFunc;
         private isPlayerFunc;
     }
 }
@@ -439,6 +477,7 @@ declare namespace JWFramework {
 }
 declare namespace JWFramework {
     class ObjectManager {
+        private objectId;
         private static instance;
         constructor();
         static getInstance(): ObjectManager;
@@ -446,6 +485,7 @@ declare namespace JWFramework {
         GetObjectFromName(name: string): GameObject;
         GetInSectorTerrain(): THREE.Group;
         get GetObjectList(): ObjectSet[][];
+        get PickableObjectList(): ObjectSet[];
         ClearExportObjectList(): void;
         AddObject(gameObject: GameObject, name: string, type: ObjectType): void;
         MakeClone(selectObject: GameObject): GameObject;
@@ -478,6 +518,8 @@ declare namespace JWFramework {
         ChangePickModeRemove(): void;
         get PickMode(): PickMode;
         get OrbitControl(): THREE.OrbitControls;
+        get EnablePickOff(): boolean;
+        set EnablePickOff(value: boolean);
         GetPickParents(): GameObject;
         private mouseEvent;
         private pickMode;
@@ -486,6 +528,7 @@ declare namespace JWFramework {
         private pickedParent;
         private pickPositionX;
         private pickPositionY;
+        private enablePickOff;
         private orbitControl;
         private pickedParentName;
     }
@@ -503,7 +546,7 @@ declare namespace JWFramework {
         SetPicker(): void;
         get NeedOnTerrain(): boolean;
         set NeedOnTerrain(flag: boolean);
-        private sceneManager;
+        protected sceneManager: SceneManager;
         private picker;
         private needOnTerrain;
         reloadScene: boolean;
@@ -536,12 +579,15 @@ declare namespace JWFramework {
         inSectorObject: GameObject[];
         private vertexNormalNeedUpdate;
         private opacity;
+        private cityUVFactor;
         row: number;
         col: number;
         private isDummy;
         private planSize;
         inSecter: boolean;
         cameraInSecter: boolean;
+        private useDirtTexture;
+        private useCityTexture;
     }
 }
 declare namespace JWFramework {
@@ -596,19 +642,6 @@ declare namespace JWFramework {
     }
 }
 declare namespace JWFramework {
-    interface Resettable {
-        reset(): void;
-    }
-    export class ObjectPool<T extends Resettable> {
-        private objects;
-        private objectClass;
-        constructor(objectClass: new () => T);
-        getObject(): T;
-        releaseObject(obj: T): void;
-    }
-    export {};
-}
-declare namespace JWFramework {
     class EditScene extends SceneBase {
         constructor(sceneManager: SceneManager);
         BuildSkyBox(): void;
@@ -616,12 +649,18 @@ declare namespace JWFramework {
         BuildLight(): void;
         BuildFog(): void;
         Animate(): void;
+        private MakeGizmo;
+        AttachGizmo(gameObject: GameObject): void;
+        DetachGizmo(gameObject: GameObject): void;
+        get GizmoOnOff(): boolean;
         private MakeSceneCloud;
         private InputProcess;
         private ReloadProcess;
         private directionalLight;
         private ambientLight;
         private makedCloud;
+        private gizmo;
+        private gizmoOnOff;
     }
 }
 declare namespace JWFramework {
@@ -659,7 +698,9 @@ declare namespace JWFramework {
         farmTexture: THREE.Texture;
         mountainTexture: THREE.Texture;
         factoryTexture: THREE.Texture;
+        cityTexture: THREE.Texture;
         fogTexture: THREE.Texture;
+        desertTexture: THREE.Texture;
         cloudTexture: THREE.Texture;
         missileFlameTexture: THREE.Texture;
         private composer;
@@ -708,23 +749,12 @@ declare namespace JWFramework {
         private static instance;
         static getInstance(): CollisionManager;
         CollideRayToTerrain(sorce: ObjectSet[]): void;
+        CollideRayToWater(sorce: ObjectSet[]): void;
         CollideBoxToBox(sorce: ObjectSet[], destination: ObjectSet[]): void;
         CollideObbToObb(sorce: any, destination: any): void;
         CollideObbToBox(sorce: ObjectSet[], destination: ObjectSet[]): void;
         CollideBoxToSphere(sorce: ObjectSet[], destination: ObjectSet[]): void;
         CollideSphereToSphere(sorce: ObjectSet[], destination: ObjectSet[]): void;
-    }
-}
-declare namespace JWFramework {
-    class GUIManager {
-        private static instance;
-        static getInstance(): GUIManager;
-        get GUI_Select(): GUI_Select;
-        get GUI_SRT(): GUI_SRT;
-        get GUI_Terrain(): GUI_Terrain;
-        private gui_Select;
-        private gui_SRT;
-        private gui_Terrain;
     }
 }
 declare namespace JWFramework {
@@ -738,6 +768,19 @@ declare namespace JWFramework {
         GetKeyState(keyName: string, keyState: KeyState): boolean;
         private keys;
     }
+}
+declare namespace JWFramework {
+    interface Resettable {
+        reset(): void;
+    }
+    export class ObjectPool<T extends Resettable> {
+        private objects;
+        private objectClass;
+        constructor(objectClass: new () => T);
+        getObject(): T;
+        releaseObject(obj: T): void;
+    }
+    export {};
 }
 declare namespace JWFramework {
     class TestCube extends GameObject {

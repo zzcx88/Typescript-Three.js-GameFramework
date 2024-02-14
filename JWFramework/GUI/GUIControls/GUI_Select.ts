@@ -32,11 +32,8 @@
                         item.push(objectList[TYPE][OBJ].Name);
                 }
             }
-            ////
-            //for (let i = 0; i < ObjectManager.getInstance().GetObjectList.length; ++i) {
-            //    if (ObjectManager.getInstance().GetObjectList[i].Name != "Terrain")
-            //        item[i] = ObjectManager.getInstance().GetObjectList[i].Name;
-            //}
+            item.push("Water");
+
             this.objectListFolder.add(this.List, 'ObjectList', item);
             this.objectListFolder.open();
 

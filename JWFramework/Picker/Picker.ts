@@ -6,6 +6,7 @@
         {
             this.raycaster = new THREE.Raycaster();
             this.pickedObject = null;
+            this.enablePickOff = true;
 
             this.pickMode = PickMode.PICK_MODIFY;
 
@@ -18,7 +19,9 @@
 
             window.addEventListener('click', function (e)
             {
-                SceneManager.getInstance().CurrentScene.Picker.SetPickPosition(e);
+                if (SceneManager.getInstance().CurrentScene.Picker.EnablePickOff)
+                    SceneManager.getInstance().CurrentScene.Picker.SetPickPosition(e);
+                SceneManager.getInstance().CurrentScene.Picker.EnablePickOff = true;
             });
             window.addEventListener('mouseout', function (e)
             {
@@ -52,7 +55,16 @@
                         this.pickedParentName = parentName;
                         return;
                     }
-                    this.pickedParentName = undefined;
+                    else
+                    {
+                        this.pickedParentName = intersectedObjects.name;
+                        return;
+                    }
+                    //this.pickedParentName = undefined;
+                }
+                if (intersectedObjects.type == "Sprite")
+                {
+                    this.pickedParentName = intersectedObjects.name;
                 }
                 if (intersectedObjects.type != "Group") {
                     this.GetParentName(intersectedObjects.parent);
@@ -68,8 +80,10 @@
         private PickOffObject()
         {
             let objectList = ObjectManager.getInstance().GetObjectList;
-            for (let TYPE = ObjectType.OBJ_OBJECT3D; TYPE < ObjectType.OBJ_OBJECT2D; ++TYPE) {
-                for (let OBJ = 0; OBJ < objectList[TYPE].length; ++OBJ) {
+            for (let TYPE = ObjectType.OBJ_OBJECT3D; TYPE < ObjectType.OBJ_OBJECT2D; ++TYPE)
+            {
+                for (let OBJ = 0; OBJ < objectList[TYPE].length; ++OBJ)
+                {
                     objectList[TYPE][OBJ].GameObject.Picked = false;
                 }
             }
@@ -84,12 +98,12 @@
             }
             this.PickOffObject();
             this.pickedObject = undefined;
-
             this.raycaster.setFromCamera({ x: this.pickPositionX, y: this.pickPositionY }, WorldManager.getInstance().MainCamera.CameraInstance);
 
             if (this.pickMode == PickMode.PICK_CLONE) {
                 let objectManager = ObjectManager.getInstance();
-                let intersectedObject = this.raycaster.intersectObjects(SceneManager.getInstance().SceneInstance.children.filter(o => !o.name.includes("cloud")), true);
+                //let intersectedObject = this.raycaster.intersectObjects(SceneManager.getInstance().SceneInstance.children.filter(o => !o.name.includes("cloud")), true);
+                let intersectedObject = this.raycaster.intersectObjects(objectManager.GetObjectList[ObjectType.OBJ_TERRAIN].map(o_ => o_.GameObject.GameObjectInstance));
 
                 //클론된 오브젝트를 생성한다.
                 if (intersectedObject[0] != undefined) {
@@ -108,7 +122,7 @@
                 GUIManager.getInstance().GUI_Terrain.SetTerrainOptionList();
                 let heightOffset = GUIManager.getInstance().GUI_Terrain.GetHeightOffset();
                 let objectManager = ObjectManager.getInstance();
-                let intersectedObject = this.raycaster.intersectObjects(SceneManager.getInstance().SceneInstance.children.filter(o => !o.name.includes("cloud")), true);
+                let intersectedObject = this.raycaster.intersectObjects(objectManager.GetObjectList[ObjectType.OBJ_TERRAIN].map(o_ => o_.GameObject.GameObjectInstance), true);
                 if (intersectedObject[0] != undefined) {
                     terrain = objectManager.GetObjectFromName(intersectedObject[0].object.name);
                     if (terrain != null && terrain.Type == ObjectType.OBJ_TERRAIN)
@@ -123,7 +137,7 @@
             else if (this.pickMode == PickMode.PICK_DUMMYTERRAIN)
             {
                 let objectManager = ObjectManager.getInstance();
-                let intersectedObject = this.raycaster.intersectObjects(SceneManager.getInstance().SceneInstance.children.filter(o => !o.name.includes("cloud")), true);
+                let intersectedObject = this.raycaster.intersectObjects(objectManager.GetObjectList[ObjectType.OBJ_TERRAIN].map(o_ => o_.GameObject.GameObjectInstance), true);
                 if (intersectedObject[0] != undefined)
                 {
                     terrain = objectManager.GetObjectFromName(intersectedObject[0].object.name);
@@ -136,7 +150,7 @@
                 //SceneManager.getInstance().SceneInstance.add(objectManager.GetInSectorTerrain());
             }
             else if (this.pickMode == PickMode.PICK_REMOVE) {
-                let intersectedObjects = this.raycaster.intersectObjects(SceneManager.getInstance().SceneInstance.children.filter(o => !o.name.includes("cloud")));
+                let intersectedObjects = this.raycaster.intersectObjects(ObjectManager.getInstance().PickableObjectList.map(o_ => o_.GameObject.GameObjectInstance));
                 if (intersectedObjects.length) {
                     this.GetParentName(intersectedObjects[0].object);
                     this.pickedParent = ObjectManager.getInstance().GetObjectFromName(this.pickedParentName);
@@ -146,7 +160,8 @@
             }
             else
             {
-                let intersectedObjects = this.raycaster.intersectObjects(SceneManager.getInstance().SceneInstance.children.filter(o => !o.name.includes("cloud")));
+                //let intersectedObjects = this.raycaster.intersectObjects(SceneManager.getInstance().SceneInstance.children.filter(o => !o.name.includes("cloud")));
+                let intersectedObjects = this.raycaster.intersectObjects(ObjectManager.getInstance().PickableObjectList.map(o_ => o_.GameObject.GameObjectInstance));
                 if (intersectedObjects.length) {
                     this.GetParentName(intersectedObjects[0].object);
                     this.pickedParent = ObjectManager.getInstance().GetObjectFromName(this.pickedParentName);
@@ -155,6 +170,8 @@
                         this.pickedParent.Picked = true;
                         GUIManager.getInstance().GUI_SRT.SetGameObject(this.pickedParent);
                     }
+                    else
+                        GUIManager.getInstance().GUI_SRT.SetGameObject(undefined);
                 }
             }
         }
@@ -221,6 +238,16 @@
             return this.orbitControl;
         }
 
+        public get EnablePickOff()
+        {
+            return this.enablePickOff;
+        }
+
+        public set EnablePickOff(value: boolean)
+        {
+            this.enablePickOff = value;
+        }
+
         public GetPickParents(): GameObject
         {
             return this.pickedParent;
@@ -235,6 +262,7 @@
         private pickedParent: GameObject;
         private pickPositionX = 0;
         private pickPositionY = 0;
+        private enablePickOff: boolean = true;
 
         private orbitControl: THREE.OrbitControls;
 

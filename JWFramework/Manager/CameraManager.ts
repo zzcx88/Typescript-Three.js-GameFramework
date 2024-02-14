@@ -14,6 +14,11 @@
             return CameraManager.instance;
         }
 
+        public get MainCamera(): Camera
+        {
+            return WorldManager.getInstance().MainCamera;
+        }
+
         public get CameraMode(): CameraMode
         {
             return this.cameraMode;
@@ -35,43 +40,44 @@
 
         private ChangeThridPersonCamera()
         {
+            let sceneManager = SceneManager.getInstance();
             this.cameraMode = CameraMode.CAMERA_3RD;
-            SceneManager.getInstance().CurrentScene.Picker.OrbitControl.enabled = false;
+            sceneManager.CurrentScene.Picker.OrbitControl.enabled = false;
 
-            let gameObjectForCamera = SceneManager.getInstance().CurrentScene.Picker.GetPickParents();
-            gameObjectForCamera.GameObjectInstance.add(WorldManager.getInstance().MainCamera.CameraInstance);
+            let gameObjectForCamera = sceneManager.CurrentScene.Picker.GetPickParents();
+            gameObjectForCamera.GameObjectInstance.add(this.MainCamera.CameraInstance);
+            let cameraPosition = gameObjectForCamera.PhysicsComponent.GetPosition();
 
-            WorldManager.getInstance().MainCamera.CameraInstance.lookAt(gameObjectForCamera.PhysicsComponent.GetPosition().x,
-                gameObjectForCamera.PhysicsComponent.GetPosition().y + 1.5, gameObjectForCamera.PhysicsComponent.GetPosition().z);
+            this.MainCamera.CameraInstance.lookAt(cameraPosition.x,
+                cameraPosition.y + 1.5, cameraPosition.z);
 
-            WorldManager.getInstance().MainCamera.PhysicsComponent.SetPostion(0, 0, 0);
+            this.MainCamera.PhysicsComponent.SetPostion(0, 0, 0);
 
             let Up = new THREE.Vector3(0, 1, 0);
             let Look = new THREE.Vector3(0, 0, 1);
 
-            JWFramework.WorldManager.getInstance().MainCamera.PhysicsComponent.GetPosition().add(Up.multiplyScalar(0.6));
-            JWFramework.WorldManager.getInstance().MainCamera.PhysicsComponent.GetPosition().add(Look.multiplyScalar(-3.7));
-            //WorldManager.getInstance().MainCamera.Animate();
+            this.MainCamera.PhysicsComponent.GetPosition().add(Up.multiplyScalar(0.6));
+            this.MainCamera.PhysicsComponent.GetPosition().add(Look.multiplyScalar(-3.7));
         }
 
 
         private ChangeOrbitCamera()
         {
+            let sceneManager = SceneManager.getInstance();
+            let picker = sceneManager.CurrentScene.Picker;
+
             this.cameraMode = CameraMode.CAMERA_ORBIT;
-            SceneManager.getInstance().CurrentScene.Picker.OrbitControl.enabled = true;
+            picker.OrbitControl.enabled = true;
             let tartgetLocation: THREE.Vector3 = new THREE.Vector3;
-            let gameObjectForCamera = SceneManager.getInstance().CurrentScene.Picker.GetPickParents();
-            gameObjectForCamera.GameObjectInstance.remove(WorldManager.getInstance().MainCamera.CameraInstance);
-            //WorldManager.getInstance().MainCamera.PhysicsComponent.SetPostion(
-            //    gameObjectForCamera.PhysicsComponent.GetPosition().x,
-            //    gameObjectForCamera.PhysicsComponent.GetPosition().y + 20,
-            //    gameObjectForCamera.PhysicsComponent.GetPosition().z
-            //);
-            SceneManager.getInstance().CurrentScene.Picker.OrbitControl.object.position.x = gameObjectForCamera.PhysicsComponent.GetPosition().x;
-            SceneManager.getInstance().CurrentScene.Picker.OrbitControl.object.position.y = gameObjectForCamera.PhysicsComponent.GetPosition().y + 15;
-            SceneManager.getInstance().CurrentScene.Picker.OrbitControl.object.position.z = gameObjectForCamera.PhysicsComponent.GetPosition().z;
-            SceneManager.getInstance().CurrentScene.Picker.OrbitControl.target = tartgetLocation.copy(gameObjectForCamera.PhysicsComponent.GetPosition());
-            WorldManager.getInstance().MainCamera.CameraInstance.lookAt(gameObjectForCamera.PhysicsComponent.GetPosition());
+            let gameObjectForCamera = sceneManager.CurrentScene.Picker.GetPickParents();
+            gameObjectForCamera.GameObjectInstance.remove(this.MainCamera.CameraInstance);
+
+            picker.OrbitControl.object.position.x = gameObjectForCamera.PhysicsComponent.GetPosition().x;
+            picker.OrbitControl.object.position.y = gameObjectForCamera.PhysicsComponent.GetPosition().y + 15;
+            picker.OrbitControl.object.position.z = gameObjectForCamera.PhysicsComponent.GetPosition().z;
+
+            picker.OrbitControl.target = tartgetLocation.copy(gameObjectForCamera.PhysicsComponent.GetPosition());
+            this.MainCamera.CameraInstance.lookAt(gameObjectForCamera.PhysicsComponent.GetPosition());
         }
         private cameraMode: CameraMode;
     }

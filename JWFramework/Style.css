@@ -14,14 +14,14 @@ canvas {
 
 #select-gui-container {
     position: absolute;
-    top: 390px;
+    top: 550px;
     right: 0px;
     z-index: 10;
 }
 
 #terrain-gui-container {
     position: absolute;
-    top: 500px;
+    top: 660px;
     right: 0px;
     z-index: 10;
 }
