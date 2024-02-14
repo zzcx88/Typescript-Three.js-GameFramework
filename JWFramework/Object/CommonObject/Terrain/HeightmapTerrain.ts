@@ -88,7 +88,7 @@ namespace JWFramework {
             // this.material.gradientMap = this.gradientmap;
 
             //this.material.normalMap = new THREE.TextureLoader().load("Model/Heightmap/TerrainTexture_N.png");
-            //this.material.wireframe = false;
+            //this.material.wireframe = true;
 
             let rotation = new THREE.Matrix4().makeRotationX(-Math.PI / 2);
             this.planeGeomatry.applyMatrix4(rotation);
@@ -165,74 +165,73 @@ namespace JWFramework {
             else {
                 this.planeGeomatry.getAttribute('position').setY(index, height += value);
             }
+            if (this.isDummy == false) {
+                let objectList = ObjectManager.getInstance().GetObjectList;
+                let endPointIndex = this.planeGeomatry.getAttribute('position').count - 1;
+                let oldheight: number = this.planeGeomatry.getAttribute('position').getY(index);
 
-            let objectList = ObjectManager.getInstance().GetObjectList;
-            let endPointIndex = this.planeGeomatry.getAttribute('position').count - 1;
-            let oldheight: number = this.planeGeomatry.getAttribute('position').getY(index);
+                if (this.planeGeomatry.getAttribute('position').getX(index) == this.planSize / 2) {
+                    if (objectList[ObjectType.OBJ_TERRAIN][this.terrainIndex + 1]) {
+                        let terrain = objectList[ObjectType.OBJ_TERRAIN][this.terrainIndex + 1].GameObject;
+                        (terrain as unknown as HeightmapTerrain).planeGeomatry.getAttribute('position').needsUpdate = true;
+                        (terrain as unknown as HeightmapTerrain).planeGeomatry.getAttribute('position').setY(index - this.segmentHeight, oldheight);
 
-            if (this.planeGeomatry.getAttribute('position').getX(index) == this.planSize / 2) {
-                if (objectList[ObjectType.OBJ_TERRAIN][this.terrainIndex + 1]) {
-                    let terrain = objectList[ObjectType.OBJ_TERRAIN][this.terrainIndex + 1].GameObject;
-                    (terrain as unknown as HeightmapTerrain).planeGeomatry.getAttribute('position').needsUpdate = true;
-                    (terrain as unknown as HeightmapTerrain).planeGeomatry.getAttribute('position').setY(index - this.segmentHeight, oldheight);
+                        if (index == endPointIndex) {
+                            if (objectList[ObjectType.OBJ_TERRAIN][this.terrainIndex + (this.row + 1)]) {
+                                let terrain = objectList[ObjectType.OBJ_TERRAIN][this.terrainIndex + (this.row + 1)].GameObject;
+                                (terrain as unknown as HeightmapTerrain).planeGeomatry.getAttribute('position').needsUpdate = true;
+                                (terrain as unknown as HeightmapTerrain).planeGeomatry.getAttribute('position').setY(0, oldheight);
+                            }
+                        }
 
-                    if (index == endPointIndex)
-                    {
-                        if (objectList[ObjectType.OBJ_TERRAIN][this.terrainIndex + (this.row + 1)])
-                        {
-                            let terrain = objectList[ObjectType.OBJ_TERRAIN][this.terrainIndex + (this.row + 1)].GameObject;
+                        else if (index == this.segmentWidth) {
+                            if (objectList[ObjectType.OBJ_TERRAIN][this.terrainIndex - (this.row - 1)]) {
+                                let terrain = objectList[ObjectType.OBJ_TERRAIN][this.terrainIndex - (this.row - 1)].GameObject;
+                                (terrain as unknown as HeightmapTerrain).planeGeomatry.getAttribute('position').needsUpdate = true;
+                                (terrain as unknown as HeightmapTerrain).planeGeomatry.getAttribute('position').setY(endPointIndex - this.segmentWidth, oldheight);
+                            }
+                        }
+                    }
+                }
+
+                if (this.planeGeomatry.getAttribute('position').getX(index) == -(this.planSize / 2)) {
+                    if (objectList[ObjectType.OBJ_TERRAIN][this.terrainIndex - 1]) {
+                        let terrain = objectList[ObjectType.OBJ_TERRAIN][this.terrainIndex - 1].GameObject;
+                        (terrain as unknown as HeightmapTerrain).planeGeomatry.getAttribute('position').needsUpdate = true;
+                        (terrain as unknown as HeightmapTerrain).planeGeomatry.getAttribute('position').setY(index + this.segmentHeight, oldheight);
+                    }
+
+                    if (index == 0) {
+                        if (objectList[ObjectType.OBJ_TERRAIN][this.terrainIndex - (this.row + 1)]) {
+                            let terrain = objectList[ObjectType.OBJ_TERRAIN][this.terrainIndex - (this.row + 1)].GameObject;
                             (terrain as unknown as HeightmapTerrain).planeGeomatry.getAttribute('position').needsUpdate = true;
-                            (terrain as unknown as HeightmapTerrain).planeGeomatry.getAttribute('position').setY(0, oldheight);
+                            (terrain as unknown as HeightmapTerrain).planeGeomatry.getAttribute('position').setY(endPointIndex, oldheight);
                         }
                     }
 
-                    else if (index == this.segmentWidth) {
-                        if (objectList[ObjectType.OBJ_TERRAIN][this.terrainIndex - (this.row - 1)]) {
-                            let terrain = objectList[ObjectType.OBJ_TERRAIN][this.terrainIndex - (this.row - 1)].GameObject;
+                    else if (index == endPointIndex - this.segmentWidth) {
+                        if (objectList[ObjectType.OBJ_TERRAIN][this.terrainIndex + (this.row - 1)]) {
+                            let terrain = objectList[ObjectType.OBJ_TERRAIN][this.terrainIndex + (this.row - 1)].GameObject;
                             (terrain as unknown as HeightmapTerrain).planeGeomatry.getAttribute('position').needsUpdate = true;
-                            (terrain as unknown as HeightmapTerrain).planeGeomatry.getAttribute('position').setY(endPointIndex - this.segmentWidth, oldheight);
+                            (terrain as unknown as HeightmapTerrain).planeGeomatry.getAttribute('position').setY(this.segmentWidth, oldheight);
                         }
                     }
                 }
-            }
 
-            if (this.planeGeomatry.getAttribute('position').getX(index) == -(this.planSize / 2)) {
-                if (objectList[ObjectType.OBJ_TERRAIN][this.terrainIndex - 1]) {
-                    let terrain = objectList[ObjectType.OBJ_TERRAIN][this.terrainIndex - 1].GameObject;
-                    (terrain as unknown as HeightmapTerrain).planeGeomatry.getAttribute('position').needsUpdate = true;
-                    (terrain as unknown as HeightmapTerrain).planeGeomatry.getAttribute('position').setY(index + this.segmentHeight, oldheight);
-                }
-
-                if (index == 0) {
-                    if (objectList[ObjectType.OBJ_TERRAIN][this.terrainIndex - (this.row + 1)]) {
-                        let terrain = objectList[ObjectType.OBJ_TERRAIN][this.terrainIndex - (this.row + 1)].GameObject;
+                if (this.planeGeomatry.getAttribute('position').getZ(index) == this.planSize / 2) {
+                    if (objectList[ObjectType.OBJ_TERRAIN][this.terrainIndex + this.col]) {
+                        let terrain = objectList[ObjectType.OBJ_TERRAIN][this.terrainIndex + this.col].GameObject;
                         (terrain as unknown as HeightmapTerrain).planeGeomatry.getAttribute('position').needsUpdate = true;
-                        (terrain as unknown as HeightmapTerrain).planeGeomatry.getAttribute('position').setY(endPointIndex, oldheight);
+                        (terrain as unknown as HeightmapTerrain).planeGeomatry.getAttribute('position').setY(index - (endPointIndex - this.segmentWidth), oldheight);
                     }
                 }
 
-                else if (index == endPointIndex - this.segmentWidth) {
-                    if (objectList[ObjectType.OBJ_TERRAIN][this.terrainIndex + (this.row - 1)]) {
-                        let terrain = objectList[ObjectType.OBJ_TERRAIN][this.terrainIndex + (this.row - 1)].GameObject;
+                if (this.planeGeomatry.getAttribute('position').getZ(index) == -(this.planSize / 2)) {
+                    if (objectList[ObjectType.OBJ_TERRAIN][this.terrainIndex - this.col]) {
+                        let terrain = objectList[ObjectType.OBJ_TERRAIN][this.terrainIndex - this.col].GameObject;
                         (terrain as unknown as HeightmapTerrain).planeGeomatry.getAttribute('position').needsUpdate = true;
-                        (terrain as unknown as HeightmapTerrain).planeGeomatry.getAttribute('position').setY(this.segmentWidth, oldheight);
+                        (terrain as unknown as HeightmapTerrain).planeGeomatry.getAttribute('position').setY(index + (endPointIndex - this.segmentWidth), oldheight);
                     }
-                }
-            }
-
-            if (this.planeGeomatry.getAttribute('position').getZ(index) == this.planSize / 2) {
-                if (objectList[ObjectType.OBJ_TERRAIN][this.terrainIndex + this.col]) {
-                    let terrain = objectList[ObjectType.OBJ_TERRAIN][this.terrainIndex + this.col].GameObject;
-                    (terrain as unknown as HeightmapTerrain).planeGeomatry.getAttribute('position').needsUpdate = true;
-                    (terrain as unknown as HeightmapTerrain).planeGeomatry.getAttribute('position').setY(index - (endPointIndex - this.segmentWidth), oldheight);
-                }
-            }
-
-            if (this.planeGeomatry.getAttribute('position').getZ(index) == -(this.planSize / 2)) {
-                if (objectList[ObjectType.OBJ_TERRAIN][this.terrainIndex - this.col]) {
-                    let terrain = objectList[ObjectType.OBJ_TERRAIN][this.terrainIndex - this.col].GameObject;
-                    (terrain as unknown as HeightmapTerrain).planeGeomatry.getAttribute('position').needsUpdate = true;
-                    (terrain as unknown as HeightmapTerrain).planeGeomatry.getAttribute('position').setY(index + (endPointIndex - this.segmentWidth), oldheight);
                 }
             }
 
