@@ -1,5 +1,6 @@
 # ThreeJS_with_typescript
 ThreeJS Gameframework
+![1](https://github.com/zzcx88/Typescript-Three.js-GameFramework/assets/28297467/a3ca7c69-c021-4f1a-b486-ed2dd715c3dc)
 
 ![Add   SRT](https://user-images.githubusercontent.com/28297467/219438755-5855d5c4-f30d-4fdc-8a1c-ab5b8251367e.gif)
 
