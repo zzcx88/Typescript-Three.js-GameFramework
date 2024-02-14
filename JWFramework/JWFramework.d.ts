@@ -770,19 +770,6 @@ declare namespace JWFramework {
     }
 }
 declare namespace JWFramework {
-    interface Resettable {
-        reset(): void;
-    }
-    export class ObjectPool<T extends Resettable> {
-        private objects;
-        private objectClass;
-        constructor(objectClass: new () => T);
-        getObject(): T;
-        releaseObject(obj: T): void;
-    }
-    export {};
-}
-declare namespace JWFramework {
     class TestCube extends GameObject {
         constructor();
         InitializeAfterLoad(): void;
@@ -816,31 +803,6 @@ declare namespace JWFramework {
     }
 }
 declare namespace JWFramework {
-    class IRCircle extends GameObject {
-        constructor();
-        InitializeAfterLoad(): void;
-        private CreateMesh;
-        Animate(): void;
-        private mesh;
-        private material;
-        private geometry;
-        private player;
-    }
-}
-declare namespace JWFramework {
-    class StageScene extends SceneBase {
-        constructor(sceneManager: SceneManager);
-        BuildSkyBox(): void;
-        BuildObject(): void;
-        BuildLight(): void;
-        BuildFog(): void;
-        Animate(): void;
-        private light;
-        private light2;
-        private terrain;
-    }
-}
-declare namespace JWFramework {
     class LowCloud extends GameObject {
         constructor();
         BuildClouds(x: number, y: number, z: number): void;
@@ -854,5 +816,43 @@ declare namespace JWFramework {
         private positions;
         private scales;
         private prevMatrix;
+    }
+}
+declare namespace JWFramework {
+    class IRCircle extends GameObject {
+        constructor();
+        InitializeAfterLoad(): void;
+        private CreateMesh;
+        Animate(): void;
+        private mesh;
+        private material;
+        private geometry;
+        private player;
+    }
+}
+declare namespace JWFramework {
+    interface Resettable {
+        reset(): void;
+    }
+    export class ObjectPool<T extends Resettable> {
+        private objects;
+        private objectClass;
+        constructor(objectClass: new () => T);
+        getObject(): T;
+        releaseObject(obj: T): void;
+    }
+    export {};
+}
+declare namespace JWFramework {
+    class StageScene extends SceneBase {
+        constructor(sceneManager: SceneManager);
+        BuildSkyBox(): void;
+        BuildObject(): void;
+        BuildLight(): void;
+        BuildFog(): void;
+        Animate(): void;
+        private light;
+        private light2;
+        private terrain;
     }
 }

@@ -3117,14 +3117,10 @@ var JWFramework;
         }
         CollideRayToWater(sorce) {
             sorce.forEach(function (src) {
-                let destination;
-                if (JWFramework.SceneManager.getInstance().CurrentScene.NeedOnTerrain == true)
-                    destination = JWFramework.ObjectManager.getInstance().GetObjectList[JWFramework.ObjectType.OBJ_OBJECT3D].filter(o_ => o_.GameObject.IsClone).map(o_ => o_.GameObject);
-                else
-                    destination = JWFramework.ObjectManager.getInstance().GetObjectList[JWFramework.ObjectType.OBJ_OBJECT3D].filter(o_ => o_.GameObject.IsClone && o_.GameObject.Picked).map(o_ => o_.GameObject);
+                let destination = JWFramework.ObjectManager.getInstance().GetObjectList[JWFramework.ObjectType.OBJ_OBJECT3D].filter(o_ => o_.GameObject.IsClone).map(o_ => o_.GameObject);
                 destination.forEach(function (dst) {
                     if (dst.CollisionComponent != null && dst.CollisionComponent.Raycaster != null)
-                        if ((src.GameObject != undefined && dst.IsRayOn == true)) {
+                        if ((src.GameObject != undefined && dst.IsRayOn == true) || JWFramework.SceneManager.getInstance().CurrentScene.NeedOnTerrain == true) {
                             let intersect = dst.CollisionComponent.Raycaster.intersectObject(src.GameObject.GameObjectInstance);
                             if (intersect[0] != undefined) {
                                 if (intersect[0].distance < 1) {
@@ -3315,30 +3311,6 @@ var JWFramework;
 })(JWFramework || (JWFramework = {}));
 var JWFramework;
 (function (JWFramework) {
-    class ObjectPool {
-        constructor(objectClass) {
-            this.objects = [];
-            this.objectClass = objectClass;
-        }
-        getObject() {
-            let obj;
-            if (this.objects.length > 0) {
-                obj = this.objects.pop();
-            }
-            else {
-                obj = new this.objectClass();
-            }
-            return obj;
-        }
-        releaseObject(obj) {
-            obj.reset();
-            this.objects.push(obj);
-        }
-    }
-    JWFramework.ObjectPool = ObjectPool;
-})(JWFramework || (JWFramework = {}));
-var JWFramework;
-(function (JWFramework) {
     class TestCube extends JWFramework.GameObject {
         constructor() {
             super();
@@ -3455,102 +3427,6 @@ var JWFramework;
 })(JWFramework || (JWFramework = {}));
 var JWFramework;
 (function (JWFramework) {
-    class IRCircle extends JWFramework.GameObject {
-        constructor() {
-            super();
-            this.type = JWFramework.ObjectType.OBJ_OBJECT2D;
-            this.name = "Ircircle" + JWFramework.ObjectManager.getInstance().GetObjectList[JWFramework.ObjectType.OBJ_OBJECT2D].length;
-            this.physicsComponent = new JWFramework.PhysicsComponent(this);
-            this.graphicComponent = new JWFramework.GraphComponent(this);
-            this.CreateMesh();
-        }
-        InitializeAfterLoad() {
-            this.GameObjectInstance.matrixAutoUpdate = true;
-            this.PhysicsComponent.SetScaleScalar(1);
-            this.GameObjectInstance.name = this.name;
-            JWFramework.SceneManager.getInstance().SceneInstance.add(this.gameObjectInstance);
-            JWFramework.ObjectManager.getInstance().AddObject(this, this.name, this.Type);
-        }
-        CreateMesh() {
-            this.material = new THREE.MeshBasicMaterial({
-                color: new THREE.Color().setColorName("Red"),
-                transparent: true,
-                side: THREE.DoubleSide,
-                depthTest: false
-            });
-            this.geometry = new THREE.RingGeometry(1, 1, 32);
-            this.mesh = new THREE.Mesh(this.geometry, this.material);
-            this.GameObjectInstance = this.mesh;
-            this.InitializeAfterLoad();
-        }
-        Animate() {
-        }
-    }
-    JWFramework.IRCircle = IRCircle;
-})(JWFramework || (JWFramework = {}));
-var JWFramework;
-(function (JWFramework) {
-    class StageScene extends JWFramework.SceneBase {
-        constructor(sceneManager) {
-            super(sceneManager);
-            this.terrain = [];
-        }
-        BuildSkyBox() {
-        }
-        BuildObject() {
-            JWFramework.ModelLoadManager.getInstance().LoadScene();
-            let rotation = new THREE.Matrix4().makeRotationY(-Math.PI);
-            JWFramework.WorldManager.getInstance().MainCamera.CameraInstance.applyMatrix4(rotation);
-        }
-        BuildLight() {
-            this.light = new JWFramework.Light(JWFramework.LightType.LIGHT_DIRECTIONAL);
-            this.light.SetColor(0xFFFFFF);
-            this.light.Intensity = 1.5;
-            this.light.GameObjectInstance.position.set(10000, 10000, 0);
-            this.light2 = new JWFramework.Light(JWFramework.LightType.LIGHT_DIRECTIONAL);
-            this.light2.SetColor(0xFFFFFF);
-            this.light2.Intensity = 0.7;
-            this.light2.GameObjectInstance.position.set(-10000, -10000, 0);
-            this.SceneManager.SceneInstance.add(this.light.GameObjectInstance);
-        }
-        BuildFog() {
-            let sceneInstance = this.SceneManager.SceneInstance;
-            let color = 0xdefdff;
-            sceneInstance.fog = new THREE.Fog(color, 10, 1000);
-        }
-        Animate() {
-            if (JWFramework.ModelLoadManager.getInstance().LoadComplete == true) {
-                JWFramework.ObjectManager.getInstance().Animate();
-                if (JWFramework.InputManager.getInstance().GetKeyState('1', JWFramework.KeyState.KEY_DOWN)) {
-                    this.Picker.ChangePickModeModify();
-                }
-                if (JWFramework.InputManager.getInstance().GetKeyState('2', JWFramework.KeyState.KEY_DOWN)) {
-                    this.Picker.ChangePickModeClone();
-                }
-                if (JWFramework.InputManager.getInstance().GetKeyState('3', JWFramework.KeyState.KEY_DOWN)) {
-                    this.Picker.ChangePickModeTerrain();
-                }
-                if (JWFramework.InputManager.getInstance().GetKeyState('4', JWFramework.KeyState.KEY_DOWN)) {
-                    this.Picker.ChangePickModeRemove();
-                }
-                if (JWFramework.InputManager.getInstance().GetKeyState('5', JWFramework.KeyState.KEY_DOWN)) {
-                    fetch("./Model/Scene.json")
-                        .then(response => {
-                        return response.json();
-                    })
-                        .then(jsondata => console.log(jsondata[0]));
-                    this.BuildObject();
-                }
-                if (JWFramework.InputManager.getInstance().GetKeyState('delete', JWFramework.KeyState.KEY_DOWN)) {
-                    JWFramework.ObjectManager.getInstance().DeleteAllObject();
-                }
-            }
-        }
-    }
-    JWFramework.StageScene = StageScene;
-})(JWFramework || (JWFramework = {}));
-var JWFramework;
-(function (JWFramework) {
     class LowCloud extends JWFramework.GameObject {
         constructor() {
             super();
@@ -3640,5 +3516,125 @@ var JWFramework;
         }
     }
     JWFramework.LowCloud = LowCloud;
+})(JWFramework || (JWFramework = {}));
+var JWFramework;
+(function (JWFramework) {
+    class IRCircle extends JWFramework.GameObject {
+        constructor() {
+            super();
+            this.type = JWFramework.ObjectType.OBJ_OBJECT2D;
+            this.name = "Ircircle" + JWFramework.ObjectManager.getInstance().GetObjectList[JWFramework.ObjectType.OBJ_OBJECT2D].length;
+            this.physicsComponent = new JWFramework.PhysicsComponent(this);
+            this.graphicComponent = new JWFramework.GraphComponent(this);
+            this.CreateMesh();
+        }
+        InitializeAfterLoad() {
+            this.GameObjectInstance.matrixAutoUpdate = true;
+            this.PhysicsComponent.SetScaleScalar(1);
+            this.GameObjectInstance.name = this.name;
+            JWFramework.SceneManager.getInstance().SceneInstance.add(this.gameObjectInstance);
+            JWFramework.ObjectManager.getInstance().AddObject(this, this.name, this.Type);
+        }
+        CreateMesh() {
+            this.material = new THREE.MeshBasicMaterial({
+                color: new THREE.Color().setColorName("Red"),
+                transparent: true,
+                side: THREE.DoubleSide,
+                depthTest: false
+            });
+            this.geometry = new THREE.RingGeometry(1, 1, 32);
+            this.mesh = new THREE.Mesh(this.geometry, this.material);
+            this.GameObjectInstance = this.mesh;
+            this.InitializeAfterLoad();
+        }
+        Animate() {
+        }
+    }
+    JWFramework.IRCircle = IRCircle;
+})(JWFramework || (JWFramework = {}));
+var JWFramework;
+(function (JWFramework) {
+    class ObjectPool {
+        constructor(objectClass) {
+            this.objects = [];
+            this.objectClass = objectClass;
+        }
+        getObject() {
+            let obj;
+            if (this.objects.length > 0) {
+                obj = this.objects.pop();
+            }
+            else {
+                obj = new this.objectClass();
+            }
+            return obj;
+        }
+        releaseObject(obj) {
+            obj.reset();
+            this.objects.push(obj);
+        }
+    }
+    JWFramework.ObjectPool = ObjectPool;
+})(JWFramework || (JWFramework = {}));
+var JWFramework;
+(function (JWFramework) {
+    class StageScene extends JWFramework.SceneBase {
+        constructor(sceneManager) {
+            super(sceneManager);
+            this.terrain = [];
+        }
+        BuildSkyBox() {
+        }
+        BuildObject() {
+            JWFramework.ModelLoadManager.getInstance().LoadScene();
+            let rotation = new THREE.Matrix4().makeRotationY(-Math.PI);
+            JWFramework.WorldManager.getInstance().MainCamera.CameraInstance.applyMatrix4(rotation);
+        }
+        BuildLight() {
+            this.light = new JWFramework.Light(JWFramework.LightType.LIGHT_DIRECTIONAL);
+            this.light.SetColor(0xFFFFFF);
+            this.light.Intensity = 1.5;
+            this.light.GameObjectInstance.position.set(10000, 10000, 0);
+            this.light2 = new JWFramework.Light(JWFramework.LightType.LIGHT_DIRECTIONAL);
+            this.light2.SetColor(0xFFFFFF);
+            this.light2.Intensity = 0.7;
+            this.light2.GameObjectInstance.position.set(-10000, -10000, 0);
+            this.SceneManager.SceneInstance.add(this.light.GameObjectInstance);
+        }
+        BuildFog() {
+            let sceneInstance = this.SceneManager.SceneInstance;
+            let color = 0xdefdff;
+            sceneInstance.fog = new THREE.Fog(color, 10, 1000);
+        }
+        Animate() {
+            if (JWFramework.ModelLoadManager.getInstance().LoadComplete == true) {
+                JWFramework.ObjectManager.getInstance().Animate();
+                if (JWFramework.InputManager.getInstance().GetKeyState('1', JWFramework.KeyState.KEY_DOWN)) {
+                    this.Picker.ChangePickModeModify();
+                }
+                if (JWFramework.InputManager.getInstance().GetKeyState('2', JWFramework.KeyState.KEY_DOWN)) {
+                    this.Picker.ChangePickModeClone();
+                }
+                if (JWFramework.InputManager.getInstance().GetKeyState('3', JWFramework.KeyState.KEY_DOWN)) {
+                    this.Picker.ChangePickModeTerrain();
+                }
+                if (JWFramework.InputManager.getInstance().GetKeyState('4', JWFramework.KeyState.KEY_DOWN)) {
+                    this.Picker.ChangePickModeRemove();
+                }
+                if (JWFramework.InputManager.getInstance().GetKeyState('5', JWFramework.KeyState.KEY_DOWN)) {
+                    fetch("./Model/Scene.json")
+                        .then(response => {
+                        return response.json();
+                    })
+                        .then(jsondata => console.log(jsondata[0]));
+                    this.BuildObject();
+                }
+                if (JWFramework.InputManager.getInstance().GetKeyState('delete', JWFramework.KeyState.KEY_DOWN)) {
+                    JWFramework.ObjectManager.getInstance().DeleteAllObject();
+                }
+            }
+        }
+    }
+    JWFramework.StageScene = StageScene;
 })(JWFramework || (JWFramework = {}));
 //# sourceMappingURL=JWFramework.js.map

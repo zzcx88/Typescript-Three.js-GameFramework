@@ -59,15 +59,11 @@
         {
             sorce.forEach(function (src)
             {
-                let destination;
-                if (SceneManager.getInstance().CurrentScene.NeedOnTerrain == true)
-                    destination = ObjectManager.getInstance().GetObjectList[ObjectType.OBJ_OBJECT3D].filter(o_ => o_.GameObject.IsClone).map(o_ => o_.GameObject);
-                else
-                    destination = ObjectManager.getInstance().GetObjectList[ObjectType.OBJ_OBJECT3D].filter(o_ => o_.GameObject.IsClone && o_.GameObject.Picked).map(o_ => o_.GameObject);
+                let destination = ObjectManager.getInstance().GetObjectList[ObjectType.OBJ_OBJECT3D].filter(o_ => o_.GameObject.IsClone).map(o_ => o_.GameObject);
                 destination.forEach(function (dst)
                 {
                     if (dst.CollisionComponent != null && dst.CollisionComponent.Raycaster != null)
-                        if ((src.GameObject != undefined && dst.IsRayOn == true))
+                        if ((src.GameObject != undefined && dst.IsRayOn == true) || SceneManager.getInstance().CurrentScene.NeedOnTerrain == true)
                         {
                             let intersect = dst.CollisionComponent.Raycaster.intersectObject(src.GameObject.GameObjectInstance);
                             if (intersect[0] != undefined)
