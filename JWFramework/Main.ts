@@ -7,9 +7,9 @@
 
     let stats = new Stats();
     stats.showPanel(0); // 0: fps, 1: ms, 2: mb, 3+: custom
-    stats.dom.style.top = "450px";
-    stats.dom.style.left = "5px";
-    document.body.appendChild(stats.dom);
+    stats.dom.style.top = "auto";
+    stats.dom.style.left = "auto";
+    document.getElementById("info").appendChild(stats.dom);
 
     //GameLoop
     const main = function ()

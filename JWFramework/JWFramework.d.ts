@@ -656,6 +656,7 @@ declare namespace JWFramework {
         private MakeSceneCloud;
         private InputProcess;
         private ReloadProcess;
+        private testLoad;
         private directionalLight;
         private ambientLight;
         private makedCloud;
@@ -751,7 +752,7 @@ declare namespace JWFramework {
         CollideRayToTerrain(sorce: ObjectSet[]): void;
         CollideRayToWater(sorce: ObjectSet[]): void;
         CollideBoxToBox(sorce: ObjectSet[], destination: ObjectSet[]): void;
-        CollideObbToObb(sorce: any, destination: any): void;
+        CollideObbToObb(sorce: GameObject[], destination: GameObject[]): void;
         CollideObbToBox(sorce: ObjectSet[], destination: ObjectSet[]): void;
         CollideBoxToSphere(sorce: ObjectSet[], destination: ObjectSet[]): void;
         CollideSphereToSphere(sorce: ObjectSet[], destination: ObjectSet[]): void;

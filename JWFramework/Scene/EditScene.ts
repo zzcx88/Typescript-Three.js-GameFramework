@@ -61,6 +61,18 @@ namespace JWFramework
         {
             if (ModelLoadManager.getInstance().LoadComplete == true)
             {
+                if (this.testLoad == false)
+                {
+                    let button = document.createElement("button");
+                    button.innerHTML = "LoadScene";
+                    button.addEventListener("click", function () {
+                        ObjectManager.getInstance().DeleteAllObject();
+                        (SceneManager.getInstance().CurrentScene as EditScene).reloadScene = true;
+                    });
+                    // 버튼을 문서에 추가
+                    document.getElementById("info").appendChild(button);
+                    this.testLoad = true;
+                }
                 this.MakeGizmo();
                 this.MakeSceneCloud();
                 ObjectManager.getInstance().Animate();
@@ -212,6 +224,7 @@ namespace JWFramework
             }
         }
 
+        private testLoad = false;
         private directionalLight: Light;
         private ambientLight: Light;
         private makedCloud: boolean = false;

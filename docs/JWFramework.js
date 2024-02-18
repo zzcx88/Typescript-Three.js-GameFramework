@@ -31,7 +31,7 @@ var JWFramework;
             this.halfSize = halfSize;
             this.orientedBoundingBox = new THREE.OBB();
             let color = new THREE.Color().setColorName("Red");
-            let obbGeometry = new THREE.BoxGeometry(this.halfSize.x, this.halfSize.y, this.halfSize.z);
+            let obbGeometry = new THREE.BoxGeometry(this.halfSize.x * 2, this.halfSize.y * 2, this.halfSize.z * 2);
             obbGeometry.userData.obb = new THREE.OBB(center, this.halfSize);
             let material = new THREE.MeshBasicMaterial({ color });
             material.wireframe = true;
@@ -211,6 +211,7 @@ var JWFramework;
 (function (JWFramework) {
     class GameObject {
         constructor() {
+            this.name = "";
             this.isClone = false;
             this.isDead = false;
             this.isPlayer = false;
@@ -2616,6 +2617,7 @@ var JWFramework;
     class EditScene extends JWFramework.SceneBase {
         constructor(sceneManager) {
             super(sceneManager);
+            this.testLoad = false;
             this.makedCloud = false;
             this.gizmoOnOff = true;
         }
@@ -2655,6 +2657,16 @@ var JWFramework;
         }
         Animate() {
             if (JWFramework.ModelLoadManager.getInstance().LoadComplete == true) {
+                if (this.testLoad == false) {
+                    let button = document.createElement("button");
+                    button.innerHTML = "LoadScene";
+                    button.addEventListener("click", function () {
+                        JWFramework.ObjectManager.getInstance().DeleteAllObject();
+                        JWFramework.SceneManager.getInstance().CurrentScene.reloadScene = true;
+                    });
+                    document.getElementById("info").appendChild(button);
+                    this.testLoad = true;
+                }
                 this.MakeGizmo();
                 this.MakeSceneCloud();
                 JWFramework.ObjectManager.getInstance().Animate();
@@ -3068,9 +3080,9 @@ var JWFramework;
     worldManager.InitializeWorld();
     let stats = new Stats();
     stats.showPanel(0);
-    stats.dom.style.top = "450px";
-    stats.dom.style.left = "5px";
-    document.body.appendChild(stats.dom);
+    stats.dom.style.top = "auto";
+    stats.dom.style.left = "auto";
+    document.getElementById("info").appendChild(stats.dom);
     const main = function () {
         stats.begin();
         worldManager.Animate();
@@ -3166,14 +3178,13 @@ var JWFramework;
                         if (src != dst) {
                             if (src.CollisionComponent != null && dst.CollisionComponent != null)
                                 if (src.CollisionComponent.OBB && dst.CollisionComponent.OBB)
-                                    if (src.CollisionComponent.OBB.intersectsOBB(dst.CollisionComponent.OBB)) {
-                                        if (!(dst.GameObject instanceof JWFramework.HeightmapTerrain) || !(src.GameObject instanceof JWFramework.HeightmapTerrain)) {
+                                    if (src.CollisionComponent.OBB.intersectsOBB(dst.CollisionComponent.OBB, Number.EPSILON)) {
+                                        if (!(dst instanceof JWFramework.HeightmapTerrain) || !(src instanceof JWFramework.HeightmapTerrain))
                                             src.CollisionActive(dst.Type);
-                                        }
                                         dst.CollisionActive();
                                     }
                                     else {
-                                        if (!(dst.GameObject instanceof JWFramework.HeightmapTerrain) || !(src.GameObject instanceof JWFramework.HeightmapTerrain))
+                                        if (!(dst instanceof JWFramework.HeightmapTerrain) || !(src instanceof JWFramework.HeightmapTerrain))
                                             src.CollisionDeActive(dst.Type);
                                         dst.CollisionDeActive();
                                     }

@@ -121,7 +121,7 @@
             })
         }
 
-        public CollideObbToObb(sorce, destination)
+        public CollideObbToObb(sorce: GameObject[], destination: GameObject[])
         {
             sorce.forEach(function (src)
             {
@@ -133,20 +133,18 @@
                         {
                             if (src.CollisionComponent != null && dst.CollisionComponent != null)
                                 if (src.CollisionComponent.OBB && dst.CollisionComponent.OBB)
-                                if (src.CollisionComponent.OBB.intersectsOBB(dst.CollisionComponent.OBB))
-                                {
-                                    if (!(dst.GameObject instanceof HeightmapTerrain) || !(src.GameObject instanceof HeightmapTerrain))
+                                    if (src.CollisionComponent.OBB.intersectsOBB(dst.CollisionComponent.OBB, Number.EPSILON))
                                     {
-                                        src.CollisionActive(dst.Type);
+                                        if (!(dst instanceof HeightmapTerrain) || !(src instanceof HeightmapTerrain))
+                                            src.CollisionActive(dst.Type);
+                                        dst.CollisionActive();
                                     }
-                                    dst.CollisionActive();
-                                }
-                                else
-                                {
-                                    if (!(dst.GameObject instanceof HeightmapTerrain) || !(src.GameObject instanceof HeightmapTerrain))
-                                        src.CollisionDeActive(dst.Type);
-                                    dst.CollisionDeActive();
-                                }
+                                    else
+                                    {
+                                        if (!(dst instanceof HeightmapTerrain) || !(src instanceof HeightmapTerrain))
+                                            src.CollisionDeActive(dst.Type);
+                                        dst.CollisionDeActive();
+                                    }
                         }
                     }
                 })

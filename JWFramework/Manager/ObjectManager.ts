@@ -230,6 +230,7 @@
             }
             //CollisionManager.getInstance().CollideBoxToBox(this.objectList[ObjectType.OBJ_TERRAIN], this.objectList[ObjectType.OBJ_CAMERA]);
             //CollisionManager.getInstance().CollideObbToObb(this.objectList[ObjectType.OBJ_OBJECT3D], this.objectList[ObjectType.OBJ_OBJECT3D]);
+
             CollisionManager.getInstance().CollideObbToBox(
                 this.objectList[ObjectType.OBJ_OBJECT3D],
                 this.objectList[ObjectType.OBJ_TERRAIN].filter(o => (o.GameObject as HeightmapTerrain).IsDummy == false));

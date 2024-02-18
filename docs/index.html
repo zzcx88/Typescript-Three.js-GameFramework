@@ -3,10 +3,26 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, maximum-scale=1.0, minimum-scale=1.0"/>
     <title>JWFramework</title>
     <link rel="stylesheet" href="Style.css">
 </head>
+
 <body>
+    <script type="text/javascript">
+        // 주소창 자동 닫힘
+        window.addEventListener("load", function ()
+        {
+            setTimeout(loaded, 1000);
+
+        }, false);
+
+        function loaded()
+        {
+            window.scrollTo(0, 0);
+        }
+    </script>
+
     <div id="info">
         <br> 1: Select Object Mode
         <br> 2: Add Object Mode

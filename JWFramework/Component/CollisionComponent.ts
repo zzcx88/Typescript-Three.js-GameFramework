@@ -33,7 +33,7 @@
             this.halfSize = halfSize;
             this.orientedBoundingBox = new THREE.OBB();
             let color = new THREE.Color().setColorName("Red");
-            let obbGeometry = new THREE.BoxGeometry(this.halfSize.x, this.halfSize.y, this.halfSize.z);
+            let obbGeometry = new THREE.BoxGeometry(this.halfSize.x * 2, this.halfSize.y * 2, this.halfSize.z * 2);
             obbGeometry.userData.obb = new THREE.OBB(center, this.halfSize);
             let material = new THREE.MeshBasicMaterial({ color });
             material.wireframe = true;

@@ -178,7 +178,7 @@
         protected gameObjectInstance;
         protected modelData: THREE.GLTF;
         protected type: ObjectType;
-        protected name: string;
+        protected name: string = "";
         protected isClone: boolean = false;
         protected isDead: boolean = false;
         protected isPlayer: boolean = false;
