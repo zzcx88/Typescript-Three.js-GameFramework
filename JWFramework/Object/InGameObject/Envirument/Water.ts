@@ -17,6 +17,7 @@ namespace JWFramework
                 this.graphicComponent = new GraphComponent(this);
                 this.physicsComponent = new PhysicsComponent(this);
                 this.exportComponent = new ExportComponent(this);
+                this.collisionComponent = new CollisionComponent(this);
                 this.CreateWaterMesh();
                 this.GameObjectInstance.matrixAutoUpdate = true;
                 this.GameObjectInstance.name = this.name;

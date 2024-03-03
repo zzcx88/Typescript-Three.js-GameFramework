@@ -21,7 +21,7 @@ namespace JWFramework
 
         public InitializeAfterLoad()
         {
-            this.GameObjectInstance.matrixAutoUpdate = true;
+            this.GameObjectInstance.matrixAutoUpdate = false;
             this.PhysicsComponent.SetScaleScalar(1);
             this.GameObjectInstance.name = this.name;
 

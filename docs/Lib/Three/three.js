@@ -34192,7 +34192,10 @@
 			this.scale.multiplyScalar(0.5);
 			super.updateMatrixWorld(force);
 		}
-
+		dispose() {
+			this.geometry.dispose();
+			this.material.dispose();
+        }
 	}
 
 	class PlaneHelper extends Line {

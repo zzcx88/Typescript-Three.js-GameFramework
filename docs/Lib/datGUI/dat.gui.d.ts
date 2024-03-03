@@ -83,7 +83,8 @@ declare namespace dat {
         getValue(): any;
         updateDisplay(): void;
         isModified(): boolean;
-
+        object:any;
+        property: any;
         // NumberController
         min(n: number): GUIController;
         max(n: number): GUIController;

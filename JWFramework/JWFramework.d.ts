@@ -3,7 +3,7 @@ declare namespace JWFramework {
         constructor(gameObject: GameObject);
         CreateBoundingBox(x: number, y: number, z: number): void;
         CreateOrientedBoundingBox(center?: THREE.Vector3, halfSize?: THREE.Vector3): void;
-        CreateBoundingSphere(): void;
+        CreateBoundingSphere(center?: THREE.Vector3, radius?: number): void;
         CreateRaycaster(): void;
         get BoundingBox(): THREE.Box3;
         get BoxHelper(): THREE.Box3Helper;
@@ -11,10 +11,15 @@ declare namespace JWFramework {
         set IsEditable(value: boolean);
         get HalfSize(): THREE.Vector3;
         set HalfSize(value: THREE.Vector3);
+        get Radius(): number;
+        set Radius(value: number);
         get OBB(): THREE.OBB;
         get ObbBoxHelper(): THREE.Mesh;
         get BoundingSphere(): THREE.Sphere;
         get Raycaster(): THREE.Raycaster;
+        get BoundingBoxInclude(): boolean;
+        get OBBInclude(): boolean;
+        get BoundingSphereInclude(): boolean;
         DeleteCollider(): void;
         Update(): void;
         private sizeAABB;
@@ -25,6 +30,7 @@ declare namespace JWFramework {
         private boundingSphere;
         private raycaster;
         halfSize: THREE.Vector3;
+        radius: number;
         private isEditable;
         private boundingBoxInclude;
         private orientedBoundingBoxInlcude;
@@ -32,6 +38,7 @@ declare namespace JWFramework {
         private raycasterInclude;
         private boxHelper;
         private obbBoxHelper;
+        private sphereHelper;
     }
 }
 declare namespace JWFramework {
@@ -58,6 +65,8 @@ declare namespace JWFramework {
         get IsClone(): boolean;
         set IsClone(isClone: boolean);
         get IsPlayer(): boolean;
+        set IsPoolObject(isPoolObj: boolean);
+        get IsPoolObject(): boolean;
         set IsPlayer(flag: boolean);
         get PhysicsComponent(): PhysicsComponent;
         get GraphicComponent(): GraphComponent;
@@ -82,6 +91,7 @@ declare namespace JWFramework {
         set IsRayOn(flag: boolean);
         CollisionActive(value?: any): void;
         CollisionDeActive(value?: any): void;
+        Reset(): void;
         Animate(): void;
         DeleteObject(): void;
         DeleteAllComponent(): void;
@@ -90,6 +100,7 @@ declare namespace JWFramework {
         protected type: ObjectType;
         protected name: string;
         protected isClone: boolean;
+        protected isPoolObject: boolean;
         protected isDead: boolean;
         protected isPlayer: boolean;
         protected isRayOn: boolean;
@@ -283,15 +294,16 @@ declare namespace JWFramework {
 }
 declare namespace JWFramework {
     class MissileFog extends GameObject {
+        private mesh;
+        material: THREE.SpriteMaterial;
+        private fogLifeTime;
+        currentTime: number;
         constructor();
         InitializeAfterLoad(): void;
         private CreateBillboardMesh;
         private FogStateUpdate;
+        Reset(): void;
         Animate(): void;
-        private mesh;
-        private material;
-        private fogLifeTime;
-        private currentTime;
     }
 }
 declare namespace JWFramework {
@@ -314,6 +326,7 @@ declare namespace JWFramework {
         private mig29;
         private f_5e;
         private anim;
+        private r60;
         private water;
     }
     class ModelSceneStage {
@@ -328,7 +341,8 @@ declare namespace JWFramework {
     }
     interface ModelSet {
         model: GameObject;
-        url: string;
+        mainUrl: string;
+        lodUrl: string;
     }
     interface ObjectSet {
         GameObject: GameObject;
@@ -427,6 +441,7 @@ declare namespace JWFramework {
         private scaleFolder;
         private boundingBoxFolder;
         private isPlayerFolder;
+        private defaultPosition;
         private defaultRotate;
         private defaultScale;
         private defaultBounding;
@@ -488,6 +503,7 @@ declare namespace JWFramework {
         get PickableObjectList(): ObjectSet[];
         ClearExportObjectList(): void;
         AddObject(gameObject: GameObject, name: string, type: ObjectType): void;
+        DetachObject(gameObject: GameObject, type: ObjectType): void;
         MakeClone(selectObject: GameObject): GameObject;
         MakeJSONArray(): void;
         DeleteObject(gameObject: GameObject): void;
@@ -617,6 +633,7 @@ declare namespace JWFramework {
         LoadScene(): void;
         LoadSceneStage(): void;
         private LoadModel;
+        private GLTFLoad;
         LoadHeightmapTerrain(row?: number, col?: number): void;
         LoadSavedScene(): void;
         private loaderManager;
@@ -642,12 +659,23 @@ declare namespace JWFramework {
     }
 }
 declare namespace JWFramework {
+    class ObjectPool<T extends GameObject> {
+        private objects;
+        private objectClass;
+        constructor(objectClass: new () => T);
+        AddObject(obj: T): void;
+        GetObject(): T;
+        ReleaseObject(obj: T): void;
+    }
+}
+declare namespace JWFramework {
     class EditScene extends SceneBase {
         constructor(sceneManager: SceneManager);
         BuildSkyBox(): void;
         BuildObject(): void;
         BuildLight(): void;
         BuildFog(): void;
+        private TestMobileButtonCreate;
         Animate(): void;
         private MakeGizmo;
         AttachGizmo(gameObject: GameObject): void;
@@ -656,6 +684,7 @@ declare namespace JWFramework {
         private MakeSceneCloud;
         private InputProcess;
         private ReloadProcess;
+        missileFogPool: ObjectPool<MissileFog>;
         private testLoad;
         private directionalLight;
         private ambientLight;
@@ -754,8 +783,8 @@ declare namespace JWFramework {
         CollideBoxToBox(sorce: ObjectSet[], destination: ObjectSet[]): void;
         CollideObbToObb(sorce: GameObject[], destination: GameObject[]): void;
         CollideObbToBox(sorce: ObjectSet[], destination: ObjectSet[]): void;
-        CollideBoxToSphere(sorce: ObjectSet[], destination: ObjectSet[]): void;
-        CollideSphereToSphere(sorce: ObjectSet[], destination: ObjectSet[]): void;
+        CollideSphereToBox(sorce: ObjectSet[], destination: ObjectSet[]): void;
+        CollideSphereToSphere(sorce: GameObject[], destination: GameObject[]): void;
     }
 }
 declare namespace JWFramework {
@@ -830,19 +859,6 @@ declare namespace JWFramework {
         private geometry;
         private player;
     }
-}
-declare namespace JWFramework {
-    interface Resettable {
-        reset(): void;
-    }
-    export class ObjectPool<T extends Resettable> {
-        private objects;
-        private objectClass;
-        constructor(objectClass: new () => T);
-        getObject(): T;
-        releaseObject(obj: T): void;
-    }
-    export {};
 }
 declare namespace JWFramework {
     class StageScene extends SceneBase {

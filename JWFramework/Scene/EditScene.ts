@@ -1,7 +1,7 @@
 ﻿/// <reference path="SceneBase.ts" />
 /// <reference path="../Manager/ModelLoadManager.ts" />
 /// <reference path="../Object/Light/Light.ts" />
-/*/// <reference path="../ObjectPool/ObjectPool.ts" />*/
+/// <reference path="../ObjectPool/ObjectPool.ts" />
 
 namespace JWFramework
 {
@@ -32,6 +32,13 @@ namespace JWFramework
             ModelLoadManager.getInstance().LoadScene();
             let rotation = new THREE.Matrix4().makeRotationY(-Math.PI);
             WorldManager.getInstance().MainCamera.CameraInstance.applyMatrix4(rotation);
+
+            this.missileFogPool = new ObjectPool(MissileFog);
+            for (let i = 0; i < 500; ++i) {
+                let missileFog = new MissileFog();
+                missileFog.IsClone = true;
+                this.missileFogPool.AddObject(missileFog);
+            }
         }
 
         BuildLight()
@@ -57,20 +64,72 @@ namespace JWFramework
             sceneInstance.fog = new THREE.Fog(color, 300, 2900);
         }
 
+
+        private TestMobileButtonCreate()
+        {
+            function toggleFullScreen()
+            {
+                if (!document.fullscreenElement)
+                {
+                    document.documentElement.requestFullscreen()
+                } else
+                {
+                    if (document.exitFullscreen)
+                    {
+                        document.exitFullscreen()
+                    }
+                }
+            }
+
+            let button = document.createElement("button");
+            button.innerHTML = "LoadScene";
+            button.addEventListener("click", function ()
+            {
+                ObjectManager.getInstance().DeleteAllObject();
+                (SceneManager.getInstance().CurrentScene as EditScene).reloadScene = true;
+            });
+            // 버튼을 문서에 추가
+            document.getElementById("info").appendChild(button);
+
+            let button1 = document.createElement("button");
+            button1.innerHTML = "3rdView";
+            button1.addEventListener("click", function ()
+            {
+                let sceneManager = (SceneManager.getInstance().CurrentScene as EditScene);
+                if (sceneManager.Picker.GetPickParents() != null)
+                {
+                    if (CameraManager.getInstance().CameraMode == CameraMode.CAMERA_ORBIT)
+                    {
+                        CameraManager.getInstance().SetCameraSavedPosition(CameraMode.CAMERA_3RD);
+                    }
+                    else
+                        CameraManager.getInstance().SetCameraSavedPosition(CameraMode.CAMERA_ORBIT);
+                    sceneManager.gizmoOnOff = !sceneManager.gizmoOnOff;
+                    if (sceneManager.gizmoOnOff == false && sceneManager.Picker.GetPickParents() != null)
+                        sceneManager.DetachGizmo(sceneManager.Picker.GetPickParents());
+                }
+            });
+            // 버튼을 문서에 추가
+            document.getElementById("info").appendChild(button1);
+
+            let button2 = document.createElement("button");
+            button2.innerHTML = "FullScreen";
+            button2.addEventListener("mousedown", function ()
+            {
+                toggleFullScreen();
+            });
+            // 버튼을 문서에 추가
+            document.getElementById("info").appendChild(button2);
+        }
+
+
         public Animate()
         {
             if (ModelLoadManager.getInstance().LoadComplete == true)
             {
                 if (this.testLoad == false)
                 {
-                    let button = document.createElement("button");
-                    button.innerHTML = "LoadScene";
-                    button.addEventListener("click", function () {
-                        ObjectManager.getInstance().DeleteAllObject();
-                        (SceneManager.getInstance().CurrentScene as EditScene).reloadScene = true;
-                    });
-                    // 버튼을 문서에 추가
-                    document.getElementById("info").appendChild(button);
+                    this.TestMobileButtonCreate();
                     this.testLoad = true;
                 }
                 this.MakeGizmo();
@@ -133,6 +192,7 @@ namespace JWFramework
         {
             let inputManager = InputManager.getInstance();
             let sceneManager = SceneManager.getInstance();
+
             if (inputManager.GetKeyState('1', KeyState.KEY_DOWN))
             {
                 this.Picker.ChangePickModeModify();
@@ -200,9 +260,37 @@ namespace JWFramework
                 this.sceneManager.SceneInstance.remove(this.gizmo);
                 this.reloadScene = true;
             }
-            if (inputManager.GetKeyState('p', KeyState.KEY_PRESS))
+            if (inputManager.GetKeyState('p', KeyState.KEY_DOWN))
             {
                 console.log(WorldManager.getInstance().Renderer.info);
+
+                let objects = 0, vertices = 0, triangles = 0;
+
+                for (let i = 0, l = this.sceneManager.SceneInstance.children.length; i < l; i++)
+                {
+
+                    const object = this.sceneManager.SceneInstance.children[i];
+
+                    object.traverseVisible(function (object)
+                    {
+
+                        objects++;
+
+                        if (object instanceof THREE.Mesh || object instanceof THREE.InstancedMesh)
+                        {
+                            const geometry = object.geometry;
+                            vertices += geometry.attributes.position.count;
+                            //if (geometry.index !== null)
+                            //{
+                            //    triangles += geometry.index.count / 3;
+                            //} else
+                            {
+                                triangles += geometry.attributes.position.count / 3;
+                            }
+                        }
+                    });
+                }
+                console.log("Total Triangles: " + triangles)
             }
         }
 
@@ -224,6 +312,7 @@ namespace JWFramework
             }
         }
 
+        public missileFogPool: ObjectPool<MissileFog>;
         private testLoad = false;
         private directionalLight: Light;
         private ambientLight: Light;

@@ -7,11 +7,10 @@ var JWFramework;
             this.boundingSphere = null;
             this.raycaster = null;
             this.isEditable = false;
-            this.gameObject = gameObject;
-            this.boundingBoxInclude = false;
             this.orientedBoundingBoxInlcude = false;
             this.boundingSphereInclude = false;
             this.raycasterInclude = false;
+            this.gameObject = gameObject;
         }
         CreateBoundingBox(x, y, z) {
             this.sizeAABB = new THREE.Vector3(x, y, z);
@@ -41,7 +40,15 @@ var JWFramework;
                 JWFramework.SceneManager.getInstance().SceneInstance.add(this.obbBoxHelper);
             this.orientedBoundingBoxInlcude = true;
         }
-        CreateBoundingSphere() {
+        CreateBoundingSphere(center, radius) {
+            if (center == null)
+                center = new THREE.Vector3(0, 0, 0);
+            if (radius == null)
+                radius = 1;
+            this.radius = radius;
+            this.boundingSphere = new THREE.Sphere(center, radius);
+            let sphereGeomertry = new THREE.SphereGeometry(radius, 8, 8);
+            this.boundingSphereInclude = true;
         }
         CreateRaycaster() {
             let vec3pos = new THREE.Vector3(0, 0, 0);
@@ -67,6 +74,12 @@ var JWFramework;
         set HalfSize(value) {
             this.halfSize = value;
         }
+        get Radius() {
+            return this.radius;
+        }
+        set Radius(value) {
+            this.radius = value;
+        }
         get OBB() {
             return this.orientedBoundingBox;
         }
@@ -79,10 +92,19 @@ var JWFramework;
         get Raycaster() {
             return this.raycaster;
         }
+        get BoundingBoxInclude() {
+            return this.boundingBoxInclude;
+        }
+        get OBBInclude() {
+            return this.orientedBoundingBoxInlcude;
+        }
+        get BoundingSphereInclude() {
+            return this.boundingSphereInclude;
+        }
         DeleteCollider() {
             if (this.boundingBox) {
                 this.boxHelper.visible = false;
-                this.boxHelper.geometry.dispose();
+                this.boxHelper.dispose();
                 delete this.boundingBox;
                 delete this.boxHelper;
                 this.boundingBox = null;
@@ -92,11 +114,16 @@ var JWFramework;
                 this.obbBoxHelper.visible = false;
                 delete this.orientedBoundingBox;
                 this.obbBoxHelper.geometry.dispose();
+                this.obbBoxHelper.material.dispose();
                 delete this.obbBoxHelper.material;
                 delete this.obbBoxHelper.geometry.userData.obb;
                 delete this.obbBoxHelper;
                 this.orientedBoundingBox = null;
                 this.obbBoxHelper = null;
+            }
+            if (this.boundingSphere) {
+                delete this.boundingSphere;
+                this.boundingSphere = null;
             }
             if (this.raycaster) {
                 delete this.raycaster;
@@ -104,10 +131,15 @@ var JWFramework;
             }
         }
         Update() {
+            if (this.boundingSphere) {
+                this.boundingSphere.set(this.gameObject.PhysicsComponent.GetPosition(), this.radius);
+            }
             if (this.boundingBox) {
                 this.boxHelper.box.setFromCenterAndSize(this.gameObject.PhysicsComponent.GetPosition(), this.sizeAABB);
             }
             if (this.orientedBoundingBox) {
+                if (this.gameObject.Type == JWFramework.ObjectType.OBJ_MISSILE)
+                    console.log(this.boundingSphere);
                 this.obbBoxHelper.scale.set(this.halfSize.x, this.halfSize.y, this.halfSize.z);
                 this.obbBoxHelper.rotation.set(this.gameObject.PhysicsComponent.GetRotateEuler().x, this.gameObject.PhysicsComponent.GetRotateEuler().y, this.gameObject.PhysicsComponent.GetRotateEuler().z);
                 this.obbBoxHelper.position.set(this.gameObject.PhysicsComponent.GetPosition().x, this.gameObject.PhysicsComponent.GetPosition().y, this.gameObject.PhysicsComponent.GetPosition().z);
@@ -213,6 +245,7 @@ var JWFramework;
         constructor() {
             this.name = "";
             this.isClone = false;
+            this.isPoolObject = true;
             this.isDead = false;
             this.isPlayer = false;
             this.isRayOn = false;
@@ -238,6 +271,12 @@ var JWFramework;
         }
         get IsPlayer() {
             return this.isPlayer;
+        }
+        set IsPoolObject(isPoolObj) {
+            this.isPoolObject = isPoolObj;
+        }
+        get IsPoolObject() {
+            return this.isPoolObject;
         }
         set IsPlayer(flag) {
             this.isPlayer = flag;
@@ -307,6 +346,7 @@ var JWFramework;
         }
         CollisionActive(value = 0) { }
         CollisionDeActive(value = 0) { }
+        Reset() { }
         Animate() { }
         DeleteObject() {
             this.isDead = true;
@@ -375,7 +415,7 @@ var JWFramework;
             this.InitializeAfterLoad();
         }
         MakeCanvasTexture(name, size = 40) {
-            const baseWidth = 150;
+            const baseWidth = 300;
             const borderSize = 2;
             if (this.referenceObject == null)
                 this.labelContext = document.createElement('canvas').getContext('2d');
@@ -413,18 +453,20 @@ var JWFramework;
                     this.material.visible = true;
                     let refObjectPosition = this.referenceObject.PhysicsComponent.GetPosition().clone();
                     this.physicsComponent.SetPostion(refObjectPosition.x, refObjectPosition.y, refObjectPosition.z);
-                    let pickObject = JWFramework.ObjectManager.getInstance().GetObjectList[JWFramework.ObjectType.OBJ_OBJECT3D].filter(o => o.GameObject.Picked == true);
-                    if (pickObject[0] != undefined) {
-                        let length = JWFramework.UnitConvertManager.getInstance().ConvertToDistance(this.referenceObject.PhysicsComponent.GetPosition().clone().sub(pickObject[0].GameObject.PhysicsComponent.GetPosition().clone()).length());
-                        length = Math.round(length);
-                        if (length > 100000)
-                            this.MakeCanvasTexture(length.toString()[0] + length.toString()[1] + length.toString()[2] + " km");
-                        else if (length > 10000)
-                            this.MakeCanvasTexture(length.toString()[0] + length.toString()[1] + " km");
-                        else if (length > 1000)
-                            this.MakeCanvasTexture(length.toString()[0] + "." + length.toString()[1] + length.toString()[2] + " km");
-                        else
-                            this.MakeCanvasTexture(length.toString() + " m");
+                    if (this.referenceObject.Name == "Target") {
+                        let pickObject = JWFramework.ObjectManager.getInstance().GetObjectList[JWFramework.ObjectType.OBJ_OBJECT3D].filter(o => o.GameObject.Picked == true);
+                        if (pickObject[0] != undefined) {
+                            let length = JWFramework.UnitConvertManager.getInstance().ConvertToDistance(this.referenceObject.PhysicsComponent.GetPosition().clone().sub(pickObject[0].GameObject.PhysicsComponent.GetPosition().clone()).length());
+                            length = Math.round(length);
+                            if (length > 100000)
+                                this.MakeCanvasTexture(length.toString()[0] + length.toString()[1] + length.toString()[2] + " km");
+                            else if (length > 10000)
+                                this.MakeCanvasTexture(length.toString()[0] + length.toString()[1] + " km");
+                            else if (length > 1000)
+                                this.MakeCanvasTexture(length.toString()[0] + "." + length.toString()[1] + length.toString()[2] + " km");
+                            else
+                                this.MakeCanvasTexture(length.toString() + " m");
+                        }
                     }
                 }
                 else
@@ -471,6 +513,9 @@ var JWFramework;
 var JWFramework;
 (function (JWFramework) {
     class CameraManager {
+        constructor() {
+            this.cameraMode = JWFramework.CameraMode.CAMERA_ORBIT;
+        }
         static getInstance() {
             if (!CameraManager.instance) {
                 CameraManager.instance = new CameraManager;
@@ -495,17 +540,21 @@ var JWFramework;
         }
         ChangeThridPersonCamera() {
             let sceneManager = JWFramework.SceneManager.getInstance();
+            let gameObjectForCamera = sceneManager.CurrentScene.Picker.GetPickParents();
+            if ((gameObjectForCamera instanceof JWFramework.Water))
+                return;
             this.cameraMode = JWFramework.CameraMode.CAMERA_3RD;
             sceneManager.CurrentScene.Picker.OrbitControl.enabled = false;
-            let gameObjectForCamera = sceneManager.CurrentScene.Picker.GetPickParents();
             gameObjectForCamera.GameObjectInstance.add(this.MainCamera.CameraInstance);
             let cameraPosition = gameObjectForCamera.PhysicsComponent.GetPosition();
-            this.MainCamera.CameraInstance.lookAt(cameraPosition.x, cameraPosition.y + 1.5, cameraPosition.z);
-            this.MainCamera.PhysicsComponent.SetPostion(0, 0, 0);
-            let Up = new THREE.Vector3(0, 1, 0);
-            let Look = new THREE.Vector3(0, 0, 1);
-            this.MainCamera.PhysicsComponent.GetPosition().add(Up.multiplyScalar(0.6));
-            this.MainCamera.PhysicsComponent.GetPosition().add(Look.multiplyScalar(-3.7));
+            for (let i = 0; i < 2; ++i) {
+                this.MainCamera.CameraInstance.lookAt(cameraPosition.x, cameraPosition.y + 1.5, cameraPosition.z);
+                this.MainCamera.PhysicsComponent.SetPostion(0, 0, 0);
+                let Up = new THREE.Vector3(0, 1, 0);
+                let Look = new THREE.Vector3(0, 0, 1);
+                this.MainCamera.PhysicsComponent.GetPosition().add(Up.multiplyScalar(0.6));
+                this.MainCamera.PhysicsComponent.GetPosition().add(Look.multiplyScalar(-3.7));
+            }
         }
         ChangeOrbitCamera() {
             let sceneManager = JWFramework.SceneManager.getInstance();
@@ -742,8 +791,8 @@ var JWFramework;
             }
         }
         CreateCollider() {
-            this.CollisionComponent.CreateOrientedBoundingBox(this.physicsComponent.GetPosition());
-            this.collisionComponent.IsEditable = false;
+            this.CollisionComponent.CreateBoundingSphere(this.physicsComponent.GetPosition(), 5);
+            this.CollisionComponent.IsEditable = false;
             this.CollisionComponent.CreateRaycaster();
         }
         CollisionActive() {
@@ -812,15 +861,20 @@ var JWFramework;
         }
         LabelOnOff() {
             let cameraPosition = JWFramework.WorldManager.getInstance().MainCamera.PhysicsComponent.GetPosition().clone();
-            if (JWFramework.CameraManager.getInstance().CameraMode === JWFramework.CameraMode.CAMERA_3RD)
+            if (JWFramework.CameraManager.getInstance().CameraMode === JWFramework.CameraMode.CAMERA_3RD) {
                 JWFramework.WorldManager.getInstance().MainCamera.CameraInstance.localToWorld(cameraPosition);
+            }
             if (this.GUIComponent.GetLabel().GameObjectInstance != null) {
                 if (cameraPosition.sub(this.physicsComponent.GetPosition()).length() > 3000) {
                     this.GUIComponent.GetLabel().GameObjectInstance.visible = false;
+                    if (this.collisionComponent.OBB)
+                        this.collisionComponent.ObbBoxHelper.visible = false;
                     this.GameObjectInstance.visible = false;
                 }
                 else {
                     this.GUIComponent.GetLabel().GameObjectInstance.visible = true;
+                    if (this.collisionComponent.OBB)
+                        this.collisionComponent.ObbBoxHelper.visible = true;
                     this.GameObjectInstance.visible = true;
                 }
             }
@@ -852,7 +906,7 @@ var JWFramework;
                     else
                         this.throttle = 0;
                 }
-                if (inputManager.GetKeyState('f', JWFramework.KeyState.KEY_PRESS)) {
+                if (inputManager.GetKeyState('f', JWFramework.KeyState.KEY_DOWN)) {
                     JWFramework.CameraManager.getInstance().SetCameraSavedPosition(JWFramework.CameraMode.CAMERA_3RD);
                 }
                 if (inputManager.GetKeyState('r', JWFramework.KeyState.KEY_PRESS)) {
@@ -935,7 +989,7 @@ var JWFramework;
             }
         }
         CreateCollider() {
-            this.CollisionComponent.CreateOrientedBoundingBox(this.physicsComponent.GetPosition(), new THREE.Vector3(1.5, 1.5, 1.5));
+            this.CollisionComponent.CreateBoundingSphere(this.physicsComponent.GetPosition(), 2);
             this.CollisionComponent.CreateRaycaster();
             this.CollisionComponent.ObbBoxHelper.visible = false;
         }
@@ -958,7 +1012,9 @@ var JWFramework;
             if (this.targetObject != undefined) {
                 let length = new THREE.Vector3().subVectors(this.targetObject.PhysicsComponent.GetPosition().clone(), this.PhysicsComponent.GetPosition().clone()).length();
                 let targetDirection;
-                this.activeColide = true;
+                if (length < 100) {
+                    this.activeColide = true;
+                }
                 if (length >= this.endHomingStartLenge) {
                     this.predictionDistance = length - (length / 2);
                 }
@@ -994,17 +1050,18 @@ var JWFramework;
                 }
                 if (this.deAcceleration == true)
                     this.resultSpeed -= (this.velocityBreak * JWFramework.WorldManager.getInstance().GetDeltaTime());
-                if (this.resultSpeed <= 60) {
-                    this.resultSpeed = this.maxVelocity;
+                if (this.resultSpeed <= 60 && this.deAcceleration == true) {
+                    this.IsDead = true;
                 }
                 this.PhysicsComponent.MoveFoward(this.resultSpeed);
             }
             else
                 this.PhysicsComponent.MoveFoward(120);
-            let missileFog = new JWFramework.MissileFog();
-            missileFog.IsClone = true;
+            let missileFog = JWFramework.SceneManager.getInstance().CurrentScene.missileFogPool.GetObject();
+            missileFog.IsPoolObject = true;
             missileFog.PhysicsComponent.SetPostion(this.PhysicsComponent.GetPosition().x + Math.random() * 3, this.PhysicsComponent.GetPosition().y + Math.random() * 3, this.PhysicsComponent.GetPosition().z);
             missileFog.PhysicsComponent.SetScale(0.5, 0.5, 0.5);
+            JWFramework.ObjectManager.getInstance().AddObject(missileFog, missileFog.Name, missileFog.Type);
             if (this.isClone == true) {
                 this.CollisionComponent.Update();
             }
@@ -1101,9 +1158,8 @@ var JWFramework;
             this.rotateSpeedAcceletion = 20;
         }
         CreateCollider() {
-            this.CollisionComponent.CreateOrientedBoundingBox(this.physicsComponent.GetPosition(), new THREE.Vector3(1.5, 1.5, 1.5));
+            this.CollisionComponent.CreateBoundingSphere(this.physicsComponent.GetPosition(), 2);
             this.CollisionComponent.CreateRaycaster();
-            this.CollisionComponent.ObbBoxHelper.visible = false;
         }
         CollisionActive(type) {
             super.CollisionActive(type);
@@ -1136,6 +1192,7 @@ var JWFramework;
                 this.graphicComponent = new JWFramework.GraphComponent(this);
                 this.physicsComponent = new JWFramework.PhysicsComponent(this);
                 this.exportComponent = new JWFramework.ExportComponent(this);
+                this.collisionComponent = new JWFramework.CollisionComponent(this);
                 this.CreateWaterMesh();
                 this.GameObjectInstance.matrixAutoUpdate = true;
                 this.GameObjectInstance.name = this.name;
@@ -1183,10 +1240,7 @@ var JWFramework;
         }
         InitializeAfterLoad() {
             this.GameObjectInstance.matrixAutoUpdate = true;
-            this.PhysicsComponent.SetScaleScalar(1);
             this.GameObjectInstance.name = this.name;
-            JWFramework.SceneManager.getInstance().SceneInstance.add(this.gameObjectInstance);
-            JWFramework.ObjectManager.getInstance().AddObject(this, this.name, this.Type);
         }
         CreateBillboardMesh() {
             this.material = new THREE.SpriteMaterial({
@@ -1199,15 +1253,22 @@ var JWFramework;
             this.InitializeAfterLoad();
         }
         *FogStateUpdate() {
-            this.currentTime += 1 * JWFramework.WorldManager.getInstance().GetDeltaTime();
-            this.physicsComponent.SetScaleScalar(this.currentTime * 3);
-            const material = this.GameObjectInstance.material;
-            while (material.opacity >= 0) {
-                material.opacity -= 0.2 * JWFramework.WorldManager.getInstance().GetDeltaTime();
-                yield;
+            this.currentTime += 5 * JWFramework.WorldManager.getInstance().GetDeltaTime();
+            ;
+            this.physicsComponent.SetScaleScalar(this.currentTime);
+            this.material.opacity -= 0.5 * JWFramework.WorldManager.getInstance().GetDeltaTime();
+            if (this.material.opacity <= 0) {
+                JWFramework.SceneManager.getInstance().CurrentScene.missileFogPool.ReleaseObject(this);
+                return;
             }
-            this.isDead = true;
-            yield null;
+            yield;
+        }
+        Reset() {
+            JWFramework.ObjectManager.getInstance().DetachObject(this, this.type);
+            this.currentTime = 0;
+            this.material.opacity = 0.8;
+            this.PhysicsComponent.SetScaleScalar(0.5);
+            this.IsPoolObject = false;
         }
         Animate() {
             let generator = this.FogStateUpdate();
@@ -1250,18 +1311,21 @@ var JWFramework;
             this.mig29 = new JWFramework.EditObject;
             this.f_5e = new JWFramework.EditObject;
             this.anim = new JWFramework.EditObject;
+            this.r60 = new JWFramework.R60M;
             this.water = new JWFramework.Water;
             this.mig29.Name = "MIG_29";
             this.tree.Name = "Tree";
             this.f_5e.Name = "F-5E";
             this.anim.Name = "Animation";
+            this.r60.Name = "R-60M";
             this.water.Name = "Water";
             this.sceneModelData = [
-                { model: this.mig29, url: 'Model/mig_29_1.glb' },
-                { model: this.tree, url: 'Model/Tree/tree_lv3.glb' },
-                { model: this.f_5e, url: 'Model/F-5E.glb' },
-                { model: this.anim, url: 'Model/Sprint.glb' },
-                { model: this.water, url: null },
+                { model: this.mig29, mainUrl: 'Model/mig_29_1.glb', lodUrl: 'Model/mig_29_LOD_1.glb' },
+                { model: this.tree, mainUrl: 'Model/Tree/tree_lv3.glb', lodUrl: null },
+                { model: this.f_5e, mainUrl: 'Model/F-5E.glb', lodUrl: null },
+                { model: this.anim, mainUrl: 'Model/Sprint.glb', lodUrl: null },
+                { model: this.r60, mainUrl: 'Model/aim-9.glb', lodUrl: null },
+                { model: this.water, mainUrl: null, lodUrl: null },
             ];
             this.modelNumber = this.sceneModelData.length;
         }
@@ -1273,7 +1337,7 @@ var JWFramework;
             this.sceneTestModel = [];
             this.F16.Name = "F-16";
             this.sceneTestModel = [
-                { model: this.F16, url: 'Model/F-16D/F-16.gltf' },
+                { model: this.F16, mainUrl: 'Model/F-16D/F-16.gltf', lodUrl: null },
             ];
             this.modelNumber = this.sceneTestModel.length;
         }
@@ -1408,12 +1472,13 @@ var JWFramework;
             this.datGui.domElement.id = 'srt-gui-container';
             this.datGui.open();
             this.gameObject = gameObject;
-            this.CreateFolder();
-            this.AddElement();
-            this.datGui.width = JWFramework.WorldManager.getInstance().Canvas.width / 8;
+            this.defaultPosition = new THREE.Vector3(0, 0, 0);
             this.defaultRotate = new THREE.Vector3(0, 0, 0);
             this.defaultScale = new THREE.Vector3(1, 1, 1);
             this.defaultBounding = new THREE.Vector3(1, 1, 1);
+            this.CreateFolder();
+            this.AddElement();
+            this.datGui.width = JWFramework.WorldManager.getInstance().Canvas.width / 8;
         }
         CreateFolder() {
             this.positionFolder = this.datGui.addFolder('Position');
@@ -1423,7 +1488,11 @@ var JWFramework;
             this.isPlayerFolder = this.datGui.addFolder('IsPlayer');
         }
         AddElement() {
-            if (this.gameObject == undefined) {
+            if (this.gameObject instanceof JWFramework.Camera) {
+                this.positionFolder.add(this.defaultPosition, 'x').step(0.01).listen();
+                this.positionFolder.add(this.defaultPosition, 'y').step(0.01).listen();
+                this.positionFolder.add(this.defaultPosition, 'z').step(0.01).listen();
+                this.positionFolder.open();
                 this.rotateFolder.add(this.defaultRotate, 'x', 0, Math.PI * 2).listen();
                 this.rotateFolder.add(this.defaultRotate, 'y', 0, Math.PI * 2).listen();
                 this.rotateFolder.add(this.defaultRotate, 'z', 0, Math.PI * 2).listen();
@@ -1456,9 +1525,14 @@ var JWFramework;
                 this.scaleFolder.add(this.gameObject.GameObjectInstance.scale, 'y', 0).step(0.01).listen();
                 this.scaleFolder.add(this.gameObject.GameObjectInstance.scale, 'z', 0).step(0.01).listen();
                 this.scaleFolder.open();
-                this.boundingBoxFolder.add(this.gameObject.CollisionComponent.halfSize, 'x').step(0.01).listen();
-                this.boundingBoxFolder.add(this.gameObject.CollisionComponent.halfSize, 'y').step(0.01).listen();
-                this.boundingBoxFolder.add(this.gameObject.CollisionComponent.halfSize, 'z').step(0.01).listen();
+                if (this.gameObject.CollisionComponent.OBBInclude) {
+                    this.boundingBoxFolder.add(this.gameObject.CollisionComponent.halfSize, 'x').step(0.01).listen();
+                    this.boundingBoxFolder.add(this.gameObject.CollisionComponent.halfSize, 'y').step(0.01).listen();
+                    this.boundingBoxFolder.add(this.gameObject.CollisionComponent.halfSize, 'z').step(0.01).listen();
+                }
+                if (this.gameObject.CollisionComponent.BoundingSphereInclude) {
+                    this.boundingBoxFolder.add(this.gameObject.CollisionComponent, 'radius').step(0.01).listen();
+                }
                 const onChangeIsBoundingEditable = function (value) {
                     JWFramework.GUIManager.getInstance().GUI_SRT.gameObject.CollisionComponent.IsEditable = value;
                     JWFramework.GUIManager.getInstance().GUI_SRT.SetGameObject(JWFramework.GUIManager.getInstance().GUI_SRT.gameObject);
@@ -1479,13 +1553,38 @@ var JWFramework;
         }
         SetGameObject(gameObject) {
             this.gameObject = gameObject;
-            this.datGui.removeFolder(this.positionFolder);
-            this.datGui.removeFolder(this.rotateFolder);
-            this.datGui.removeFolder(this.scaleFolder);
-            this.datGui.removeFolder(this.boundingBoxFolder);
-            this.datGui.removeFolder(this.isPlayerFolder);
-            this.CreateFolder();
-            this.AddElement();
+            this.gameObject = gameObject;
+            if (this.positionFolder !== undefined) {
+                this.positionFolder.__controllers.forEach(controller => {
+                    controller.object = this.gameObject.GameObjectInstance.position;
+                });
+            }
+            if (this.rotateFolder !== undefined) {
+                this.rotateFolder.__controllers.forEach(controller => {
+                    controller.object = this.gameObject.GameObjectInstance.rotation;
+                });
+            }
+            if (this.scaleFolder !== undefined) {
+                this.scaleFolder.__controllers.forEach(controller => {
+                    controller.object = this.gameObject.GameObjectInstance.scale;
+                });
+            }
+            if (this.boundingBoxFolder !== undefined) {
+                if (this.gameObject.CollisionComponent.OBBInclude) {
+                    this.boundingBoxFolder.__controllers.forEach(controller => {
+                        if (controller.property === "x" || controller.property === "y" || controller.property === "z") {
+                            controller.object = this.gameObject.CollisionComponent.halfSize;
+                        }
+                    });
+                }
+                if (this.gameObject.CollisionComponent.BoundingSphereInclude) {
+                    this.boundingBoxFolder.__controllers.forEach(controller => {
+                        if (controller.property === "radius") {
+                            controller.object = this.gameObject.CollisionComponent;
+                        }
+                    });
+                }
+            }
         }
         UpdateDisplay() {
             this.datGui.updateDisplay();
@@ -1497,7 +1596,6 @@ var JWFramework;
             else {
                 this.datGui.close();
             }
-            this.gameObject.PhysicsComponent.UpdateMatrix();
         }
         get DefaultRotate() {
             return this.defaultRotate;
@@ -1643,7 +1741,6 @@ var JWFramework;
         }
         Animate() {
             this.CollisionComponent.Update();
-            this.PhysicsComponent.UpdateMatrix();
         }
         get PhysicsComponent() {
             return this.physicsComponent;
@@ -1705,6 +1802,10 @@ var JWFramework;
                 JWFramework.SceneManager.getInstance().SceneInstance.add(gameObject.GameObjectInstance);
             }
         }
+        DetachObject(gameObject, type) {
+            this.objectList[type] = this.objectList[type].filter((element) => element.GameObject !== gameObject);
+            JWFramework.SceneManager.getInstance().SceneInstance.remove(gameObject.GameObjectInstance);
+        }
         MakeClone(selectObject) {
             let cloneObject;
             if (selectObject instanceof JWFramework.EditObject) {
@@ -1742,7 +1843,7 @@ var JWFramework;
                     cloneObject.AnimationMixer.clipAction(cloneObject.ModelData.animations[0]).play();
                 }
                 else
-                    cloneObject.GameObjectInstance = selectObject.ModelData.scene.clone();
+                    cloneObject.GameObjectInstance = selectObject.GameObjectInstance.clone();
             }
             cloneObject.InitializeAfterLoad();
             this.objectId++;
@@ -1820,23 +1921,22 @@ var JWFramework;
                 for (let OBJ = 0; OBJ < this.objectList[TYPE].length; ++OBJ) {
                     if (this.objectList[TYPE][OBJ].GameObject.IsClone)
                         this.objectList[TYPE][OBJ].GameObject.Animate();
-                    if (this.objectList[TYPE][OBJ].GameObject.PhysicsCompIncluded == true)
-                        this.objectList[TYPE][OBJ].GameObject.PhysicsComponent.UpdateMatrix();
-                    if (this.objectList[TYPE][OBJ].GameObject.IsDead) {
-                        this.DeleteObject(this.objectList[TYPE][OBJ].GameObject);
-                        this.objectList[TYPE][OBJ] = null;
-                        delete this.objectList[TYPE][OBJ];
-                        this.objectList[TYPE] = this.objectList[TYPE].filter((element) => element !== undefined);
-                    }
+                    if (this.objectList[TYPE][OBJ] != null)
+                        if (this.objectList[TYPE][OBJ].GameObject.IsDead) {
+                            this.DeleteObject(this.objectList[TYPE][OBJ].GameObject);
+                            this.objectList[TYPE][OBJ] = null;
+                            delete this.objectList[TYPE][OBJ];
+                            this.objectList[TYPE] = this.objectList[TYPE].filter((element) => element !== undefined);
+                        }
                 }
             }
-            JWFramework.CollisionManager.getInstance().CollideObbToBox(this.objectList[JWFramework.ObjectType.OBJ_OBJECT3D], this.objectList[JWFramework.ObjectType.OBJ_TERRAIN].filter(o => o.GameObject.IsDummy == false));
-            JWFramework.CollisionManager.getInstance().CollideObbToBox(this.objectList[JWFramework.ObjectType.OBJ_MISSILE], this.objectList[JWFramework.ObjectType.OBJ_TERRAIN].filter(o => o.GameObject.IsDummy == false));
+            JWFramework.CollisionManager.getInstance().CollideSphereToBox(this.objectList[JWFramework.ObjectType.OBJ_OBJECT3D], this.objectList[JWFramework.ObjectType.OBJ_TERRAIN].filter(o => o.GameObject.IsDummy == false));
+            JWFramework.CollisionManager.getInstance().CollideSphereToBox(this.objectList[JWFramework.ObjectType.OBJ_MISSILE], this.objectList[JWFramework.ObjectType.OBJ_TERRAIN].filter(o => o.GameObject.IsDummy == false));
             let sectoredTerrain = this.objectList[JWFramework.ObjectType.OBJ_TERRAIN].filter((element) => element.GameObject.inSecter == true);
             JWFramework.CollisionManager.getInstance().CollideRayToTerrain(sectoredTerrain);
             JWFramework.CollisionManager.getInstance().CollideRayToWater(this.objectList[JWFramework.ObjectType.OBJ_WATER].filter(o_ => o_.GameObject.IsClone));
             sectoredTerrain.forEach(function (src) {
-                JWFramework.CollisionManager.getInstance().CollideObbToObb(src.GameObject.inSectorObject, src.GameObject.inSectorObject);
+                JWFramework.CollisionManager.getInstance().CollideSphereToSphere(src.GameObject.inSectorObject, src.GameObject.inSectorObject);
             });
             JWFramework.InputManager.getInstance().UpdateKey();
         }
@@ -1881,26 +1981,33 @@ var JWFramework;
         }
         GetParentName(intersectedObjects) {
             if (intersectedObjects != null) {
+                if (intersectedObjects.type == "Group") {
+                    this.pickedParentName = intersectedObjects.name;
+                    return;
+                }
+                if (intersectedObjects.type == "LOD") {
+                    this.pickedParentName = intersectedObjects.name;
+                    return;
+                }
                 if (intersectedObjects.type == "Mesh") {
+                    if (intersectedObjects instanceof THREE.Water) {
+                        this.pickedParentName = intersectedObjects.name;
+                        return;
+                    }
                     if (intersectedObjects.name.includes("ObbHelper")) {
                         let parentName = intersectedObjects.name.replace("ObbHelper", "");
                         this.pickedParentName = parentName;
                         return;
                     }
                     else {
-                        this.pickedParentName = intersectedObjects.name;
-                        return;
+                        this.pickedParentName = undefined;
                     }
                 }
                 if (intersectedObjects.type == "Sprite") {
                     this.pickedParentName = intersectedObjects.name;
                 }
-                if (intersectedObjects.type != "Group") {
+                if (intersectedObjects.type != "Group" || intersectedObjects.type != "LOD") {
                     this.GetParentName(intersectedObjects.parent);
-                }
-                else {
-                    this.pickedParentName = intersectedObjects.name;
-                    this.pickedObject = intersectedObjects;
                 }
             }
         }
@@ -2108,6 +2215,7 @@ var JWFramework;
             if (this.isDummy == false) {
                 this.CreateBoundingBox();
             }
+            this.GameObjectInstance.matrixAutoUpdate = false;
             JWFramework.SceneManager.getInstance().SceneInstance.add(this.gameObjectInstance);
             JWFramework.ObjectManager.getInstance().AddObject(this, this.name, this.type);
         }
@@ -2115,6 +2223,7 @@ var JWFramework;
             this.CollisionComponent.CreateBoundingBox(this.planSize, 5000, this.planSize);
             this.CollisionComponent.BoxHelper.box.setFromCenterAndSize(new THREE.Vector3(this.width, 2000, this.height), new THREE.Vector3(this.planSize, 5000, this.planSize));
             this.CollisionComponent.BoxHelper.visible = false;
+            this.CollisionComponent.BoxHelper.matrixAutoUpdate = false;
         }
         CreateTerrainMesh() {
             if (this.isDummy == false)
@@ -2335,6 +2444,15 @@ var JWFramework;
             if (this.inSectorObject.length == 0) {
                 this.inSecter = false;
             }
+            let cameraPosition = JWFramework.WorldManager.getInstance().MainCamera.PhysicsComponent.GetPosition().clone();
+            if (JWFramework.CameraManager.getInstance().CameraMode === JWFramework.CameraMode.CAMERA_3RD)
+                JWFramework.WorldManager.getInstance().MainCamera.CameraInstance.localToWorld(cameraPosition);
+            if (cameraPosition.sub(this.physicsComponent.GetPosition()).length() > 4500) {
+                this.GameObjectInstance.visible = false;
+            }
+            else {
+                this.GameObjectInstance.visible = true;
+            }
         }
     }
     JWFramework.HeightmapTerrain = HeightmapTerrain;
@@ -2357,7 +2475,7 @@ var JWFramework;
         InitializeAfterLoad() {
             if (this.IsClone == true) {
                 this.BuildClouds();
-                this.GameObjectInstance.matrixAutoUpdate = true;
+                this.GameObjectInstance.matrixAutoUpdate = false;
                 this.GameObjectInstance.name = this.name;
             }
             else {
@@ -2446,7 +2564,7 @@ var JWFramework;
                 this.modelCount = JWFramework.ModelSceneBase.getInstance("ModelSceneEdit").ModelNumber;
             }
             for (let i = 0; i < this.modeltList.length; ++i) {
-                this.LoadModel(this.modeltList[i].url, this.modeltList[i].model);
+                this.LoadModel(this.modeltList[i]);
             }
             this.LoadHeightmapTerrain(20, 20);
         }
@@ -2454,53 +2572,67 @@ var JWFramework;
             this.modeltList = JWFramework.ModelSceneStage.getInstance().ModelScene;
             this.modelCount = JWFramework.ModelSceneStage.getInstance().ModelNumber;
             for (let i = 0; i < this.modeltList.length; ++i) {
-                this.LoadModel(this.modeltList[i].url, this.modeltList[i].model);
             }
             this.LoadHeightmapTerrain();
         }
-        LoadModel(modelSource, gameObject) {
-            if (modelSource != null) {
-                this.gltfLoader.load(modelSource, (gltf) => {
-                    console.log('success');
-                    gameObject.ModelData = gltf;
+        async LoadModel(modelSet) {
+            if (modelSet.mainUrl != null) {
+                modelSet.model.ModelData = await this.GLTFLoad(modelSet.mainUrl);
+                if (modelSet.lodUrl != null) {
+                    let lodGLTF = await this.GLTFLoad(modelSet.lodUrl);
+                    modelSet.model.GameObjectInstance = new THREE.LOD();
+                    let model = modelSet.model.GameObjectInstance;
+                    model.addLevel(modelSet.model.ModelData.scene, 300);
+                    model.addLevel(lodGLTF.scene, 600);
+                }
+                else
+                    modelSet.model.GameObjectInstance = modelSet.model.ModelData.scene;
+                modelSet.model.InitializeAfterLoad();
+                this.SetLoadComplete();
+            }
+            else {
+                modelSet.model.InitializeAfterLoad();
+                this.SetLoadComplete();
+            }
+        }
+        GLTFLoad(url) {
+            return new Promise((resolve, reject) => {
+                this.gltfLoader.load(url, (gltf) => {
                     gltf.scene.traverse(n => {
-                        if (n.isMesh) {
-                            let texture = n.material.map;
-                            let normal = n.material.normalMap;
-                            let opacity = n.material.opacity;
-                            let color = n.material.color;
-                            let side = n.material.side;
-                            let roughness = n.material.roughness;
-                            let metalness = n.material.metalness;
-                            n.material.map = texture;
-                            n.material.normalMap = normal;
-                            n.material.color = color;
-                            n.material.roughness = roughness;
-                            n.material.metalness = metalness;
-                            n.material.envMap = JWFramework.SceneManager.getInstance().SceneInstance.environment;
-                            n.castShadow = true;
-                            n.receiveShadow = true;
+                        let node = n;
+                        if (node.isMesh) {
+                            let texture = node.material.map;
+                            let normal = node.material.normalMap;
+                            let opacity = node.material.opacity;
+                            let color = node.material.color;
+                            let side = node.material.side;
+                            let roughness = node.material.roughness;
+                            let metalness = node.material.metalness;
+                            node.material.map = texture;
+                            node.material.normalMap = normal;
+                            node.material.color = color;
+                            node.material.roughness = roughness;
+                            node.material.metalness = metalness;
+                            node.material.envMap = JWFramework.SceneManager.getInstance().SceneInstance.environment;
+                            node.castShadow = true;
+                            node.receiveShadow = true;
                             if (opacity != 1) {
-                                n.material.opacity = opacity;
+                                node.material.opacity = opacity;
                             }
-                            n.material.side = side;
+                            node.material.side = side;
+                            n.frustumCulled = true;
                         }
                     });
-                    gameObject.GameObjectInstance = gltf.scene;
-                    gameObject.InitializeAfterLoad();
-                    this.SetLoadComplete();
+                    resolve(gltf);
                 }, (progress) => {
                     console.log('progress');
                     console.log(progress);
                 }, (error) => {
                     console.log('error');
                     console.log(error);
+                    reject(error);
                 });
-            }
-            else {
-                gameObject.InitializeAfterLoad();
-                this.SetLoadComplete();
-            }
+            });
         }
         LoadHeightmapTerrain(row = 20, col = 20) {
             let terrainIndex = 0;
@@ -2614,6 +2746,33 @@ var JWFramework;
 })(JWFramework || (JWFramework = {}));
 var JWFramework;
 (function (JWFramework) {
+    class ObjectPool {
+        constructor(objectClass) {
+            this.objects = [];
+            this.objectClass = objectClass;
+        }
+        AddObject(obj) {
+            this.objects.push(obj);
+        }
+        GetObject() {
+            let obj;
+            if (this.objects.length > 0) {
+                obj = this.objects.pop();
+            }
+            else {
+                obj = new this.objectClass();
+            }
+            return obj;
+        }
+        ReleaseObject(obj) {
+            obj.Reset();
+            this.objects.push(obj);
+        }
+    }
+    JWFramework.ObjectPool = ObjectPool;
+})(JWFramework || (JWFramework = {}));
+var JWFramework;
+(function (JWFramework) {
     class EditScene extends JWFramework.SceneBase {
         constructor(sceneManager) {
             super(sceneManager);
@@ -2638,6 +2797,12 @@ var JWFramework;
             JWFramework.ModelLoadManager.getInstance().LoadScene();
             let rotation = new THREE.Matrix4().makeRotationY(-Math.PI);
             JWFramework.WorldManager.getInstance().MainCamera.CameraInstance.applyMatrix4(rotation);
+            this.missileFogPool = new JWFramework.ObjectPool(JWFramework.MissileFog);
+            for (let i = 0; i < 500; ++i) {
+                let missileFog = new JWFramework.MissileFog();
+                missileFog.IsClone = true;
+                this.missileFogPool.AddObject(missileFog);
+            }
         }
         BuildLight() {
             this.directionalLight = new JWFramework.Light(JWFramework.LightType.LIGHT_DIRECTIONAL);
@@ -2655,16 +2820,51 @@ var JWFramework;
             let color = 0xdefdff;
             sceneInstance.fog = new THREE.Fog(color, 300, 2900);
         }
+        TestMobileButtonCreate() {
+            function toggleFullScreen() {
+                if (!document.fullscreenElement) {
+                    document.documentElement.requestFullscreen();
+                }
+                else {
+                    if (document.exitFullscreen) {
+                        document.exitFullscreen();
+                    }
+                }
+            }
+            let button = document.createElement("button");
+            button.innerHTML = "LoadScene";
+            button.addEventListener("click", function () {
+                JWFramework.ObjectManager.getInstance().DeleteAllObject();
+                JWFramework.SceneManager.getInstance().CurrentScene.reloadScene = true;
+            });
+            document.getElementById("info").appendChild(button);
+            let button1 = document.createElement("button");
+            button1.innerHTML = "3rdView";
+            button1.addEventListener("click", function () {
+                let sceneManager = JWFramework.SceneManager.getInstance().CurrentScene;
+                if (sceneManager.Picker.GetPickParents() != null) {
+                    if (JWFramework.CameraManager.getInstance().CameraMode == JWFramework.CameraMode.CAMERA_ORBIT) {
+                        JWFramework.CameraManager.getInstance().SetCameraSavedPosition(JWFramework.CameraMode.CAMERA_3RD);
+                    }
+                    else
+                        JWFramework.CameraManager.getInstance().SetCameraSavedPosition(JWFramework.CameraMode.CAMERA_ORBIT);
+                    sceneManager.gizmoOnOff = !sceneManager.gizmoOnOff;
+                    if (sceneManager.gizmoOnOff == false && sceneManager.Picker.GetPickParents() != null)
+                        sceneManager.DetachGizmo(sceneManager.Picker.GetPickParents());
+                }
+            });
+            document.getElementById("info").appendChild(button1);
+            let button2 = document.createElement("button");
+            button2.innerHTML = "FullScreen";
+            button2.addEventListener("mousedown", function () {
+                toggleFullScreen();
+            });
+            document.getElementById("info").appendChild(button2);
+        }
         Animate() {
             if (JWFramework.ModelLoadManager.getInstance().LoadComplete == true) {
                 if (this.testLoad == false) {
-                    let button = document.createElement("button");
-                    button.innerHTML = "LoadScene";
-                    button.addEventListener("click", function () {
-                        JWFramework.ObjectManager.getInstance().DeleteAllObject();
-                        JWFramework.SceneManager.getInstance().CurrentScene.reloadScene = true;
-                    });
-                    document.getElementById("info").appendChild(button);
+                    this.TestMobileButtonCreate();
                     this.testLoad = true;
                 }
                 this.MakeGizmo();
@@ -2764,8 +2964,23 @@ var JWFramework;
                 this.sceneManager.SceneInstance.remove(this.gizmo);
                 this.reloadScene = true;
             }
-            if (inputManager.GetKeyState('p', JWFramework.KeyState.KEY_PRESS)) {
+            if (inputManager.GetKeyState('p', JWFramework.KeyState.KEY_DOWN)) {
                 console.log(JWFramework.WorldManager.getInstance().Renderer.info);
+                let objects = 0, vertices = 0, triangles = 0;
+                for (let i = 0, l = this.sceneManager.SceneInstance.children.length; i < l; i++) {
+                    const object = this.sceneManager.SceneInstance.children[i];
+                    object.traverseVisible(function (object) {
+                        objects++;
+                        if (object instanceof THREE.Mesh || object instanceof THREE.InstancedMesh) {
+                            const geometry = object.geometry;
+                            vertices += geometry.attributes.position.count;
+                            {
+                                triangles += geometry.attributes.position.count / 3;
+                            }
+                        }
+                    });
+                }
+                console.log("Total Triangles: " + triangles);
             }
         }
         ReloadProcess() {
@@ -3216,9 +3431,50 @@ var JWFramework;
                 });
             });
         }
-        CollideBoxToSphere(sorce, destination) {
+        CollideSphereToBox(sorce, destination) {
+            sorce.forEach(function (src) {
+                destination.forEach(function (dst) {
+                    if (src.GameObject.IsClone && dst.GameObject.IsClone) {
+                        if (src.GameObject != dst.GameObject) {
+                            if (src.GameObject.CollisionComponent.BoundingSphere && dst.GameObject.CollisionComponent.BoundingBox)
+                                if (src.GameObject.CollisionComponent.BoundingSphere.intersectsBox(dst.GameObject.CollisionComponent.BoundingBox)) {
+                                    if (!(dst.GameObject instanceof JWFramework.HeightmapTerrain)) {
+                                        src.GameObject.CollisionActive();
+                                    }
+                                    dst.GameObject.CollisionActive(src.GameObject);
+                                }
+                                else {
+                                    if (!(dst.GameObject instanceof JWFramework.HeightmapTerrain)) {
+                                        src.GameObject.CollisionDeActive();
+                                    }
+                                    dst.GameObject.CollisionDeActive(src.GameObject);
+                                }
+                        }
+                    }
+                });
+            });
         }
         CollideSphereToSphere(sorce, destination) {
+            sorce.forEach(function (src) {
+                destination.forEach(function (dst) {
+                    if (src.IsClone && dst.IsClone) {
+                        if (src != dst) {
+                            if (src.CollisionComponent != null && dst.CollisionComponent != null)
+                                if (src.CollisionComponent.BoundingSphere && dst.CollisionComponent.BoundingSphere)
+                                    if (src.CollisionComponent.BoundingSphere.intersectsSphere(dst.CollisionComponent.BoundingSphere)) {
+                                        if (!(dst instanceof JWFramework.HeightmapTerrain) || !(src instanceof JWFramework.HeightmapTerrain))
+                                            src.CollisionActive(dst.Type);
+                                        dst.CollisionActive();
+                                    }
+                                    else {
+                                        if (!(dst instanceof JWFramework.HeightmapTerrain) || !(src instanceof JWFramework.HeightmapTerrain))
+                                            src.CollisionDeActive(dst.Type);
+                                        dst.CollisionDeActive();
+                                    }
+                        }
+                    }
+                });
+            });
         }
     }
     JWFramework.CollisionManager = CollisionManager;
@@ -3455,7 +3711,7 @@ var JWFramework;
             this.CreateBillboardMesh();
         }
         InitializeAfterLoad() {
-            this.GameObjectInstance.matrixAutoUpdate = true;
+            this.GameObjectInstance.matrixAutoUpdate = false;
             this.PhysicsComponent.SetScaleScalar(1);
             this.GameObjectInstance.name = this.name;
             JWFramework.SceneManager.getInstance().SceneInstance.add(this.gameObjectInstance);
@@ -3562,30 +3818,6 @@ var JWFramework;
         }
     }
     JWFramework.IRCircle = IRCircle;
-})(JWFramework || (JWFramework = {}));
-var JWFramework;
-(function (JWFramework) {
-    class ObjectPool {
-        constructor(objectClass) {
-            this.objects = [];
-            this.objectClass = objectClass;
-        }
-        getObject() {
-            let obj;
-            if (this.objects.length > 0) {
-                obj = this.objects.pop();
-            }
-            else {
-                obj = new this.objectClass();
-            }
-            return obj;
-        }
-        releaseObject(obj) {
-            obj.reset();
-            this.objects.push(obj);
-        }
-    }
-    JWFramework.ObjectPool = ObjectPool;
 })(JWFramework || (JWFramework = {}));
 var JWFramework;
 (function (JWFramework) {

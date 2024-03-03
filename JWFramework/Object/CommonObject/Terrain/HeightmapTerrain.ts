@@ -33,7 +33,7 @@ namespace JWFramework {
             {
                 this.CreateBoundingBox();
             }
-
+            this.GameObjectInstance.matrixAutoUpdate = false;
             SceneManager.getInstance().SceneInstance.add(this.gameObjectInstance);
             //SceneManager.getInstance().SceneInstance.add(this.CollisionComponent.BoxHelper);
             ObjectManager.getInstance().AddObject(this, this.name, this.type);
@@ -44,6 +44,7 @@ namespace JWFramework {
             this.CollisionComponent.CreateBoundingBox(this.planSize, 5000, this.planSize);
             this.CollisionComponent.BoxHelper.box.setFromCenterAndSize(new THREE.Vector3(this.width, 2000, this.height), new THREE.Vector3(this.planSize, 5000, this.planSize));
             this.CollisionComponent.BoxHelper.visible = false;
+            this.CollisionComponent.BoxHelper.matrixAutoUpdate = false;
         }
 
         private CreateTerrainMesh()
@@ -338,6 +339,19 @@ namespace JWFramework {
                 //this.material.uniforms['opacity'].value = this.opacity;
                 this.inSecter = false;
             }
+
+            let cameraPosition = WorldManager.getInstance().MainCamera.PhysicsComponent.GetPosition().clone();
+            if (CameraManager.getInstance().CameraMode === CameraMode.CAMERA_3RD)
+                WorldManager.getInstance().MainCamera.CameraInstance.localToWorld(cameraPosition);
+            if (cameraPosition.sub(this.physicsComponent.GetPosition()).length() > 4500)
+            {
+                this.GameObjectInstance.visible = false;
+            }
+            else
+            {
+                this.GameObjectInstance.visible = true;
+            }
+
         }
 
         private planeMesh: THREE.Mesh;

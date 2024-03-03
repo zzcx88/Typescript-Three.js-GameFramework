@@ -76,18 +76,26 @@ namespace JWFramework
         public Animate()
         {
             this.CollisionComponent.Update();
-            //if (InputManager.getInstance().GetKeyState('left')) {
-            //    this.y = 1;
-            //    this.PhysicsComponent.Rotate(0, this.y, 0);
+
+            //if (CameraManager.getInstance().CameraMode == CameraMode.CAMERA_3RD)
+            //if (ModelLoadManager.getInstance().LoadComplete == true)
+            //{
+            //    if (InputManager.getInstance().GetKeyState('left', KeyState.KEY_PRESS))
+            //    {
+            //        this.y = 1;
+            //        this.PhysicsComponent.Rotate(0, this.y, 0);
+            //    }
+            //    if (InputManager.getInstance().GetKeyState('right', KeyState.KEY_PRESS))
+            //    {
+            //        this.y = -1;
+            //        this.PhysicsComponent.Rotate(0, this.y, 0);
+            //    }
+            //    if (InputManager.getInstance().GetKeyState('up', KeyState.KEY_PRESS))
+            //    {
+            //        this.PhysicsComponent.MoveFoward(-50);
+            //    }
             //}
-            //if (InputManager.getInstance().GetKeyState('right')) {
-            //    this.y = -1;
-            //    this.PhysicsComponent.Rotate(0, this.y, 0);
-            //}
-            //if (InputManager.getInstance().GetKeyState('up')) {
-            //    this.PhysicsComponent.MoveFoward(-1);
-            //}
-            this.PhysicsComponent.UpdateMatrix();
+            //this.PhysicsComponent.UpdateMatrix();
         }
 
         public get PhysicsComponent(): PhysicsComponent

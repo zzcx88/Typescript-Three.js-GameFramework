@@ -23,6 +23,7 @@
                     SceneManager.getInstance().CurrentScene.Picker.SetPickPosition(e);
                 SceneManager.getInstance().CurrentScene.Picker.EnablePickOff = true;
             });
+
             window.addEventListener('mouseout', function (e)
             {
                 SceneManager.getInstance().CurrentScene.Picker.ClearPickPosition();
@@ -47,8 +48,24 @@
         {
             if (intersectedObjects != null)
             {
+                if (intersectedObjects.type == "Group")
+                {
+                    this.pickedParentName = intersectedObjects.name;
+                    return;
+                }
+
+                if (intersectedObjects.type == "LOD")
+                {
+                    this.pickedParentName = intersectedObjects.name;
+                    return;
+                }
                 if (intersectedObjects.type == "Mesh")
                 {
+                    if (intersectedObjects instanceof THREE.Water)
+                    {
+                        this.pickedParentName = intersectedObjects.name;
+                        return;
+                    }
                     if (intersectedObjects.name.includes("ObbHelper"))
                     {
                         let parentName = (intersectedObjects.name as string).replace("ObbHelper", "")
@@ -57,22 +74,15 @@
                     }
                     else
                     {
-                        this.pickedParentName = intersectedObjects.name;
-                        return;
+                        this.pickedParentName = undefined;
                     }
-                    //this.pickedParentName = undefined;
                 }
                 if (intersectedObjects.type == "Sprite")
                 {
                     this.pickedParentName = intersectedObjects.name;
                 }
-                if (intersectedObjects.type != "Group") {
+                if (intersectedObjects.type != "Group" || intersectedObjects.type != "LOD") {
                     this.GetParentName(intersectedObjects.parent);
-                }
-                else
-                {
-                    this.pickedParentName = intersectedObjects.name;
-                    this.pickedObject = intersectedObjects;
                 }
             }
         }
@@ -93,7 +103,8 @@
         {
             let terrain;
 
-            if (this.pickPositionX > 0.75 || this.pickPositionX == -1) {
+            if (this.pickPositionX > 0.75 || this.pickPositionX == -1)
+            {
                 return;
             }
             this.PickOffObject();

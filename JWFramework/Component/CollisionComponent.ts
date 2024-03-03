@@ -5,10 +5,6 @@
         constructor(gameObject: GameObject)
         {
             this.gameObject = gameObject;
-            this.boundingBoxInclude = false;
-            this.orientedBoundingBoxInlcude = false;
-            this.boundingSphereInclude = false;
-            this.raycasterInclude = false;
         }
 
         public CreateBoundingBox(x: number, y: number, z: number)
@@ -47,9 +43,23 @@
             this.orientedBoundingBoxInlcude = true;
         }
 
-        public CreateBoundingSphere()
+        public CreateBoundingSphere(center?: THREE.Vector3, radius?: number)
         {
-
+            if (center == null)
+                center = new THREE.Vector3(0, 0, 0);
+            if (radius == null)
+                radius = 1;
+            this.radius = radius;
+            this.boundingSphere = new THREE.Sphere(center, radius);
+            let sphereGeomertry = new THREE.SphereGeometry(radius, 8, 8);
+            //let color = new THREE.Color().setColorName("Red");
+            //let material = new THREE.MeshBasicMaterial({ color });
+            //material.wireframe = true;
+            //this.sphereHelper = new THREE.Mesh(sphereGeomertry, material);
+            //this.sphereHelper.name = this.gameObject.Name + "SphereHelper";
+            //if (SceneManager.getInstance().SceneInstance != null)
+            //    SceneManager.getInstance().SceneInstance.add(this.sphereHelper);
+            this.boundingSphereInclude = true;
         }
 
         public CreateRaycaster()
@@ -91,6 +101,16 @@
             this.halfSize = value;
         }
 
+        public get Radius(): number
+        {
+            return this.radius;
+        }
+
+        public set Radius(value: number)
+        {
+            this.radius = value
+        }
+
         public get OBB(): THREE.OBB {
             return this.orientedBoundingBox;
         }
@@ -110,12 +130,28 @@
             return this.raycaster;
         }
 
+        public get BoundingBoxInclude(): boolean
+        {
+            return this.boundingBoxInclude;
+        }
+
+        public get OBBInclude(): boolean
+        {
+            return this.orientedBoundingBoxInlcude;
+        }
+
+        public get BoundingSphereInclude(): boolean
+        {
+            return this.boundingSphereInclude;
+        }
+
         public DeleteCollider()
         {
             if (this.boundingBox)
             {
                 this.boxHelper.visible = false;
-                this.boxHelper.geometry.dispose();
+                //this.boxHelper.geometry.dispose();
+                this.boxHelper.dispose();
                 delete this.boundingBox;
                 delete this.boxHelper;
                 this.boundingBox = null;
@@ -126,12 +162,18 @@
                 this.obbBoxHelper.visible = false;
                 delete this.orientedBoundingBox;
                 this.obbBoxHelper.geometry.dispose();
+                (this.obbBoxHelper.material as THREE.MeshBasicMaterial).dispose();
                 delete this.obbBoxHelper.material;
                 delete this.obbBoxHelper.geometry.userData.obb;
                 delete this.obbBoxHelper;
                 this.orientedBoundingBox = null;
                 this.obbBoxHelper = null;
 
+            }
+            if (this.boundingSphere)
+            {
+                delete this.boundingSphere;
+                this.boundingSphere = null;
             }
             if (this.raycaster)
             {
@@ -142,14 +184,19 @@
 
         public Update()
         {
+            if (this.boundingSphere)
+            {
+                this.boundingSphere.set(this.gameObject.PhysicsComponent.GetPosition(), this.radius);
+                //this.sphereHelper.position.set(this.gameObject.PhysicsComponent.GetPosition().x, this.gameObject.PhysicsComponent.GetPosition().y, this.gameObject.PhysicsComponent.GetPosition().z);
+            }
             if (this.boundingBox)
             {
                 this.boxHelper.box.setFromCenterAndSize(this.gameObject.PhysicsComponent.GetPosition(), this.sizeAABB);
             }
             if (this.orientedBoundingBox)
             {
-                //if (this.IsEditable == true)
-                //    this.halfSize = this.halfSize.multiplyScalar(1);
+                if (this.gameObject.Type == ObjectType.OBJ_MISSILE)
+                    console.log(this.boundingSphere);
 
                 this.obbBoxHelper.scale.set(this.halfSize.x, this.halfSize.y, this.halfSize.z)
                 this.obbBoxHelper.rotation.set(this.gameObject.PhysicsComponent.GetRotateEuler().x, this.gameObject.PhysicsComponent.GetRotateEuler().y, this.gameObject.PhysicsComponent.GetRotateEuler().z);
@@ -176,14 +223,16 @@
         private raycaster: THREE.Raycaster = null;
 
         public halfSize: THREE.Vector3;
+        public radius: number;
 
         private isEditable: boolean = false;
         private boundingBoxInclude: boolean;
-        private orientedBoundingBoxInlcude: boolean;
-        private boundingSphereInclude: boolean;
-        private raycasterInclude: boolean;
+        private orientedBoundingBoxInlcude: boolean = false;
+        private boundingSphereInclude: boolean = false;
+        private raycasterInclude: boolean = false;
 
         private boxHelper: THREE.Box3Helper;
         private obbBoxHelper: THREE.Mesh
+        private sphereHelper: THREE.Mesh;
     }
 }

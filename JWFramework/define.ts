@@ -49,13 +49,15 @@ namespace JWFramework
             this.tree.Name = "Tree";
             this.f_5e.Name = "F-5E";
             this.anim.Name = "Animation";
+            this.r60.Name = "R-60M"
             this.water.Name = "Water";
             this.sceneModelData = [
-                { model: this.mig29, url: 'Model/mig_29_1.glb' },
-                { model: this.tree, url: 'Model/Tree/tree_lv3.glb' },
-                { model: this.f_5e, url: 'Model/F-5E.glb' },
-                { model: this.anim, url: 'Model/Sprint.glb' },
-                { model: this.water, url: null },
+                { model: this.mig29, mainUrl: 'Model/mig_29_1.glb', lodUrl: 'Model/mig_29_LOD_1.glb' },
+                { model: this.tree, mainUrl: 'Model/Tree/tree_lv3.glb', lodUrl: null },
+                { model: this.f_5e, mainUrl: 'Model/F-5E.glb', lodUrl: null },
+                { model: this.anim, mainUrl: 'Model/Sprint.glb', lodUrl: null},
+                { model: this.r60, mainUrl: 'Model/aim-9.glb', lodUrl: null},
+                { model: this.water, mainUrl: null, lodUrl: null},
             ];
             this.modelNumber = this.sceneModelData.length;
         }
@@ -64,6 +66,7 @@ namespace JWFramework
         private mig29: EditObject = new EditObject;
         private f_5e: EditObject = new EditObject;
         private anim: EditObject = new EditObject;
+        private r60: R60M = new R60M;
         private water: Water = new Water;
     }
 
@@ -85,7 +88,7 @@ namespace JWFramework
         {
             this.F16.Name = "F-16";
             this.sceneTestModel = [
-                { model: this.F16, url: 'Model/F-16D/F-16.gltf' },
+                { model: this.F16, mainUrl: 'Model/F-16D/F-16.gltf', lodUrl: null },
             ];
             this.modelNumber = this.sceneTestModel.length;
         }
@@ -109,7 +112,8 @@ namespace JWFramework
     export interface ModelSet
     {
         model: GameObject;
-        url: string;
+        mainUrl: string;
+        lodUrl: string;
     }
 
     export interface ObjectSet

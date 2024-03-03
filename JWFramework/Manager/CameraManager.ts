@@ -41,23 +41,30 @@
         private ChangeThridPersonCamera()
         {
             let sceneManager = SceneManager.getInstance();
+            let gameObjectForCamera = sceneManager.CurrentScene.Picker.GetPickParents();
+            if ((gameObjectForCamera instanceof Water))
+                return;
+
+            
             this.cameraMode = CameraMode.CAMERA_3RD;
             sceneManager.CurrentScene.Picker.OrbitControl.enabled = false;
 
-            let gameObjectForCamera = sceneManager.CurrentScene.Picker.GetPickParents();
             gameObjectForCamera.GameObjectInstance.add(this.MainCamera.CameraInstance);
             let cameraPosition = gameObjectForCamera.PhysicsComponent.GetPosition();
 
-            this.MainCamera.CameraInstance.lookAt(cameraPosition.x,
-                cameraPosition.y + 1.5, cameraPosition.z);
+            for (let i = 0; i < 2; ++i)
+            {
+                this.MainCamera.CameraInstance.lookAt(cameraPosition.x,
+                    cameraPosition.y + 1.5, cameraPosition.z);
 
-            this.MainCamera.PhysicsComponent.SetPostion(0, 0, 0);
+                this.MainCamera.PhysicsComponent.SetPostion(0, 0, 0);
 
-            let Up = new THREE.Vector3(0, 1, 0);
-            let Look = new THREE.Vector3(0, 0, 1);
+                let Up = new THREE.Vector3(0, 1, 0);
+                let Look = new THREE.Vector3(0, 0, 1);
 
-            this.MainCamera.PhysicsComponent.GetPosition().add(Up.multiplyScalar(0.6));
-            this.MainCamera.PhysicsComponent.GetPosition().add(Look.multiplyScalar(-3.7));
+                this.MainCamera.PhysicsComponent.GetPosition().add(Up.multiplyScalar(0.6));
+                this.MainCamera.PhysicsComponent.GetPosition().add(Look.multiplyScalar(-3.7));
+            }
         }
 
 
@@ -79,6 +86,6 @@
             picker.OrbitControl.target = tartgetLocation.copy(gameObjectForCamera.PhysicsComponent.GetPosition());
             this.MainCamera.CameraInstance.lookAt(gameObjectForCamera.PhysicsComponent.GetPosition());
         }
-        private cameraMode: CameraMode;
+        private cameraMode: CameraMode = CameraMode.CAMERA_ORBIT;
     }
 }

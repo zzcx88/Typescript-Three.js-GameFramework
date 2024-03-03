@@ -56,8 +56,9 @@ namespace JWFramework
         {
             //this.CollisionComponent.CreateBoundingBox(this.PhysicsComponent.GetScale().x, this.PhysicsComponent.GetScale().y, this.PhysicsComponent.GetScale().z);
             //let size = new THREE.Vector3().subVectors(this.PhysicsComponent.GetMaxVertex(), this.PhysicsComponent.GetMinVertex());
-            this.CollisionComponent.CreateOrientedBoundingBox(this.physicsComponent.GetPosition());
-            this.collisionComponent.IsEditable = false;
+            //this.CollisionComponent.CreateOrientedBoundingBox(this.physicsComponent.GetPosition());
+            this.CollisionComponent.CreateBoundingSphere(this.physicsComponent.GetPosition(), 5);
+            this.CollisionComponent.IsEditable = false;
             this.CollisionComponent.CreateRaycaster();
             //SceneManager.getInstance().SceneInstance.add(this.CollisionComponent.BoxHelper);
         }
@@ -157,17 +158,23 @@ namespace JWFramework
         {
             let cameraPosition = WorldManager.getInstance().MainCamera.PhysicsComponent.GetPosition().clone();
             if (CameraManager.getInstance().CameraMode === CameraMode.CAMERA_3RD)
+            {
                 WorldManager.getInstance().MainCamera.CameraInstance.localToWorld(cameraPosition);
+            }
             if (this.GUIComponent.GetLabel().GameObjectInstance != null)
             {
                 if (cameraPosition.sub(this.physicsComponent.GetPosition()).length() > 3000)
                 {
                     this.GUIComponent.GetLabel().GameObjectInstance.visible = false;
+                    if (this.collisionComponent.OBB)
+                        this.collisionComponent.ObbBoxHelper.visible = false;
                     this.GameObjectInstance.visible = false;
                 }
                 else
                 {
                     this.GUIComponent.GetLabel().GameObjectInstance.visible = true;
+                    if (this.collisionComponent.OBB)
+                        this.collisionComponent.ObbBoxHelper.visible = true;
                     this.GameObjectInstance.visible = true;
                 }
             }
@@ -208,7 +215,7 @@ namespace JWFramework
                     else
                         this.throttle = 0;
                 }
-                if (inputManager.GetKeyState('f', KeyState.KEY_PRESS))
+                if (inputManager.GetKeyState('f', KeyState.KEY_DOWN))
                 {
                     CameraManager.getInstance().SetCameraSavedPosition(CameraMode.CAMERA_3RD);
                 }

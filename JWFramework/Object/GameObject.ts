@@ -35,6 +35,14 @@
             return this.isPlayer;
         }
 
+        public set IsPoolObject(isPoolObj: boolean) {
+            this.isPoolObject = isPoolObj;
+        }
+
+        public get IsPoolObject(): boolean {
+            return this.isPoolObject;
+        }
+
         public set IsPlayer(flag: boolean)
         {
             this.isPlayer = flag;
@@ -148,6 +156,8 @@
         public CollisionActive(value: any = 0) { }
         public CollisionDeActive(value: any = 0) { }
 
+        public Reset() { }
+
         public Animate() { }
 
         public DeleteObject()
@@ -180,6 +190,7 @@
         protected type: ObjectType;
         protected name: string = "";
         protected isClone: boolean = false;
+        protected isPoolObject: boolean = true;
         protected isDead: boolean = false;
         protected isPlayer: boolean = false;
         protected isRayOn: boolean = false;

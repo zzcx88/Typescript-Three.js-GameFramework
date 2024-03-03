@@ -22,7 +22,7 @@ namespace JWFramework
             if (this.IsClone == true)
             {
                 this.BuildClouds();
-                this.GameObjectInstance.matrixAutoUpdate = true;
+                this.GameObjectInstance.matrixAutoUpdate = false;
                 //this.PhysicsComponent.SetScaleScalar(1);
                 this.GameObjectInstance.name = this.name;
             }

@@ -1,11 +1,6 @@
 ﻿namespace JWFramework
 {
-    interface Resettable
-    {
-        reset(): void;
-    }
-
-    export class ObjectPool<T extends Resettable> {
+    export class ObjectPool<T extends GameObject> {
         private objects: T[] = [];
         private objectClass: new () => T;
 
@@ -14,7 +9,12 @@
             this.objectClass = objectClass;
         }
 
-        public getObject(): T
+        public AddObject(obj: T)
+        {
+            this.objects.push(obj);
+        }
+
+        public GetObject(): T
         {
             let obj: T;
 
@@ -29,9 +29,9 @@
             return obj;
         }
 
-        public releaseObject(obj: T)
+        public ReleaseObject(obj: T)
         {
-            obj.reset();
+            obj.Reset();
             this.objects.push(obj);
         }
     }

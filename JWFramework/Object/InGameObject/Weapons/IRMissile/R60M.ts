@@ -21,9 +21,9 @@ namespace JWFramework
 
         public CreateCollider()
         {
-            this.CollisionComponent.CreateOrientedBoundingBox(this.physicsComponent.GetPosition(), new THREE.Vector3(1.5, 1.5, 1.5));
+            this.CollisionComponent.CreateBoundingSphere(this.physicsComponent.GetPosition(), 2);
             this.CollisionComponent.CreateRaycaster();
-            this.CollisionComponent.ObbBoxHelper.visible = false;
+            //this.CollisionComponent.ObbBoxHelper.visible = false;
         }
 
         public CollisionActive(type: ObjectType)

@@ -3,8 +3,12 @@ namespace JWFramework
 {
     export class MissileFog extends GameObject
     {
-        constructor()
-        {
+        private mesh: THREE.Sprite;
+        public material: THREE.SpriteMaterial;
+        private fogLifeTime: number = 4;
+        public currentTime: number = 0;
+
+        constructor() {
             super();
             this.type = ObjectType.OBJ_OBJECT2D;
             this.name = "MissileFog" + ObjectManager.getInstance().GetObjectList[ObjectType.OBJ_OBJECT2D].length;
@@ -13,23 +17,20 @@ namespace JWFramework
             this.CreateBillboardMesh();
         }
 
-        public InitializeAfterLoad()
-        {
+        public InitializeAfterLoad() {
             this.GameObjectInstance.matrixAutoUpdate = true;
-            this.PhysicsComponent.SetScaleScalar(1);
+            //this.PhysicsComponent.SetScaleScalar(1);
             this.GameObjectInstance.name = this.name;
 
-            SceneManager.getInstance().SceneInstance.add(this.gameObjectInstance);
-            ObjectManager.getInstance().AddObject(this, this.name, this.Type);
+            //SceneManager.getInstance().SceneInstance.add(this.gameObjectInstance);
+            //ObjectManager.getInstance().AddObject(this, this.name, this.Type);
         }
 
-        private CreateBillboardMesh()
-        {
+        private CreateBillboardMesh() {
             this.material = new THREE.SpriteMaterial({
                 map: ShaderManager.getInstance().fogTexture,
                 transparent: true,
                 opacity: 0.8
-                //side: THREE.DoubleSide
             });
             this.mesh = new THREE.Sprite(this.material);
             this.GameObjectInstance = this.mesh;
@@ -39,27 +40,39 @@ namespace JWFramework
 
         private *FogStateUpdate(): Generator<null, void, unknown>
         {
-            this.currentTime += 1 * WorldManager.getInstance().GetDeltaTime();
-            this.physicsComponent.SetScaleScalar(this.currentTime * 3);
-            const material = (this.GameObjectInstance as THREE.Sprite).material;
-            while (material.opacity >= 0)
-            {
-                material.opacity -= 0.2 * WorldManager.getInstance().GetDeltaTime();
-                yield;
+            this.currentTime += 5 * WorldManager.getInstance().GetDeltaTime();;
+            this.physicsComponent.SetScaleScalar(this.currentTime);
+            this.material.opacity -= 0.5 * WorldManager.getInstance().GetDeltaTime();
+            if (this.material.opacity <= 0) {
+                //this.isDead = true;
+                (SceneManager.getInstance().CurrentScene as EditScene).missileFogPool.ReleaseObject(this);
+                return;
             }
-            this.isDead = true;
-            yield null;
+           yield;
         }
 
-        public Animate()
+        public Reset()
         {
+            ObjectManager.getInstance().DetachObject(this, this.type);
+            this.currentTime = 0;
+            this.material.opacity = 0.8;
+            this.PhysicsComponent.SetScaleScalar(0.5);
+            this.IsPoolObject = false;
+        }
+
+        public Animate() {
             let generator = this.FogStateUpdate();
             generator.next();
+            //this.FogStateUpdate();
+            //this.currentTime += 1 * WorldManager.getInstance().GetDeltaTime();;
+            //this.physicsComponent.SetScaleScalar(this.currentTime);
+            //this.material.opacity -= 0.1 * WorldManager.getInstance().GetDeltaTime();
+            //if (this.material.opacity <= 0)
+            //{
+            //    //this.isDead = true;
+            //    (SceneManager.getInstance().CurrentScene as EditScene).missileFogPool.ReleaseObject(this);
+            //    return;
+            //}
         }
-        private mesh: THREE.Sprite;
-        private material: THREE.SpriteMaterial;
-        private fogLifeTime: number = 4;
-        private currentTime: number = 0;
     }
-
 }

@@ -130,7 +130,6 @@ namespace JWFramework
         {
             //--NormalRender
             this.renderer.render(this.sceneManager.SceneInstance, this.camera.CameraInstance);
-
             //--MotionBlurRender
             //ShaderManager.getInstance().ShadedRender();
         }

@@ -67,6 +67,12 @@
             }
         }
 
+        public DetachObject(gameObject: GameObject, type: ObjectType)
+        {
+            this.objectList[type] = this.objectList[type].filter((element) => element.GameObject !== gameObject);
+            SceneManager.getInstance().SceneInstance.remove(gameObject.GameObjectInstance);
+        }
+
         public MakeClone(selectObject: GameObject): GameObject
         {
             let cloneObject: GameObject;
@@ -115,7 +121,7 @@
                     cloneObject.AnimationMixer.clipAction(cloneObject.ModelData.animations[0]).play();
                 }
                 else
-                    cloneObject.GameObjectInstance = selectObject.ModelData.scene.clone();
+                    cloneObject.GameObjectInstance = selectObject.GameObjectInstance.clone();
             }
             cloneObject.InitializeAfterLoad();
             this.objectId++;
@@ -213,12 +219,14 @@
         {
             for (let TYPE = 0; TYPE < ObjectType.OBJ_END; ++TYPE) {
                 for (let OBJ = 0; OBJ < this.objectList[TYPE].length; ++OBJ) {
+
                     if (this.objectList[TYPE][OBJ].GameObject.IsClone)
                         this.objectList[TYPE][OBJ].GameObject.Animate();
 
-                    if (this.objectList[TYPE][OBJ].GameObject.PhysicsCompIncluded == true)
-                        this.objectList[TYPE][OBJ].GameObject.PhysicsComponent.UpdateMatrix();
+                    //if (this.objectList[TYPE][OBJ].GameObject.PhysicsCompIncluded == true)
+                    //    this.objectList[TYPE][OBJ].GameObject.PhysicsComponent.UpdateMatrix();
 
+                    if (this.objectList[TYPE][OBJ] != null)
                     if (this.objectList[TYPE][OBJ].GameObject.IsDead) {
                         this.DeleteObject(this.objectList[TYPE][OBJ].GameObject);
                         this.objectList[TYPE][OBJ] = null;
@@ -231,11 +239,11 @@
             //CollisionManager.getInstance().CollideBoxToBox(this.objectList[ObjectType.OBJ_TERRAIN], this.objectList[ObjectType.OBJ_CAMERA]);
             //CollisionManager.getInstance().CollideObbToObb(this.objectList[ObjectType.OBJ_OBJECT3D], this.objectList[ObjectType.OBJ_OBJECT3D]);
 
-            CollisionManager.getInstance().CollideObbToBox(
+            CollisionManager.getInstance().CollideSphereToBox(
                 this.objectList[ObjectType.OBJ_OBJECT3D],
                 this.objectList[ObjectType.OBJ_TERRAIN].filter(o => (o.GameObject as HeightmapTerrain).IsDummy == false));
 
-            CollisionManager.getInstance().CollideObbToBox(
+            CollisionManager.getInstance().CollideSphereToBox(
                 this.objectList[ObjectType.OBJ_MISSILE],
                 this.objectList[ObjectType.OBJ_TERRAIN].filter(o => (o.GameObject as HeightmapTerrain).IsDummy == false));
 
@@ -244,7 +252,7 @@
             CollisionManager.getInstance().CollideRayToWater(this.objectList[ObjectType.OBJ_WATER].filter(o_ => o_.GameObject.IsClone));
             sectoredTerrain.forEach(function (src)
             {
-                CollisionManager.getInstance().CollideObbToObb(
+                CollisionManager.getInstance().CollideSphereToSphere(
                     (src.GameObject as HeightmapTerrain).inSectorObject,
                     (src.GameObject as HeightmapTerrain).inSectorObject);
             });

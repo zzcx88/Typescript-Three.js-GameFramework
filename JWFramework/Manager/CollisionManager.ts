@@ -183,14 +183,67 @@
             })
         }
 
-        public CollideBoxToSphere(sorce: ObjectSet[], destination: ObjectSet[])
+        public CollideSphereToBox(sorce: ObjectSet[], destination: ObjectSet[])
         {
-
+            sorce.forEach(function (src)
+            {
+                destination.forEach(function (dst)
+                {
+                    if (src.GameObject.IsClone && dst.GameObject.IsClone)
+                    {
+                        if (src.GameObject != dst.GameObject)
+                        {
+                            if (src.GameObject.CollisionComponent.BoundingSphere && dst.GameObject.CollisionComponent.BoundingBox)
+                                if (src.GameObject.CollisionComponent.BoundingSphere.intersectsBox(dst.GameObject.CollisionComponent.BoundingBox))
+                                {
+                                    if (!(dst.GameObject instanceof HeightmapTerrain))
+                                    {
+                                        src.GameObject.CollisionActive();
+                                    }
+                                    dst.GameObject.CollisionActive(src.GameObject);
+                                }
+                                else
+                                {
+                                    if (!(dst.GameObject instanceof HeightmapTerrain))
+                                    {
+                                        src.GameObject.CollisionDeActive();
+                                    }
+                                    dst.GameObject.CollisionDeActive(src.GameObject);
+                                }
+                        }
+                    }
+                })
+            })
         }
 
-        public CollideSphereToSphere(sorce: ObjectSet[], destination: ObjectSet[])
+        public CollideSphereToSphere(sorce: GameObject[], destination: GameObject[])
         {
-
+            sorce.forEach(function (src)
+            {
+                destination.forEach(function (dst)
+                {
+                    if (src.IsClone && dst.IsClone)
+                    {
+                        if (src != dst)
+                        {
+                            if (src.CollisionComponent != null && dst.CollisionComponent != null)
+                                if (src.CollisionComponent.BoundingSphere && dst.CollisionComponent.BoundingSphere)
+                                    if (src.CollisionComponent.BoundingSphere.intersectsSphere(dst.CollisionComponent.BoundingSphere))
+                                    {
+                                        if (!(dst instanceof HeightmapTerrain) || !(src instanceof HeightmapTerrain))
+                                            src.CollisionActive(dst.Type);
+                                        dst.CollisionActive();
+                                    }
+                                    else
+                                    {
+                                        if (!(dst instanceof HeightmapTerrain) || !(src instanceof HeightmapTerrain))
+                                            src.CollisionDeActive(dst.Type);
+                                        dst.CollisionDeActive();
+                                    }
+                        }
+                    }
+                })
+            })
         }
     }
 }

@@ -51,8 +51,9 @@ namespace JWFramework
                 this.modelCount = ModelSceneBase.getInstance("ModelSceneEdit").ModelNumber;
             }
 
-            for (let i = 0; i < this.modeltList.length; ++i) {
-                this.LoadModel(this.modeltList[i].url, this.modeltList[i].model);
+            for (let i = 0; i < this.modeltList.length; ++i)
+            {
+                this.LoadModel(this.modeltList[i]);
             }
             this.LoadHeightmapTerrain(20, 20);
         }
@@ -61,50 +62,73 @@ namespace JWFramework
         {
             this.modeltList = ModelSceneStage.getInstance().ModelScene;
             this.modelCount = ModelSceneStage.getInstance().ModelNumber;
-            for (let i = 0; i < this.modeltList.length; ++i) {
-                this.LoadModel(this.modeltList[i].url, this.modeltList[i].model);
+            for (let i = 0; i < this.modeltList.length; ++i) 
+            {
+                //this.LoadModel(this.modeltList[i].mainUrl, this.modeltList[i].model);
             }
             this.LoadHeightmapTerrain();
         }
 
-        private LoadModel(modelSource: string, gameObject: GameObject)
+        private async LoadModel(modelSet: ModelSet)
         {
-            if (modelSource != null)
+            if (modelSet.mainUrl != null)
             {
-                this.gltfLoader.load(modelSource,
+                modelSet.model.ModelData = await this.GLTFLoad(modelSet.mainUrl);
+
+                if (modelSet.lodUrl != null)
+                {
+                    let lodGLTF = await this.GLTFLoad(modelSet.lodUrl);
+                    modelSet.model.GameObjectInstance = new THREE.LOD();
+                    let model = modelSet.model.GameObjectInstance as THREE.LOD;
+                    model.addLevel(modelSet.model.ModelData.scene, 300);
+                    model.addLevel(lodGLTF.scene, 600);
+                } else
+                    modelSet.model.GameObjectInstance = modelSet.model.ModelData.scene;
+                modelSet.model.InitializeAfterLoad();
+                this.SetLoadComplete();
+            } else
+            {
+                modelSet.model.InitializeAfterLoad();
+                this.SetLoadComplete();
+            }
+        }
+
+        private GLTFLoad(url: string): Promise<THREE.GLTF>
+        {
+            return new Promise((resolve, reject) =>
+            {
+                this.gltfLoader.load(url,
                     (gltf) =>
                     {
-                        console.log('success')
-                        gameObject.ModelData = gltf;
-                        (gltf.scene as any).traverse(n =>
+                        gltf.scene.traverse(n =>
                         {
-                            if (n.isMesh)
+                            let node = (n as any);
+                            if (node.isMesh)
                             {
-                                let texture = n.material.map;
-                                let normal = n.material.normalMap;
-                                let opacity = n.material.opacity;
-                                let color: THREE.Color = n.material.color;
-                                let side = n.material.side;
-                                let roughness = n.material.roughness
-                                let metalness = n.material.metalness
-                                n.material.map = texture;
-                                n.material.normalMap = normal;
-                                n.material.color = color;
-                                n.material.roughness = roughness;
-                                n.material.metalness = metalness;
-                                n.material.envMap = SceneManager.getInstance().SceneInstance.environment;
-                                n.castShadow = true;
-                                n.receiveShadow = true;
+                                let texture = node.material.map;
+                                let normal = node.material.normalMap;
+                                let opacity = node.material.opacity;
+                                let color: THREE.Color = node.material.color;
+                                let side = node.material.side;
+                                let roughness = node.material.roughness
+                                let metalness = node.material.metalness
+                                node.material.map = texture;
+                                node.material.normalMap = normal;
+                                node.material.color = color;
+                                node.material.roughness = roughness;
+                                node.material.metalness = metalness;
+                                node.material.envMap = SceneManager.getInstance().SceneInstance.environment;
+                                node.castShadow = true;
+                                node.receiveShadow = true;
                                 if (opacity != 1)
                                 {
-                                    n.material.opacity = opacity;
+                                    node.material.opacity = opacity;
                                 }
-                                n.material.side = side;
+                                node.material.side = side;
+                                n.frustumCulled = true;
                             }
                         });
-                        gameObject.GameObjectInstance = gltf.scene;
-                        gameObject.InitializeAfterLoad();
-                        this.SetLoadComplete();
+                        resolve(gltf);
                     },
                     (progress) =>
                     {
@@ -115,13 +139,9 @@ namespace JWFramework
                     {
                         console.log('error')
                         console.log(error)
+                        reject(error);
                     });
-            }
-            else
-            {
-                gameObject.InitializeAfterLoad();
-                this.SetLoadComplete();
-            }
+            });
         }
 
         public LoadHeightmapTerrain(row: number = 20, col: number = 20)

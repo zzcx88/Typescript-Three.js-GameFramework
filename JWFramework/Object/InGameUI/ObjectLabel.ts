@@ -60,7 +60,7 @@ namespace JWFramework
 
         private MakeCanvasTexture(name: string, size: number = 40): THREE.CanvasTexture
         {
-            const baseWidth = 150;
+            const baseWidth = 300;
             const borderSize = 2;
             if (this.referenceObject == null)
                 this.labelContext = document.createElement('canvas').getContext('2d');
@@ -115,19 +115,22 @@ namespace JWFramework
                     this.material.visible = true;
                     let refObjectPosition = this.referenceObject.PhysicsComponent.GetPosition().clone();
                     this.physicsComponent.SetPostion(refObjectPosition.x, refObjectPosition.y, refObjectPosition.z);
-                    let pickObject = ObjectManager.getInstance().GetObjectList[ObjectType.OBJ_OBJECT3D].filter(o => o.GameObject.Picked == true);
-                    if (pickObject[0] != undefined)
+                    
+                    if (this.referenceObject.Name == "Target")
                     {
-                        let length = UnitConvertManager.getInstance().ConvertToDistance(this.referenceObject.PhysicsComponent.GetPosition().clone().sub(pickObject[0].GameObject.PhysicsComponent.GetPosition().clone()).length())
-                        length = Math.round(length);
-                        if (length > 100000)
-                            this.MakeCanvasTexture(length.toString()[0] + length.toString()[1] +  length.toString()[2] + " km");
-                        else if (length > 10000)
-                            this.MakeCanvasTexture(length.toString()[0] + length.toString()[1] + " km");
-                        else if (length > 1000)
-                            this.MakeCanvasTexture(length.toString()[0] + "." + length.toString()[1] + length.toString()[2] + " km");
-                        else
-                            this.MakeCanvasTexture(length.toString() + " m");
+                        let pickObject = ObjectManager.getInstance().GetObjectList[ObjectType.OBJ_OBJECT3D].filter(o => o.GameObject.Picked == true);
+                        if (pickObject[0] != undefined) {
+                            let length = UnitConvertManager.getInstance().ConvertToDistance(this.referenceObject.PhysicsComponent.GetPosition().clone().sub(pickObject[0].GameObject.PhysicsComponent.GetPosition().clone()).length())
+                            length = Math.round(length);
+                            if (length > 100000)
+                                this.MakeCanvasTexture(length.toString()[0] + length.toString()[1] + length.toString()[2] + " km");
+                            else if (length > 10000)
+                                this.MakeCanvasTexture(length.toString()[0] + length.toString()[1] + " km");
+                            else if (length > 1000)
+                                this.MakeCanvasTexture(length.toString()[0] + "." + length.toString()[1] + length.toString()[2] + " km");
+                            else
+                                this.MakeCanvasTexture(length.toString() + " m");
+                        }
                     }
                 }
                 else

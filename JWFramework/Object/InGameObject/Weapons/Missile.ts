@@ -49,7 +49,8 @@ namespace JWFramework
 
         public CreateCollider()
         {
-            this.CollisionComponent.CreateOrientedBoundingBox(this.physicsComponent.GetPosition(), new THREE.Vector3(1.5, 1.5, 1.5));
+            //this.CollisionComponent.CreateOrientedBoundingBox(this.physicsComponent.GetPosition(), new THREE.Vector3(1.5, 1.5, 1.5));
+            this.CollisionComponent.CreateBoundingSphere(this.physicsComponent.GetPosition(), 2);
             this.CollisionComponent.CreateRaycaster();
             this.CollisionComponent.ObbBoxHelper.visible = false;
         }
@@ -84,11 +85,11 @@ namespace JWFramework
                 let targetDirection;
 
 
-                //if (length < 100)
-                //{
+                if (length < 100)
+                {
                     this.activeColide = true;
-                //}
-                
+                }
+
 
                 //일반유도
                 if (length >= this.endHomingStartLenge)
@@ -145,10 +146,10 @@ namespace JWFramework
                 }
                 if (this.deAcceleration == true)
                     this.resultSpeed -= (this.velocityBreak * WorldManager.getInstance().GetDeltaTime());
-                if (this.resultSpeed <= 60)
+                if (this.resultSpeed <= 60 && this.deAcceleration == true)
                 {
-                    this.resultSpeed = this.maxVelocity;
-                   // this.IsDead = true;
+                    //this.resultSpeed = this.maxVelocity;
+                    this.IsDead = true;
                 }
                 this.PhysicsComponent.MoveFoward(this.resultSpeed);
             }
@@ -156,10 +157,13 @@ namespace JWFramework
                 this.PhysicsComponent.MoveFoward(120);
 
             //미사일 연기
-            let missileFog = new MissileFog();
-            missileFog.IsClone = true;
+            //let missileFog = new MissileFog();
+            //missileFog.IsClone = true;
+            let missileFog = (SceneManager.getInstance().CurrentScene as EditScene).missileFogPool.GetObject();
+            missileFog.IsPoolObject = true;
             missileFog.PhysicsComponent.SetPostion(this.PhysicsComponent.GetPosition().x + Math.random() * 3, this.PhysicsComponent.GetPosition().y + Math.random() * 3, this.PhysicsComponent.GetPosition().z);
             missileFog.PhysicsComponent.SetScale(0.5, 0.5, 0.5);
+            ObjectManager.getInstance().AddObject(missileFog, missileFog.Name, missileFog.Type);
 
             if (this.isClone == true)
             {
