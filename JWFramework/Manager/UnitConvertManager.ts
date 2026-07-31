@@ -1,38 +1,38 @@
-﻿namespace JWFramework
+import { WorldManager } from './WorldManager';
+
+
+export class UnitConvertManager
 {
-    export class UnitConvertManager
+    private static instance: UnitConvertManager;
+
+    static getInstance()
     {
-        private static instance: UnitConvertManager;
-
-        static getInstance()
+        if (!UnitConvertManager.instance)
         {
-            if (!UnitConvertManager.instance)
-            {
-                UnitConvertManager.instance = new UnitConvertManager;
-            }
-            return UnitConvertManager.instance;
+            UnitConvertManager.instance = new UnitConvertManager;
         }
+        return UnitConvertManager.instance;
+    }
 
-        public ConvertToSpeedForKmh(distance: number): number
-        {
-            // 게임 세계에서 측정된 거리를 미터 단위로 변환
-            let meterDistance = (distance * 5760) / 900;
+    public ConvertToSpeedForKmh(distance: number): number
+    {
+        // 게임 세계에서 측정된 거리를 미터 단위로 변환
+        const meterDistance = (distance * 5760) / 900;
 
-            // 시간을 초 단위로 계산
-            let timeInSeconds = WorldManager.getInstance().GetDeltaTime();
+        // 시간을 초 단위로 계산
+        const timeInSeconds = WorldManager.getInstance().GetDeltaTime();
 
-            // 속도를 미터/초 단위로 계산
-            let speedInMeterPerSecond = meterDistance / timeInSeconds;
+        // 속도를 미터/초 단위로 계산
+        let speedInMeterPerSecond = meterDistance / timeInSeconds;
 
-            // 속도를 km/h 단위로 변환하여 반환
-            speedInMeterPerSecond = speedInMeterPerSecond * 3.6
-            return Math.round(speedInMeterPerSecond);
-        }
+        // 속도를 km/h 단위로 변환하여 반환
+        speedInMeterPerSecond = speedInMeterPerSecond * 3.6
+        return Math.round(speedInMeterPerSecond);
+    }
 
-        public ConvertToDistance(distance: number): number
-        {
-            let meterDistance = (distance * 5760) / 900;
-            return meterDistance;
-        }
+    public ConvertToDistance(distance: number): number
+    {
+        const meterDistance = (distance * 5760) / 900;
+        return meterDistance;
     }
 }

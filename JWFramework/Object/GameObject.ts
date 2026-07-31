@@ -1,210 +1,217 @@
-﻿namespace JWFramework
+import type * as THREE from 'three';
+import type { GLTF } from 'three/examples/jsm/loaders/GLTFLoader.js';
+import type { CollisionComponent } from '../Component/CollisionComponent';
+import type { ExportComponent } from '../Component/ExportComponent';
+import type { GUIComponent } from '../Component/GUIComponent';
+import type { GraphComponent } from '../Component/GraphicCompnent';
+import type { ObjectType } from '../enum';
+import type { PhysicsComponent } from '../Component/PhysicsComponent';
+
+
+export class GameObject
 {
-    export class GameObject
+
+    public InitializeAfterLoad() { }
+
+    public get Type(): ObjectType
     {
-
-        public InitializeAfterLoad() { }
-
-        public get Type(): ObjectType
-        {
-            return this.type;
-        }
-
-        public get Name(): string
-        {
-            return this.name;
-        }
-
-        public set Name(name: string)
-        {
-            this.name = name;
-        }
-
-        public get IsClone(): boolean
-        {
-            return this.isClone;
-        }
-
-        public set IsClone(isClone: boolean)
-        {
-            this.isClone = isClone;
-        }
-
-        public get IsPlayer(): boolean
-        {
-            return this.isPlayer;
-        }
-
-        public set IsPoolObject(isPoolObj: boolean) {
-            this.isPoolObject = isPoolObj;
-        }
-
-        public get IsPoolObject(): boolean {
-            return this.isPoolObject;
-        }
-
-        public set IsPlayer(flag: boolean)
-        {
-            this.isPlayer = flag;
-        }
-
-        public get PhysicsComponent(): PhysicsComponent
-        {
-            return this.physicsComponent;
-        }
-
-        public get GraphicComponent(): GraphComponent
-        {
-            return this.graphicComponent;
-        }
-
-        public get GUIComponent(): GUIComponent
-        {
-            return this.guiComponent;
-        }
-
-        public get ExportComponent(): ExportComponent
-        {
-            return this.exportComponent;
-        }
-
-        public get CollisionComponent(): CollisionComponent
-        {
-            return this.collisionComponent;
-        }
-
-        public get AnimationMixer(): THREE.AnimationMixer
-        {
-            return this.animationMixer;
-        }
-
-        public set AnimationMixer(animationMixer: THREE.AnimationMixer)
-        {
-            this.animationMixer = animationMixer;
-        }
-
-        public get PhysicsCompIncluded()
-        {
-            return this.physicsCompIncluded;
-        }
-
-        public get GraphicCompIncluded()
-        {
-            return this.graphicCompIncluded;
-        }
-
-        public set PhysicsCompIncluded(isIncluded: boolean)
-        {
-            this.physicsCompIncluded = isIncluded;
-        }
-
-        public set GraphicCompIncluded(isIncluded: boolean)
-        {
-            this.graphicCompIncluded = isIncluded;
-        }
-
-        public set Picked(picked: boolean)
-        {
-            this.picked = picked;
-        }
-
-        public get Picked(): boolean
-        {
-            return this.picked;
-        }
-
-        public get GameObjectInstance()
-        {
-            return this.gameObjectInstance;
-        }
-
-        public set GameObjectInstance(gameObjectInstance)
-        {
-            this.gameObjectInstance = gameObjectInstance;
-        }
-
-        public get ModelData()
-        {
-            return this.modelData;
-        }
-
-        public set ModelData(anim: THREE.GLTF)
-        {
-            this.modelData = anim;
-        }
-
-        public get IsDead(): boolean
-        {
-            return this.isDead;
-        }
-
-        public set IsDead(flag: boolean)
-        {
-            this.isDead = flag;
-        }
-
-        public get IsRayOn(): boolean
-        {
-            return this.isRayOn;
-        }
-
-        public set IsRayOn(flag: boolean)
-        {
-            this.isRayOn = flag;
-        }
-
-        public CollisionActive(value: any = 0) { }
-        public CollisionDeActive(value: any = 0) { }
-
-        public Reset() { }
-
-        public Animate() { }
-
-        public DeleteObject()
-        {
-            this.isDead = true;
-        }
-
-        public DeleteAllComponent()
-        {
-            delete this.physicsComponent;
-            this.physicsComponent = null;
-
-            delete this.collisionComponent;
-            this.collisionComponent = null;
-
-            delete this.exportComponent;
-            this.exportComponent = null;
-
-            delete this.graphicComponent;
-            this.graphicComponent = null;
-
-            if (this.guiComponent)
-                this.guiComponent.Dispose();
-            delete this.guiComponent;
-            this.guiComponent = null;
-        }
-
-        protected gameObjectInstance;
-        protected modelData: THREE.GLTF;
-        protected type: ObjectType;
-        protected name: string = "";
-        protected isClone: boolean = false;
-        protected isPoolObject: boolean = true;
-        protected isDead: boolean = false;
-        protected isPlayer: boolean = false;
-        protected isRayOn: boolean = false;
-
-        protected physicsComponent: PhysicsComponent;
-        protected graphicComponent: GraphComponent;
-        protected guiComponent: GUIComponent;
-        protected exportComponent: ExportComponent;
-        protected collisionComponent: CollisionComponent;
-        protected animationMixer: THREE.AnimationMixer;
-
-        private physicsCompIncluded: boolean = false;
-        private graphicCompIncluded: boolean = false;
-
-        private picked: boolean = false;
+        return this.type;
     }
+
+    public get Name(): string
+    {
+        return this.name;
+    }
+
+    public set Name(name: string)
+    {
+        this.name = name;
+    }
+
+    public get IsClone(): boolean
+    {
+        return this.isClone;
+    }
+
+    public set IsClone(isClone: boolean)
+    {
+        this.isClone = isClone;
+    }
+
+    public get IsPlayer(): boolean
+    {
+        return this.isPlayer;
+    }
+
+    public set IsPoolObject(isPoolObj: boolean) {
+        this.isPoolObject = isPoolObj;
+    }
+
+    public get IsPoolObject(): boolean {
+        return this.isPoolObject;
+    }
+
+    public set IsPlayer(flag: boolean)
+    {
+        this.isPlayer = flag;
+    }
+
+    public get PhysicsComponent(): PhysicsComponent
+    {
+        return this.physicsComponent;
+    }
+
+    public get GraphicComponent(): GraphComponent
+    {
+        return this.graphicComponent;
+    }
+
+    public get GUIComponent(): GUIComponent
+    {
+        return this.guiComponent;
+    }
+
+    public get ExportComponent(): ExportComponent
+    {
+        return this.exportComponent;
+    }
+
+    public get CollisionComponent(): CollisionComponent
+    {
+        return this.collisionComponent;
+    }
+
+    public get AnimationMixer(): THREE.AnimationMixer
+    {
+        return this.animationMixer;
+    }
+
+    public set AnimationMixer(animationMixer: THREE.AnimationMixer)
+    {
+        this.animationMixer = animationMixer;
+    }
+
+    public get PhysicsCompIncluded()
+    {
+        return this.physicsCompIncluded;
+    }
+
+    public get GraphicCompIncluded()
+    {
+        return this.graphicCompIncluded;
+    }
+
+    public set PhysicsCompIncluded(isIncluded: boolean)
+    {
+        this.physicsCompIncluded = isIncluded;
+    }
+
+    public set GraphicCompIncluded(isIncluded: boolean)
+    {
+        this.graphicCompIncluded = isIncluded;
+    }
+
+    public set Picked(picked: boolean)
+    {
+        this.picked = picked;
+    }
+
+    public get Picked(): boolean
+    {
+        return this.picked;
+    }
+
+    public get GameObjectInstance()
+    {
+        return this.gameObjectInstance;
+    }
+
+    public set GameObjectInstance(gameObjectInstance)
+    {
+        this.gameObjectInstance = gameObjectInstance;
+    }
+
+    public get ModelData()
+    {
+        return this.modelData;
+    }
+
+    public set ModelData(anim: GLTF)
+    {
+        this.modelData = anim;
+    }
+
+    public get IsDead(): boolean
+    {
+        return this.isDead;
+    }
+
+    public set IsDead(flag: boolean)
+    {
+        this.isDead = flag;
+    }
+
+    public get IsRayOn(): boolean
+    {
+        return this.isRayOn;
+    }
+
+    public set IsRayOn(flag: boolean)
+    {
+        this.isRayOn = flag;
+    }
+
+    public CollisionActive(value: any = 0) { }
+    public CollisionDeActive(value: any = 0) { }
+
+    public Reset() { }
+
+    public Animate() { }
+
+    public DeleteObject()
+    {
+        this.isDead = true;
+    }
+
+    public DeleteAllComponent()
+    {
+        delete this.physicsComponent;
+        this.physicsComponent = null;
+
+        delete this.collisionComponent;
+        this.collisionComponent = null;
+
+        delete this.exportComponent;
+        this.exportComponent = null;
+
+        delete this.graphicComponent;
+        this.graphicComponent = null;
+
+        if (this.guiComponent)
+            this.guiComponent.Dispose();
+        delete this.guiComponent;
+        this.guiComponent = null;
+    }
+
+    protected gameObjectInstance;
+    protected modelData: GLTF;
+    protected type: ObjectType;
+    protected name: string = "";
+    protected isClone: boolean = false;
+    protected isPoolObject: boolean = true;
+    protected isDead: boolean = false;
+    protected isPlayer: boolean = false;
+    protected isRayOn: boolean = false;
+
+    protected physicsComponent: PhysicsComponent;
+    protected graphicComponent: GraphComponent;
+    protected guiComponent: GUIComponent;
+    protected exportComponent: ExportComponent;
+    protected collisionComponent: CollisionComponent;
+    protected animationMixer: THREE.AnimationMixer;
+
+    private physicsCompIncluded: boolean = false;
+    private graphicCompIncluded: boolean = false;
+
+    private picked: boolean = false;
 }

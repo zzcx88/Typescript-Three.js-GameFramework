@@ -1,5 +1,4 @@
-﻿namespace JWFramework {
-    export class Component<T> {
-        constructor() { }
-    }
+
+export class Component<T> {
+    constructor() { }
 }

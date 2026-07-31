@@ -1,10 +1,8 @@
-﻿namespace JWFramework
+
+export class GUI_Base
 {
-    export class GUI_Base
-    {
 
-        constructor() { }
+    constructor() { }
 
-        protected CreateFolder(name: string) { }
-    }
+    protected CreateFolder(name: string) { }
 }

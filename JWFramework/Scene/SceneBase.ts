@@ -1,56 +1,56 @@
-﻿/// <reference path="../Picker/Picker.ts" />
-namespace JWFramework
+import { Picker } from '../Picker/Picker';
+import type { SceneManager } from '../Manager/SceneManager';
+
+
+export class SceneBase
 {
-    export class SceneBase
+
+    constructor(sceneManager: SceneManager)
     {
-
-        constructor(sceneManager: SceneManager)
-        {
-            this.sceneManager = sceneManager;
-            this.BuildSkyBox();
-            this.BuildObject();
-            this.BuildLight();
-            this.BuildFog();
-            this.SetPicker();
-        }
-
-        protected BuildSkyBox() { }
-
-        protected BuildObject() { }
-
-        protected BuildLight() { }
-
-        protected BuildFog() { }
-
-        public Animate() { }
-
-
-        public get SceneManager()
-        {
-            return this.sceneManager;
-        }
-
-        public get Picker(): Picker
-        {
-            return this.picker;
-        }
-        public SetPicker()
-        {
-            this.picker = new Picker();
-        }
-
-        public get NeedOnTerrain(): boolean
-        {
-            return this.needOnTerrain;
-        }
-        public set NeedOnTerrain(flag: boolean)
-        {
-            this.needOnTerrain = flag;
-        }
-
-        protected sceneManager: SceneManager
-        private picker: Picker;
-        private needOnTerrain: boolean;
-        public reloadScene: boolean = false;
+        this.sceneManager = sceneManager;
+        this.BuildSkyBox();
+        this.BuildObject();
+        this.BuildLight();
+        this.BuildFog();
+        this.SetPicker();
     }
+
+    protected BuildSkyBox() { }
+
+    protected BuildObject() { }
+
+    protected BuildLight() { }
+
+    protected BuildFog() { }
+
+    public Animate() { }
+
+
+    public get SceneManager()
+    {
+        return this.sceneManager;
+    }
+
+    public get Picker(): Picker
+    {
+        return this.picker;
+    }
+    public SetPicker()
+    {
+        this.picker = new Picker();
+    }
+
+    public get NeedOnTerrain(): boolean
+    {
+        return this.needOnTerrain;
+    }
+    public set NeedOnTerrain(flag: boolean)
+    {
+        this.needOnTerrain = flag;
+    }
+
+    protected sceneManager: SceneManager
+    private picker: Picker;
+    private needOnTerrain: boolean;
+    public reloadScene: boolean = false;
 }

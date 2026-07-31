@@ -1,11 +1,12 @@
-﻿/// <reference path="Manager/WorldManager.ts" />
-/// <reference path="Manager/UnitConvertManager.ts" />
+import Stats from 'stats.js';
+import { WorldManager } from './Manager/WorldManager';
+
 {
     //initialize
-    const worldManager: JWFramework.WorldManager = JWFramework.WorldManager.getInstance();
+    const worldManager: WorldManager = WorldManager.getInstance();
     worldManager.InitializeWorld();
 
-    let stats = new Stats();
+    const stats = new Stats();
     stats.showPanel(0); // 0: fps, 1: ms, 2: mb, 3+: custom
     stats.dom.style.top = "auto";
     stats.dom.style.left = "auto";

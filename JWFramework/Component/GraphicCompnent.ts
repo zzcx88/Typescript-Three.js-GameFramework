@@ -1,30 +1,31 @@
-﻿namespace JWFramework
+import type { GameObject } from '../Object/GameObject';
+import { SceneManager } from '../Manager/SceneManager';
+
+
+export class GraphComponent
 {
-    export class GraphComponent
+    constructor(gameObject: GameObject)
     {
-        constructor(gameObject: GameObject)
-        {
-            this.GameObject = gameObject;
-            this.GameObject.GraphicCompIncluded = true;
-            this.renderSwitch = true;
-        }
-
-        public SetRenderOnOff(renderSwitch: boolean)
-        {
-            this.renderSwitch = renderSwitch;
-
-            if (renderSwitch == false)
-            {
-                SceneManager.getInstance().SceneInstance.remove(this.GameObject.GameObjectInstance);
-            }
-            else
-            {
-                if (SceneManager.getInstance().SceneInstance)
-                    SceneManager.getInstance().SceneInstance.add(this.GameObject.GameObjectInstance);
-            }
-        }
-
-        private GameObject: GameObject;
-        private renderSwitch: boolean;
+        this.GameObject = gameObject;
+        this.GameObject.GraphicCompIncluded = true;
+        this.renderSwitch = true;
     }
+
+    public SetRenderOnOff(renderSwitch: boolean)
+    {
+        this.renderSwitch = renderSwitch;
+
+        if (renderSwitch == false)
+        {
+            SceneManager.getInstance().SceneInstance.remove(this.GameObject.GameObjectInstance);
+        }
+        else
+        {
+            if (SceneManager.getInstance().SceneInstance)
+                SceneManager.getInstance().SceneInstance.add(this.GameObject.GameObjectInstance);
+        }
+    }
+
+    private GameObject: GameObject;
+    private renderSwitch: boolean;
 }

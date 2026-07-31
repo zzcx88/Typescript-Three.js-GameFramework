@@ -1,282 +1,291 @@
-﻿namespace JWFramework
+import * as THREE from 'three';
+import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
+import { Water as ThreeWater } from 'three/examples/jsm/objects/Water.js';
+import { GUIManager } from '../Manager/GUIManager';
+import type { GameObject } from '../Object/GameObject';
+import type { HeightmapTerrain } from '../Object/CommonObject/Terrain/HeightmapTerrain';
+import { ObjectManager } from '../Manager/ObjectManager';
+import { ObjectType, PickMode } from '../enum';
+import { SceneManager } from '../Manager/SceneManager';
+import { WorldManager } from '../Manager/WorldManager';
+
+
+export class Picker
 {
-    export class Picker
+    public constructor()
     {
-        public constructor()
+        this.raycaster = new THREE.Raycaster();
+        this.pickedObject = null;
+        this.enablePickOff = true;
+
+        this.pickMode = PickMode.PICK_MODIFY;
+
+        this.CreateOrtbitControl();
+
+        window.addEventListener('mousemove', function (e)
         {
-            this.raycaster = new THREE.Raycaster();
-            this.pickedObject = null;
-            this.enablePickOff = true;
+            SceneManager.getInstance().CurrentScene.Picker.mouseEvent = e;
+        });
 
-            this.pickMode = PickMode.PICK_MODIFY;
-
-            this.CreateOrtbitControl();
-
-            window.addEventListener('mousemove', function (e)
-            {
-                SceneManager.getInstance().CurrentScene.Picker.mouseEvent = e;
-            });
-
-            window.addEventListener('click', function (e)
-            {
-                if (SceneManager.getInstance().CurrentScene.Picker.EnablePickOff)
-                    SceneManager.getInstance().CurrentScene.Picker.SetPickPosition(e);
-                SceneManager.getInstance().CurrentScene.Picker.EnablePickOff = true;
-            });
-
-            window.addEventListener('mouseout', function (e)
-            {
-                SceneManager.getInstance().CurrentScene.Picker.ClearPickPosition();
-            });
-            window.addEventListener('mouseleave', function (e)
-            {
-                SceneManager.getInstance().CurrentScene.Picker.ClearPickPosition();
-            });
-        }
-
-        private CreateOrtbitControl()
+        window.addEventListener('click', function (e)
         {
-            this.orbitControl = new THREE.OrbitControls(WorldManager.getInstance().MainCamera.CameraInstance, WorldManager.getInstance().Canvas);
-            this.orbitControl.maxDistance = 4000;
-            this.orbitControl.minDistance = -4000;
-            this.orbitControl.zoomSpeed = 2;
-            this.orbitControl.maxZoom = -4000;
-            this.orbitControl.panSpeed = 3;
-        }
+            if (SceneManager.getInstance().CurrentScene.Picker.EnablePickOff)
+                SceneManager.getInstance().CurrentScene.Picker.SetPickPosition(e);
+            SceneManager.getInstance().CurrentScene.Picker.EnablePickOff = true;
+        });
 
-        private GetParentName(intersectedObjects)
+        window.addEventListener('mouseout', function (e)
         {
-            if (intersectedObjects != null)
-            {
-                if (intersectedObjects.type == "Group")
-                {
-                    this.pickedParentName = intersectedObjects.name;
-                    return;
-                }
-
-                if (intersectedObjects.type == "LOD")
-                {
-                    this.pickedParentName = intersectedObjects.name;
-                    return;
-                }
-                if (intersectedObjects.type == "Mesh")
-                {
-                    if (intersectedObjects instanceof THREE.Water)
-                    {
-                        this.pickedParentName = intersectedObjects.name;
-                        return;
-                    }
-                    if (intersectedObjects.name.includes("ObbHelper"))
-                    {
-                        let parentName = (intersectedObjects.name as string).replace("ObbHelper", "")
-                        this.pickedParentName = parentName;
-                        return;
-                    }
-                    else
-                    {
-                        this.pickedParentName = undefined;
-                    }
-                }
-                if (intersectedObjects.type == "Sprite")
-                {
-                    this.pickedParentName = intersectedObjects.name;
-                }
-                if (intersectedObjects.type != "Group" || intersectedObjects.type != "LOD") {
-                    this.GetParentName(intersectedObjects.parent);
-                }
-            }
-        }
-
-        private PickOffObject()
+            SceneManager.getInstance().CurrentScene.Picker.ClearPickPosition();
+        });
+        window.addEventListener('mouseleave', function (e)
         {
-            let objectList = ObjectManager.getInstance().GetObjectList;
-            for (let TYPE = ObjectType.OBJ_OBJECT3D; TYPE < ObjectType.OBJ_OBJECT2D; ++TYPE)
-            {
-                for (let OBJ = 0; OBJ < objectList[TYPE].length; ++OBJ)
-                {
-                    objectList[TYPE][OBJ].GameObject.Picked = false;
-                }
-            }
-        }
+            SceneManager.getInstance().CurrentScene.Picker.ClearPickPosition();
+        });
+    }
 
-        public Pick()
+    private CreateOrtbitControl()
+    {
+        this.orbitControl = new OrbitControls(WorldManager.getInstance().MainCamera.CameraInstance, WorldManager.getInstance().Canvas);
+        this.orbitControl.maxDistance = 4000;
+        this.orbitControl.minDistance = -4000;
+        this.orbitControl.zoomSpeed = 2;
+        this.orbitControl.maxZoom = -4000;
+        this.orbitControl.panSpeed = 3;
+    }
+
+    private GetParentName(intersectedObjects)
+    {
+        if (intersectedObjects != null)
         {
-            let terrain;
-
-            if (this.pickPositionX > 0.75 || this.pickPositionX == -1)
+            if (intersectedObjects.type == "Group")
             {
+                this.pickedParentName = intersectedObjects.name;
                 return;
             }
-            this.PickOffObject();
-            this.pickedObject = undefined;
-            this.raycaster.setFromCamera({ x: this.pickPositionX, y: this.pickPositionY }, WorldManager.getInstance().MainCamera.CameraInstance);
 
-            if (this.pickMode == PickMode.PICK_CLONE) {
-                let objectManager = ObjectManager.getInstance();
-                //let intersectedObject = this.raycaster.intersectObjects(SceneManager.getInstance().SceneInstance.children.filter(o => !o.name.includes("cloud")), true);
-                let intersectedObject = this.raycaster.intersectObjects(objectManager.GetObjectList[ObjectType.OBJ_TERRAIN].map(o_ => o_.GameObject.GameObjectInstance));
-
-                //클론된 오브젝트를 생성한다.
-                if (intersectedObject[0] != undefined) {
-                    let terrain = objectManager.GetObjectFromName(intersectedObject[0].object.name);
-                    if (terrain != undefined && terrain.Type == ObjectType.OBJ_TERRAIN) {
-                        let cloneObject = objectManager.MakeClone(objectManager.GetObjectFromName(GUIManager.getInstance().GUI_Select.GetSelectObjectName()));
-                        cloneObject.GameObjectInstance.position.set(0, 0, 0);
-                        let clonePosition: THREE.Vector3 = new THREE.Vector3(intersectedObject[0].point.x, intersectedObject[0].point.y + 10, intersectedObject[0].point.z);
-                        cloneObject.GameObjectInstance.position.copy(clonePosition);
-                        objectManager.AddObject(cloneObject, cloneObject.Name, cloneObject.Type);
-                    }
-                }
-            }
-            //터레인은 키보드 입력으로 높낮이 조절 가능하게 할것
-            else if (this.pickMode == PickMode.PICK_TERRAIN) {
-                GUIManager.getInstance().GUI_Terrain.SetTerrainOptionList();
-                let heightOffset = GUIManager.getInstance().GUI_Terrain.GetHeightOffset();
-                let objectManager = ObjectManager.getInstance();
-                let intersectedObject = this.raycaster.intersectObjects(objectManager.GetObjectList[ObjectType.OBJ_TERRAIN].map(o_ => o_.GameObject.GameObjectInstance), true);
-                if (intersectedObject[0] != undefined) {
-                    terrain = objectManager.GetObjectFromName(intersectedObject[0].object.name);
-                    if (terrain != null && terrain.Type == ObjectType.OBJ_TERRAIN)
-                    {
-                        (terrain as unknown as HeightmapTerrain).SetHeight(intersectedObject[0].face.a, heightOffset, GUIManager.getInstance().GUI_Terrain.GetTerrainOption());
-                        (terrain as unknown as HeightmapTerrain).SetHeight(intersectedObject[0].face.b, heightOffset, GUIManager.getInstance().GUI_Terrain.GetTerrainOption());
-                        (terrain as unknown as HeightmapTerrain).SetHeight(intersectedObject[0].face.c, heightOffset, GUIManager.getInstance().GUI_Terrain.GetTerrainOption());
-                    }
-                }
-                //SceneManager.getInstance().SceneInstance.add(objectManager.GetInSectorTerrain());
-            }
-            else if (this.pickMode == PickMode.PICK_DUMMYTERRAIN)
+            if (intersectedObjects.type == "LOD")
             {
-                let objectManager = ObjectManager.getInstance();
-                let intersectedObject = this.raycaster.intersectObjects(objectManager.GetObjectList[ObjectType.OBJ_TERRAIN].map(o_ => o_.GameObject.GameObjectInstance), true);
-                if (intersectedObject[0] != undefined)
+                this.pickedParentName = intersectedObjects.name;
+                return;
+            }
+            if (intersectedObjects.type == "Mesh")
+            {
+                if (intersectedObjects instanceof ThreeWater)
                 {
-                    terrain = objectManager.GetObjectFromName(intersectedObject[0].object.name);
-                    if (terrain != null && terrain.Type == ObjectType.OBJ_TERRAIN)
-                    {
-                        if ((terrain as unknown as HeightmapTerrain).IsDummy == false)
-                            (terrain as unknown as HeightmapTerrain).IsDummy = true;
-                    }
+                    this.pickedParentName = intersectedObjects.name;
+                    return;
                 }
-                //SceneManager.getInstance().SceneInstance.add(objectManager.GetInSectorTerrain());
-            }
-            else if (this.pickMode == PickMode.PICK_REMOVE) {
-                let intersectedObjects = this.raycaster.intersectObjects(ObjectManager.getInstance().PickableObjectList.map(o_ => o_.GameObject.GameObjectInstance));
-                if (intersectedObjects.length) {
-                    this.GetParentName(intersectedObjects[0].object);
-                    this.pickedParent = ObjectManager.getInstance().GetObjectFromName(this.pickedParentName);
-                    if (this.pickedParentName != undefined)
-                        this.pickedParent.DeleteObject();
+                if (intersectedObjects.name.includes("ObbHelper"))
+                {
+                    const parentName = (intersectedObjects.name as string).replace("ObbHelper", "")
+                    this.pickedParentName = parentName;
+                    return;
+                }
+                else
+                {
+                    this.pickedParentName = undefined;
                 }
             }
-            else
+            if (intersectedObjects.type == "Sprite")
             {
-                //let intersectedObjects = this.raycaster.intersectObjects(SceneManager.getInstance().SceneInstance.children.filter(o => !o.name.includes("cloud")));
-                let intersectedObjects = this.raycaster.intersectObjects(ObjectManager.getInstance().PickableObjectList.map(o_ => o_.GameObject.GameObjectInstance));
-                if (intersectedObjects.length) {
-                    this.GetParentName(intersectedObjects[0].object);
-                    this.pickedParent = ObjectManager.getInstance().GetObjectFromName(this.pickedParentName);
-                    if (this.pickedParentName != undefined && this.pickedParent != undefined)
-                    {
-                        this.pickedParent.Picked = true;
-                        GUIManager.getInstance().GUI_SRT.SetGameObject(this.pickedParent);
-                    }
-                    else
-                        GUIManager.getInstance().GUI_SRT.SetGameObject(undefined);
+                this.pickedParentName = intersectedObjects.name;
+            }
+            if (intersectedObjects.type != "Group" || intersectedObjects.type != "LOD") {
+                this.GetParentName(intersectedObjects.parent);
+            }
+        }
+    }
+
+    private PickOffObject()
+    {
+        const objectList = ObjectManager.getInstance().GetObjectList;
+        for (let TYPE = ObjectType.OBJ_OBJECT3D; TYPE < ObjectType.OBJ_OBJECT2D; ++TYPE)
+        {
+            for (let OBJ = 0; OBJ < objectList[TYPE].length; ++OBJ)
+            {
+                objectList[TYPE][OBJ].GameObject.Picked = false;
+            }
+        }
+    }
+
+    public Pick()
+    {
+        let terrain;
+
+        if (this.pickPositionX > 0.75 || this.pickPositionX == -1)
+        {
+            return;
+        }
+        this.PickOffObject();
+        this.pickedObject = undefined;
+        this.raycaster.setFromCamera({ x: this.pickPositionX, y: this.pickPositionY }, WorldManager.getInstance().MainCamera.CameraInstance);
+
+        if (this.pickMode == PickMode.PICK_CLONE) {
+            const objectManager = ObjectManager.getInstance();
+            //let intersectedObject = this.raycaster.intersectObjects(SceneManager.getInstance().SceneInstance.children.filter(o => !o.name.includes("cloud")), true);
+            const intersectedObject = this.raycaster.intersectObjects(objectManager.GetObjectList[ObjectType.OBJ_TERRAIN].map(o_ => o_.GameObject.GameObjectInstance));
+
+            //클론된 오브젝트를 생성한다.
+            if (intersectedObject[0] != undefined) {
+                const terrain = objectManager.GetObjectFromName(intersectedObject[0].object.name);
+                if (terrain != undefined && terrain.Type == ObjectType.OBJ_TERRAIN) {
+                    const cloneObject = objectManager.MakeClone(objectManager.GetObjectFromName(GUIManager.getInstance().GUI_Select.GetSelectObjectName()));
+                    cloneObject.GameObjectInstance.position.set(0, 0, 0);
+                    const clonePosition: THREE.Vector3 = new THREE.Vector3(intersectedObject[0].point.x, intersectedObject[0].point.y + 10, intersectedObject[0].point.z);
+                    cloneObject.GameObjectInstance.position.copy(clonePosition);
+                    objectManager.AddObject(cloneObject, cloneObject.Name, cloneObject.Type);
                 }
             }
         }
-
-        private GetCanvasReleativePosition(event)
-        {
-            let rect = WorldManager.getInstance().Canvas.getBoundingClientRect();
-            return {
-                x: (event.clientX - rect.left) * WorldManager.getInstance().Canvas.width / rect.width,
-                y: (event.clientY - rect.top) * WorldManager.getInstance().Canvas.height / rect.height,
-            };
+        //터레인은 키보드 입력으로 높낮이 조절 가능하게 할것
+        else if (this.pickMode == PickMode.PICK_TERRAIN) {
+            GUIManager.getInstance().GUI_Terrain.SetTerrainOptionList();
+            const heightOffset = GUIManager.getInstance().GUI_Terrain.GetHeightOffset();
+            const objectManager = ObjectManager.getInstance();
+            const intersectedObject = this.raycaster.intersectObjects(objectManager.GetObjectList[ObjectType.OBJ_TERRAIN].map(o_ => o_.GameObject.GameObjectInstance), true);
+            if (intersectedObject[0] != undefined) {
+                terrain = objectManager.GetObjectFromName(intersectedObject[0].object.name);
+                if (terrain != null && terrain.Type == ObjectType.OBJ_TERRAIN)
+                {
+                    (terrain as unknown as HeightmapTerrain).SetHeight(intersectedObject[0].face.a, heightOffset, GUIManager.getInstance().GUI_Terrain.GetTerrainOption());
+                    (terrain as unknown as HeightmapTerrain).SetHeight(intersectedObject[0].face.b, heightOffset, GUIManager.getInstance().GUI_Terrain.GetTerrainOption());
+                    (terrain as unknown as HeightmapTerrain).SetHeight(intersectedObject[0].face.c, heightOffset, GUIManager.getInstance().GUI_Terrain.GetTerrainOption());
+                }
+            }
+            //SceneManager.getInstance().SceneInstance.add(objectManager.GetInSectorTerrain());
         }
-
-        public get MouseEvent(): MouseEvent
+        else if (this.pickMode == PickMode.PICK_DUMMYTERRAIN)
         {
-            return this.mouseEvent;
+            const objectManager = ObjectManager.getInstance();
+            const intersectedObject = this.raycaster.intersectObjects(objectManager.GetObjectList[ObjectType.OBJ_TERRAIN].map(o_ => o_.GameObject.GameObjectInstance), true);
+            if (intersectedObject[0] != undefined)
+            {
+                terrain = objectManager.GetObjectFromName(intersectedObject[0].object.name);
+                if (terrain != null && terrain.Type == ObjectType.OBJ_TERRAIN)
+                {
+                    if ((terrain as unknown as HeightmapTerrain).IsDummy == false)
+                        (terrain as unknown as HeightmapTerrain).IsDummy = true;
+                }
+            }
+            //SceneManager.getInstance().SceneInstance.add(objectManager.GetInSectorTerrain());
         }
-
-        public SetPickPosition(event)
+        else if (this.pickMode == PickMode.PICK_REMOVE) {
+            const intersectedObjects = this.raycaster.intersectObjects(ObjectManager.getInstance().PickableObjectList.map(o_ => o_.GameObject.GameObjectInstance));
+            if (intersectedObjects.length) {
+                this.GetParentName(intersectedObjects[0].object);
+                this.pickedParent = ObjectManager.getInstance().GetObjectFromName(this.pickedParentName);
+                if (this.pickedParentName != undefined)
+                    this.pickedParent.DeleteObject();
+            }
+        }
+        else
         {
-            this.pickPositionX = (event.clientX / window.innerWidth) * 2 - 1;
-            this.pickPositionY = - (event.clientY / window.innerHeight) * 2 + 1;
-            this.Pick();
+            //let intersectedObjects = this.raycaster.intersectObjects(SceneManager.getInstance().SceneInstance.children.filter(o => !o.name.includes("cloud")));
+            const intersectedObjects = this.raycaster.intersectObjects(ObjectManager.getInstance().PickableObjectList.map(o_ => o_.GameObject.GameObjectInstance));
+            if (intersectedObjects.length) {
+                this.GetParentName(intersectedObjects[0].object);
+                this.pickedParent = ObjectManager.getInstance().GetObjectFromName(this.pickedParentName);
+                if (this.pickedParentName != undefined && this.pickedParent != undefined)
+                {
+                    this.pickedParent.Picked = true;
+                    GUIManager.getInstance().GUI_SRT.SetGameObject(this.pickedParent);
+                }
+                else
+                    GUIManager.getInstance().GUI_SRT.SetGameObject(undefined);
+            }
         }
-
-        public ClearPickPosition()
-        {
-            this.pickPositionX = -10000;
-            this.pickPositionY = -10000;
-        }
-
-        public ChangePickModeModify()
-        {
-            this.pickMode = PickMode.PICK_MODIFY;
-        }
-
-        public ChangePickModeClone()
-        {
-            this.pickMode = PickMode.PICK_CLONE;
-        }
-
-        public ChangePickModeTerrain()
-        {
-            this.pickMode = PickMode.PICK_TERRAIN;
-        }
-
-        public ChangePickModeDummyTerrain()
-        {
-            this.pickMode = PickMode.PICK_DUMMYTERRAIN;
-        }
-
-        public ChangePickModeRemove()
-        {
-            this.pickMode = PickMode.PICK_REMOVE;
-        }
-
-        public get PickMode(): PickMode
-        {
-            return this.pickMode;
-        }
-
-        public get OrbitControl(): THREE.OrbitControls
-        {
-            return this.orbitControl;
-        }
-
-        public get EnablePickOff()
-        {
-            return this.enablePickOff;
-        }
-
-        public set EnablePickOff(value: boolean)
-        {
-            this.enablePickOff = value;
-        }
-
-        public GetPickParents(): GameObject
-        {
-            return this.pickedParent;
-        }
-
-        private mouseEvent: MouseEvent;
-
-        private pickMode: PickMode;
-
-        private raycaster: THREE.Raycaster;
-        private pickedObject;
-        private pickedParent: GameObject;
-        private pickPositionX = 0;
-        private pickPositionY = 0;
-        private enablePickOff: boolean = true;
-
-        private orbitControl: THREE.OrbitControls;
-
-        private pickedParentName: string;
     }
+
+    private GetCanvasReleativePosition(event)
+    {
+        const rect = WorldManager.getInstance().Canvas.getBoundingClientRect();
+        return {
+            x: (event.clientX - rect.left) * WorldManager.getInstance().Canvas.width / rect.width,
+            y: (event.clientY - rect.top) * WorldManager.getInstance().Canvas.height / rect.height,
+        };
+    }
+
+    public get MouseEvent(): MouseEvent
+    {
+        return this.mouseEvent;
+    }
+
+    public SetPickPosition(event)
+    {
+        this.pickPositionX = (event.clientX / window.innerWidth) * 2 - 1;
+        this.pickPositionY = - (event.clientY / window.innerHeight) * 2 + 1;
+        this.Pick();
+    }
+
+    public ClearPickPosition()
+    {
+        this.pickPositionX = -10000;
+        this.pickPositionY = -10000;
+    }
+
+    public ChangePickModeModify()
+    {
+        this.pickMode = PickMode.PICK_MODIFY;
+    }
+
+    public ChangePickModeClone()
+    {
+        this.pickMode = PickMode.PICK_CLONE;
+    }
+
+    public ChangePickModeTerrain()
+    {
+        this.pickMode = PickMode.PICK_TERRAIN;
+    }
+
+    public ChangePickModeDummyTerrain()
+    {
+        this.pickMode = PickMode.PICK_DUMMYTERRAIN;
+    }
+
+    public ChangePickModeRemove()
+    {
+        this.pickMode = PickMode.PICK_REMOVE;
+    }
+
+    public get PickMode(): PickMode
+    {
+        return this.pickMode;
+    }
+
+    public get OrbitControl(): OrbitControls
+    {
+        return this.orbitControl;
+    }
+
+    public get EnablePickOff()
+    {
+        return this.enablePickOff;
+    }
+
+    public set EnablePickOff(value: boolean)
+    {
+        this.enablePickOff = value;
+    }
+
+    public GetPickParents(): GameObject
+    {
+        return this.pickedParent;
+    }
+
+    private mouseEvent: MouseEvent;
+
+    private pickMode: PickMode;
+
+    private raycaster: THREE.Raycaster;
+    private pickedObject;
+    private pickedParent: GameObject;
+    private pickPositionX = 0;
+    private pickPositionY = 0;
+    private enablePickOff: boolean = true;
+
+    private orbitControl: OrbitControls;
+
+    private pickedParentName: string;
 }
