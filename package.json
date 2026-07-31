@@ -1,0 +1,39 @@
+{
+  "name": "jwframework",
+  "version": "1.0.0",
+  "description": "TypeScript + Three.js 게임 프레임워크 (웹 워썬더)",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "lint": "eslint JWFramework",
+    "lint:fix": "eslint JWFramework --fix",
+    "check:cycles": "node scripts/check-cycles.mjs",
+    "check:cycles:paths": "madge --extensions ts --circular JWFramework/Main.ts || exit 0",
+    "build:js": "esbuild JWFramework/Main.ts --bundle --format=esm --target=es2020 --outfile=docs/JWFramework.mjs",
+    "build:css": "esbuild JWFramework/Style.css --bundle --outfile=docs/JWFramework.css",
+    "build": "npm run typecheck && npm run build:js && npm run build:css",
+    "build:dev": "npm run build:js -- --sourcemap && npm run build:css",
+    "watch": "esbuild JWFramework/Main.ts --bundle --format=esm --target=es2020 --outfile=docs/JWFramework.mjs --sourcemap --watch",
+    "serve": "serve docs -l 8080",
+    "start": "npm run build:dev && npm run serve",
+    "verify": "npm run typecheck && npm run lint && npm run check:cycles"
+  },
+  "dependencies": {
+    "dat.gui": "0.7.9",
+    "stats.js": "0.17.0",
+    "three": "0.134.0"
+  },
+  "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "@types/dat.gui": "0.7.13",
+    "@types/stats.js": "0.17.4",
+    "@types/three": "0.134.0",
+    "esbuild": "^0.27.2",
+    "eslint": "^10.8.0",
+    "madge": "^8.0.0",
+    "serve": "^14.2.4",
+    "typescript": "^5.9.3",
+    "typescript-eslint": "^8.65.0"
+  }
+}

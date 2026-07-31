@@ -1,0 +1,48 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "Build (typecheck + bundle)",
+            "type": "shell",
+            "command": "npm",
+            "args": ["run", "build"],
+            "options": { "cwd": "${workspaceFolder}" },
+            "problemMatcher": ["$tsc"],
+            "group": { "kind": "build", "isDefault": true }
+        },
+        {
+            "label": "Watch (esbuild)",
+            "type": "shell",
+            "command": "npm",
+            "args": ["run", "watch"],
+            "options": { "cwd": "${workspaceFolder}" },
+            "isBackground": true,
+            "problemMatcher": []
+        },
+        {
+            "label": "Typecheck",
+            "type": "shell",
+            "command": "npm",
+            "args": ["run", "typecheck"],
+            "options": { "cwd": "${workspaceFolder}" },
+            "problemMatcher": ["$tsc"]
+        },
+        {
+            "label": "Verify (typecheck + lint + cycles)",
+            "type": "shell",
+            "command": "npm",
+            "args": ["run", "verify"],
+            "options": { "cwd": "${workspaceFolder}" },
+            "problemMatcher": ["$tsc"]
+        },
+        {
+            "label": "Serve docs (8080)",
+            "type": "shell",
+            "command": "npm",
+            "args": ["run", "serve"],
+            "options": { "cwd": "${workspaceFolder}" },
+            "isBackground": true,
+            "problemMatcher": []
+        }
+    ]
+}

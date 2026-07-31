@@ -1,0 +1,6 @@
+{
+  "sccCount": 1,
+  "largestScc": 33,
+  "modulesInCycles": 33,
+  "internalEdges": 130
+}
