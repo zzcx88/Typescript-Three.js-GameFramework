@@ -1,2 +1,7 @@
 # Auto detect text files and perform LF normalization
 * text=auto
+
+# 빌드 산출물은 esbuild 가 LF 로 쓴다.
+# text=auto 로 두면 체크아웃 때 CRLF 로 바뀌어, 빌드할 때마다 diff 가 뜬다.
+docs/JWFramework.mjs text eol=lf
+docs/JWFramework.css text eol=lf
