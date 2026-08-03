@@ -18,7 +18,7 @@ export class R60M extends Missile
         this.velocityBreak = 2;
         this.maxVelocity = 80;
         this.maxRotateSpeed = 30;
-        this.rotateSpeedAcceletion = 20;
+        this.rotateSpeedAcceleration = 20;
     }
 
     public CreateCollider()
@@ -41,11 +41,11 @@ export class R60M extends Missile
         if (this.maxResultSpeed == 0)
             this.maxResultSpeed = this.maxVelocity + this.AirCraftSpeed;
 
-        const reletiveSpeed = this.resultSpeed - (this.targetObject as EditObject).throttle;
-        if (reletiveSpeed > (this.targetObject as EditObject).throttle)
-            this.endHomingStartLenge = 50;
+        const relativeSpeed = this.resultSpeed - (this.targetObject as EditObject).throttle;
+        if (relativeSpeed > (this.targetObject as EditObject).throttle)
+            this.endHomingStartLength = 50;
         else
-            this.endHomingStartLenge = 0;
+            this.endHomingStartLength = 0;
 
         super.Animate();
     }

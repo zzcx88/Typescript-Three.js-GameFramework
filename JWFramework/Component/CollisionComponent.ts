@@ -46,7 +46,7 @@ export class CollisionComponent
         if (SceneManager.getInstance().SceneInstance != null)
             SceneManager.getInstance().SceneInstance.add(this.obbBoxHelper);
 
-        this.orientedBoundingBoxInlcude = true;
+        this.orientedBoundingBoxInclude = true;
     }
 
     public CreateBoundingSphere(center?: THREE.Vector3, radius?: number)
@@ -57,11 +57,11 @@ export class CollisionComponent
             radius = 1;
         this.radius = radius;
         this.boundingSphere = new THREE.Sphere(center, radius);
-        const sphereGeomertry = new THREE.SphereGeometry(radius, 8, 8);
+        const sphereGeometry = new THREE.SphereGeometry(radius, 8, 8);
         //let color = new THREE.Color().setColorName("Red");
         //let material = new THREE.MeshBasicMaterial({ color });
         //material.wireframe = true;
-        //this.sphereHelper = new THREE.Mesh(sphereGeomertry, material);
+        //this.sphereHelper = new THREE.Mesh(sphereGeometry, material);
         //this.sphereHelper.name = this.gameObject.Name + "SphereHelper";
         //if (SceneManager.getInstance().SceneInstance != null)
         //    SceneManager.getInstance().SceneInstance.add(this.sphereHelper);
@@ -143,7 +143,7 @@ export class CollisionComponent
 
     public get OBBInclude(): boolean
     {
-        return this.orientedBoundingBoxInlcude;
+        return this.orientedBoundingBoxInclude;
     }
 
     public get BoundingSphereInclude(): boolean
@@ -236,7 +236,7 @@ export class CollisionComponent
 
     private isEditable: boolean = false;
     private boundingBoxInclude: boolean;
-    private orientedBoundingBoxInlcude: boolean = false;
+    private orientedBoundingBoxInclude: boolean = false;
     private boundingSphereInclude: boolean = false;
     private raycasterInclude: boolean = false;
 

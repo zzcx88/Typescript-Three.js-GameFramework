@@ -26877,8 +26877,8 @@ var GameObject = class {
   }
 };
 
-// Component/GraphicCompnent.ts
-var GraphComponent = class {
+// Component/GraphicComponent.ts
+var GraphicComponent = class {
   constructor(gameObject) {
     this.GameObject = gameObject;
     this.GameObject.GraphicCompIncluded = true;
@@ -26954,13 +26954,13 @@ var PhysicsComponent = class {
   set Look(vec3Look) {
     this.vec3Look = vec3Look;
   }
-  SetPostion(x, y, z) {
+  SetPosition(x, y, z) {
     this.GameObject.GameObjectInstance.position.x = x;
     this.GameObject.GameObjectInstance.position.y = y;
     this.GameObject.GameObjectInstance.position.z = z;
     this.UpdateMatrix();
   }
-  SetPostionVec3(vec3) {
+  SetPositionVec3(vec3) {
     this.GameObject.GameObjectInstance.position.x = vec3.x;
     this.GameObject.GameObjectInstance.position.y = vec3.y;
     this.GameObject.GameObjectInstance.position.z = vec3.z;
@@ -26974,7 +26974,7 @@ var PhysicsComponent = class {
     this.GameObject.GameObjectInstance.scale.setScalar(scalar);
     this.UpdateMatrix();
   }
-  MoveFoward(distance) {
+  MoveForward(distance) {
     const Look = new Vector3(0, 0, 1);
     this.GameObject.GameObjectInstance.translateOnAxis(Look, distance * WorldManager.getInstance().GetDeltaTime());
     this.UpdateMatrix();
@@ -27494,7 +27494,7 @@ var BlendShader = {
   )
 };
 
-// Shader/SplettingShader.ts
+// Shader/SplattingShader.ts
 var SplattingShader = class {
   constructor() {
     this.vertexShader = `
@@ -27554,7 +27554,7 @@ var SplattingShader = class {
 // Manager/ShaderManager.ts
 var ShaderManager = class _ShaderManager {
   constructor() {
-    this.BuildMotuinBlurShader();
+    this.BuildMotionBlurShader();
     this.splattingShader = new SplattingShader();
     this.farmTexture = new TextureLoader().load("Model/Heightmap/farm.jpg");
     this.farmTexture.wrapS = RepeatWrapping;
@@ -27587,7 +27587,7 @@ var ShaderManager = class _ShaderManager {
     }
     return _ShaderManager.instance;
   }
-  BuildMotuinBlurShader() {
+  BuildMotionBlurShader() {
     const renderer = WorldManager.getInstance().Renderer;
     const sceneInstance = SceneManager.getInstance().SceneInstance;
     const camera = WorldManager.getInstance().MainCamera.CameraInstance;
@@ -27635,18 +27635,18 @@ var Missile = class extends GameObject {
     this.maxVelocity = 80;
     this.maxResultSpeed = 0;
     this.resultSpeed = 0;
-    this.rotaspeed = 0;
+    this.rotateSpeed = 0;
     //미사일 선회력
     this.maxRotateSpeed = 20;
-    this.rotateSpeedAcceletion = 20;
+    this.rotateSpeedAcceleration = 20;
     this.predictionDistance = 200;
-    this.endHomingStartLenge = 0;
+    this.endHomingStartLength = 0;
     this.angle = 500;
-    this.activeColide = false;
+    this.activeCollide = false;
     this.deAcceleration = false;
     this.type = 5 /* OBJ_MISSILE */;
     this.physicsComponent = new PhysicsComponent(this);
-    this.graphicComponent = new GraphComponent(this);
+    this.graphicComponent = new GraphicComponent(this);
     this.exportComponent = new ExportComponent(this);
     this.collisionComponent = new CollisionComponent(this);
   }
@@ -27679,8 +27679,8 @@ var Missile = class extends GameObject {
   }
   CollisionActive(type = null) {
     if (type == 0 /* OBJ_TERRAIN */)
-      this.activeColide = true;
-    if (this.activeColide == true)
+      this.activeCollide = true;
+    if (this.activeCollide == true)
       this.isDead = true;
   }
   CollisionDeActive() {
@@ -27697,24 +27697,24 @@ var Missile = class extends GameObject {
       const length = new Vector3().subVectors(this.targetObject.PhysicsComponent.GetPosition().clone(), this.PhysicsComponent.GetPosition().clone()).length();
       let targetDirection;
       if (length < 100) {
-        this.activeColide = true;
+        this.activeCollide = true;
       }
-      if (length >= this.endHomingStartLenge) {
+      if (length >= this.endHomingStartLength) {
         this.predictionDistance = length - length / 2;
       } else {
         this.predictionDistance = 0;
       }
-      if (this.rotaspeed < this.maxRotateSpeed)
-        this.rotaspeed += this.rotateSpeedAcceletion * WorldManager.getInstance().GetDeltaTime();
+      if (this.rotateSpeed < this.maxRotateSpeed)
+        this.rotateSpeed += this.rotateSpeedAcceleration * WorldManager.getInstance().GetDeltaTime();
       else {
-        this.rotaspeed = this.maxRotateSpeed;
+        this.rotateSpeed = this.maxRotateSpeed;
       }
       const nextPos = this.targetObject.PhysicsComponent.GetPosition().clone().add(this.targetObject.PhysicsComponent.Look.clone().multiplyScalar(this.predictionDistance));
       targetDirection = new Vector3().subVectors(nextPos, this.PhysicsComponent.GetPosition().clone()).normalize();
       const currentDirection = new Vector3(0, 0, 1).applyEuler(this.PhysicsComponent.GetRotateEuler());
       const angle = currentDirection.angleTo(targetDirection);
       const axis = new Vector3().crossVectors(currentDirection, targetDirection).normalize();
-      const maxSpeed = this.rotaspeed;
+      const maxSpeed = this.rotateSpeed;
       const maxRadius = this.angle;
       let speed = maxSpeed * (angle / maxRadius);
       speed = Math.min(speed, maxSpeed);
@@ -27735,12 +27735,12 @@ var Missile = class extends GameObject {
       if (this.resultSpeed <= 60 && this.deAcceleration == true) {
         this.IsDead = true;
       }
-      this.PhysicsComponent.MoveFoward(this.resultSpeed);
+      this.PhysicsComponent.MoveForward(this.resultSpeed);
     } else
-      this.PhysicsComponent.MoveFoward(120);
+      this.PhysicsComponent.MoveForward(120);
     const missileFog = SceneManager.getInstance().CurrentScene.missileFogPool.GetObject();
     missileFog.IsPoolObject = true;
-    missileFog.PhysicsComponent.SetPostion(this.PhysicsComponent.GetPosition().x + Math.random() * 3, this.PhysicsComponent.GetPosition().y + Math.random() * 3, this.PhysicsComponent.GetPosition().z);
+    missileFog.PhysicsComponent.SetPosition(this.PhysicsComponent.GetPosition().x + Math.random() * 3, this.PhysicsComponent.GetPosition().y + Math.random() * 3, this.PhysicsComponent.GetPosition().z);
     missileFog.PhysicsComponent.SetScale(0.5, 0.5, 0.5);
     ObjectManager.getInstance().AddObject(missileFog, missileFog.Name, missileFog.Type);
     if (this.isClone == true) {
@@ -27760,7 +27760,7 @@ var AIM9H = class extends Missile {
     this.velocityBreak = 1;
     this.maxVelocity = 80;
     this.maxRotateSpeed = 18;
-    this.rotateSpeedAcceletion = 5;
+    this.rotateSpeedAcceleration = 5;
   }
   CreateCollider() {
     this.CollisionComponent.CreateOrientedBoundingBox(this.physicsComponent.GetPosition(), new Vector3(1.5, 1.5, 1.5));
@@ -27775,11 +27775,11 @@ var AIM9H = class extends Missile {
   Animate() {
     if (this.maxResultSpeed == 0)
       this.maxResultSpeed = this.maxVelocity + this.AirCraftSpeed;
-    const reletiveSpeed = this.resultSpeed - this.targetObject.throttle;
-    if (reletiveSpeed > this.targetObject.throttle)
-      this.endHomingStartLenge = 100;
+    const relativeSpeed = this.resultSpeed - this.targetObject.throttle;
+    if (relativeSpeed > this.targetObject.throttle)
+      this.endHomingStartLength = 100;
     else
-      this.endHomingStartLenge = 0;
+      this.endHomingStartLength = 0;
     super.Animate();
   }
 };
@@ -27795,7 +27795,7 @@ var AIM9L = class extends Missile {
     this.velocityBreak = 1.5;
     this.maxVelocity = 80;
     this.maxRotateSpeed = 30;
-    this.rotateSpeedAcceletion = 15;
+    this.rotateSpeedAcceleration = 15;
   }
   CreateCollider() {
     this.CollisionComponent.CreateOrientedBoundingBox(this.physicsComponent.GetPosition(), new Vector3(1.5, 1.5, 1.5));
@@ -27810,16 +27810,16 @@ var AIM9L = class extends Missile {
   Animate() {
     if (this.maxResultSpeed == 0)
       this.maxResultSpeed = this.maxVelocity + this.AirCraftSpeed;
-    const reletiveSpeed = this.resultSpeed - this.targetObject.throttle;
-    if (reletiveSpeed > this.targetObject.throttle)
-      this.endHomingStartLenge = 50;
+    const relativeSpeed = this.resultSpeed - this.targetObject.throttle;
+    if (relativeSpeed > this.targetObject.throttle)
+      this.endHomingStartLength = 50;
     else
-      this.endHomingStartLenge = 0;
+      this.endHomingStartLength = 0;
     super.Animate();
   }
 };
 
-// Object/InGameObject/Envirument/Cloud.ts
+// Object/InGameObject/Environment/Cloud.ts
 var Cloud = class extends GameObject {
   constructor() {
     super();
@@ -27827,7 +27827,7 @@ var Cloud = class extends GameObject {
     this.scales = [];
     this.prevMatrix = [];
     this.type = 3 /* OBJ_OBJECT2D */;
-    this.graphicComponent = new GraphComponent(this);
+    this.graphicComponent = new GraphicComponent(this);
     this.isClone = false;
   }
   BuildClouds() {
@@ -27898,8 +27898,8 @@ var Cloud = class extends GameObject {
 var HeightmapTerrain = class extends GameObject {
   constructor(x, z, segmentWidth, segmentHeight, planSize = 900, isDummy = false) {
     super();
-    this.heigtIndexBuffer = [];
-    this.heigtBuffer = [];
+    this.heightIndexBuffer = [];
+    this.heightBuffer = [];
     this.inSectorObject = [];
     this.vertexNormalNeedUpdate = false;
     this.opacity = 1;
@@ -27907,8 +27907,8 @@ var HeightmapTerrain = class extends GameObject {
     this.row = 0;
     this.col = 0;
     this.isDummy = false;
-    this.inSecter = false;
-    this.cameraInSecter = false;
+    this.inSector = false;
+    this.cameraInSector = false;
     this.useDirtTexture = false;
     this.useCityTexture = false;
     this.isDummy = isDummy;
@@ -27922,13 +27922,13 @@ var HeightmapTerrain = class extends GameObject {
     this.type = 0 /* OBJ_TERRAIN */;
     this.isClone = true;
     this.physicsComponent = new PhysicsComponent(this);
-    this.graphicComponent = new GraphComponent(this);
+    this.graphicComponent = new GraphicComponent(this);
     this.exportComponent = new ExportComponent(this);
     this.collisionComponent = new CollisionComponent(this);
     this.CreateTerrainMesh();
   }
   InitializeAfterLoad() {
-    this.PhysicsComponent.SetPostion(this.width, 0, this.height);
+    this.PhysicsComponent.SetPosition(this.width, 0, this.height);
     if (this.isDummy == false) {
       this.CreateBoundingBox();
     }
@@ -27944,9 +27944,9 @@ var HeightmapTerrain = class extends GameObject {
   }
   CreateTerrainMesh() {
     if (this.isDummy == false)
-      this.planeGeomatry = new PlaneGeometry(this.planSize, this.planSize, this.segmentWidth, this.segmentHeight);
+      this.planeGeometry = new PlaneGeometry(this.planSize, this.planSize, this.segmentWidth, this.segmentHeight);
     else
-      this.planeGeomatry = new PlaneGeometry(this.planSize, this.planSize, 1, 1);
+      this.planeGeometry = new PlaneGeometry(this.planSize, this.planSize, 1, 1);
     const customUniforms = {
       ...UniformsUtils.clone(UniformsLib["fog"]),
       farmTexture: { value: ShaderManager.getInstance().farmTexture },
@@ -27969,10 +27969,10 @@ var HeightmapTerrain = class extends GameObject {
       }
     );
     const rotation = new Matrix4().makeRotationX(-Math.PI / 2);
-    this.planeGeomatry.applyMatrix4(rotation);
-    this.planeGeomatry.computeBoundingSphere();
-    this.planeGeomatry.computeVertexNormals();
-    this.planeMesh = new Mesh(this.planeGeomatry, this.material);
+    this.planeGeometry.applyMatrix4(rotation);
+    this.planeGeometry.computeBoundingSphere();
+    this.planeGeometry.computeVertexNormals();
+    this.planeMesh = new Mesh(this.planeGeometry, this.material);
     this.planeMesh.receiveShadow = true;
     this.planeMesh.castShadow = true;
     this.gameObjectInstance = this.planeMesh;
@@ -27981,15 +27981,15 @@ var HeightmapTerrain = class extends GameObject {
     this.InitializeAfterLoad();
   }
   get HeightIndexBuffer() {
-    return this.heigtIndexBuffer;
+    return this.heightIndexBuffer;
   }
   get HeightBuffer() {
-    for (let i = 0; i < this.heigtBuffer.length; ++i) {
-      this.heigtBuffer.pop();
+    for (let i = 0; i < this.heightBuffer.length; ++i) {
+      this.heightBuffer.pop();
     }
-    this.heigtBuffer.length = 0;
-    this.heigtIndexBuffer.forEach((element) => this.heigtBuffer.push(this.planeGeomatry.getAttribute("position").getY(element)));
-    return this.heigtBuffer;
+    this.heightBuffer.length = 0;
+    this.heightIndexBuffer.forEach((element) => this.heightBuffer.push(this.planeGeometry.getAttribute("position").getY(element)));
+    return this.heightBuffer;
   }
   get IsDummy() {
     return this.isDummy;
@@ -28001,97 +28001,97 @@ var HeightmapTerrain = class extends GameObject {
     if (this.isDummy == true) {
       if (this.collisionComponent.BoundingBox != null) {
         this.collisionComponent.DeleteCollider();
-        this.planeGeomatry.dispose();
-        this.planeGeomatry = new PlaneGeometry(this.planSize, this.planSize, 1, 1);
-        this.planeMesh.geometry = this.planeGeomatry;
+        this.planeGeometry.dispose();
+        this.planeGeometry = new PlaneGeometry(this.planSize, this.planSize, 1, 1);
+        this.planeMesh.geometry = this.planeGeometry;
         const rotation = new Matrix4().makeRotationX(-Math.PI / 2);
-        this.planeGeomatry.applyMatrix4(rotation);
+        this.planeGeometry.applyMatrix4(rotation);
       }
     }
-    this.planeGeomatry.getAttribute("position").needsUpdate = true;
-    let height = this.planeGeomatry.getAttribute("position").getY(index);
+    this.planeGeometry.getAttribute("position").needsUpdate = true;
+    let height = this.planeGeometry.getAttribute("position").getY(index);
     if (value != void 0 && option == 0 /* TERRAIN_UP */) {
       value = Math.abs(value);
     }
     if (option == 1 /* TERRAIN_DOWN */) {
       value = Math.abs(value);
       value *= -1;
-      this.planeGeomatry.getAttribute("position").setY(index, height += value);
+      this.planeGeometry.getAttribute("position").setY(index, height += value);
     } else if (option == 2 /* TERRAIN_BALANCE */ || option == 3 /* TERRAIN_LOAD */) {
-      this.planeGeomatry.getAttribute("position").setY(index, value);
+      this.planeGeometry.getAttribute("position").setY(index, value);
     } else {
-      this.planeGeomatry.getAttribute("position").setY(index, height += value);
+      this.planeGeometry.getAttribute("position").setY(index, height += value);
     }
     if (this.isDummy == false) {
       const objectList = ObjectManager.getInstance().GetObjectList;
-      const endPointIndex = this.planeGeomatry.getAttribute("position").count - 1;
-      const oldheight = this.planeGeomatry.getAttribute("position").getY(index);
-      if (this.planeGeomatry.getAttribute("position").getX(index) == this.planSize / 2) {
+      const endPointIndex = this.planeGeometry.getAttribute("position").count - 1;
+      const oldheight = this.planeGeometry.getAttribute("position").getY(index);
+      if (this.planeGeometry.getAttribute("position").getX(index) == this.planSize / 2) {
         if (objectList[0 /* OBJ_TERRAIN */][this.terrainIndex + 1]) {
           const terrain = objectList[0 /* OBJ_TERRAIN */][this.terrainIndex + 1].GameObject;
-          terrain.planeGeomatry.getAttribute("position").needsUpdate = true;
-          terrain.planeGeomatry.getAttribute("position").setY(index - this.segmentHeight, oldheight);
+          terrain.planeGeometry.getAttribute("position").needsUpdate = true;
+          terrain.planeGeometry.getAttribute("position").setY(index - this.segmentHeight, oldheight);
           if (index == endPointIndex) {
             if (objectList[0 /* OBJ_TERRAIN */][this.terrainIndex + (this.row + 1)]) {
               const terrain2 = objectList[0 /* OBJ_TERRAIN */][this.terrainIndex + (this.row + 1)].GameObject;
-              terrain2.planeGeomatry.getAttribute("position").needsUpdate = true;
-              terrain2.planeGeomatry.getAttribute("position").setY(0, oldheight);
+              terrain2.planeGeometry.getAttribute("position").needsUpdate = true;
+              terrain2.planeGeometry.getAttribute("position").setY(0, oldheight);
             }
           } else if (index == this.segmentWidth) {
             if (objectList[0 /* OBJ_TERRAIN */][this.terrainIndex - (this.row - 1)]) {
               const terrain2 = objectList[0 /* OBJ_TERRAIN */][this.terrainIndex - (this.row - 1)].GameObject;
-              terrain2.planeGeomatry.getAttribute("position").needsUpdate = true;
-              terrain2.planeGeomatry.getAttribute("position").setY(endPointIndex - this.segmentWidth, oldheight);
+              terrain2.planeGeometry.getAttribute("position").needsUpdate = true;
+              terrain2.planeGeometry.getAttribute("position").setY(endPointIndex - this.segmentWidth, oldheight);
             }
           }
         }
       }
-      if (this.planeGeomatry.getAttribute("position").getX(index) == -(this.planSize / 2)) {
+      if (this.planeGeometry.getAttribute("position").getX(index) == -(this.planSize / 2)) {
         if (objectList[0 /* OBJ_TERRAIN */][this.terrainIndex - 1]) {
           const terrain = objectList[0 /* OBJ_TERRAIN */][this.terrainIndex - 1].GameObject;
-          terrain.planeGeomatry.getAttribute("position").needsUpdate = true;
-          terrain.planeGeomatry.getAttribute("position").setY(index + this.segmentHeight, oldheight);
+          terrain.planeGeometry.getAttribute("position").needsUpdate = true;
+          terrain.planeGeometry.getAttribute("position").setY(index + this.segmentHeight, oldheight);
         }
         if (index == 0) {
           if (objectList[0 /* OBJ_TERRAIN */][this.terrainIndex - (this.row + 1)]) {
             const terrain = objectList[0 /* OBJ_TERRAIN */][this.terrainIndex - (this.row + 1)].GameObject;
-            terrain.planeGeomatry.getAttribute("position").needsUpdate = true;
-            terrain.planeGeomatry.getAttribute("position").setY(endPointIndex, oldheight);
+            terrain.planeGeometry.getAttribute("position").needsUpdate = true;
+            terrain.planeGeometry.getAttribute("position").setY(endPointIndex, oldheight);
           }
         } else if (index == endPointIndex - this.segmentWidth) {
           if (objectList[0 /* OBJ_TERRAIN */][this.terrainIndex + (this.row - 1)]) {
             const terrain = objectList[0 /* OBJ_TERRAIN */][this.terrainIndex + (this.row - 1)].GameObject;
-            terrain.planeGeomatry.getAttribute("position").needsUpdate = true;
-            terrain.planeGeomatry.getAttribute("position").setY(this.segmentWidth, oldheight);
+            terrain.planeGeometry.getAttribute("position").needsUpdate = true;
+            terrain.planeGeometry.getAttribute("position").setY(this.segmentWidth, oldheight);
           }
         }
       }
-      if (this.planeGeomatry.getAttribute("position").getZ(index) == this.planSize / 2) {
+      if (this.planeGeometry.getAttribute("position").getZ(index) == this.planSize / 2) {
         if (objectList[0 /* OBJ_TERRAIN */][this.terrainIndex + this.col]) {
           const terrain = objectList[0 /* OBJ_TERRAIN */][this.terrainIndex + this.col].GameObject;
-          terrain.planeGeomatry.getAttribute("position").needsUpdate = true;
-          terrain.planeGeomatry.getAttribute("position").setY(index - (endPointIndex - this.segmentWidth), oldheight);
+          terrain.planeGeometry.getAttribute("position").needsUpdate = true;
+          terrain.planeGeometry.getAttribute("position").setY(index - (endPointIndex - this.segmentWidth), oldheight);
         }
       }
-      if (this.planeGeomatry.getAttribute("position").getZ(index) == -(this.planSize / 2)) {
+      if (this.planeGeometry.getAttribute("position").getZ(index) == -(this.planSize / 2)) {
         if (objectList[0 /* OBJ_TERRAIN */][this.terrainIndex - this.col]) {
           const terrain = objectList[0 /* OBJ_TERRAIN */][this.terrainIndex - this.col].GameObject;
-          terrain.planeGeomatry.getAttribute("position").needsUpdate = true;
-          terrain.planeGeomatry.getAttribute("position").setY(index + (endPointIndex - this.segmentWidth), oldheight);
+          terrain.planeGeometry.getAttribute("position").needsUpdate = true;
+          terrain.planeGeometry.getAttribute("position").setY(index + (endPointIndex - this.segmentWidth), oldheight);
         }
       }
     }
-    if (this.heigtIndexBuffer.indexOf(index) == -1)
-      this.heigtIndexBuffer.push(index);
+    if (this.heightIndexBuffer.indexOf(index) == -1)
+      this.heightIndexBuffer.push(index);
     this.vertexNormalNeedUpdate = true;
-    const positionLength = this.planeGeomatry.getAttribute("position").count;
+    const positionLength = this.planeGeometry.getAttribute("position").count;
     let cnt = 0;
     for (let i = 0; i < positionLength; ++i) {
-      if (this.planeGeomatry.getAttribute("position").getY(i) <= -3) {
+      if (this.planeGeometry.getAttribute("position").getY(i) <= -3) {
         this.useDirtTexture = true;
       } else if (i == positionLength - 1 && !this.useDirtTexture)
         this.useDirtTexture = false;
-      if (this.planeGeomatry.getAttribute("position").getY(i) == 1)
+      if (this.planeGeometry.getAttribute("position").getY(i) == 1)
         ++cnt;
       if (cnt >= 30 && this.physicsComponent.GetMaxVertex().y <= 110) {
         this.useCityTexture = true;
@@ -28105,18 +28105,18 @@ var HeightmapTerrain = class extends GameObject {
   CollisionActive(object) {
     if (this.isDummy == false) {
       if (object.Type == 6 /* OBJ_CAMERA */) {
-        this.cameraInSecter = false;
+        this.cameraInSector = false;
       } else {
         if (this.inSectorObject.includes(object) == false) {
           this.inSectorObject.push(object);
-          this.inSecter = true;
+          this.inSector = true;
         }
       }
     }
   }
   CollisionDeActive(object) {
     if (object.Type == 6 /* OBJ_CAMERA */) {
-      this.cameraInSecter = false;
+      this.cameraInSector = false;
     } else {
       if (this.inSectorObject.includes(object) == true) {
         this.inSectorObject = this.inSectorObject.filter((element) => element != object).slice();
@@ -28127,11 +28127,11 @@ var HeightmapTerrain = class extends GameObject {
     if (this.isDummy == true) {
       if (this.collisionComponent.BoundingBox != null) {
         this.collisionComponent.DeleteCollider();
-        this.planeGeomatry.dispose();
-        this.planeGeomatry = new PlaneGeometry(this.planSize, this.planSize, 1, 1);
-        this.planeMesh.geometry = this.planeGeomatry;
+        this.planeGeometry.dispose();
+        this.planeGeometry = new PlaneGeometry(this.planSize, this.planSize, 1, 1);
+        this.planeMesh.geometry = this.planeGeometry;
         const rotation = new Matrix4().makeRotationX(-Math.PI / 2);
-        this.planeGeomatry.applyMatrix4(rotation);
+        this.planeGeometry.applyMatrix4(rotation);
       }
     } else {
       if (this.useDirtTexture)
@@ -28149,12 +28149,12 @@ var HeightmapTerrain = class extends GameObject {
       /*SceneManager.getInstance().CurrentScene.Picker.PickMode != PickMode.PICK_TERRAIN &&*/
       this.vertexNormalNeedUpdate
     ) {
-      this.planeGeomatry.computeVertexNormals();
+      this.planeGeometry.computeVertexNormals();
       this.vertexNormalNeedUpdate = false;
     }
     this.inSectorObject = this.inSectorObject.filter((element) => element.IsDead == false);
     if (this.inSectorObject.length == 0) {
-      this.inSecter = false;
+      this.inSector = false;
     }
     const cameraPosition = WorldManager.getInstance().MainCamera.PhysicsComponent.GetPosition().clone();
     if (CameraManager.getInstance().CameraMode === 1 /* CAMERA_3RD */)
@@ -28175,8 +28175,8 @@ var CollisionManager = class _CollisionManager {
     }
     return _CollisionManager.instance;
   }
-  CollideRayToTerrain(sorce) {
-    sorce.forEach(function(src) {
+  CollideRayToTerrain(source) {
+    source.forEach(function(src) {
       const destination = src.GameObject.inSectorObject;
       destination.forEach(function(dst) {
         if (dst.CollisionComponent != null && dst.CollisionComponent.Raycaster != null) {
@@ -28184,7 +28184,7 @@ var CollisionManager = class _CollisionManager {
             const intersect = dst.CollisionComponent.Raycaster.intersectObject(src.GameObject.GameObjectInstance);
             if (intersect[0] != void 0) {
               if (intersect[0].distance < 1) {
-                dst.PhysicsComponent.SetPostion(intersect[0].point.x, intersect[0].point.y + 1, intersect[0].point.z);
+                dst.PhysicsComponent.SetPosition(intersect[0].point.x, intersect[0].point.y + 1, intersect[0].point.z);
                 if (dst instanceof Missile)
                   dst.CollisionActive(0 /* OBJ_TERRAIN */);
               }
@@ -28199,7 +28199,7 @@ var CollisionManager = class _CollisionManager {
               );
               const intersect2 = dst.CollisionComponent.Raycaster.intersectObject(src.GameObject.GameObjectInstance);
               if (intersect2[0] != void 0) {
-                dst.PhysicsComponent.SetPostion(intersect2[0].point.x, intersect2[0].point.y + 1, intersect2[0].point.z);
+                dst.PhysicsComponent.SetPosition(intersect2[0].point.x, intersect2[0].point.y + 1, intersect2[0].point.z);
               }
               dst.CollisionComponent.Raycaster.set(dst.PhysicsComponent.GetPosition(), new Vector3(0, -1, 0));
             }
@@ -28208,8 +28208,8 @@ var CollisionManager = class _CollisionManager {
       });
     });
   }
-  CollideRayToWater(sorce) {
-    sorce.forEach(function(src) {
+  CollideRayToWater(source) {
+    source.forEach(function(src) {
       const destination = ObjectManager.getInstance().GetObjectList[2 /* OBJ_OBJECT3D */].filter((o_) => o_.GameObject.IsClone).map((o_) => o_.GameObject);
       destination.forEach(function(dst) {
         if (dst.CollisionComponent != null && dst.CollisionComponent.Raycaster != null) {
@@ -28217,7 +28217,7 @@ var CollisionManager = class _CollisionManager {
             const intersect = dst.CollisionComponent.Raycaster.intersectObject(src.GameObject.GameObjectInstance);
             if (intersect[0] != void 0) {
               if (intersect[0].distance < 1) {
-                dst.PhysicsComponent.SetPostion(intersect[0].point.x, intersect[0].point.y + 1, intersect[0].point.z);
+                dst.PhysicsComponent.SetPosition(intersect[0].point.x, intersect[0].point.y + 1, intersect[0].point.z);
                 if (dst instanceof Missile)
                   dst.CollisionActive(0 /* OBJ_TERRAIN */);
               }
@@ -28232,7 +28232,7 @@ var CollisionManager = class _CollisionManager {
               );
               const intersect2 = dst.CollisionComponent.Raycaster.intersectObject(src.GameObject.GameObjectInstance);
               if (intersect2[0] != void 0) {
-                dst.PhysicsComponent.SetPostion(intersect2[0].point.x, intersect2[0].point.y + 1, intersect2[0].point.z);
+                dst.PhysicsComponent.SetPosition(intersect2[0].point.x, intersect2[0].point.y + 1, intersect2[0].point.z);
               }
               dst.CollisionComponent.Raycaster.set(dst.PhysicsComponent.GetPosition(), new Vector3(0, -1, 0));
             }
@@ -28241,8 +28241,8 @@ var CollisionManager = class _CollisionManager {
       });
     });
   }
-  CollideBoxToBox(sorce, destination) {
-    sorce.forEach(function(src) {
+  CollideBoxToBox(source, destination) {
+    source.forEach(function(src) {
       destination.forEach(function(dst) {
         if (src.GameObject.IsClone && dst.GameObject.IsClone) {
           if (src.GameObject != dst.GameObject && src.GameObject.CollisionComponent.BoxHelper.box && dst.GameObject.CollisionComponent.BoxHelper.box) {
@@ -28258,8 +28258,8 @@ var CollisionManager = class _CollisionManager {
       });
     });
   }
-  CollideObbToObb(sorce, destination) {
-    sorce.forEach(function(src) {
+  CollideObbToObb(source, destination) {
+    source.forEach(function(src) {
       destination.forEach(function(dst) {
         if (src.IsClone && dst.IsClone) {
           if (src != dst) {
@@ -28280,8 +28280,8 @@ var CollisionManager = class _CollisionManager {
       });
     });
   }
-  CollideObbToBox(sorce, destination) {
-    sorce.forEach(function(src) {
+  CollideObbToBox(source, destination) {
+    source.forEach(function(src) {
       destination.forEach(function(dst) {
         if (src.GameObject.IsClone && dst.GameObject.IsClone) {
           if (src.GameObject != dst.GameObject) {
@@ -28302,8 +28302,8 @@ var CollisionManager = class _CollisionManager {
       });
     });
   }
-  CollideSphereToBox(sorce, destination) {
-    sorce.forEach(function(src) {
+  CollideSphereToBox(source, destination) {
+    source.forEach(function(src) {
       destination.forEach(function(dst) {
         if (src.GameObject.IsClone && dst.GameObject.IsClone) {
           if (src.GameObject != dst.GameObject) {
@@ -28324,8 +28324,8 @@ var CollisionManager = class _CollisionManager {
       });
     });
   }
-  CollideSphereToSphere(sorce, destination) {
-    sorce.forEach(function(src) {
+  CollideSphereToSphere(source, destination) {
+    source.forEach(function(src) {
       destination.forEach(function(dst) {
         if (src.IsClone && dst.IsClone) {
           if (src != dst) {
@@ -28379,7 +28379,7 @@ var ObjectLabel = class extends GameObject {
     else
       this.name = "ObjectLabel" + ObjectManager.getInstance().GetObjectList[3 /* OBJ_OBJECT2D */].length;
     this.physicsComponent = new PhysicsComponent(this);
-    this.graphicComponent = new GraphComponent(this);
+    this.graphicComponent = new GraphicComponent(this);
     this.CreateBillboardMesh();
   }
   get ReferenceObject() {
@@ -28452,7 +28452,7 @@ var ObjectLabel = class extends GameObject {
       if (this.referenceObject.Picked == false && this.mesh.visible == true) {
         this.material.visible = true;
         const refObjectPosition = this.referenceObject.PhysicsComponent.GetPosition().clone();
-        this.physicsComponent.SetPostion(refObjectPosition.x, refObjectPosition.y, refObjectPosition.z);
+        this.physicsComponent.SetPosition(refObjectPosition.x, refObjectPosition.y, refObjectPosition.z);
         if (this.referenceObject.Name == "Target") {
           const pickObject = ObjectManager.getInstance().GetObjectList[2 /* OBJ_OBJECT3D */].filter((o) => o.GameObject.Picked == true);
           if (pickObject[0] != void 0) {
@@ -31152,7 +31152,7 @@ var GUI_Terrain = class extends GUI_Base {
   constructor() {
     super();
     this.propList = {
-      TerrianOptiontList: "None",
+      TerrainOptionList: "None",
       HeightOffset: 0
     };
     this.terrainOption = 0 /* TERRAIN_UP */;
@@ -31171,9 +31171,9 @@ var GUI_Terrain = class extends GUI_Base {
     item.push("UP");
     item.push("DOWN");
     item.push("BALANCE");
-    this.terrainOptionFolder.add(this.propList, "TerrianOptiontList", item).listen();
+    this.terrainOptionFolder.add(this.propList, "TerrainOptionList", item).listen();
     this.terrainOptionFolder.add(this.propList, "HeightOffset").step(0.01).listen();
-    this.propList.TerrianOptiontList = "UP";
+    this.propList.TerrainOptionList = "UP";
     this.terrainOptionFolder.open();
   }
   GetTerrainOption() {
@@ -31200,18 +31200,18 @@ var GUI_Terrain = class extends GUI_Base {
   }
   SetTerrainOptionFromEnum() {
     if (this.terrainOption == 0 /* TERRAIN_UP */)
-      this.propList.TerrianOptiontList = "UP";
+      this.propList.TerrainOptionList = "UP";
     if (this.terrainOption == 1 /* TERRAIN_DOWN */)
-      this.propList.TerrianOptiontList = "DOWN";
+      this.propList.TerrainOptionList = "DOWN";
     if (this.terrainOption == 2 /* TERRAIN_BALANCE */)
-      this.propList.TerrianOptiontList = "BALANCE";
+      this.propList.TerrainOptionList = "BALANCE";
   }
   SetTerrainOptionList() {
-    if (this.propList.TerrianOptiontList == "UP")
+    if (this.propList.TerrainOptionList == "UP")
       this.terrainOption = 0 /* TERRAIN_UP */;
-    if (this.propList.TerrianOptiontList == "DOWN")
+    if (this.propList.TerrainOptionList == "DOWN")
       this.terrainOption = 1 /* TERRAIN_DOWN */;
-    if (this.propList.TerrianOptiontList == "BALANCE")
+    if (this.propList.TerrainOptionList == "BALANCE")
       this.terrainOption = 2 /* TERRAIN_BALANCE */;
   }
   //private terrainOffset: number = 0;
@@ -31349,7 +31349,7 @@ var EditObject = class extends GameObject {
     this.prevPosition = new Vector3(0, 0, 0);
     this.type = 2 /* OBJ_OBJECT3D */;
     this.physicsComponent = new PhysicsComponent(this);
-    this.graphicComponent = new GraphComponent(this);
+    this.graphicComponent = new GraphicComponent(this);
     this.exportComponent = new ExportComponent(this);
     this.collisionComponent = new CollisionComponent(this);
     this.guiComponent = new GUIComponent(this);
@@ -31397,7 +31397,7 @@ var EditObject = class extends GameObject {
       const cloneObject = objectManager.MakeClone(objectManager.GetObjectFromName("R-60M"));
       cloneObject.PhysicsComponent.SetScale(1, 1, 1);
       cloneObject.GameObjectInstance.setRotationFromEuler(this.PhysicsComponent.GetRotateEuler());
-      cloneObject.PhysicsComponent.SetPostionVec3(new Vector3(this.GameObjectInstance.position.x, this.GameObjectInstance.position.y, this.GameObjectInstance.position.z));
+      cloneObject.PhysicsComponent.SetPositionVec3(new Vector3(this.GameObjectInstance.position.x, this.GameObjectInstance.position.y, this.GameObjectInstance.position.z));
       cloneObject.PhysicsComponent.GetPosition().add(this.physicsComponent.Up.multiplyScalar(-3));
       cloneObject.AirCraftSpeed = this.throttle;
       objectManager.AddObject(cloneObject, cloneObject.Name, cloneObject.Type);
@@ -31408,8 +31408,8 @@ var EditObject = class extends GameObject {
     this.TargetTest();
     if (this.Picked == true) {
       this.IsRayOn = true;
-      this.PhysicsComponent.MoveFoward(this.throttle);
-      this.SpeedIndicaterProcess();
+      this.PhysicsComponent.MoveForward(this.throttle);
+      this.SpeedIndicatorProcess();
       this.InputProcess();
       this.SeekerProcess();
     } else {
@@ -31423,7 +31423,7 @@ var EditObject = class extends GameObject {
       this.AnimationMixer.update(WorldManager.getInstance().GetDeltaTime());
     this.prevPosition = this.PhysicsComponent.GetPosition().clone();
   }
-  SpeedIndicaterProcess() {
+  SpeedIndicatorProcess() {
     const moveDistance = this.physicsComponent.GetPosition().clone().sub(this.prevPosition).length();
     document.getElementById("speed").innerText = "\uC18D\uB3C4 : " + UnitConvertManager.getInstance().ConvertToSpeedForKmh(moveDistance);
   }
@@ -31445,7 +31445,7 @@ var EditObject = class extends GameObject {
   TargetTest() {
     if (this.isTarget == true) {
       this.throttle = 50;
-      this.PhysicsComponent.MoveFoward(this.throttle);
+      this.PhysicsComponent.MoveForward(this.throttle);
       this.PhysicsComponent.RotateVec3(this.PhysicsComponent.Up, 0.5);
     }
   }
@@ -31528,7 +31528,7 @@ var EditObject = class extends GameObject {
     }
   }
   //private fixedSeeker: SeekerCircle;
-  //private raderFrustum: THREE.Frustum = new THREE.Frustum();
+  //private radarFrustum: THREE.Frustum = new THREE.Frustum();
 };
 
 // Object/InGameObject/Weapons/IRMissile/R60M.ts
@@ -31542,7 +31542,7 @@ var R60M = class extends Missile {
     this.velocityBreak = 2;
     this.maxVelocity = 80;
     this.maxRotateSpeed = 30;
-    this.rotateSpeedAcceletion = 20;
+    this.rotateSpeedAcceleration = 20;
   }
   CreateCollider() {
     this.CollisionComponent.CreateBoundingSphere(this.physicsComponent.GetPosition(), 2);
@@ -31556,11 +31556,11 @@ var R60M = class extends Missile {
   Animate() {
     if (this.maxResultSpeed == 0)
       this.maxResultSpeed = this.maxVelocity + this.AirCraftSpeed;
-    const reletiveSpeed = this.resultSpeed - this.targetObject.throttle;
-    if (reletiveSpeed > this.targetObject.throttle)
-      this.endHomingStartLenge = 50;
+    const relativeSpeed = this.resultSpeed - this.targetObject.throttle;
+    if (relativeSpeed > this.targetObject.throttle)
+      this.endHomingStartLength = 50;
     else
-      this.endHomingStartLenge = 0;
+      this.endHomingStartLength = 0;
     super.Animate();
   }
 };
@@ -31595,7 +31595,7 @@ var ObjectManager = class _ObjectManager {
     let terrain;
     for (let OBJ = 0; OBJ < this.objectList[0 /* OBJ_TERRAIN */].length; ++OBJ) {
       terrain = this.objectList[0 /* OBJ_TERRAIN */][OBJ].GameObject;
-      if (terrain.cameraInSecter == true)
+      if (terrain.cameraInSector == true)
         this.terrainList.add(terrain.GameObjectInstance);
     }
     return this.terrainList;
@@ -31749,7 +31749,7 @@ var ObjectManager = class _ObjectManager {
       this.objectList[5 /* OBJ_MISSILE */],
       this.objectList[0 /* OBJ_TERRAIN */].filter((o) => o.GameObject.IsDummy == false)
     );
-    const sectoredTerrain = this.objectList[0 /* OBJ_TERRAIN */].filter((element) => element.GameObject.inSecter == true);
+    const sectoredTerrain = this.objectList[0 /* OBJ_TERRAIN */].filter((element) => element.GameObject.inSector == true);
     CollisionManager.getInstance().CollideRayToTerrain(sectoredTerrain);
     CollisionManager.getInstance().CollideRayToWater(this.objectList[1 /* OBJ_WATER */].filter((o_) => o_.GameObject.IsClone));
     sectoredTerrain.forEach(function(src) {
@@ -31764,7 +31764,7 @@ var ObjectManager = class _ObjectManager {
   }
 };
 
-// Object/InGameObject/Envirument/Water.ts
+// Object/InGameObject/Environment/Water.ts
 var Water2 = class extends GameObject {
   constructor() {
     super();
@@ -31774,7 +31774,7 @@ var Water2 = class extends GameObject {
   }
   InitializeAfterLoad() {
     if (this.IsClone == true) {
-      this.graphicComponent = new GraphComponent(this);
+      this.graphicComponent = new GraphicComponent(this);
       this.physicsComponent = new PhysicsComponent(this);
       this.exportComponent = new ExportComponent(this);
       this.collisionComponent = new CollisionComponent(this);
@@ -31792,7 +31792,7 @@ var Water2 = class extends GameObject {
       {
         textureWidth: 512,
         textureHeight: 512,
-        waterNormals: new TextureLoader().load("Object/InGameObject/Envirument/waternormals.jpg", function(texture) {
+        waterNormals: new TextureLoader().load("Object/InGameObject/Environment/waternormals.jpg", function(texture) {
           texture.wrapS = texture.wrapT = RepeatWrapping;
         }),
         sunDirection: new Vector3(1, 1, 0),
@@ -31866,14 +31866,14 @@ var CameraManager = class _CameraManager {
   SetCameraSavedPosition(cameraMode) {
     switch (cameraMode) {
       case 1 /* CAMERA_3RD */:
-        this.ChangeThridPersonCamera();
+        this.ChangeThirdPersonCamera();
         break;
       case 0 /* CAMERA_ORBIT */:
         this.ChangeOrbitCamera();
         break;
     }
   }
-  ChangeThridPersonCamera() {
+  ChangeThirdPersonCamera() {
     const sceneManager = SceneManager.getInstance();
     const gameObjectForCamera = sceneManager.CurrentScene.Picker.GetPickParents();
     if (gameObjectForCamera instanceof Water2)
@@ -31888,7 +31888,7 @@ var CameraManager = class _CameraManager {
         cameraPosition.y + 1.5,
         cameraPosition.z
       );
-      this.MainCamera.PhysicsComponent.SetPostion(0, 0, 0);
+      this.MainCamera.PhysicsComponent.SetPosition(0, 0, 0);
       const Up = new Vector3(0, 1, 0);
       const Look = new Vector3(0, 0, 1);
       this.MainCamera.PhysicsComponent.GetPosition().add(Up.multiplyScalar(0.6));
@@ -31900,13 +31900,13 @@ var CameraManager = class _CameraManager {
     const picker = sceneManager.CurrentScene.Picker;
     this.cameraMode = 0 /* CAMERA_ORBIT */;
     picker.OrbitControl.enabled = true;
-    const tartgetLocation = new Vector3();
+    const targetLocation = new Vector3();
     const gameObjectForCamera = sceneManager.CurrentScene.Picker.GetPickParents();
     gameObjectForCamera.GameObjectInstance.remove(this.MainCamera.CameraInstance);
     picker.OrbitControl.object.position.x = gameObjectForCamera.PhysicsComponent.GetPosition().x;
     picker.OrbitControl.object.position.y = gameObjectForCamera.PhysicsComponent.GetPosition().y + 15;
     picker.OrbitControl.object.position.z = gameObjectForCamera.PhysicsComponent.GetPosition().z;
-    picker.OrbitControl.target = tartgetLocation.copy(gameObjectForCamera.PhysicsComponent.GetPosition());
+    picker.OrbitControl.target = targetLocation.copy(gameObjectForCamera.PhysicsComponent.GetPosition());
     this.MainCamera.CameraInstance.lookAt(gameObjectForCamera.PhysicsComponent.GetPosition());
   }
 };
@@ -31960,7 +31960,7 @@ var LowCloud = class extends GameObject {
     this.type = 3 /* OBJ_OBJECT2D */;
     this.name = "cloud" + ObjectManager.getInstance().GetObjectList[3 /* OBJ_OBJECT2D */].length;
     this.physicsComponent = new PhysicsComponent(this);
-    this.graphicComponent = new GraphComponent(this);
+    this.graphicComponent = new GraphicComponent(this);
   }
   BuildClouds(x, y, z) {
     this.center = new Vector3(x, y, z);
@@ -32054,7 +32054,7 @@ var MissileFog = class extends GameObject {
     this.type = 3 /* OBJ_OBJECT2D */;
     this.name = "MissileFog" + ObjectManager.getInstance().GetObjectList[3 /* OBJ_OBJECT2D */].length;
     this.physicsComponent = new PhysicsComponent(this);
-    this.graphicComponent = new GraphComponent(this);
+    this.graphicComponent = new GraphicComponent(this);
     this.CreateBillboardMesh();
   }
   InitializeAfterLoad() {
@@ -34505,7 +34505,7 @@ var ModelLoadManager = class _ModelLoadManager {
     this.loaderManager = new LoadingManager();
     this.loaderManager.onLoad = this.SetLoadComplete;
     this.gltfLoader = new GLTFLoader(this.loaderManager);
-    this.loadCompletModel = 0;
+    this.loadCompleteModel = 0;
   }
   static getInstance() {
     if (!_ModelLoadManager.instance) {
@@ -34514,8 +34514,8 @@ var ModelLoadManager = class _ModelLoadManager {
     return _ModelLoadManager.instance;
   }
   SetLoadComplete() {
-    this.loadCompletModel++;
-    if (this.loadCompletModel == this.modelCount)
+    this.loadCompleteModel++;
+    if (this.loadCompleteModel == this.modelCount)
       this.LoadComplete = true;
   }
   set LoadComplete(flag) {
@@ -34529,18 +34529,18 @@ var ModelLoadManager = class _ModelLoadManager {
   }
   LoadScene() {
     if (SceneManager.getInstance().SceneType == 0 /* SCENE_EDIT */) {
-      this.modeltList = ModelSceneBase.getInstance("ModelSceneEdit").ModelScene;
+      this.modelList = ModelSceneBase.getInstance("ModelSceneEdit").ModelScene;
       this.modelCount = ModelSceneBase.getInstance("ModelSceneEdit").ModelNumber;
     }
-    for (let i = 0; i < this.modeltList.length; ++i) {
-      this.LoadModel(this.modeltList[i]);
+    for (let i = 0; i < this.modelList.length; ++i) {
+      this.LoadModel(this.modelList[i]);
     }
     this.LoadHeightmapTerrain(20, 20);
   }
   LoadSceneStage() {
-    this.modeltList = ModelSceneStage.getInstance().ModelScene;
+    this.modelList = ModelSceneStage.getInstance().ModelScene;
     this.modelCount = ModelSceneStage.getInstance().ModelNumber;
-    for (let i = 0; i < this.modeltList.length; ++i) {
+    for (let i = 0; i < this.modelList.length; ++i) {
     }
     this.LoadHeightmapTerrain();
   }
@@ -34641,7 +34641,7 @@ var ModelLoadManager = class _ModelLoadManager {
           const cloneObject = objectManager.MakeClone(objectManager.GetObjectFromName("MIG_29"));
           cloneObject.PhysicsComponent.SetScale(data.scale.x, data.scale.y, data.scale.z);
           cloneObject.PhysicsComponent.SetRotate(data.rotation.x, data.rotation.y, data.rotation.z);
-          cloneObject.PhysicsComponent.SetPostion(data.position.x, data.position.y, data.position.z);
+          cloneObject.PhysicsComponent.SetPosition(data.position.x, data.position.y, data.position.z);
           if (data.obbSize != null)
             cloneObject.CollisionComponent.HalfSize = new Vector3(data.obbSize.x, data.obbSize.y, data.obbSize.z);
           objectManager.AddObject(cloneObject, cloneObject.Name, cloneObject.Type);
@@ -34649,19 +34649,19 @@ var ModelLoadManager = class _ModelLoadManager {
           const cloneObject = objectManager.MakeClone(objectManager.GetObjectFromName("F-5E"));
           cloneObject.PhysicsComponent.SetScale(data.scale.x, data.scale.y, data.scale.z);
           cloneObject.PhysicsComponent.SetRotate(data.rotation.x, data.rotation.y, data.rotation.z);
-          cloneObject.PhysicsComponent.SetPostion(data.position.x, data.position.y, data.position.z);
+          cloneObject.PhysicsComponent.SetPosition(data.position.x, data.position.y, data.position.z);
           cloneObject.CollisionComponent.HalfSize = new Vector3(data.obbSize.x, data.obbSize.y, data.obbSize.z);
           objectManager.AddObject(cloneObject, cloneObject.Name, cloneObject.Type);
         } else if (data.name.includes("Water")) {
           const cloneObject = objectManager.MakeClone(objectManager.GetObjectFromName("Water"));
           cloneObject.PhysicsComponent.SetScale(data.scale.x, data.scale.y, data.scale.z);
-          cloneObject.PhysicsComponent.SetPostion(data.position.x, data.position.y, data.position.z);
+          cloneObject.PhysicsComponent.SetPosition(data.position.x, data.position.y, data.position.z);
           objectManager.AddObject(cloneObject, cloneObject.Name, cloneObject.Type);
         } else if (data.name.includes("AIM-9")) {
           const cloneObject = objectManager.MakeClone(objectManager.GetObjectFromName("AIM-9"));
           cloneObject.PhysicsComponent.SetScale(data.scale.x, data.scale.y, data.scale.z);
           cloneObject.PhysicsComponent.SetRotate(data.rotation.x, data.rotation.y, data.rotation.z);
-          cloneObject.PhysicsComponent.SetPostion(data.position.x, data.position.y, data.position.z);
+          cloneObject.PhysicsComponent.SetPosition(data.position.x, data.position.y, data.position.z);
           objectManager.AddObject(cloneObject, cloneObject.Name, cloneObject.Type);
         }
       }
@@ -35338,7 +35338,7 @@ var Picker = class {
     this.pickedObject = null;
     this.enablePickOff = true;
     this.pickMode = 0 /* PICK_MODIFY */;
-    this.CreateOrtbitControl();
+    this.CreateOrbitControl();
     window.addEventListener("mousemove", function(e) {
       SceneManager.getInstance().CurrentScene.Picker.mouseEvent = e;
     });
@@ -35354,7 +35354,7 @@ var Picker = class {
       SceneManager.getInstance().CurrentScene.Picker.ClearPickPosition();
     });
   }
-  CreateOrtbitControl() {
+  CreateOrbitControl() {
     this.orbitControl = new OrbitControls(WorldManager.getInstance().MainCamera.CameraInstance, WorldManager.getInstance().Canvas);
     this.orbitControl.maxDistance = 4e3;
     this.orbitControl.minDistance = -4e3;
@@ -35466,7 +35466,7 @@ var Picker = class {
       }
     }
   }
-  GetCanvasReleativePosition(event) {
+  GetCanvasRelativePosition(event) {
     const rect = WorldManager.getInstance().Canvas.getBoundingClientRect();
     return {
       x: (event.clientX - rect.left) * WorldManager.getInstance().Canvas.width / rect.width,
@@ -35560,7 +35560,7 @@ var EditScene = class extends SceneBase {
   constructor(sceneManager) {
     super(sceneManager);
     this.testLoad = false;
-    this.makedCloud = false;
+    this.madeCloud = false;
     this.gizmoOnOff = true;
   }
   BuildSkyBox() {
@@ -35590,9 +35590,9 @@ var EditScene = class extends SceneBase {
     ObjectManager.getInstance().AddObject(this.directionalLight, "directionalLight", this.directionalLight.Type);
     this.directionalLight.SetColor(16777215);
     this.directionalLight.Intensity = 0.6;
-    this.directionalLight.PhysicsComponent.SetPostionVec3(new Vector3(1, 1, 0));
+    this.directionalLight.PhysicsComponent.SetPositionVec3(new Vector3(1, 1, 0));
     this.ambientLight = new Light2(1 /* LIGHT_AMBIENT */);
-    ObjectManager.getInstance().AddObject(this.ambientLight, "ambientlLight", this.ambientLight.Type);
+    ObjectManager.getInstance().AddObject(this.ambientLight, "ambientLight", this.ambientLight.Type);
     this.ambientLight.SetColor(16777215);
     this.ambientLight.Intensity = 0.5;
   }
@@ -35676,7 +35676,7 @@ var EditScene = class extends SceneBase {
     return this.gizmoOnOff;
   }
   MakeSceneCloud() {
-    if (this.makedCloud == false) {
+    if (this.madeCloud == false) {
       for (let i = 0; i < 30; ++i) {
         const lowCloud = new LowCloud();
         lowCloud.IsClone = true;
@@ -35685,7 +35685,7 @@ var EditScene = class extends SceneBase {
         const z = -5e3 + Math.random() * 2e4;
         lowCloud.BuildClouds(x, y, z);
       }
-      this.makedCloud = true;
+      this.madeCloud = true;
     }
   }
   InputProcess() {
@@ -35770,7 +35770,7 @@ var EditScene = class extends SceneBase {
         this.BuildLight();
         this.gizmo.dispose();
         this.gizmo = null;
-        this.makedCloud = false;
+        this.madeCloud = false;
         this.reloadScene = false;
       }
     }
@@ -35827,7 +35827,7 @@ var CollisionComponent = class {
     this.boundingSphere = null;
     this.raycaster = null;
     this.isEditable = false;
-    this.orientedBoundingBoxInlcude = false;
+    this.orientedBoundingBoxInclude = false;
     this.boundingSphereInclude = false;
     this.raycasterInclude = false;
     this.gameObject = gameObject;
@@ -35858,7 +35858,7 @@ var CollisionComponent = class {
     this.obbBoxHelper.name = this.gameObject.Name + "ObbHelper";
     if (SceneManager.getInstance().SceneInstance != null)
       SceneManager.getInstance().SceneInstance.add(this.obbBoxHelper);
-    this.orientedBoundingBoxInlcude = true;
+    this.orientedBoundingBoxInclude = true;
   }
   CreateBoundingSphere(center, radius) {
     if (center == null)
@@ -35867,7 +35867,7 @@ var CollisionComponent = class {
       radius = 1;
     this.radius = radius;
     this.boundingSphere = new Sphere(center, radius);
-    const sphereGeomertry = new SphereGeometry(radius, 8, 8);
+    const sphereGeometry = new SphereGeometry(radius, 8, 8);
     this.boundingSphereInclude = true;
   }
   CreateRaycaster() {
@@ -35916,7 +35916,7 @@ var CollisionComponent = class {
     return this.boundingBoxInclude;
   }
   get OBBInclude() {
-    return this.orientedBoundingBoxInlcude;
+    return this.orientedBoundingBoxInclude;
   }
   get BoundingSphereInclude() {
     return this.boundingSphereInclude;
@@ -36048,7 +36048,7 @@ var WorldManager = class _WorldManager {
     return _WorldManager.instance;
   }
   InitializeWorld() {
-    this.CreateRendere();
+    this.CreateRenderer();
     this.ResizeView();
     this.CreateMainCamera();
     this.CreateScene();
@@ -36059,7 +36059,7 @@ var WorldManager = class _WorldManager {
     _WorldManager.getInstance().Renderer.initTexture(ShaderManager.getInstance().factoryTexture);
     _WorldManager.getInstance().Renderer.initTexture(ShaderManager.getInstance().fogTexture);
   }
-  CreateRendere() {
+  CreateRenderer() {
     this.renderer = new WebGLRenderer(
       {
         canvas: document.querySelector("#c"),
@@ -36096,7 +36096,7 @@ var WorldManager = class _WorldManager {
     this.camera.Aspect = this.Canvas.clientWidth / this.Canvas.clientHeight;
     this.camera.Near = 0.1;
     this.camera.Far = 1e4;
-    this.camera.PhysicsComponent.SetPostion(0, 22, 0);
+    this.camera.PhysicsComponent.SetPosition(0, 22, 0);
     ObjectManager.getInstance().AddObject(this.camera, this.camera.Name, this.camera.Type);
   }
   CreateScene() {

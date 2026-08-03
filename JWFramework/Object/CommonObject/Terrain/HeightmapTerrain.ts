@@ -4,7 +4,7 @@ import { CameraMode, ObjectType, PickMode, TerrainOption } from '../../../enum';
 import { CollisionComponent } from '../../../Component/CollisionComponent';
 import { ExportComponent } from '../../../Component/ExportComponent';
 import { GameObject } from '../../GameObject';
-import { GraphComponent } from '../../../Component/GraphicCompnent';
+import { GraphicComponent } from '../../../Component/GraphicComponent';
 import { ObjectManager } from '../../../Manager/ObjectManager';
 import { PhysicsComponent } from '../../../Component/PhysicsComponent';
 import { SceneManager } from '../../../Manager/SceneManager';
@@ -31,7 +31,7 @@ export class HeightmapTerrain extends GameObject
         this.isClone = true;
 
         this.physicsComponent = new PhysicsComponent(this);
-        this.graphicComponent = new GraphComponent(this);
+        this.graphicComponent = new GraphicComponent(this);
         this.exportComponent = new ExportComponent(this);
         this.collisionComponent = new CollisionComponent(this);
 
@@ -39,7 +39,7 @@ export class HeightmapTerrain extends GameObject
     }
 
     public InitializeAfterLoad() {
-        this.PhysicsComponent.SetPostion(this.width, 0, this.height);
+        this.PhysicsComponent.SetPosition(this.width, 0, this.height);
 
         if (this.isDummy == false)
         {
@@ -62,9 +62,9 @@ export class HeightmapTerrain extends GameObject
     private CreateTerrainMesh()
     {
         if (this.isDummy == false)
-            this.planeGeomatry = new THREE.PlaneGeometry(this.planSize, this.planSize, this.segmentWidth, this.segmentHeight);
+            this.planeGeometry = new THREE.PlaneGeometry(this.planSize, this.planSize, this.segmentWidth, this.segmentHeight);
         else
-            this.planeGeomatry = new THREE.PlaneGeometry(this.planSize, this.planSize, 1, 1);
+            this.planeGeometry = new THREE.PlaneGeometry(this.planSize, this.planSize, 1, 1);
 
         // fog 유니폼은 UniformsLib 을 그대로 clone 해서 쓴다.
         //
@@ -111,12 +111,12 @@ export class HeightmapTerrain extends GameObject
         //this.material.wireframe = true;
 
         const rotation = new THREE.Matrix4().makeRotationX(-Math.PI / 2);
-        this.planeGeomatry.applyMatrix4(rotation);
+        this.planeGeometry.applyMatrix4(rotation);
 
-        this.planeGeomatry.computeBoundingSphere();
-        this.planeGeomatry.computeVertexNormals();
+        this.planeGeometry.computeBoundingSphere();
+        this.planeGeometry.computeVertexNormals();
 
-        this.planeMesh = new THREE.Mesh(this.planeGeomatry, this.material);
+        this.planeMesh = new THREE.Mesh(this.planeGeometry, this.material);
         this.planeMesh.receiveShadow = true;
         this.planeMesh.castShadow = true;
 
@@ -129,17 +129,17 @@ export class HeightmapTerrain extends GameObject
     }
 
     public get HeightIndexBuffer(): number[] {
-        return this.heigtIndexBuffer;
+        return this.heightIndexBuffer;
     }
 
     public get HeightBuffer(): number[] {
-        for (let i = 0; i < this.heigtBuffer.length; ++i) {
-            this.heigtBuffer.pop();
+        for (let i = 0; i < this.heightBuffer.length; ++i) {
+            this.heightBuffer.pop();
         }
-        this.heigtBuffer.length = 0;
-        this.heigtIndexBuffer.forEach(element =>
-            this.heigtBuffer.push(this.planeGeomatry.getAttribute('position').getY(element)));
-        return this.heigtBuffer;
+        this.heightBuffer.length = 0;
+        this.heightIndexBuffer.forEach(element =>
+            this.heightBuffer.push(this.planeGeometry.getAttribute('position').getY(element)));
+        return this.heightBuffer;
     }
 
     public get IsDummy()
@@ -159,16 +159,16 @@ export class HeightmapTerrain extends GameObject
             if (this.collisionComponent.BoundingBox != null)
             {
                 this.collisionComponent.DeleteCollider();
-                this.planeGeomatry.dispose();
-                this.planeGeomatry = new THREE.PlaneGeometry(this.planSize, this.planSize, 1, 1);
-                this.planeMesh.geometry = this.planeGeomatry;
+                this.planeGeometry.dispose();
+                this.planeGeometry = new THREE.PlaneGeometry(this.planSize, this.planSize, 1, 1);
+                this.planeMesh.geometry = this.planeGeometry;
                 const rotation = new THREE.Matrix4().makeRotationX(-Math.PI / 2);
-                this.planeGeomatry.applyMatrix4(rotation);
+                this.planeGeometry.applyMatrix4(rotation);
                 //this.material.wireframe = true;
             }
         }
-        this.planeGeomatry.getAttribute('position').needsUpdate = true;
-        let height: number = this.planeGeomatry.getAttribute('position').getY(index);
+        this.planeGeometry.getAttribute('position').needsUpdate = true;
+        let height: number = this.planeGeometry.getAttribute('position').getY(index);
 
         if (value != undefined && option == TerrainOption.TERRAIN_UP) {
             value = Math.abs(value);
@@ -177,100 +177,100 @@ export class HeightmapTerrain extends GameObject
         if (option == TerrainOption.TERRAIN_DOWN) {
             value = Math.abs(value);
             value *= -1;
-            this.planeGeomatry.getAttribute('position').setY(index, height += value);
+            this.planeGeometry.getAttribute('position').setY(index, height += value);
         }
         else if (option == TerrainOption.TERRAIN_BALANCE || option == TerrainOption.TERRAIN_LOAD) {
-            this.planeGeomatry.getAttribute('position').setY(index, value);
+            this.planeGeometry.getAttribute('position').setY(index, value);
         }
         else {
-            this.planeGeomatry.getAttribute('position').setY(index, height += value);
+            this.planeGeometry.getAttribute('position').setY(index, height += value);
         }
         if (this.isDummy == false) {
             const objectList = ObjectManager.getInstance().GetObjectList;
-            const endPointIndex = this.planeGeomatry.getAttribute('position').count - 1;
-            const oldheight: number = this.planeGeomatry.getAttribute('position').getY(index);
+            const endPointIndex = this.planeGeometry.getAttribute('position').count - 1;
+            const oldheight: number = this.planeGeometry.getAttribute('position').getY(index);
 
-            if (this.planeGeomatry.getAttribute('position').getX(index) == this.planSize / 2) {
+            if (this.planeGeometry.getAttribute('position').getX(index) == this.planSize / 2) {
                 if (objectList[ObjectType.OBJ_TERRAIN][this.terrainIndex + 1]) {
                     const terrain = objectList[ObjectType.OBJ_TERRAIN][this.terrainIndex + 1].GameObject;
-                    (terrain as unknown as HeightmapTerrain).planeGeomatry.getAttribute('position').needsUpdate = true;
-                    (terrain as unknown as HeightmapTerrain).planeGeomatry.getAttribute('position').setY(index - this.segmentHeight, oldheight);
+                    (terrain as unknown as HeightmapTerrain).planeGeometry.getAttribute('position').needsUpdate = true;
+                    (terrain as unknown as HeightmapTerrain).planeGeometry.getAttribute('position').setY(index - this.segmentHeight, oldheight);
 
                     if (index == endPointIndex) {
                         if (objectList[ObjectType.OBJ_TERRAIN][this.terrainIndex + (this.row + 1)]) {
                             const terrain = objectList[ObjectType.OBJ_TERRAIN][this.terrainIndex + (this.row + 1)].GameObject;
-                            (terrain as unknown as HeightmapTerrain).planeGeomatry.getAttribute('position').needsUpdate = true;
-                            (terrain as unknown as HeightmapTerrain).planeGeomatry.getAttribute('position').setY(0, oldheight);
+                            (terrain as unknown as HeightmapTerrain).planeGeometry.getAttribute('position').needsUpdate = true;
+                            (terrain as unknown as HeightmapTerrain).planeGeometry.getAttribute('position').setY(0, oldheight);
                         }
                     }
 
                     else if (index == this.segmentWidth) {
                         if (objectList[ObjectType.OBJ_TERRAIN][this.terrainIndex - (this.row - 1)]) {
                             const terrain = objectList[ObjectType.OBJ_TERRAIN][this.terrainIndex - (this.row - 1)].GameObject;
-                            (terrain as unknown as HeightmapTerrain).planeGeomatry.getAttribute('position').needsUpdate = true;
-                            (terrain as unknown as HeightmapTerrain).planeGeomatry.getAttribute('position').setY(endPointIndex - this.segmentWidth, oldheight);
+                            (terrain as unknown as HeightmapTerrain).planeGeometry.getAttribute('position').needsUpdate = true;
+                            (terrain as unknown as HeightmapTerrain).planeGeometry.getAttribute('position').setY(endPointIndex - this.segmentWidth, oldheight);
                         }
                     }
                 }
             }
 
-            if (this.planeGeomatry.getAttribute('position').getX(index) == -(this.planSize / 2)) {
+            if (this.planeGeometry.getAttribute('position').getX(index) == -(this.planSize / 2)) {
                 if (objectList[ObjectType.OBJ_TERRAIN][this.terrainIndex - 1]) {
                     const terrain = objectList[ObjectType.OBJ_TERRAIN][this.terrainIndex - 1].GameObject;
-                    (terrain as unknown as HeightmapTerrain).planeGeomatry.getAttribute('position').needsUpdate = true;
-                    (terrain as unknown as HeightmapTerrain).planeGeomatry.getAttribute('position').setY(index + this.segmentHeight, oldheight);
+                    (terrain as unknown as HeightmapTerrain).planeGeometry.getAttribute('position').needsUpdate = true;
+                    (terrain as unknown as HeightmapTerrain).planeGeometry.getAttribute('position').setY(index + this.segmentHeight, oldheight);
                 }
 
                 if (index == 0) {
                     if (objectList[ObjectType.OBJ_TERRAIN][this.terrainIndex - (this.row + 1)]) {
                         const terrain = objectList[ObjectType.OBJ_TERRAIN][this.terrainIndex - (this.row + 1)].GameObject;
-                        (terrain as unknown as HeightmapTerrain).planeGeomatry.getAttribute('position').needsUpdate = true;
-                        (terrain as unknown as HeightmapTerrain).planeGeomatry.getAttribute('position').setY(endPointIndex, oldheight);
+                        (terrain as unknown as HeightmapTerrain).planeGeometry.getAttribute('position').needsUpdate = true;
+                        (terrain as unknown as HeightmapTerrain).planeGeometry.getAttribute('position').setY(endPointIndex, oldheight);
                     }
                 }
 
                 else if (index == endPointIndex - this.segmentWidth) {
                     if (objectList[ObjectType.OBJ_TERRAIN][this.terrainIndex + (this.row - 1)]) {
                         const terrain = objectList[ObjectType.OBJ_TERRAIN][this.terrainIndex + (this.row - 1)].GameObject;
-                        (terrain as unknown as HeightmapTerrain).planeGeomatry.getAttribute('position').needsUpdate = true;
-                        (terrain as unknown as HeightmapTerrain).planeGeomatry.getAttribute('position').setY(this.segmentWidth, oldheight);
+                        (terrain as unknown as HeightmapTerrain).planeGeometry.getAttribute('position').needsUpdate = true;
+                        (terrain as unknown as HeightmapTerrain).planeGeometry.getAttribute('position').setY(this.segmentWidth, oldheight);
                     }
                 }
             }
 
-            if (this.planeGeomatry.getAttribute('position').getZ(index) == this.planSize / 2) {
+            if (this.planeGeometry.getAttribute('position').getZ(index) == this.planSize / 2) {
                 if (objectList[ObjectType.OBJ_TERRAIN][this.terrainIndex + this.col]) {
                     const terrain = objectList[ObjectType.OBJ_TERRAIN][this.terrainIndex + this.col].GameObject;
-                    (terrain as unknown as HeightmapTerrain).planeGeomatry.getAttribute('position').needsUpdate = true;
-                    (terrain as unknown as HeightmapTerrain).planeGeomatry.getAttribute('position').setY(index - (endPointIndex - this.segmentWidth), oldheight);
+                    (terrain as unknown as HeightmapTerrain).planeGeometry.getAttribute('position').needsUpdate = true;
+                    (terrain as unknown as HeightmapTerrain).planeGeometry.getAttribute('position').setY(index - (endPointIndex - this.segmentWidth), oldheight);
                 }
             }
 
-            if (this.planeGeomatry.getAttribute('position').getZ(index) == -(this.planSize / 2)) {
+            if (this.planeGeometry.getAttribute('position').getZ(index) == -(this.planSize / 2)) {
                 if (objectList[ObjectType.OBJ_TERRAIN][this.terrainIndex - this.col]) {
                     const terrain = objectList[ObjectType.OBJ_TERRAIN][this.terrainIndex - this.col].GameObject;
-                    (terrain as unknown as HeightmapTerrain).planeGeomatry.getAttribute('position').needsUpdate = true;
-                    (terrain as unknown as HeightmapTerrain).planeGeomatry.getAttribute('position').setY(index + (endPointIndex - this.segmentWidth), oldheight);
+                    (terrain as unknown as HeightmapTerrain).planeGeometry.getAttribute('position').needsUpdate = true;
+                    (terrain as unknown as HeightmapTerrain).planeGeometry.getAttribute('position').setY(index + (endPointIndex - this.segmentWidth), oldheight);
                 }
             }
         }
 
-        if (this.heigtIndexBuffer.indexOf(index) == -1)
-            this.heigtIndexBuffer.push(index);
+        if (this.heightIndexBuffer.indexOf(index) == -1)
+            this.heightIndexBuffer.push(index);
         this.vertexNormalNeedUpdate = true;
 
-        const positionLength = this.planeGeomatry.getAttribute('position').count;
+        const positionLength = this.planeGeometry.getAttribute('position').count;
         let cnt = 0;
         for (let i = 0; i < positionLength; ++i)
         {
-            if (this.planeGeomatry.getAttribute('position').getY(i) <= -3)
+            if (this.planeGeometry.getAttribute('position').getY(i) <= -3)
             {
                 this.useDirtTexture = true;
             }
             else if (i == positionLength - 1 && !this.useDirtTexture)
                 this.useDirtTexture = false
 
-            if (this.planeGeomatry.getAttribute('position').getY(i) == 1)
+            if (this.planeGeometry.getAttribute('position').getY(i) == 1)
                 ++cnt;
             if (cnt >= 30 && this.physicsComponent.GetMaxVertex().y <= 110)
             {
@@ -292,7 +292,7 @@ export class HeightmapTerrain extends GameObject
         {
             if (object.Type == ObjectType.OBJ_CAMERA)
             {
-                this.cameraInSecter = false;
+                this.cameraInSector = false;
                 // this.material.opacity = 1;
             }
             else
@@ -302,7 +302,7 @@ export class HeightmapTerrain extends GameObject
                     this.inSectorObject.push(object);
                     //this.opacity = 0.5;
                     //this.material.uniforms['opacity'].value = this.opacity;
-                    this.inSecter = true;
+                    this.inSector = true;
                 }
             }
         }
@@ -310,7 +310,7 @@ export class HeightmapTerrain extends GameObject
 
     public CollisionDeActive(object: GameObject) {
         if (object.Type == ObjectType.OBJ_CAMERA) {
-            this.cameraInSecter = false;
+            this.cameraInSector = false;
         }
         else {
             if (this.inSectorObject.includes(object) == true) {
@@ -326,11 +326,11 @@ export class HeightmapTerrain extends GameObject
             if (this.collisionComponent.BoundingBox != null)
             {
                 this.collisionComponent.DeleteCollider(); 
-                this.planeGeomatry.dispose();
-                this.planeGeomatry = new THREE.PlaneGeometry(this.planSize, this.planSize, 1, 1);
-                this.planeMesh.geometry = this.planeGeomatry;
+                this.planeGeometry.dispose();
+                this.planeGeometry = new THREE.PlaneGeometry(this.planSize, this.planSize, 1, 1);
+                this.planeMesh.geometry = this.planeGeometry;
                 const rotation = new THREE.Matrix4().makeRotationX(-Math.PI / 2);
-                this.planeGeomatry.applyMatrix4(rotation);
+                this.planeGeometry.applyMatrix4(rotation);
                 //this.material.wireframe = true;
             }
         }
@@ -349,14 +349,14 @@ export class HeightmapTerrain extends GameObject
         }
 
         if (/*SceneManager.getInstance().CurrentScene.Picker.PickMode != PickMode.PICK_TERRAIN &&*/ this.vertexNormalNeedUpdate) {
-            this.planeGeomatry.computeVertexNormals();
+            this.planeGeometry.computeVertexNormals();
             this.vertexNormalNeedUpdate = false;
         }
         this.inSectorObject = this.inSectorObject.filter((element) => (element.IsDead == false));
         if (this.inSectorObject.length == 0) {
             //this.opacity = 1;
             //this.material.uniforms['opacity'].value = this.opacity;
-            this.inSecter = false;
+            this.inSector = false;
         }
 
         const cameraPosition = WorldManager.getInstance().MainCamera.PhysicsComponent.GetPosition().clone();
@@ -374,7 +374,7 @@ export class HeightmapTerrain extends GameObject
     }
 
     private planeMesh: THREE.Mesh;
-    private planeGeomatry: THREE.PlaneGeometry;
+    private planeGeometry: THREE.PlaneGeometry;
     private material: THREE.ShaderMaterial;
 
     private terrainIndex: number;
@@ -383,8 +383,8 @@ export class HeightmapTerrain extends GameObject
     private segmentWidth: number;
     private segmentHeight: number;
 
-    private heigtIndexBuffer: number[] = [];
-    private heigtBuffer: number[] = [];
+    private heightIndexBuffer: number[] = [];
+    private heightBuffer: number[] = [];
     public inSectorObject: GameObject[] = [];
 
     private vertexNormalNeedUpdate: boolean = false;
@@ -395,8 +395,8 @@ export class HeightmapTerrain extends GameObject
     public col: number = 0;
     private isDummy = false;
     private planSize: number;
-    public inSecter: boolean = false
-    public cameraInSecter: boolean = false;
+    public inSector: boolean = false
+    public cameraInSector: boolean = false;
     private useDirtTexture: boolean = false;
     private useCityTexture: boolean = false;
 }

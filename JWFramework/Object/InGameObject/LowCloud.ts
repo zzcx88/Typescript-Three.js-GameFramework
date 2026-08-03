@@ -2,7 +2,7 @@ import * as THREE from 'three';
 import { CameraManager } from '../../Manager/CameraManager';
 import { CameraMode, ObjectType } from '../../enum';
 import { GameObject } from '../GameObject';
-import { GraphComponent } from '../../Component/GraphicCompnent';
+import { GraphicComponent } from '../../Component/GraphicComponent';
 import { ObjectManager } from '../../Manager/ObjectManager';
 import { PhysicsComponent } from '../../Component/PhysicsComponent';
 import { SceneManager } from '../../Manager/SceneManager';
@@ -18,7 +18,7 @@ export class LowCloud extends GameObject
         this.type = ObjectType.OBJ_OBJECT2D;
         this.name = "cloud" + ObjectManager.getInstance().GetObjectList[ObjectType.OBJ_OBJECT2D].length;
         this.physicsComponent = new PhysicsComponent(this);
-        this.graphicComponent = new GraphComponent(this);
+        this.graphicComponent = new GraphicComponent(this);
     }
 
     public BuildClouds(x: number, y: number, z: number)

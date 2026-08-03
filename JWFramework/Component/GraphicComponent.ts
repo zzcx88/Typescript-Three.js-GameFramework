@@ -2,7 +2,7 @@ import type { GameObject } from '../Object/GameObject';
 import { SceneManager } from '../Manager/SceneManager';
 
 
-export class GraphComponent
+export class GraphicComponent
 {
     constructor(gameObject: GameObject)
     {

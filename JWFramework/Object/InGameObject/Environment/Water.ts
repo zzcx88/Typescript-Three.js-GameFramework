@@ -3,7 +3,7 @@ import { Water as ThreeWater } from 'three/examples/jsm/objects/Water.js';
 import { CollisionComponent } from '../../../Component/CollisionComponent';
 import { ExportComponent } from '../../../Component/ExportComponent';
 import { GameObject } from '../../GameObject';
-import { GraphComponent } from '../../../Component/GraphicCompnent';
+import { GraphicComponent } from '../../../Component/GraphicComponent';
 import { ObjectManager } from '../../../Manager/ObjectManager';
 import { ObjectType } from '../../../enum';
 import { PhysicsComponent } from '../../../Component/PhysicsComponent';
@@ -23,7 +23,7 @@ export class Water extends GameObject
     {
         if (this.IsClone == true)
         {
-            this.graphicComponent = new GraphComponent(this);
+            this.graphicComponent = new GraphicComponent(this);
             this.physicsComponent = new PhysicsComponent(this);
             this.exportComponent = new ExportComponent(this);
             this.collisionComponent = new CollisionComponent(this);
@@ -45,7 +45,7 @@ export class Water extends GameObject
             {
                 textureWidth: 512,
                 textureHeight: 512,
-                waterNormals: new THREE.TextureLoader().load('Object/InGameObject/Envirument/waternormals.jpg', function (texture)
+                waterNormals: new THREE.TextureLoader().load('Object/InGameObject/Environment/waternormals.jpg', function (texture)
                 {
                     texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
                 }),

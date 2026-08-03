@@ -4,7 +4,7 @@ import { GUI_Base } from './GUI_Base';
 import { ObjectManager } from '../../Manager/ObjectManager';
 import { ObjectType } from '../../enum';
 import { SceneManager } from '../../Manager/SceneManager';
-import { Water } from '../../Object/InGameObject/Envirument/Water';
+import { Water } from '../../Object/InGameObject/Environment/Water';
 import { WorldManager } from '../../Manager/WorldManager';
 
 

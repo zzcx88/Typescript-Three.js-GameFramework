@@ -3,7 +3,7 @@ import type { GLTF } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import type { CollisionComponent } from '../Component/CollisionComponent';
 import type { ExportComponent } from '../Component/ExportComponent';
 import type { GUIComponent } from '../Component/GUIComponent';
-import type { GraphComponent } from '../Component/GraphicCompnent';
+import type { GraphicComponent } from '../Component/GraphicComponent';
 import type { ObjectType } from '../enum';
 import type { PhysicsComponent } from '../Component/PhysicsComponent';
 
@@ -61,7 +61,7 @@ export class GameObject
         return this.physicsComponent;
     }
 
-    public get GraphicComponent(): GraphComponent
+    public get GraphicComponent(): GraphicComponent
     {
         return this.graphicComponent;
     }
@@ -204,7 +204,7 @@ export class GameObject
     protected isRayOn: boolean = false;
 
     protected physicsComponent: PhysicsComponent;
-    protected graphicComponent: GraphComponent;
+    protected graphicComponent: GraphicComponent;
     protected guiComponent: GUIComponent;
     protected exportComponent: ExportComponent;
     protected collisionComponent: CollisionComponent;

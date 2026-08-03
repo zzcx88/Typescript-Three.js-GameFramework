@@ -7,7 +7,7 @@ import { ExportComponent } from '../../Component/ExportComponent';
 import { GUIComponent } from '../../Component/GUIComponent';
 import { GUIManager } from '../../Manager/GUIManager';
 import { GameObject } from '../GameObject';
-import { GraphComponent } from '../../Component/GraphicCompnent';
+import { GraphicComponent } from '../../Component/GraphicComponent';
 import { InputManager } from '../../Manager/InputManager';
 import { ObjectManager } from '../../Manager/ObjectManager';
 import { PhysicsComponent } from '../../Component/PhysicsComponent';
@@ -25,7 +25,7 @@ export class EditObject extends GameObject
         this.type = ObjectType.OBJ_OBJECT3D;
 
         this.physicsComponent = new PhysicsComponent(this);
-        this.graphicComponent = new GraphComponent(this);
+        this.graphicComponent = new GraphicComponent(this);
         this.exportComponent = new ExportComponent(this);
         this.collisionComponent = new CollisionComponent(this);
         this.guiComponent = new GUIComponent(this);
@@ -96,7 +96,7 @@ export class EditObject extends GameObject
             const cloneObject = objectManager.MakeClone(objectManager.GetObjectFromName("R-60M"));
             cloneObject.PhysicsComponent.SetScale(1, 1, 1);
             cloneObject.GameObjectInstance.setRotationFromEuler(this.PhysicsComponent.GetRotateEuler());
-            cloneObject.PhysicsComponent.SetPostionVec3(new THREE.Vector3(this.GameObjectInstance.position.x, this.GameObjectInstance.position.y, this.GameObjectInstance.position.z));
+            cloneObject.PhysicsComponent.SetPositionVec3(new THREE.Vector3(this.GameObjectInstance.position.x, this.GameObjectInstance.position.y, this.GameObjectInstance.position.z));
             cloneObject.PhysicsComponent.GetPosition().add(this.physicsComponent.Up.multiplyScalar(-3));
             (cloneObject as R60M).AirCraftSpeed = this.throttle;
             objectManager.AddObject(cloneObject, cloneObject.Name, cloneObject.Type);
@@ -111,8 +111,8 @@ export class EditObject extends GameObject
         if (this.Picked == true)
         {
             this.IsRayOn = true;
-            this.PhysicsComponent.MoveFoward(this.throttle);
-            this.SpeedIndicaterProcess();
+            this.PhysicsComponent.MoveForward(this.throttle);
+            this.SpeedIndicatorProcess();
             this.InputProcess();
             this.SeekerProcess();
         }
@@ -133,7 +133,7 @@ export class EditObject extends GameObject
         this.prevPosition = this.PhysicsComponent.GetPosition().clone();
     }
 
-    private SpeedIndicaterProcess()
+    private SpeedIndicatorProcess()
     {
         const moveDistance = this.physicsComponent.GetPosition().clone().sub(this.prevPosition).length();
         document.getElementById("speed").innerText = "속도 : " + UnitConvertManager.getInstance().ConvertToSpeedForKmh(moveDistance);
@@ -164,7 +164,7 @@ export class EditObject extends GameObject
         if (this.isTarget == true)
         {
             this.throttle = 50;
-            this.PhysicsComponent.MoveFoward(this.throttle);
+            this.PhysicsComponent.MoveForward(this.throttle);
             this.PhysicsComponent.RotateVec3(this.PhysicsComponent.Up, 0.5);
         }
     }
@@ -281,5 +281,5 @@ export class EditObject extends GameObject
 
     //private fixedSeeker: SeekerCircle;
 
-    //private raderFrustum: THREE.Frustum = new THREE.Frustum();
+    //private radarFrustum: THREE.Frustum = new THREE.Frustum();
 }

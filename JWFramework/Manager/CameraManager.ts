@@ -2,7 +2,7 @@ import * as THREE from 'three';
 import type { Camera } from '../Object/Camera/Camera';
 import { CameraMode } from '../enum';
 import { SceneManager } from './SceneManager';
-import { Water } from '../Object/InGameObject/Envirument/Water';
+import { Water } from '../Object/InGameObject/Environment/Water';
 import { WorldManager } from './WorldManager';
 
 
@@ -35,7 +35,7 @@ export class CameraManager
         switch (cameraMode)
         {
             case CameraMode.CAMERA_3RD:
-                this.ChangeThridPersonCamera();
+                this.ChangeThirdPersonCamera();
                 break;
             case CameraMode.CAMERA_ORBIT:
                 this.ChangeOrbitCamera();
@@ -44,7 +44,7 @@ export class CameraManager
         }
     }
 
-    private ChangeThridPersonCamera()
+    private ChangeThirdPersonCamera()
     {
         const sceneManager = SceneManager.getInstance();
         const gameObjectForCamera = sceneManager.CurrentScene.Picker.GetPickParents();
@@ -63,7 +63,7 @@ export class CameraManager
             this.MainCamera.CameraInstance.lookAt(cameraPosition.x,
                 cameraPosition.y + 1.5, cameraPosition.z);
 
-            this.MainCamera.PhysicsComponent.SetPostion(0, 0, 0);
+            this.MainCamera.PhysicsComponent.SetPosition(0, 0, 0);
 
             const Up = new THREE.Vector3(0, 1, 0);
             const Look = new THREE.Vector3(0, 0, 1);
@@ -81,7 +81,7 @@ export class CameraManager
 
         this.cameraMode = CameraMode.CAMERA_ORBIT;
         picker.OrbitControl.enabled = true;
-        const tartgetLocation: THREE.Vector3 = new THREE.Vector3;
+        const targetLocation: THREE.Vector3 = new THREE.Vector3;
         const gameObjectForCamera = sceneManager.CurrentScene.Picker.GetPickParents();
         gameObjectForCamera.GameObjectInstance.remove(this.MainCamera.CameraInstance);
 
@@ -89,7 +89,7 @@ export class CameraManager
         picker.OrbitControl.object.position.y = gameObjectForCamera.PhysicsComponent.GetPosition().y + 15;
         picker.OrbitControl.object.position.z = gameObjectForCamera.PhysicsComponent.GetPosition().z;
 
-        picker.OrbitControl.target = tartgetLocation.copy(gameObjectForCamera.PhysicsComponent.GetPosition());
+        picker.OrbitControl.target = targetLocation.copy(gameObjectForCamera.PhysicsComponent.GetPosition());
         this.MainCamera.CameraInstance.lookAt(gameObjectForCamera.PhysicsComponent.GetPosition());
     }
     private cameraMode: CameraMode = CameraMode.CAMERA_ORBIT;

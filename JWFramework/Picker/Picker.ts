@@ -20,7 +20,7 @@ export class Picker
 
         this.pickMode = PickMode.PICK_MODIFY;
 
-        this.CreateOrtbitControl();
+        this.CreateOrbitControl();
 
         window.addEventListener('mousemove', function (e)
         {
@@ -44,7 +44,7 @@ export class Picker
         });
     }
 
-    private CreateOrtbitControl()
+    private CreateOrbitControl()
     {
         this.orbitControl = new OrbitControls(WorldManager.getInstance().MainCamera.CameraInstance, WorldManager.getInstance().Canvas);
         this.orbitControl.maxDistance = 4000;
@@ -197,7 +197,7 @@ export class Picker
         }
     }
 
-    private GetCanvasReleativePosition(event)
+    private GetCanvasRelativePosition(event)
     {
         const rect = WorldManager.getInstance().Canvas.getBoundingClientRect();
         return {

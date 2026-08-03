@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 import { GameObject } from '../../GameObject';
-import { GraphComponent } from '../../../Component/GraphicCompnent';
+import { GraphicComponent } from '../../../Component/GraphicComponent';
 import { ObjectManager } from '../../../Manager/ObjectManager';
 import { ObjectType } from '../../../enum';
 import { SceneManager } from '../../../Manager/SceneManager';
@@ -13,7 +13,7 @@ export class Cloud extends GameObject
         super();
         this.type = ObjectType.OBJ_OBJECT2D;
         //this.name = "cloud" + ObjectManager.getInstance().GetObjectList[ObjectType.OBJ_OBJECT2D].length;
-        this.graphicComponent = new GraphComponent(this);
+        this.graphicComponent = new GraphicComponent(this);
         this.isClone = false;
     }
 

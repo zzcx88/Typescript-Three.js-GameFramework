@@ -22,9 +22,9 @@ export class CollisionManager
         return CollisionManager.instance;
     }
 
-    public CollideRayToTerrain(sorce: ObjectSet[])
+    public CollideRayToTerrain(source: ObjectSet[])
     {
-        sorce.forEach(function (src)
+        source.forEach(function (src)
         {
             const destination = (src.GameObject as HeightmapTerrain).inSectorObject;
             destination.forEach(function (dst)
@@ -37,7 +37,7 @@ export class CollisionManager
                         {
                             if (intersect[0].distance < 1)
                             {
-                                dst.PhysicsComponent.SetPostion(intersect[0].point.x, intersect[0].point.y + 1, intersect[0].point.z);
+                                dst.PhysicsComponent.SetPosition(intersect[0].point.x, intersect[0].point.y + 1, intersect[0].point.z);
                                 if (dst instanceof Missile)
                                     (dst as Missile).CollisionActive(ObjectType.OBJ_TERRAIN);
                             }
@@ -54,7 +54,7 @@ export class CollisionManager
                             const intersect = dst.CollisionComponent.Raycaster.intersectObject(src.GameObject.GameObjectInstance);
                             if (intersect[0] != undefined)
                             {
-                                dst.PhysicsComponent.SetPostion(intersect[0].point.x, intersect[0].point.y + 1, intersect[0].point.z);
+                                dst.PhysicsComponent.SetPosition(intersect[0].point.x, intersect[0].point.y + 1, intersect[0].point.z);
                             }
                             dst.CollisionComponent.Raycaster.set(dst.PhysicsComponent.GetPosition(), new THREE.Vector3(0, -1, 0))
                         }
@@ -63,9 +63,9 @@ export class CollisionManager
         })
     }
 
-    public CollideRayToWater(sorce: ObjectSet[])
+    public CollideRayToWater(source: ObjectSet[])
     {
-        sorce.forEach(function (src)
+        source.forEach(function (src)
         {
             const destination = ObjectManager.getInstance().GetObjectList[ObjectType.OBJ_OBJECT3D].filter(o_ => o_.GameObject.IsClone).map(o_ => o_.GameObject);
             destination.forEach(function (dst)
@@ -78,7 +78,7 @@ export class CollisionManager
                         {
                             if (intersect[0].distance < 1)
                             {
-                                dst.PhysicsComponent.SetPostion(intersect[0].point.x, intersect[0].point.y + 1, intersect[0].point.z);
+                                dst.PhysicsComponent.SetPosition(intersect[0].point.x, intersect[0].point.y + 1, intersect[0].point.z);
                                 if (dst instanceof Missile)
                                     (dst as Missile).CollisionActive(ObjectType.OBJ_TERRAIN);
                             }
@@ -95,7 +95,7 @@ export class CollisionManager
                             const intersect = dst.CollisionComponent.Raycaster.intersectObject(src.GameObject.GameObjectInstance);
                             if (intersect[0] != undefined)
                             {
-                                dst.PhysicsComponent.SetPostion(intersect[0].point.x, intersect[0].point.y + 1, intersect[0].point.z);
+                                dst.PhysicsComponent.SetPosition(intersect[0].point.x, intersect[0].point.y + 1, intersect[0].point.z);
                             }
                             dst.CollisionComponent.Raycaster.set(dst.PhysicsComponent.GetPosition(), new THREE.Vector3(0, -1, 0))
                         }
@@ -104,9 +104,9 @@ export class CollisionManager
         })
     }
 
-    public CollideBoxToBox(sorce: ObjectSet[], destination: ObjectSet[])
+    public CollideBoxToBox(source: ObjectSet[], destination: ObjectSet[])
     {
-        sorce.forEach(function (src)
+        source.forEach(function (src)
         {
             destination.forEach(function (dst)
             {
@@ -129,9 +129,9 @@ export class CollisionManager
         })
     }
 
-    public CollideObbToObb(sorce: GameObject[], destination: GameObject[])
+    public CollideObbToObb(source: GameObject[], destination: GameObject[])
     {
-        sorce.forEach(function (src)
+        source.forEach(function (src)
         {
             destination.forEach(function (dst)
             {
@@ -159,9 +159,9 @@ export class CollisionManager
         })
     }
 
-    public CollideObbToBox(sorce: ObjectSet[], destination: ObjectSet[])
+    public CollideObbToBox(source: ObjectSet[], destination: ObjectSet[])
     {
-        sorce.forEach(function (src)
+        source.forEach(function (src)
         {
             destination.forEach(function (dst)
             {
@@ -191,9 +191,9 @@ export class CollisionManager
         })
     }
 
-    public CollideSphereToBox(sorce: ObjectSet[], destination: ObjectSet[])
+    public CollideSphereToBox(source: ObjectSet[], destination: ObjectSet[])
     {
-        sorce.forEach(function (src)
+        source.forEach(function (src)
         {
             destination.forEach(function (dst)
             {
@@ -224,9 +224,9 @@ export class CollisionManager
         })
     }
 
-    public CollideSphereToSphere(sorce: GameObject[], destination: GameObject[])
+    public CollideSphereToSphere(source: GameObject[], destination: GameObject[])
     {
-        sorce.forEach(function (src)
+        source.forEach(function (src)
         {
             destination.forEach(function (dst)
             {

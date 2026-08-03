@@ -2,7 +2,7 @@ import * as THREE from 'three';
 import { clone as skeletonClone } from 'three/examples/jsm/utils/SkeletonUtils.js';
 import { AIM9H } from '../Object/InGameObject/Weapons/IRMissile/AIM9H';
 import { AIM9L } from '../Object/InGameObject/Weapons/IRMissile/AIM9L';
-import { Cloud } from '../Object/InGameObject/Envirument/Cloud';
+import { Cloud } from '../Object/InGameObject/Environment/Cloud';
 import { CollisionManager } from './CollisionManager';
 import { EditObject } from '../Object/EditObject/EditObject';
 import type { GameObject } from '../Object/GameObject';
@@ -12,7 +12,7 @@ import type { ObjectSet } from '../define';
 import { ObjectType } from '../enum';
 import { R60M } from '../Object/InGameObject/Weapons/IRMissile/R60M';
 import { SceneManager } from './SceneManager';
-import { Water } from '../Object/InGameObject/Envirument/Water';
+import { Water } from '../Object/InGameObject/Environment/Water';
 
 
 export class ObjectManager
@@ -49,7 +49,7 @@ export class ObjectManager
         let terrain: GameObject;
         for (let OBJ = 0; OBJ < this.objectList[ObjectType.OBJ_TERRAIN].length; ++OBJ) {
             terrain = this.objectList[ObjectType.OBJ_TERRAIN][OBJ].GameObject;
-            if ((terrain as unknown as HeightmapTerrain).cameraInSecter == true)
+            if ((terrain as unknown as HeightmapTerrain).cameraInSector == true)
                 this.terrainList.add(terrain.GameObjectInstance);
         }
         return this.terrainList;
@@ -262,7 +262,7 @@ export class ObjectManager
             this.objectList[ObjectType.OBJ_MISSILE],
             this.objectList[ObjectType.OBJ_TERRAIN].filter(o => (o.GameObject as HeightmapTerrain).IsDummy == false));
 
-        const sectoredTerrain = this.objectList[ObjectType.OBJ_TERRAIN].filter((element) => (element.GameObject as unknown as HeightmapTerrain).inSecter == true);
+        const sectoredTerrain = this.objectList[ObjectType.OBJ_TERRAIN].filter((element) => (element.GameObject as unknown as HeightmapTerrain).inSector == true);
         CollisionManager.getInstance().CollideRayToTerrain(sectoredTerrain);
         CollisionManager.getInstance().CollideRayToWater(this.objectList[ObjectType.OBJ_WATER].filter(o_ => o_.GameObject.IsClone));
         sectoredTerrain.forEach(function (src)

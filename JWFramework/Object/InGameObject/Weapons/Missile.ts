@@ -4,7 +4,7 @@ import type { EditObject } from '../../EditObject/EditObject';
 import type { EditScene } from '../../../Scene/EditScene';
 import { ExportComponent } from '../../../Component/ExportComponent';
 import { GameObject } from '../../GameObject';
-import { GraphComponent } from '../../../Component/GraphicCompnent';
+import { GraphicComponent } from '../../../Component/GraphicComponent';
 import { MissileFog } from '../MissileFog';
 import { ObjectManager } from '../../../Manager/ObjectManager';
 import { ObjectType, SceneType } from '../../../enum';
@@ -22,7 +22,7 @@ export class Missile extends GameObject
         this.type = ObjectType.OBJ_MISSILE;
 
         this.physicsComponent = new PhysicsComponent(this);
-        this.graphicComponent = new GraphComponent(this);
+        this.graphicComponent = new GraphicComponent(this);
         this.exportComponent = new ExportComponent(this);
         this.collisionComponent = new CollisionComponent(this);
     }
@@ -71,8 +71,8 @@ export class Missile extends GameObject
     public CollisionActive(type: ObjectType = null)
     {
         if (type == ObjectType.OBJ_TERRAIN)
-            this.activeColide = true;
-        if (this.activeColide == true)
+            this.activeCollide = true;
+        if (this.activeCollide == true)
             this.isDead = true;
     }
 
@@ -100,12 +100,12 @@ export class Missile extends GameObject
 
             if (length < 100)
             {
-                this.activeColide = true;
+                this.activeCollide = true;
             }
 
 
             //일반유도
-            if (length >= this.endHomingStartLenge)
+            if (length >= this.endHomingStartLength)
             {
                 this.predictionDistance = length - (length / 2);
             }
@@ -116,11 +116,11 @@ export class Missile extends GameObject
 
             //에너지 상승
             //////////////////////////////////
-            if (this.rotaspeed < this.maxRotateSpeed)
-                this.rotaspeed += this.rotateSpeedAcceletion * WorldManager.getInstance().GetDeltaTime();
+            if (this.rotateSpeed < this.maxRotateSpeed)
+                this.rotateSpeed += this.rotateSpeedAcceleration * WorldManager.getInstance().GetDeltaTime();
             else
             {
-                this.rotaspeed = this.maxRotateSpeed;
+                this.rotateSpeed = this.maxRotateSpeed;
             }
 
             const nextPos = this.targetObject.PhysicsComponent.GetPosition().clone().add(this.targetObject.PhysicsComponent.Look.clone().multiplyScalar(this.predictionDistance));
@@ -130,7 +130,7 @@ export class Missile extends GameObject
             const angle = currentDirection.angleTo(targetDirection); // 현재 방향과 목표 방향 사이의 각도
             const axis = new THREE.Vector3().crossVectors(currentDirection, targetDirection).normalize(); // 회전 축
 
-            const maxSpeed = this.rotaspeed;
+            const maxSpeed = this.rotateSpeed;
             const maxRadius = this.angle;
 
             let speed = maxSpeed * (angle / maxRadius); // 회전 속도
@@ -164,17 +164,17 @@ export class Missile extends GameObject
                 //this.resultSpeed = this.maxVelocity;
                 this.IsDead = true;
             }
-            this.PhysicsComponent.MoveFoward(this.resultSpeed);
+            this.PhysicsComponent.MoveForward(this.resultSpeed);
         }
         else
-            this.PhysicsComponent.MoveFoward(120);
+            this.PhysicsComponent.MoveForward(120);
 
         //미사일 연기
         //let missileFog = new MissileFog();
         //missileFog.IsClone = true;
         const missileFog = (SceneManager.getInstance().CurrentScene as EditScene).missileFogPool.GetObject();
         missileFog.IsPoolObject = true;
-        missileFog.PhysicsComponent.SetPostion(this.PhysicsComponent.GetPosition().x + Math.random() * 3, this.PhysicsComponent.GetPosition().y + Math.random() * 3, this.PhysicsComponent.GetPosition().z);
+        missileFog.PhysicsComponent.SetPosition(this.PhysicsComponent.GetPosition().x + Math.random() * 3, this.PhysicsComponent.GetPosition().y + Math.random() * 3, this.PhysicsComponent.GetPosition().z);
         missileFog.PhysicsComponent.SetScale(0.5, 0.5, 0.5);
         ObjectManager.getInstance().AddObject(missileFog, missileFog.Name, missileFog.Type);
 
@@ -193,17 +193,17 @@ export class Missile extends GameObject
     protected maxResultSpeed: number = 0;
     protected resultSpeed: number = 0;
 
-    protected rotaspeed: number = 0;
+    protected rotateSpeed: number = 0;
 
     //미사일 선회력
     protected maxRotateSpeed: number = 20;
-    protected rotateSpeedAcceletion: number = 20;
+    protected rotateSpeedAcceleration: number = 20;
 
     protected predictionDistance: number = 200;
-    protected endHomingStartLenge: number = 0;
+    protected endHomingStartLength: number = 0;
     protected angle: number = 500;
 
-    protected activeColide = false;
+    protected activeCollide = false;
     protected deAcceleration = false;
     protected axisHelper: THREE.AxesHelper;
     protected missileFlameMesh: THREE.Sprite;

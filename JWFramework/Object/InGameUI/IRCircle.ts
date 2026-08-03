@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 import { GameObject } from '../GameObject';
-import { GraphComponent } from '../../Component/GraphicCompnent';
+import { GraphicComponent } from '../../Component/GraphicComponent';
 import { ObjectManager } from '../../Manager/ObjectManager';
 import { ObjectType } from '../../enum';
 import { PhysicsComponent } from '../../Component/PhysicsComponent';
@@ -15,7 +15,7 @@ export class IRCircle extends GameObject
         this.type = ObjectType.OBJ_OBJECT2D;
         this.name = "Ircircle" + ObjectManager.getInstance().GetObjectList[ObjectType.OBJ_OBJECT2D].length;
         this.physicsComponent = new PhysicsComponent(this);
-        this.graphicComponent = new GraphComponent(this);
+        this.graphicComponent = new GraphicComponent(this);
         this.CreateMesh();
     }
 

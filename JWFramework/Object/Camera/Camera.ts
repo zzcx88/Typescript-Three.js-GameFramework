@@ -100,7 +100,7 @@ export class Camera extends GameObject
         //    }
         //    if (InputManager.getInstance().GetKeyState('up', KeyState.KEY_PRESS))
         //    {
-        //        this.PhysicsComponent.MoveFoward(-50);
+        //        this.PhysicsComponent.MoveForward(-50);
         //    }
         //}
         //this.PhysicsComponent.UpdateMatrix();

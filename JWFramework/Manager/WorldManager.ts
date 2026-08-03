@@ -23,7 +23,7 @@ export class WorldManager
 
     public InitializeWorld()
     {
-        this.CreateRendere();
+        this.CreateRenderer();
         this.ResizeView();
         this.CreateMainCamera();
         this.CreateScene();
@@ -36,7 +36,7 @@ export class WorldManager
         WorldManager.getInstance().Renderer.initTexture(ShaderManager.getInstance().fogTexture);
     }
 
-    private CreateRendere()
+    private CreateRenderer()
     {
         this.renderer = new THREE.WebGLRenderer(
             {
@@ -79,7 +79,7 @@ export class WorldManager
         this.camera.Aspect = this.Canvas.clientWidth / this.Canvas.clientHeight;
         this.camera.Near = 0.1;
         this.camera.Far = 10000;
-        this.camera.PhysicsComponent.SetPostion(0, 22, 0);
+        this.camera.PhysicsComponent.SetPosition(0, 22, 0);
         ObjectManager.getInstance().AddObject(this.camera, this.camera.Name, this.camera.Type);
     }
 

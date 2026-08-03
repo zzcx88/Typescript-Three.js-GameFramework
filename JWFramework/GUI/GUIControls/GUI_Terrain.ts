@@ -31,9 +31,9 @@ export class GUI_Terrain extends GUI_Base
         item.push('DOWN');
         item.push('BALANCE');
 
-        this.terrainOptionFolder.add(this.propList, 'TerrianOptiontList', item).listen();
+        this.terrainOptionFolder.add(this.propList, 'TerrainOptionList', item).listen();
         this.terrainOptionFolder.add(this.propList, 'HeightOffset').step(0.01).listen();
-        this.propList.TerrianOptiontList = 'UP';
+        this.propList.TerrainOptionList = 'UP';
         this.terrainOptionFolder.open();
 
     }
@@ -74,20 +74,20 @@ export class GUI_Terrain extends GUI_Base
     private SetTerrainOptionFromEnum()
     {
         if (this.terrainOption == TerrainOption.TERRAIN_UP)
-            this.propList.TerrianOptiontList = 'UP'
+            this.propList.TerrainOptionList = 'UP'
         if (this.terrainOption == TerrainOption.TERRAIN_DOWN)
-            this.propList.TerrianOptiontList = 'DOWN'
+            this.propList.TerrainOptionList = 'DOWN'
         if (this.terrainOption == TerrainOption.TERRAIN_BALANCE)
-            this.propList.TerrianOptiontList = 'BALANCE'
+            this.propList.TerrainOptionList = 'BALANCE'
     }
 
     public SetTerrainOptionList()
     {
-        if (this.propList.TerrianOptiontList == 'UP')
+        if (this.propList.TerrainOptionList == 'UP')
             this.terrainOption = TerrainOption.TERRAIN_UP;
-        if (this.propList.TerrianOptiontList == 'DOWN')
+        if (this.propList.TerrainOptionList == 'DOWN')
             this.terrainOption = TerrainOption.TERRAIN_DOWN;
-        if (this.propList.TerrianOptiontList == 'BALANCE')
+        if (this.propList.TerrainOptionList == 'BALANCE')
             this.terrainOption = TerrainOption.TERRAIN_BALANCE;
     }
 
@@ -95,7 +95,7 @@ export class GUI_Terrain extends GUI_Base
     private datGui: GUI;
     private terrainOptionFolder: GUI;
     private propList = {
-        TerrianOptiontList: "None",
+        TerrainOptionList: "None",
         HeightOffset: 0
     };
     private terrainOption: TerrainOption = TerrainOption.TERRAIN_UP;

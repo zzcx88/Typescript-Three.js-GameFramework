@@ -1,7 +1,7 @@
 import { EditObject } from './Object/EditObject/EditObject';
 import type { GameObject } from './Object/GameObject';
 import { R60M } from './Object/InGameObject/Weapons/IRMissile/R60M';
-import { Water } from './Object/InGameObject/Envirument/Water';
+import { Water } from './Object/InGameObject/Environment/Water';
 
 
 export class Define

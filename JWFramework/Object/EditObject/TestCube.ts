@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 import { GameObject } from '../GameObject';
-import { GraphComponent } from '../../Component/GraphicCompnent';
+import { GraphicComponent } from '../../Component/GraphicComponent';
 import { InputManager } from '../../Manager/InputManager';
 import { ObjectType } from '../../enum';
 import { PhysicsComponent } from '../../Component/PhysicsComponent';
@@ -13,7 +13,7 @@ export class TestCube extends GameObject
         super();
         this.type = ObjectType.OBJ_OBJECT3D;
         this.physicsComponent = new PhysicsComponent(this);
-        this.graphicComponent = new GraphComponent(this);
+        this.graphicComponent = new GraphicComponent(this);
     }
 
     public InitializeAfterLoad()
@@ -27,7 +27,7 @@ export class TestCube extends GameObject
         return this.physicsComponent;
     }
 
-    public get GraphComponent(): GraphComponent
+    public get GraphicComponent(): GraphicComponent
     {
         return this.graphicComponent;
     }
@@ -43,7 +43,7 @@ export class TestCube extends GameObject
         //    this.PhysicsComponent.Rotate(0, this.y, 0);
         //}
         //if (InputManager.getInstance().GetKeyState('up')) {
-        //    this.PhysicsComponent.MoveFoward(1);
+        //    this.PhysicsComponent.MoveForward(1);
         //}
 
     }

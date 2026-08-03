@@ -8,7 +8,7 @@ import { ModelSceneBase, ModelSceneEdit, ModelSceneStage } from '../define';
 import { ObjectManager } from './ObjectManager';
 import { SceneManager } from './SceneManager';
 import { SceneType, TerrainOption } from '../enum';
-import { Water } from '../Object/InGameObject/Envirument/Water';
+import { Water } from '../Object/InGameObject/Environment/Water';
 
 
 export class ModelLoadManager
@@ -29,13 +29,13 @@ export class ModelLoadManager
         this.loaderManager = new THREE.LoadingManager;
         this.loaderManager.onLoad = this.SetLoadComplete;
         this.gltfLoader = new GLTFLoader(this.loaderManager);
-        this.loadCompletModel = 0;
+        this.loadCompleteModel = 0;
     }
 
     private SetLoadComplete()
     {
-        this.loadCompletModel++;
-        if (this.loadCompletModel == this.modelCount)
+        this.loadCompleteModel++;
+        if (this.loadCompleteModel == this.modelCount)
             this.LoadComplete = true;
     }
 
@@ -56,24 +56,24 @@ export class ModelLoadManager
     {
         if (SceneManager.getInstance().SceneType == SceneType.SCENE_EDIT)
         {
-            this.modeltList = ModelSceneBase.getInstance("ModelSceneEdit").ModelScene;
+            this.modelList = ModelSceneBase.getInstance("ModelSceneEdit").ModelScene;
             this.modelCount = ModelSceneBase.getInstance("ModelSceneEdit").ModelNumber;
         }
 
-        for (let i = 0; i < this.modeltList.length; ++i)
+        for (let i = 0; i < this.modelList.length; ++i)
         {
-            this.LoadModel(this.modeltList[i]);
+            this.LoadModel(this.modelList[i]);
         }
         this.LoadHeightmapTerrain(20, 20);
     }
 
     public LoadSceneStage()
     {
-        this.modeltList = ModelSceneStage.getInstance().ModelScene;
+        this.modelList = ModelSceneStage.getInstance().ModelScene;
         this.modelCount = ModelSceneStage.getInstance().ModelNumber;
-        for (let i = 0; i < this.modeltList.length; ++i) 
+        for (let i = 0; i < this.modelList.length; ++i) 
         {
-            //this.LoadModel(this.modeltList[i].mainUrl, this.modeltList[i].model);
+            //this.LoadModel(this.modelList[i].mainUrl, this.modelList[i].model);
         }
         this.LoadHeightmapTerrain();
     }
@@ -202,7 +202,7 @@ export class ModelLoadManager
                         const cloneObject = objectManager.MakeClone(objectManager.GetObjectFromName("MIG_29"));
                         cloneObject.PhysicsComponent.SetScale(data.scale.x, data.scale.y, data.scale.z);
                         cloneObject.PhysicsComponent.SetRotate(data.rotation.x, data.rotation.y, data.rotation.z);
-                        cloneObject.PhysicsComponent.SetPostion(data.position.x, data.position.y, data.position.z);
+                        cloneObject.PhysicsComponent.SetPosition(data.position.x, data.position.y, data.position.z);
                         if (data.obbSize != null)
                             cloneObject.CollisionComponent.HalfSize = new THREE.Vector3(data.obbSize.x, data.obbSize.y, data.obbSize.z);
                         objectManager.AddObject(cloneObject, cloneObject.Name, cloneObject.Type);
@@ -212,7 +212,7 @@ export class ModelLoadManager
                         const cloneObject = objectManager.MakeClone(objectManager.GetObjectFromName("F-5E"));
                         cloneObject.PhysicsComponent.SetScale(data.scale.x, data.scale.y, data.scale.z);
                         cloneObject.PhysicsComponent.SetRotate(data.rotation.x, data.rotation.y, data.rotation.z);
-                        cloneObject.PhysicsComponent.SetPostion(data.position.x, data.position.y, data.position.z);
+                        cloneObject.PhysicsComponent.SetPosition(data.position.x, data.position.y, data.position.z);
                         cloneObject.CollisionComponent.HalfSize = new THREE.Vector3(data.obbSize.x, data.obbSize.y, data.obbSize.z);
                         objectManager.AddObject(cloneObject, cloneObject.Name, cloneObject.Type);
                     }
@@ -221,7 +221,7 @@ export class ModelLoadManager
                         const cloneObject = objectManager.MakeClone(objectManager.GetObjectFromName("Water"));
                         cloneObject.PhysicsComponent.SetScale(data.scale.x, data.scale.y, data.scale.z);
                         //cloneObject.PhysicsComponent.SetRotate(data.rotation.x, data.rotation.y, data.rotation.z);
-                        cloneObject.PhysicsComponent.SetPostion(data.position.x, data.position.y, data.position.z);
+                        cloneObject.PhysicsComponent.SetPosition(data.position.x, data.position.y, data.position.z);
                         objectManager.AddObject(cloneObject, cloneObject.Name, cloneObject.Type);
                     }
                     else if (data.name.includes("AIM-9"))
@@ -229,7 +229,7 @@ export class ModelLoadManager
                         const cloneObject = objectManager.MakeClone(objectManager.GetObjectFromName("AIM-9"));
                         cloneObject.PhysicsComponent.SetScale(data.scale.x, data.scale.y, data.scale.z);
                         cloneObject.PhysicsComponent.SetRotate(data.rotation.x, data.rotation.y, data.rotation.z);
-                        cloneObject.PhysicsComponent.SetPostion(data.position.x, data.position.y, data.position.z);
+                        cloneObject.PhysicsComponent.SetPosition(data.position.x, data.position.y, data.position.z);
                         objectManager.AddObject(cloneObject, cloneObject.Name, cloneObject.Type);
                     }
                 }
@@ -239,10 +239,10 @@ export class ModelLoadManager
     private loaderManager: THREE.LoadingManager
     private gltfLoader: GLTFLoader;
 
-    private loadCompletModel: number;
+    private loadCompleteModel: number;
     private modelCount: number;
     private loadComplete: boolean = false;
 
-    private modeltList: ModelSet[];
+    private modelList: ModelSet[];
     private terrain: HeightmapTerrain[] = [];
 }

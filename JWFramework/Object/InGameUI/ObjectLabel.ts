@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 import { GameObject } from '../GameObject';
-import { GraphComponent } from '../../Component/GraphicCompnent';
+import { GraphicComponent } from '../../Component/GraphicComponent';
 import { ObjectManager } from '../../Manager/ObjectManager';
 import { ObjectType } from '../../enum';
 import { PhysicsComponent } from '../../Component/PhysicsComponent';
@@ -19,7 +19,7 @@ export class ObjectLabel extends GameObject
         else
             this.name = "ObjectLabel" + ObjectManager.getInstance().GetObjectList[ObjectType.OBJ_OBJECT2D].length;
         this.physicsComponent = new PhysicsComponent(this);
-        this.graphicComponent = new GraphComponent(this);
+        this.graphicComponent = new GraphicComponent(this);
         this.CreateBillboardMesh();
     }
 
@@ -121,7 +121,7 @@ export class ObjectLabel extends GameObject
             {
                 this.material.visible = true;
                 const refObjectPosition = this.referenceObject.PhysicsComponent.GetPosition().clone();
-                this.physicsComponent.SetPostion(refObjectPosition.x, refObjectPosition.y, refObjectPosition.z);
+                this.physicsComponent.SetPosition(refObjectPosition.x, refObjectPosition.y, refObjectPosition.z);
                 
                 if (this.referenceObject.Name == "Target")
                 {

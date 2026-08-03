@@ -59,11 +59,11 @@ export class EditScene extends SceneBase
         ObjectManager.getInstance().AddObject(this.directionalLight, "directionalLight", this.directionalLight.Type);
         this.directionalLight.SetColor(0xFFFFFF);
         this.directionalLight.Intensity = 0.6;
-        this.directionalLight.PhysicsComponent.SetPostionVec3(new THREE.Vector3(1, 1, 0));
+        this.directionalLight.PhysicsComponent.SetPositionVec3(new THREE.Vector3(1, 1, 0));
         
         //AmbientLight
         this.ambientLight = new Light(LightType.LIGHT_AMBIENT);
-        ObjectManager.getInstance().AddObject(this.ambientLight, "ambientlLight", this.ambientLight.Type);
+        ObjectManager.getInstance().AddObject(this.ambientLight, "ambientLight", this.ambientLight.Type);
         this.ambientLight.SetColor(0xFFFFFF);
         this.ambientLight.Intensity = 0.5;
     }
@@ -184,7 +184,7 @@ export class EditScene extends SceneBase
     }
     private MakeSceneCloud()
     {
-        if (this.makedCloud == false)
+        if (this.madeCloud == false)
         {
             for (let i = 0; i < 30; ++i)
             {
@@ -195,7 +195,7 @@ export class EditScene extends SceneBase
                 const z = -5000 + Math.random() * 20000;
                 lowCloud.BuildClouds(x, y, z);
             }
-            this.makedCloud = true;
+            this.madeCloud = true;
         }
     }
 
@@ -317,7 +317,7 @@ export class EditScene extends SceneBase
                 this.BuildLight();
                 this.gizmo.dispose();
                 this.gizmo = null;
-                this.makedCloud = false;
+                this.madeCloud = false;
                 this.reloadScene = false;
             }
         }
@@ -327,7 +327,7 @@ export class EditScene extends SceneBase
     private testLoad = false;
     private directionalLight: Light;
     private ambientLight: Light;
-    private makedCloud: boolean = false;
+    private madeCloud: boolean = false;
     private gizmo: TransformControls;
     private gizmoOnOff: boolean = true;
 }

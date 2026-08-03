@@ -5,9 +5,9 @@ import { SavePass } from 'three/examples/jsm/postprocessing/SavePass.js';
 import { ShaderPass } from 'three/examples/jsm/postprocessing/ShaderPass.js';
 import { BlendShader } from 'three/examples/jsm/shaders/BlendShader.js';
 import { CopyShader } from 'three/examples/jsm/shaders/CopyShader.js';
-import { Cloud } from '../Object/InGameObject/Envirument/Cloud';
+import { Cloud } from '../Object/InGameObject/Environment/Cloud';
 import { SceneManager } from './SceneManager';
-import { SplattingShader } from '../Shader/SplettingShader';
+import { SplattingShader } from '../Shader/SplattingShader';
 import { WorldManager } from './WorldManager';
 
 
@@ -18,7 +18,7 @@ export class ShaderManager
 
     public constructor()
     {
-        this.BuildMotuinBlurShader();
+        this.BuildMotionBlurShader();
         this.splattingShader = new SplattingShader();
 
         this.farmTexture = new THREE.TextureLoader().load("Model/Heightmap/farm.jpg");
@@ -65,7 +65,7 @@ export class ShaderManager
         return ShaderManager.instance;
     }
 
-    public BuildMotuinBlurShader()
+    public BuildMotionBlurShader()
     {
         const renderer = WorldManager.getInstance().Renderer;
         const sceneInstance = SceneManager.getInstance().SceneInstance;

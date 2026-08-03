@@ -115,7 +115,7 @@
   <ItemGroup>
     <TypeScriptCompile Include="Component\CollisionComponent.ts" />
     <TypeScriptCompile Include="Component\ExportComponent.ts" />
-    <TypeScriptCompile Include="Component\GraphicCompnent.ts" />
+    <TypeScriptCompile Include="Component\GraphicComponent.ts" />
     <TypeScriptCompile Include="Component\GUIComponent.ts" />
     <TypeScriptCompile Include="Component\PhysicsComponent.ts" />
     <TypeScriptCompile Include="define.ts" />
@@ -145,8 +145,8 @@
     <TypeScriptCompile Include="Object\Camera\Camera.ts" />
     <TypeScriptCompile Include="Object\GameObject.ts" />
     <TypeScriptCompile Include="Object\InGameObject\AircraftObject.ts" />
-    <TypeScriptCompile Include="Object\InGameObject\Envirument\Cloud.ts" />
-    <TypeScriptCompile Include="Object\InGameObject\Envirument\Water.ts" />
+    <TypeScriptCompile Include="Object\InGameObject\Environment\Cloud.ts" />
+    <TypeScriptCompile Include="Object\InGameObject\Environment\Water.ts" />
     <TypeScriptCompile Include="Object\InGameObject\F16Object.ts" />
     <TypeScriptCompile Include="Object\InGameObject\Weapons\IRMissile\AIM9H.ts" />
     <TypeScriptCompile Include="Object\InGameObject\Weapons\IRMissile\AIM9L.ts" />
@@ -160,7 +160,7 @@
     <TypeScriptCompile Include="Scene\SceneBase.ts" />
     <TypeScriptCompile Include="Scene\EditScene.ts" />
     <TypeScriptCompile Include="Scene\StageScene.ts" />
-    <TypeScriptCompile Include="Shader\SplettingShader.ts" />
+    <TypeScriptCompile Include="Shader\SplattingShader.ts" />
   </ItemGroup>
   <ItemGroup>
     <TypeScriptCompile Include="Object\InGameObject\LowCloud.ts" />

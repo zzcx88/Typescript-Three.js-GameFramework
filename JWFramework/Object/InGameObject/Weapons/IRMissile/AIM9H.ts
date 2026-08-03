@@ -19,7 +19,7 @@ export class AIM9H extends Missile
         this.velocityBreak = 1;
         this.maxVelocity = 80;
         this.maxRotateSpeed = 18;
-        this.rotateSpeedAcceletion = 5;
+        this.rotateSpeedAcceleration = 5;
     }
 
     public CreateCollider()
@@ -42,11 +42,11 @@ export class AIM9H extends Missile
         if (this.maxResultSpeed == 0)
             this.maxResultSpeed = this.maxVelocity + this.AirCraftSpeed;
 
-        const reletiveSpeed = this.resultSpeed - (this.targetObject as EditObject).throttle;
-        if (reletiveSpeed > (this.targetObject as EditObject).throttle)
-            this.endHomingStartLenge = 100;
+        const relativeSpeed = this.resultSpeed - (this.targetObject as EditObject).throttle;
+        if (relativeSpeed > (this.targetObject as EditObject).throttle)
+            this.endHomingStartLength = 100;
         else
-            this.endHomingStartLenge = 0;
+            this.endHomingStartLength = 0;
 
         super.Animate();
     }

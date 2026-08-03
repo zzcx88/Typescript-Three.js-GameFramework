@@ -43,7 +43,7 @@ export class PhysicsComponent
         this.vec3Look = vec3Look;
     }
 
-    public SetPostion(x: number, y: number, z: number): void
+    public SetPosition(x: number, y: number, z: number): void
     {
         this.GameObject.GameObjectInstance.position.x = x;
         this.GameObject.GameObjectInstance.position.y = y;
@@ -51,7 +51,7 @@ export class PhysicsComponent
         this.UpdateMatrix();
     }
 
-    public SetPostionVec3(vec3: THREE.Vector3): void
+    public SetPositionVec3(vec3: THREE.Vector3): void
     {
         this.GameObject.GameObjectInstance.position.x = vec3.x;
         this.GameObject.GameObjectInstance.position.y = vec3.y;
@@ -71,7 +71,7 @@ export class PhysicsComponent
         this.UpdateMatrix();
     }
 
-    public MoveFoward(distance: number)
+    public MoveForward(distance: number)
     {
         const Look = new THREE.Vector3(0, 0, 1);
         this.GameObject.GameObjectInstance.translateOnAxis(Look, distance * WorldManager.getInstance().GetDeltaTime());
