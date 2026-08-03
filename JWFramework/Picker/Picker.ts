@@ -119,7 +119,9 @@ export class Picker
         }
         this.PickOffObject();
         this.pickedObject = undefined;
-        this.raycaster.setFromCamera({ x: this.pickPositionX, y: this.pickPositionY }, WorldManager.getInstance().MainCamera.CameraInstance);
+        // setFromCamera 는 Vector2 만 받는다 (예전엔 {x, y} 리터럴이 통과했다).
+        this.pickCoords.set(this.pickPositionX, this.pickPositionY);
+        this.raycaster.setFromCamera(this.pickCoords, WorldManager.getInstance().MainCamera.CameraInstance);
 
         if (this.pickMode == PickMode.PICK_CLONE) {
             const objectManager = ObjectManager.getInstance();
@@ -283,6 +285,7 @@ export class Picker
     private pickedParent: GameObject;
     private pickPositionX = 0;
     private pickPositionY = 0;
+    private pickCoords: THREE.Vector2 = new THREE.Vector2();
     private enablePickOff: boolean = true;
 
     private orbitControl: OrbitControls;

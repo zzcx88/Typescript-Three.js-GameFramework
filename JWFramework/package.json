@@ -22,13 +22,13 @@
   "dependencies": {
     "dat.gui": "0.7.9",
     "stats.js": "0.17.0",
-    "three": "0.134.0"
+    "three": "0.185.1"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
     "@types/dat.gui": "0.7.13",
     "@types/stats.js": "0.17.4",
-    "@types/three": "0.134.0",
+    "@types/three": "0.185.3",
     "esbuild": "^0.27.2",
     "eslint": "^10.8.0",
     "madge": "^8.0.0",

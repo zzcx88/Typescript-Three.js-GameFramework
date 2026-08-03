@@ -162,7 +162,8 @@ export class EditScene extends SceneBase
                 SceneManager.getInstance().CurrentScene.Picker.OrbitControl.enabled = !event.value;
                 SceneManager.getInstance().CurrentScene.Picker.EnablePickOff = false;
             });
-            this.sceneManager.SceneInstance.add(this.gizmo);
+            // r169 부터 TransformControls 는 Object3D 가 아니다. 씬에는 헬퍼를 넣는다.
+            this.sceneManager.SceneInstance.add(this.gizmo.getHelper());
         }
     }
 
@@ -268,7 +269,7 @@ export class EditScene extends SceneBase
         {
             ObjectManager.getInstance().DeleteAllObject();
             this.gizmo.detach();
-            this.sceneManager.SceneInstance.remove(this.gizmo);
+            this.sceneManager.SceneInstance.remove(this.gizmo.getHelper());
             this.reloadScene = true;
         }
         if (inputManager.GetKeyState('p', KeyState.KEY_DOWN))

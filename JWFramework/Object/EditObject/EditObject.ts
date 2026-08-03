@@ -59,7 +59,7 @@ export class EditObject extends GameObject
             }
             if (SceneManager.getInstance().SceneType == SceneType.SCENE_EDIT) {
                 this.axisHelper = new THREE.AxesHelper(10);
-                (this.axisHelper.material as THREE.Material).fog = false;
+                (this.axisHelper.material as THREE.LineBasicMaterial).fog = false;
                 (this.axisHelper.material as THREE.Material).depthTest = false;
                 this.GameObjectInstance.add(this.axisHelper);
                 this.guiComponent.GetLabel();
