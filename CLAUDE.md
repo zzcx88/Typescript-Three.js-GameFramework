@@ -29,7 +29,7 @@
 - 소스 + 툴체인: `JWFramework/` · 배포 산출물: `Publish/` · 문서: `docs/`
 - **작업 목록: [ROADMAP.md](docs/ROADMAP.md)**
 
-> 이 코드베이스는 저자가 신입 시절 WebGL/프레임워크 학습용으로 직접 작성한 것이다. 레거시 패턴(전역 싱글턴, `instanceof` 분기, 이름 문자열 매칭, 오타 API)이 다수 남아 있다.
+> 이 코드베이스는 저자가 신입 시절 WebGL/프레임워크 학습용으로 직접 작성한 것이다. 레거시 패턴(전역 싱글턴, `instanceof` 분기, 이름 문자열 매칭)이 다수 남아 있다.
 > `namespace` + `outFile` 구조는 **ESM으로 전환 완료**([docs/ESM전환-설계.md](docs/ESM전환-설계.md)). 나머지 개선 항목은 ROADMAP에 있으며, **정리되기 전까지는 기존 관례를 따르는 것**이 원칙이다(§6, §7).
 
 ---
@@ -114,7 +114,7 @@ VS Code 빌드 태스크(`Ctrl+Shift+B`)는 `cwd`가 `JWFramework`로 잡혀 있
 
 실례:
 - 물 반사를 스카이박스로 한정하던 `Water.js` 패치 → `onBeforeRender`를 감싸 씬 인자만 바꾸는 방식으로 이전
-  ([Envirument/Water.ts](JWFramework/Object/InGameObject/Envirument/Water.ts) `OverrideReflectionScene()`)
+  ([Environment/Water.ts](JWFramework/Object/InGameObject/Environment/Water.ts) `OverrideReflectionScene()`)
 - `@types/three@0.134`의 `SkeletonUtils`가 실제 런타임과 불일치 → [types/three-addons.d.ts](JWFramework/types/three-addons.d.ts)에서 정정
 
 ### ② three 버전 올리기
@@ -133,11 +133,39 @@ npm run build && npm run serve   # → docs/ESM전환-설계.md §5 체크리스
 
 `Component/CollisionComponent.ts` `Update()` 안에서 `OBJ_MISSILE` 타입마다 매 프레임 `console.log`가 돈다. 성능 작업 시 제거 대상.
 
-### ④ 오타가 공개 API에 굳어 있다
+### ④ 오타 API 이름은 정리되었다 (구 문서 참고용)
 
-이름을 "고치면" 전부 깨진다. 새 코드도 **기존 철자를 따를 것**:
+과거에는 오타가 공개 API에 굳어 있어 손대지 못했으나, **전부 올바른 철자로 교정되었다.** 오래된 브랜치나 외부 문서에서 아래 왼쪽 이름을 보면 오른쪽으로 읽으면 된다.
 
-`SetPostion` · `MoveFoward` · `GraphComponent`(파일명은 `GraphicCompnent.ts`) · `SplattingShader`(파일명은 `SplettingShader.ts`) · `planeGeomatry` · `heigtBuffer` / `heigtIndexBuffer` · `sorce` · `CreateRendere` · `BuildMotuinBlurShader` · `rotateSpeedAcceletion` · `endHomingStartLenge` · `modeltList` · `TerrianOptiontList` · `orientedBoundingBoxInlcude` · `loadCompletModel` · `CreateOrtbitControl` · 폴더 `Object/InGameObject/Envirument/`
+| 구 이름 | 현재 |
+|---|---|
+| `SetPostion` / `SetPostionVec3` | `SetPosition` / `SetPositionVec3` |
+| `MoveFoward` | `MoveForward` |
+| `GraphComponent` (`GraphicCompnent.ts`) | `GraphicComponent` (`GraphicComponent.ts`) |
+| `SplettingShader.ts` | `SplattingShader.ts` |
+| `planeGeomatry` / `sphereGeomertry` | `planeGeometry` / `sphereGeometry` |
+| `heigtBuffer` / `heigtIndexBuffer` | `heightBuffer` / `heightIndexBuffer` |
+| `sorce` | `source` |
+| `CreateRendere` | `CreateRenderer` |
+| `BuildMotuinBlurShader` | `BuildMotionBlurShader` |
+| `rotateSpeedAcceletion` / `rotaspeed` | `rotateSpeedAcceleration` / `rotateSpeed` |
+| `endHomingStartLenge` | `endHomingStartLength` |
+| `modeltList` | `modelList` |
+| `TerrianOptiontList` | `TerrainOptionList` |
+| `orientedBoundingBoxInlcude` | `orientedBoundingBoxInclude` |
+| `loadCompletModel` | `loadCompleteModel` |
+| `CreateOrtbitControl` | `CreateOrbitControl` |
+| `activeColide` | `activeCollide` |
+| `reletiveSpeed` | `relativeSpeed` |
+| `GetCanvasReleativePosition` | `GetCanvasRelativePosition` |
+| `inSecter` / `cameraInSecter` | `inSector` / `cameraInSector` |
+| `tartgetLocation` | `targetLocation` |
+| `ChangeThridPersonCamera` | `ChangeThirdPersonCamera` |
+| `SpeedIndicaterProcess` | `SpeedIndicatorProcess` |
+| `makedCloud` | `madeCloud` |
+| 폴더 `Object/InGameObject/Envirument/` | `Object/InGameObject/Environment/` |
+
+`Scene.json`의 키(`type` `name` `isDummy` `vertexIndex` `vertexHeight` `scale` `rotation` `position` `obbSize`)에는 오타가 없어 **저장된 씬 파일은 영향을 받지 않는다.**
 
 ---
 
@@ -204,7 +232,7 @@ npm run check:cycles:paths        # madge 원본 경로 나열 (참고용)
 Publish/index.html → Publish/JWFramework.mjs   (esbuild 번들, 진입점 Main.ts)
 Main.ts (모듈 본문)
  └ WorldManager.InitializeWorld()
-     CreateRendere()      WebGLRenderer ← <canvas id="c">
+     CreateRenderer()      WebGLRenderer ← <canvas id="c">
      CreateMainCamera()   JWFramework.Camera "MainCamera" → ObjectManager.AddObject
      CreateScene()        SceneManager.BuildScene() → new EditScene()
      CreateDeltaTime()    THREE.Clock
@@ -233,7 +261,7 @@ for TYPE in 0..OBJ_END:
 
 CollisionManager.CollideSphereToBox(OBJ_OBJECT3D, 비-dummy TERRAIN)
 CollisionManager.CollideSphereToBox(OBJ_MISSILE,  비-dummy TERRAIN)
-CollisionManager.CollideRayToTerrain(inSecter == true 인 TERRAIN)
+CollisionManager.CollideRayToTerrain(inSector == true 인 TERRAIN)
 CollisionManager.CollideRayToWater(clone 인 WATER)
 각 sector terrain 의 inSectorObject 끼리 CollideSphereToSphere   ← 광역 페이즈 대용
 InputManager.UpdateKey()   ← 프레임 끝에서 키 상태 전이(DOWN→PRESS→UP)
@@ -249,7 +277,7 @@ InputManager.UpdateKey()   ← 프레임 끝에서 키 상태 전이(DOWN→PRES
 GameObject
   .gameObjectInstance : THREE.Object3D   ← 실제 씬 노드
   .physicsComponent   : PhysicsComponent   위치/회전/스케일/Up·Right·Look 축
-  .graphicComponent   : GraphComponent     씬 add/remove 스위치
+  .graphicComponent   : GraphicComponent     씬 add/remove 스위치
   .collisionComponent : CollisionComponent AABB / OBB / Sphere / Raycaster
   .exportComponent    : ExportComponent    JSON 직렬화
   .guiComponent       : GUIComponent       ObjectLabel(빌보드 이름표)
@@ -326,7 +354,7 @@ km/h  = (미터 / deltaTime) * 3.6
 | [JWFramework/GUI/](JWFramework/GUI/) | dat.GUI 패널 — 오브젝트 선택 / SRT / 터레인 옵션 |
 | [JWFramework/Picker/Picker.ts](JWFramework/Picker/Picker.ts) | 레이캐스트 피킹 + OrbitControls. `PickMode`별 분기(수정/복제/터레인/더미터레인/삭제) |
 | [JWFramework/ObjectPool/ObjectPool.ts](JWFramework/ObjectPool/ObjectPool.ts) | 제네릭 풀. 현재 `MissileFog` 500개에만 사용 |
-| [JWFramework/Shader/SplettingShader.ts](JWFramework/Shader/SplettingShader.ts) | 터레인 스플래팅 GLSL(문자열). 정점 Y 높이로 5개 텍스처를 `smoothstep` 블렌딩 |
+| [JWFramework/Shader/SplattingShader.ts](JWFramework/Shader/SplattingShader.ts) | 터레인 스플래팅 GLSL(문자열). 정점 Y 높이로 5개 텍스처를 `smoothstep` 블렌딩 |
 | [JWFramework/types/](JWFramework/types/) | 서드파티 타입 보강 선언. `as any` 대신 여기에 쓴다 (§2①) |
 | [JWFramework/scripts/](JWFramework/scripts/) | `check-cycles.mjs`(SCC 래칫) + `cycles-baseline.json` |
 | `Publish/` | **배포 산출물 = 로컬 실행 루트 = Pages 소스.** `npm run build`가 채운다 |
@@ -593,7 +621,7 @@ import 추가/변경, 이름 일괄 치환, 네임스페이스 제거, 파일 �
 - 검증 안 된 변경을 "완료"로 보고 (§7.0)
 
 **이 프로젝트 고유**
-- 기존 오타 API 이름 "수정" (§2④)
+- 교정된 API 이름을 옛 오타 철자로 되돌리기 (§2④)
 - `ObjectType` enum 순서 변경 (§4.5)
 - `Publish/`에 손으로 파일 두기 — 빌드 산출물 폴더다. 문서는 `docs/`, 소스는 `JWFramework/` (§1)
 - 루트에서 `npm run ...` — 명령은 `JWFramework/` 안에서 돈다 (§1)

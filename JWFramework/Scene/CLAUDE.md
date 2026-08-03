@@ -88,7 +88,7 @@ Animate()   ModelLoadManager.LoadComplete == true 일 때만 전체 실행
 ```
 LoadHeightmapTerrain() → LoadSavedScene() → renderer.clear()
 BuildLight()  ※ 라이트가 매 재로드마다 추가된다 (누적 가능)
-gizmo.dispose() → null, makedCloud = false, reloadScene = false
+gizmo.dispose() → null, madeCloud = false, reloadScene = false
 ```
 
 ### 기즈모

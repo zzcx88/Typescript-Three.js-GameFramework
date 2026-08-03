@@ -15,15 +15,15 @@ GameObject                       (GameObject.ts)  Three.js Object3D를 "소유"�
 │   ├─ AIM9H                     .../IRMissile/AIM9H.ts          OBB 콜라이더
 │   ├─ AIM9L                     .../IRMissile/AIM9L.ts
 │   └─ R60M                      .../IRMissile/R60M.ts           Sphere 콜라이더
-├─ Water                         InGameObject/Envirument/Water.ts
-├─ Cloud                         InGameObject/Envirument/Cloud.ts   (Mesh 클론 30개)
+├─ Water                         InGameObject/Environment/Water.ts
+├─ Cloud                         InGameObject/Environment/Cloud.ts   (Mesh 클론 30개)
 ├─ LowCloud                      InGameObject/LowCloud.ts           (InstancedMesh 200개)
 ├─ MissileFog                    InGameObject/MissileFog.ts         ★ 유일한 풀링 대상
 ├─ ObjectLabel                   InGameUI/ObjectLabel.ts            캔버스 텍스처 빌보드
 └─ IRCircle                      InGameUI/IRCircle.ts               (링 메시, 현재 미사용)
 ```
 
-> 폴더명 `Envirument`는 오타지만 그대로 유지한다.
+> 폴더 `Environment/`는 예전에 `Envirument/`(오타)였다. 옛 브랜치·문서의 경로를 볼 때 참고.
 
 ## GameObject.ts — 베이스 계약
 
@@ -76,8 +76,8 @@ Animate()
   TargetTest()          isTarget이면 스로틀 50 + Up축 자동 선회 (미사일 표적 더미)
   Picked == true 일 때
     IsRayOn = true
-    MoveFoward(throttle)
-    SpeedIndicaterProcess()   이전 프레임 대비 이동거리 → km/h → #speed DOM 갱신
+    MoveForward(throttle)
+    SpeedIndicatorProcess()   이전 프레임 대비 이동거리 → km/h → #speed DOM 갱신
     InputProcess()            기즈모 Off일 때만 비행 조작
     SeekerProcess()           "Target"과의 각도 ≤10° 이면 canLaunch = true
   Picked == false 일 때 → IsRayOn = false, throttle = 0
@@ -103,7 +103,7 @@ Animate()
 
 - `TERRAIN_UP` : `height += |value|` · `TERRAIN_DOWN` : `height -= |value|` · `TERRAIN_BALANCE` / `TERRAIN_LOAD` : `height = value`
 - 수정한 정점이 타일 경계(`x == ±planSize/2`, `z == ±planSize/2`)면 **인접 타일의 대응 정점도 같이 갱신**해 이음매를 맞춘다. 이웃 인덱스는 `terrainIndex ± 1`, `± row`, `± col`, `± (row±1)`로 계산.
-- 수정된 인덱스는 `heigtIndexBuffer`에 누적 → `ExportComponent`가 `vertexIndex`/`vertexHeight`로 직렬화.
+- 수정된 인덱스는 `heightIndexBuffer`에 누적 → `ExportComponent`가 `vertexIndex`/`vertexHeight`로 직렬화.
 - 끝에서 **전 정점을 순회**하며 `useDirtTexture`(y ≤ -3) / `useCityTexture`(y == 1인 정점 30개 이상 && maxY ≤ 110) 판정 → 셰이더 유니폼 교체. **비싼 루프** — 브러시 드래그 중 매 픽마다 돈다.
 
 ```
@@ -111,7 +111,7 @@ Animate()
   더미면 → 콜라이더/지오메트리 정리 (1×1로 되돌림)
   아니면 → 텍스처 유니폼 갱신, 콜라이더 없으면 재생성
   vertexNormalNeedUpdate 면 computeVertexNormals()
-  inSectorObject 에서 죽은 객체 제거, 비면 inSecter = false
+  inSectorObject 에서 죽은 객체 제거, 비면 inSector = false
   카메라 거리 4500 초과 → visible = false
 ```
 
@@ -123,19 +123,19 @@ Animate()
 
 ```
 Animate()  targetObject("Target") 이 있으면
-  거리 < 100                    → activeColide = true
-  거리 ≥ endHomingStartLenge    → predictionDistance = 거리/2  (리드 추적)
-  rotaspeed 를 rotateSpeedAcceletion 으로 maxRotateSpeed 까지 가속
+  거리 < 100                    → activeCollide = true
+  거리 ≥ endHomingStartLength    → predictionDistance = 거리/2  (리드 추적)
+  rotateSpeed 를 rotateSpeedAcceleration 으로 maxRotateSpeed 까지 가속
   nextPos = 표적위치 + 표적Look * predictionDistance
   angle/axis 로 Quaternion 회전, 회전속도는 (angle / this.angle) 비례
   가속: velocity += velocityGain*dt → resultSpeed = aircraftSpeed + velocity
   maxResultSpeed 도달 → deAcceleration = true → velocityBreak 로 감속
   resultSpeed ≤ 60 && 감속중    → IsDead = true  (자연 소멸)
-  MoveFoward(resultSpeed)
+  MoveForward(resultSpeed)
   풀에서 MissileFog 꺼내 궤적 연기 배치
 ```
 
-| 클래스 | velocityGain | velocityBreak | maxRotateSpeed | rotateSpeedAcceletion | endHoming | 콜라이더 |
+| 클래스 | velocityGain | velocityBreak | maxRotateSpeed | rotateSpeedAcceleration | endHoming | 콜라이더 |
 |---|---:|---:|---:|---:|---:|---|
 | `AIM9H` | 40 | 1 | 18 | 5 | 100 | OBB(1.5³) |
 | `AIM9L` | 40 | 1.5 | 30 | 15 | 50 | OBB(1.5³) |
@@ -164,7 +164,7 @@ Reset()    → ObjectManager.DetachObject, currentTime=0, opacity=0.8, scale 0.5
 
 | 클래스 | 구현 |
 |---|---|
-| `Water` | `THREE.Water` (512² 반사, 노멀맵 `Object/InGameObject/Envirument/waternormals.jpg`). `Animate()`는 `uniforms.time`만 증가. `IsClone == true`일 때만 컴포넌트/메시 생성 |
+| `Water` | `THREE.Water` (512² 반사, 노멀맵 `Object/InGameObject/Environment/waternormals.jpg`). `Animate()`는 `uniforms.time`만 증가. `IsClone == true`일 때만 컴포넌트/메시 생성 |
 | `Cloud` | `"Cloud"` 프로토타입 메시를 30개 클론해 자식으로 붙임. 겹치지 않게 재추첨(`do...while`). 반투명·`depthWrite: false`·`renderOrder: -1` |
 | `LowCloud` | `InstancedMesh` 200개. `Animate()`에서 **매 프레임 전 인스턴스의 빌보드 행렬 재계산**(카메라 거리 200 이내면 이전 행렬 유지). 카메라 거리 6000 초과 시 통째로 숨김 |
 

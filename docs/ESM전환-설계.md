@@ -53,7 +53,7 @@ renderer.render(scope.waterScene, mirrorCamera);   // 순정: renderer.render(sc
 ```
 
 **처리** — 벤더 `Water.onBeforeRender`는 `scene` 인자를 **오직 `renderer.render(scene, mirrorCamera)` 한 곳에서만** 쓴다(r134 확인). 따라서 `onBeforeRender`를 감싸 **인자만 반사 전용 씬으로 바꿔 넘기면** 라이브러리를 건드리지 않고 동일한 결과가 나온다.
-→ [Envirument/Water.ts](../JWFramework/Object/InGameObject/Envirument/Water.ts) `OverrideReflectionScene()`
+→ [Environment/Water.ts](../JWFramework/Object/InGameObject/Environment/Water.ts) `OverrideReflectionScene()`
 
 > 이 구분이 중요하다. **모든 벤더 패치가 "잘못"은 아니다.** 필요한 기능이었다면 지우는 게 아니라 *옮겨야* 한다.
 > 판별 기준: 라이브러리의 버그를 우회하는가(→ 원인을 고친다) / 라이브러리의 기본 동작을 바꾸는가(→ 확장점으로 옮긴다).
@@ -77,7 +77,7 @@ renderer.render(scope.waterScene, mirrorCamera);   // 순정: renderer.render(sc
 - ❌ **로직 리팩터링** — `namespace` 제거 외의 동작 변경 없음
 - ❌ **dat.GUI → lil-gui 교체** — npm의 `dat.gui@0.7.9` 그대로
 - ❌ **`strict` 켜기** — `false` 유지
-- ❌ **오타 API 이름 수정** — `SetPostion` 등 그대로
+- ❌ **오타 API 이름 수정** — `SetPostion` 등 그대로 (※ ESM 전환 이후 별도 작업으로 교정됨. CLAUDE.md §2④ 대응표 참조)
 - ❌ **성능 개선, 죽은 코드 삭제, 버그 수정** — [ROADMAP.md](ROADMAP.md) P0 이후로
 - ❌ **Visual Studio 프로젝트 제거** — `.csproj`/`.sln` 유지 (사용자 결정)
 
@@ -192,7 +192,7 @@ public get CollisionComponent(): CollisionComponent   // 게터 이름과 타입
 | [define.ts](../JWFramework/define.ts) | `new JWFramework[modelSceneType]` — 네임스페이스 객체로 클래스를 문자열 조회. ESM엔 `JWFramework` 객체가 없다 | 명시적 레지스트리 `Record<string, new () => ModelSceneBase>` |
 | [Main.ts](../JWFramework/Main.ts) | `namespace` 없이 최상위 블록 `{ ... }` | 모듈 본문으로 전환 + import 추가 |
 | [Picker.ts](../JWFramework/Picker/Picker.ts) | `instanceof THREE.Water` | `instanceof ThreeWater` |
-| [Envirument/Water.ts](../JWFramework/Object/InGameObject/Envirument/Water.ts) | 클래스명 `Water`가 애드온과 충돌 | 애드온을 `ThreeWater`로 별칭 |
+| [Environment/Water.ts](../JWFramework/Object/InGameObject/Environment/Water.ts) | 클래스명 `Water`가 애드온과 충돌 | 애드온을 `ThreeWater`로 별칭 |
 | [ShaderManager.ts](../JWFramework/Manager/ShaderManager.ts) | `THREE.EffectComposer` 등 6종 | postprocessing/shaders 경로에서 개별 import |
 | [ObjectManager.ts](../JWFramework/Manager/ObjectManager.ts) | `THREE.SkeletonUtils.clone` | `skeletonClone` |
 | [Main.ts](../JWFramework/Main.ts) | 전역 `Stats` | `import Stats from 'stats.js'` |
@@ -247,7 +247,7 @@ Phase 0 병합 후 착수. `npm i three@latest @types/three@latest` → 아래 �
 | r155 | 물리 기반 조명 강도 기본화 | `DirectionalLight 0.6` / `AmbientLight 0.5` 재조정 필요 |
 | r165 | `useLegacyLights` 제거 | 위 항목 되돌리기 불가 |
 | r169 | `TransformControls`가 `Object3D`가 아니게 됨 | `scene.add(gizmo)` → `scene.add(gizmo.getHelper())` |
-| 전반 | `capabilities.isWebGL2` 제거 | `WorldManager.CreateRendere()`의 로그 |
+| 전반 | `capabilities.isWebGL2` 제거 | `WorldManager.CreateRenderer()`의 로그 |
 
 ---
 
@@ -301,7 +301,7 @@ Phase 0 병합 후 착수. `npm i three@latest @types/three@latest` → 아래 �
 |---|---|
 | 순환참조 TDZ 크래시 | §3.4. 빌드는 통과하고 **런타임에만** 터지므로 §5.1 기동 확인이 필수 |
 | 게터 이름 = 타입 이름 오분류 | 정규식이 아니라 타입 검사기(`consistent-type-imports`)로 판정 |
-| GLSL 템플릿 리터럴 디덴트 | `SplettingShader.ts`의 셰이더 문자열. GLSL은 공백에 무의미하나 **§5.1 스플래팅 확인**으로 검증 |
+| GLSL 템플릿 리터럴 디덴트 | `SplattingShader.ts`의 셰이더 문자열. GLSL은 공백에 무의미하나 **§5.1 스플래팅 확인**으로 검증 |
 | 순정 r134에 없는 API | `Box3Helper.dispose()` 확인됨. 그 외는 `typecheck`가 잡는다 |
 | dat.GUI 내부 필드(`__controllers`) | npm 판도 동일 버전(0.7.9)이므로 유지. `@types/dat.gui`에 선언 있음 |
 | `Model/` 이동 중 자산 유실 | 삭제 전에 `docs/Model` 쪽이 상위집합인지 파일 단위 비교 |

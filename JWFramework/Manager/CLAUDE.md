@@ -25,7 +25,7 @@
 
 ```
 InitializeWorld()
-  CreateRendere()      WebGLRenderer(canvas #c, alpha, antialias, highp, stencil)
+  CreateRenderer()      WebGLRenderer(canvas #c, alpha, antialias, highp, stencil)
                        shadowMap.enabled = true
   ResizeView()         canvas clientWidth/Height ↔ drawingBuffer 동기화. 변했으면 true 반환
   CreateMainCamera()   Camera "MainCamera" (fov 75, near 0.1, far 10000, pos 0,22,0)
@@ -60,7 +60,7 @@ objectId: number            // 클론 이름 suffix 카운터 (감소하지 않�
 | `DeleteAllObject()` | 카메라 제외 전 클론에 `IsDead = true` 표시만 (실삭제는 다음 `Animate()`) |
 | `MakeJSONArray()` | `ExportComponent`로 직렬화 → `Scene.json` 다운로드 트리거 |
 | `Animate()` | **게임 루프 본체** — 루트 `CLAUDE.md` §4.2 참조 |
-| `GetInSectorTerrain()` | `cameraInSecter` 터레인을 `THREE.Group`에 모아 반환 (현재 미사용) |
+| `GetInSectorTerrain()` | `cameraInSector` 터레인을 `THREE.Group`에 모아 반환 (현재 미사용) |
 
 > `Animate()`의 삭제 처리는 순회 중 배열을 `filter`로 재생성한다. 인덱스가 밀리므로 같은 프레임에 일부 오브젝트가 스킵될 수 있다.
 
@@ -84,7 +84,7 @@ LoadHeightmapTerrain(row=20, col=20)
 LoadSavedScene()      fetch("./Model/Scene.json") → 이름 문자열 매칭으로 복원
 ```
 
-**로드 완료 판정**: `loadCompletModel == modelCount` 이면 `LoadComplete = true`. `EditScene.Animate()`는 이 플래그가 서기 전엔 아무것도 하지 않는다.
+**로드 완료 판정**: `loadCompleteModel == modelCount` 이면 `LoadComplete = true`. `EditScene.Animate()`는 이 플래그가 서기 전엔 아무것도 하지 않는다.
 
 > `LoadComplete` **getter가 부작용을 갖는다** — `SCENE_EDIT`일 때 `GUIManager.GUI_Select`를 건드려 패널을 지연 생성한다.
 >
@@ -92,14 +92,14 @@ LoadSavedScene()      fetch("./Model/Scene.json") → 이름 문자열 매칭으
 
 ## CollisionManager.ts
 
-상태 없는 판정 함수 모음. 파라미터 이름은 전부 `sorce`(원문 오타 유지) / `destination`.
+상태 없는 판정 함수 모음. 파라미터 이름은 전부 `source` / `destination`.
 
 | 메서드 | 입력 | 용도 |
 |---|---|---|
-| `CollideRayToTerrain(sorce)` | `ObjectSet[]`(terrain) | 각 터레인의 `inSectorObject`를 지면에 스냅. 거리<1이면 미사일은 `CollisionActive(OBJ_TERRAIN)` |
-| `CollideRayToWater(sorce)` | `ObjectSet[]`(water) | 위와 동일 로직을 물 표면에 |
-| `CollideSphereToBox(sorce, dst)` | `ObjectSet[]` | 실사용 주력. 오브젝트 sphere ↔ 터레인 AABB → 섹터 등록 |
-| `CollideSphereToSphere(sorce, dst)` | `GameObject[]` | 같은 섹터 내 오브젝트끼리 |
+| `CollideRayToTerrain(source)` | `ObjectSet[]`(terrain) | 각 터레인의 `inSectorObject`를 지면에 스냅. 거리<1이면 미사일은 `CollisionActive(OBJ_TERRAIN)` |
+| `CollideRayToWater(source)` | `ObjectSet[]`(water) | 위와 동일 로직을 물 표면에 |
+| `CollideSphereToBox(source, dst)` | `ObjectSet[]` | 실사용 주력. 오브젝트 sphere ↔ 터레인 AABB → 섹터 등록 |
+| `CollideSphereToSphere(source, dst)` | `GameObject[]` | 같은 섹터 내 오브젝트끼리 |
 | `CollideBoxToBox` / `CollideObbToObb` / `CollideObbToBox` | | 현재 호출부 주석 처리됨 |
 
 레이 판정 폴백: 아래로 쏜 레이가 안 맞으면 **y=2000에서 다시 발사**해 지면을 찾는다.
@@ -125,7 +125,7 @@ GetKeyState(name, KeyState.KEY_DOWN | KEY_PRESS | KEY_UP): boolean
 `cameraMode`: `CAMERA_ORBIT`(기본) / `CAMERA_3RD`.
 
 ```
-ChangeThridPersonCamera()   Picker.GetPickParents() 대상에 카메라를 자식으로 add
+ChangeThirdPersonCamera()   Picker.GetPickParents() 대상에 카메라를 자식으로 add
                             OrbitControl.enabled = false
                             로컬 (0,0,0) 기준 Up*0.6, Look*-3.7 오프셋 (루프 2회 실행)
                             Water 는 대상 제외
@@ -145,7 +145,7 @@ ChangeOrbitCamera()         대상에서 카메라 remove, 대상 위 +15에 배
 생성자에서 공용 텍스처를 전부 로드(전부 `RepeatWrapping`):
 `farmTexture` `mountainTexture` `factoryTexture` `cityTexture` `desertTexture` `fogTexture` `cloudTexture` `missileFlameTexture`
 
-`BuildMotuinBlurShader()` — `EffectComposer` 체인 `RenderPass → BlendShader(mixRatio 0.0) → SavePass → CopyShader`. `ShadedRender()`로 렌더하지만 **현재 `WorldManager.Render()`에서 비활성**(`mixRatio`도 0).
+`BuildMotionBlurShader()` — `EffectComposer` 체인 `RenderPass → BlendShader(mixRatio 0.0) → SavePass → CopyShader`. `ShadedRender()`로 렌더하지만 **현재 `WorldManager.Render()`에서 비활성**(`mixRatio`도 0).
 
 `SplattingShader` 인스턴스도 여기서 보유 → `HeightmapTerrain`이 가져다 쓴다.
 

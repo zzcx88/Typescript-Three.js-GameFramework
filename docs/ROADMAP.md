@@ -184,7 +184,7 @@ Phase 0에서 three를 **0.134에 고정한 채** ESM으로만 옮긴다. 그 �
 
 ### P3-B. 비행 모델
 
-현재는 `MoveFoward(throttle)` + 축 회전이 전부다. 워썬더 지향이면 최소한:
+현재는 `MoveForward(throttle)` + 축 회전이 전부다. 워썬더 지향이면 최소한:
 
 - [ ] 양력 / 항력 / 받음각(AoA), 실속
 - [ ] 스로틀 → 추력 곡선, 애프터버너 (`AircraftObject`의 `afterBurner` 골격 활용)
@@ -193,7 +193,7 @@ Phase 0에서 three를 **0.134에 고정한 채** ESM으로만 옮긴다. 그 �
 
 ### P3-C. HUD / UI
 
-- [ ] 속도계 · 고도계 · 인공수평의 — 현재 `#speed` DOM 텍스트 하나뿐 ([Object/EditObject/EditObject.ts](../JWFramework/Object/EditObject/EditObject.ts) `SpeedIndicaterProcess`)
+- [ ] 속도계 · 고도계 · 인공수평의 — 현재 `#speed` DOM 텍스트 하나뿐 ([Object/EditObject/EditObject.ts](../JWFramework/Object/EditObject/EditObject.ts) `SpeedIndicatorProcess`)
 - [ ] 조준환 / 리드 인디케이터 (`IRCircle` 활용)
 - [ ] 레이더 · 표적 정보 (`ObjectLabel`이 이미 거리 표시를 한다)
 - [ ] 무장 상태, 피격 표시
@@ -221,7 +221,7 @@ Phase 0에서 three를 **0.134에 고정한 채** ESM으로만 옮긴다. 그 �
 
 ### P4-A. 【결정 필요】 고정 틱 시뮬레이션
 
-현재는 렌더 프레임마다 `deltaTime`을 직접 곱한다(`PhysicsComponent.MoveFoward`, `Rotate` 등). 프레임레이트에 따라 결과가 미세하게 달라져 **결정론이 없다**.
+현재는 렌더 프레임마다 `deltaTime`을 직접 곱한다(`PhysicsComponent.MoveForward`, `Rotate` 등). 프레임레이트에 따라 결과가 미세하게 달라져 **결정론이 없다**.
 
 - [ ] 고정 틱(예: 60Hz) 시뮬레이션 + 가변 렌더 보간으로 전환할지 결정
   → 전환한다면 **P3-B(비행 모델) 착수 전**이 적기다. 물리를 두 번 안 짜려면.
@@ -251,7 +251,7 @@ Phase 0에서 three를 **0.134에 고정한 채** ESM으로만 옮긴다. 그 �
 [CLAUDE.md](../CLAUDE.md) §2, §7 참조. 요약:
 
 - `npm install` / `npm ci` → `@types/three` 패치 소실 (§P0-③ 완료 전까지)
-- 오타 API 이름 "수정" (`SetPostion`, `MoveFoward`, `planeGeomatry`, `sorce` …)
+- ~~오타 API 이름 "수정"~~ → **완료**. 전부 올바른 철자로 교정됐다. 구↔신 이름 대응표는 [CLAUDE.md](../CLAUDE.md) §2④
 - `ObjectType` enum 순서 변경
 - `Lib/` 아래 서드파티 파일 수정
 - `import` / `export` 문 (§P1-A 결정 전까지)

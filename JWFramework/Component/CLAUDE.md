@@ -8,7 +8,7 @@ constructor()
     super();
     this.type = ObjectType.OBJ_OBJECT3D;
     this.physicsComponent   = new PhysicsComponent(this);   // GameObject.PhysicsCompIncluded = true 자동 설정
-    this.graphicComponent   = new GraphComponent(this);     // GameObject.GraphicCompIncluded = true 자동 설정
+    this.graphicComponent   = new GraphicComponent(this);     // GameObject.GraphicCompIncluded = true 자동 설정
     this.exportComponent    = new ExportComponent(this);
     this.collisionComponent = new CollisionComponent(this);
     this.guiComponent       = new GUIComponent(this);
@@ -23,7 +23,7 @@ constructor()
 | [CollisionComponent.ts](CollisionComponent.ts) | 237 | AABB / OBB / Sphere / Raycaster |
 | [ExportComponent.ts](ExportComponent.ts) | 76 | `Scene.json` 직렬화 |
 | [GUIComponent.ts](GUIComponent.ts) | 60 | `ObjectLabel`(빌보드 이름표) 소유 |
-| [GraphicCompnent.ts](GraphicCompnent.ts) | 29 | 씬 add/remove 스위치. 클래스명은 `GraphComponent` |
+| [GraphicComponent.ts](GraphicComponent.ts) | 29 | 씬 add/remove 스위치 |
 | [Component.ts](Component.ts) | 5 | 빈 제네릭 베이스. **아무도 상속하지 않음** — 사실상 미사용 |
 
 ---
@@ -35,14 +35,14 @@ constructor()
 ### 설정 (전부 끝에서 `UpdateMatrix()` 호출)
 
 ```
-SetPostion(x, y, z)          ※ 오타 유지 — Position 아님
-SetPostionVec3(vec3)
+SetPosition(x, y, z)
+SetPositionVec3(vec3)
 SetScale(x, y, z) / SetScaleScalar(s)
 SetRotate(x, y, z)           오브젝트 축 기준, 델타타임 미적용 (절대 회전용)
 SetRotateVec3(vec3)
 Rotate(x, y, z)              오브젝트 축 기준, 델타타임 적용
 RotateVec3(axis, angle)      월드 축 기준, 델타타임 적용
-MoveFoward(distance)         ※ 오타 유지. 로컬 +Z 방향, 델타타임 적용
+MoveForward(distance)        로컬 +Z 방향, 델타타임 적용
 MoveDirection(dir, distance) 델타타임 적용
 ```
 
@@ -107,9 +107,9 @@ OBJ_TERRAIN : { type, name, isDummy, vertexIndex[], vertexHeight[], scale, rotat
 
 > ⚠️ `GetLabel()`의 else 분기가 **라벨을 생성만 하고 `return`하지 않는다** → 최초 호출은 `undefined`를 반환한다. `EditObject`가 `InitializeAfterLoad()`에서 한 번 호출해 생성해두기 때문에 실사용에서는 동작하지만, 새 타입에서 `GetLabel().GameObjectInstance` 형태로 바로 쓰면 터진다.
 
-## GraphicCompnent.ts
+## GraphicComponent.ts
 
-파일명은 `GraphicCompnent.ts`, **클래스명은 `GraphComponent`** (불일치 유지).
+파일명·클래스명 모두 `GraphicComponent`. (구 이름: 파일 `GraphicCompnent.ts` / 클래스 `GraphComponent`)
 
 `SetRenderOnOff(bool)` — 씬에서 `GameObjectInstance`를 add/remove 한다. dispose는 하지 않으므로 GPU 리소스는 유지된다.
 

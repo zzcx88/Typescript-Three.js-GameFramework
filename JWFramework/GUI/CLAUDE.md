@@ -81,7 +81,7 @@ Output → ExportData    → SceneManager.MakeJSON() → Scene.json 다운로드
 
 ## GUI_Terrain.ts
 
-**폴더**: `Terrain` — `TerrianOptiontList`(UP/DOWN/BALANCE 드롭다운, 오타 유지) + `HeightOffset`(숫자)
+**폴더**: `Terrain` — `TerrainOptionList`(UP/DOWN/BALANCE 드롭다운) + `HeightOffset`(숫자)
 
 ```
 GetTerrainOption()       현재 TerrainOption enum 값 → Picker 가 SetHeight 에 전달
