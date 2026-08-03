@@ -60,7 +60,6 @@ objectId: number            // 클론 이름 suffix 카운터 (감소하지 않�
 | `DeleteAllObject()` | 카메라 제외 전 클론에 `IsDead = true` 표시만 (실삭제는 다음 `Animate()`) |
 | `MakeJSONArray()` | `ExportComponent`로 직렬화 → `Scene.json` 다운로드 트리거 |
 | `Animate()` | **게임 루프 본체** — 루트 `CLAUDE.md` §4.2 참조 |
-| `GetInSectorTerrain()` | `cameraInSector` 터레인을 `THREE.Group`에 모아 반환 (현재 미사용) |
 
 > `Animate()`의 삭제 처리는 순회 중 배열을 `filter`로 재생성한다. 인덱스가 밀리므로 같은 프레임에 일부 오브젝트가 스킵될 수 있다.
 

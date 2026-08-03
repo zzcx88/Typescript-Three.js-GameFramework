@@ -155,7 +155,6 @@ export class Picker
                     (terrain as unknown as HeightmapTerrain).SetHeight(intersectedObject[0].face.c, heightOffset, GUIManager.getInstance().GUI_Terrain.GetTerrainOption());
                 }
             }
-            //SceneManager.getInstance().SceneInstance.add(objectManager.GetInSectorTerrain());
         }
         else if (this.pickMode == PickMode.PICK_DUMMYTERRAIN)
         {
@@ -170,7 +169,6 @@ export class Picker
                         (terrain as unknown as HeightmapTerrain).IsDummy = true;
                 }
             }
-            //SceneManager.getInstance().SceneInstance.add(objectManager.GetInSectorTerrain());
         }
         else if (this.pickMode == PickMode.PICK_REMOVE) {
             const intersectedObjects = this.raycaster.intersectObjects(ObjectManager.getInstance().PickableObjectList.map(o_ => o_.GameObject.GameObjectInstance));

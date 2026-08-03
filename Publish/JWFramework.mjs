@@ -35814,13 +35814,14 @@ var HeightmapTerrain = class extends GameObject {
     this.heightBuffer = [];
     this.inSectorObject = [];
     this.vertexNormalNeedUpdate = false;
+    // 최초 1프레임에 한 번은 적용해야 한다 (생성 시 유니폼은 cityTexture 로 초기화된다).
+    this.textureUniformNeedUpdate = true;
     this.opacity = 1;
     this.cityUVFactor = 1;
     this.row = 0;
     this.col = 0;
     this.isDummy = false;
     this.inSector = false;
-    this.cameraInSector = false;
     this.useDirtTexture = false;
     this.useCityTexture = false;
     this.isDummy = isDummy;
@@ -35896,12 +35897,14 @@ var HeightmapTerrain = class extends GameObject {
     return this.heightIndexBuffer;
   }
   get HeightBuffer() {
-    for (let i = 0; i < this.heightBuffer.length; ++i) {
-      this.heightBuffer.pop();
-    }
     this.heightBuffer.length = 0;
     this.heightIndexBuffer.forEach((element) => this.heightBuffer.push(this.planeGeometry.getAttribute("position").getY(element)));
     return this.heightBuffer;
+  }
+  ApplyTextureUniform() {
+    const shaderManager = ShaderManager.getInstance();
+    this.material.uniforms.factoryTexture.value = this.useDirtTexture ? shaderManager.desertTexture : shaderManager.factoryTexture;
+    this.material.uniforms.cityTexture.value = this.useCityTexture ? shaderManager.cityTexture : shaderManager.farmTexture;
   }
   get IsDummy() {
     return this.isDummy;
@@ -35979,15 +35982,15 @@ var HeightmapTerrain = class extends GameObject {
         }
       }
       if (this.planeGeometry.getAttribute("position").getZ(index) == this.planSize / 2) {
-        if (objectList[0 /* OBJ_TERRAIN */][this.terrainIndex + this.col]) {
-          const terrain = objectList[0 /* OBJ_TERRAIN */][this.terrainIndex + this.col].GameObject;
+        if (objectList[0 /* OBJ_TERRAIN */][this.terrainIndex + this.row]) {
+          const terrain = objectList[0 /* OBJ_TERRAIN */][this.terrainIndex + this.row].GameObject;
           terrain.planeGeometry.getAttribute("position").needsUpdate = true;
           terrain.planeGeometry.getAttribute("position").setY(index - (endPointIndex - this.segmentWidth), oldheight);
         }
       }
       if (this.planeGeometry.getAttribute("position").getZ(index) == -(this.planSize / 2)) {
-        if (objectList[0 /* OBJ_TERRAIN */][this.terrainIndex - this.col]) {
-          const terrain = objectList[0 /* OBJ_TERRAIN */][this.terrainIndex - this.col].GameObject;
+        if (objectList[0 /* OBJ_TERRAIN */][this.terrainIndex - this.row]) {
+          const terrain = objectList[0 /* OBJ_TERRAIN */][this.terrainIndex - this.row].GameObject;
           terrain.planeGeometry.getAttribute("position").needsUpdate = true;
           terrain.planeGeometry.getAttribute("position").setY(index + (endPointIndex - this.segmentWidth), oldheight);
         }
@@ -35996,43 +35999,35 @@ var HeightmapTerrain = class extends GameObject {
     if (this.heightIndexBuffer.indexOf(index) == -1)
       this.heightIndexBuffer.push(index);
     this.vertexNormalNeedUpdate = true;
-    const positionLength = this.planeGeometry.getAttribute("position").count;
+    const position = this.planeGeometry.getAttribute("position");
+    const positionLength = position.count;
+    let useDirt = false;
     let cnt = 0;
     for (let i = 0; i < positionLength; ++i) {
-      if (this.planeGeometry.getAttribute("position").getY(i) <= -3) {
-        this.useDirtTexture = true;
-      } else if (i == positionLength - 1 && !this.useDirtTexture)
-        this.useDirtTexture = false;
-      if (this.planeGeometry.getAttribute("position").getY(i) == 1)
+      const y = position.getY(i);
+      if (y <= -3)
+        useDirt = true;
+      if (y == 1)
         ++cnt;
-      if (cnt >= 30 && this.physicsComponent.GetMaxVertex().y <= 110) {
-        this.useCityTexture = true;
-        this.material.uniforms.cityUVFactor.value = 6;
-      } else {
-        this.useCityTexture = false;
-        this.material.uniforms.cityUVFactor.value = 1;
-      }
     }
+    const useCity = cnt >= 30 && this.physicsComponent.GetMaxVertex().y <= 110;
+    if (this.useDirtTexture != useDirt || this.useCityTexture != useCity)
+      this.textureUniformNeedUpdate = true;
+    this.useDirtTexture = useDirt;
+    this.useCityTexture = useCity;
+    this.material.uniforms.cityUVFactor.value = useCity ? 6 : 1;
   }
   CollisionActive(object) {
     if (this.isDummy == false) {
-      if (object.Type == 6 /* OBJ_CAMERA */) {
-        this.cameraInSector = false;
-      } else {
-        if (this.inSectorObject.includes(object) == false) {
-          this.inSectorObject.push(object);
-          this.inSector = true;
-        }
+      if (this.inSectorObject.includes(object) == false) {
+        this.inSectorObject.push(object);
+        this.inSector = true;
       }
     }
   }
   CollisionDeActive(object) {
-    if (object.Type == 6 /* OBJ_CAMERA */) {
-      this.cameraInSector = false;
-    } else {
-      if (this.inSectorObject.includes(object) == true) {
-        this.inSectorObject = this.inSectorObject.filter((element) => element != object).slice();
-      }
+    if (this.inSectorObject.includes(object) == true) {
+      this.inSectorObject = this.inSectorObject.filter((element) => element != object).slice();
     }
   }
   Animate() {
@@ -36046,21 +36041,14 @@ var HeightmapTerrain = class extends GameObject {
         this.planeGeometry.applyMatrix4(rotation);
       }
     } else {
-      if (this.useDirtTexture)
-        this.material.uniforms.factoryTexture.value = ShaderManager.getInstance().desertTexture;
-      else
-        this.material.uniforms.factoryTexture.value = ShaderManager.getInstance().factoryTexture;
-      if (this.useCityTexture)
-        this.material.uniforms.cityTexture.value = ShaderManager.getInstance().cityTexture;
-      else
-        this.material.uniforms.cityTexture.value = ShaderManager.getInstance().farmTexture;
+      if (this.textureUniformNeedUpdate) {
+        this.ApplyTextureUniform();
+        this.textureUniformNeedUpdate = false;
+      }
       if (this.collisionComponent.BoundingBox == null)
         this.CreateBoundingBox();
     }
-    if (
-      /*SceneManager.getInstance().CurrentScene.Picker.PickMode != PickMode.PICK_TERRAIN &&*/
-      this.vertexNormalNeedUpdate
-    ) {
+    if (this.vertexNormalNeedUpdate) {
       this.planeGeometry.computeVertexNormals();
       this.vertexNormalNeedUpdate = false;
     }
@@ -39481,7 +39469,6 @@ var R60M = class extends Missile {
 var ObjectManager = class _ObjectManager {
   constructor() {
     this.objectId = 0;
-    this.terrainList = new Group();
     this.objectList = [[], [], [], [], [], [], [], []];
     this.exportObjectList = [];
   }
@@ -39502,15 +39489,6 @@ var ObjectManager = class _ObjectManager {
       }
     }
     return null;
-  }
-  GetInSectorTerrain() {
-    let terrain;
-    for (let OBJ = 0; OBJ < this.objectList[0 /* OBJ_TERRAIN */].length; ++OBJ) {
-      terrain = this.objectList[0 /* OBJ_TERRAIN */][OBJ].GameObject;
-      if (terrain.cameraInSector == true)
-        this.terrainList.add(terrain.GameObjectInstance);
-    }
-    return this.terrainList;
   }
   get GetObjectList() {
     return this.objectList;
@@ -44416,8 +44394,6 @@ var CollisionComponent = class {
       this.boxHelper.box.setFromCenterAndSize(this.gameObject.PhysicsComponent.GetPosition(), this.sizeAABB);
     }
     if (this.orientedBoundingBox) {
-      if (this.gameObject.Type == 5 /* OBJ_MISSILE */)
-        console.log(this.boundingSphere);
       this.obbBoxHelper.scale.set(this.halfSize.x, this.halfSize.y, this.halfSize.z);
       this.obbBoxHelper.rotation.set(this.gameObject.PhysicsComponent.GetRotateEuler().x, this.gameObject.PhysicsComponent.GetRotateEuler().y, this.gameObject.PhysicsComponent.GetRotateEuler().z);
       this.obbBoxHelper.position.set(this.gameObject.PhysicsComponent.GetPosition().x, this.gameObject.PhysicsComponent.GetPosition().y, this.gameObject.PhysicsComponent.GetPosition().z);

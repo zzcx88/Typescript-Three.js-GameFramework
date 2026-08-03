@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 import { CameraManager } from '../../../Manager/CameraManager';
-import { CameraMode, ObjectType, PickMode, TerrainOption } from '../../../enum';
+import { CameraMode, ObjectType, TerrainOption } from '../../../enum';
 import { CollisionComponent } from '../../../Component/CollisionComponent';
 import { ExportComponent } from '../../../Component/ExportComponent';
 import { GameObject } from '../../GameObject';
@@ -133,13 +133,19 @@ export class HeightmapTerrain extends GameObject
     }
 
     public get HeightBuffer(): number[] {
-        for (let i = 0; i < this.heightBuffer.length; ++i) {
-            this.heightBuffer.pop();
-        }
         this.heightBuffer.length = 0;
         this.heightIndexBuffer.forEach(element =>
             this.heightBuffer.push(this.planeGeometry.getAttribute('position').getY(element)));
         return this.heightBuffer;
+    }
+
+    private ApplyTextureUniform()
+    {
+        const shaderManager = ShaderManager.getInstance();
+        this.material.uniforms.factoryTexture.value =
+            this.useDirtTexture ? shaderManager.desertTexture : shaderManager.factoryTexture;
+        this.material.uniforms.cityTexture.value =
+            this.useCityTexture ? shaderManager.cityTexture : shaderManager.farmTexture;
     }
 
     public get IsDummy()
@@ -238,17 +244,19 @@ export class HeightmapTerrain extends GameObject
                 }
             }
 
+            // 인덱스는 i*row + j 이므로 z 방향 이웃은 ± row 다 (± col 이 아니다).
+            // row == col == 20 이라 지금까지 우연히 맞았다.
             if (this.planeGeometry.getAttribute('position').getZ(index) == this.planSize / 2) {
-                if (objectList[ObjectType.OBJ_TERRAIN][this.terrainIndex + this.col]) {
-                    const terrain = objectList[ObjectType.OBJ_TERRAIN][this.terrainIndex + this.col].GameObject;
+                if (objectList[ObjectType.OBJ_TERRAIN][this.terrainIndex + this.row]) {
+                    const terrain = objectList[ObjectType.OBJ_TERRAIN][this.terrainIndex + this.row].GameObject;
                     (terrain as unknown as HeightmapTerrain).planeGeometry.getAttribute('position').needsUpdate = true;
                     (terrain as unknown as HeightmapTerrain).planeGeometry.getAttribute('position').setY(index - (endPointIndex - this.segmentWidth), oldheight);
                 }
             }
 
             if (this.planeGeometry.getAttribute('position').getZ(index) == -(this.planSize / 2)) {
-                if (objectList[ObjectType.OBJ_TERRAIN][this.terrainIndex - this.col]) {
-                    const terrain = objectList[ObjectType.OBJ_TERRAIN][this.terrainIndex - this.col].GameObject;
+                if (objectList[ObjectType.OBJ_TERRAIN][this.terrainIndex - this.row]) {
+                    const terrain = objectList[ObjectType.OBJ_TERRAIN][this.terrainIndex - this.row].GameObject;
                     (terrain as unknown as HeightmapTerrain).planeGeometry.getAttribute('position').needsUpdate = true;
                     (terrain as unknown as HeightmapTerrain).planeGeometry.getAttribute('position').setY(index + (endPointIndex - this.segmentWidth), oldheight);
                 }
@@ -259,63 +267,50 @@ export class HeightmapTerrain extends GameObject
             this.heightIndexBuffer.push(index);
         this.vertexNormalNeedUpdate = true;
 
-        const positionLength = this.planeGeometry.getAttribute('position').count;
+        // 스캔은 집계만 하고 판정은 루프가 끝난 뒤 한 번만 한다.
+        //
+        // 예전에는 판정이 루프 안에 있어서 GetMaxVertex() 가 정점 수만큼(289회) 불렸다.
+        // 그 함수는 자식 지오메트리의 정점을 전부 훑으므로 SetHeight 한 번이 289×289 였다.
+        // 또 useDirtTexture 는 else 분기가 `이미 false 일 때만` false 를 넣어서
+        // 한 번 켜지면 되돌릴 수 없었다 — 깎아서 사막이 되면 다시 올려도 그대로였다.
+        const position = this.planeGeometry.getAttribute('position');
+        const positionLength = position.count;
+        let useDirt = false;
         let cnt = 0;
         for (let i = 0; i < positionLength; ++i)
         {
-            if (this.planeGeometry.getAttribute('position').getY(i) <= -3)
-            {
-                this.useDirtTexture = true;
-            }
-            else if (i == positionLength - 1 && !this.useDirtTexture)
-                this.useDirtTexture = false
-
-            if (this.planeGeometry.getAttribute('position').getY(i) == 1)
+            const y = position.getY(i);
+            if (y <= -3)
+                useDirt = true;
+            if (y == 1)
                 ++cnt;
-            if (cnt >= 30 && this.physicsComponent.GetMaxVertex().y <= 110)
-            {
-                this.useCityTexture = true;
-                this.material.uniforms.cityUVFactor.value = 6;
-            }
-            else
-            {
-                this.useCityTexture = false;
-                this.material.uniforms.cityUVFactor.value = 1;
-            }
         }
+        const useCity = (cnt >= 30 && this.physicsComponent.GetMaxVertex().y <= 110);
 
+        if (this.useDirtTexture != useDirt || this.useCityTexture != useCity)
+            this.textureUniformNeedUpdate = true;
+        this.useDirtTexture = useDirt;
+        this.useCityTexture = useCity;
+        this.material.uniforms.cityUVFactor.value = useCity ? 6 : 1;
     }
 
     public CollisionActive(object: GameObject)
     {
         if (this.isDummy == false)
         {
-            if (object.Type == ObjectType.OBJ_CAMERA)
+            if (this.inSectorObject.includes(object) == false)
             {
-                this.cameraInSector = false;
-                // this.material.opacity = 1;
-            }
-            else
-            {
-                if (this.inSectorObject.includes(object) == false)
-                {
-                    this.inSectorObject.push(object);
-                    //this.opacity = 0.5;
-                    //this.material.uniforms['opacity'].value = this.opacity;
-                    this.inSector = true;
-                }
+                this.inSectorObject.push(object);
+                //this.opacity = 0.5;
+                //this.material.uniforms['opacity'].value = this.opacity;
+                this.inSector = true;
             }
         }
     }
 
     public CollisionDeActive(object: GameObject) {
-        if (object.Type == ObjectType.OBJ_CAMERA) {
-            this.cameraInSector = false;
-        }
-        else {
-            if (this.inSectorObject.includes(object) == true) {
-                this.inSectorObject = this.inSectorObject.filter((element) => (element != object)).slice();
-            }
+        if (this.inSectorObject.includes(object) == true) {
+            this.inSectorObject = this.inSectorObject.filter((element) => (element != object)).slice();
         }
     }
 
@@ -336,19 +331,17 @@ export class HeightmapTerrain extends GameObject
         }
         else
         {
-            if (this.useDirtTexture)
-                this.material.uniforms.factoryTexture.value = ShaderManager.getInstance().desertTexture;
-            else
-                this.material.uniforms.factoryTexture.value = ShaderManager.getInstance().factoryTexture;
-            if (this.useCityTexture)
-                this.material.uniforms.cityTexture.value = ShaderManager.getInstance().cityTexture;
-            else
-                this.material.uniforms.cityTexture.value = ShaderManager.getInstance().farmTexture;
+            // 플래그가 바뀐 프레임에만 대입한다. 예전엔 타일 324장이 매 프레임 4회씩 갈아끼웠다.
+            if (this.textureUniformNeedUpdate)
+            {
+                this.ApplyTextureUniform();
+                this.textureUniformNeedUpdate = false;
+            }
             if (this.collisionComponent.BoundingBox == null)
                 this.CreateBoundingBox();
         }
 
-        if (/*SceneManager.getInstance().CurrentScene.Picker.PickMode != PickMode.PICK_TERRAIN &&*/ this.vertexNormalNeedUpdate) {
+        if (this.vertexNormalNeedUpdate) {
             this.planeGeometry.computeVertexNormals();
             this.vertexNormalNeedUpdate = false;
         }
@@ -388,6 +381,8 @@ export class HeightmapTerrain extends GameObject
     public inSectorObject: GameObject[] = [];
 
     private vertexNormalNeedUpdate: boolean = false;
+    // 최초 1프레임에 한 번은 적용해야 한다 (생성 시 유니폼은 cityTexture 로 초기화된다).
+    private textureUniformNeedUpdate: boolean = true;
     private opacity: number = 1;
     private cityUVFactor: number = 1;
 
@@ -396,7 +391,6 @@ export class HeightmapTerrain extends GameObject
     private isDummy = false;
     private planSize: number;
     public inSector: boolean = false
-    public cameraInSector: boolean = false;
     private useDirtTexture: boolean = false;
     private useCityTexture: boolean = false;
 }

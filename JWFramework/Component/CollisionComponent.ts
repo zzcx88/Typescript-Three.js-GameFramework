@@ -204,9 +204,6 @@ export class CollisionComponent
         }
         if (this.orientedBoundingBox)
         {
-            if (this.gameObject.Type == ObjectType.OBJ_MISSILE)
-                console.log(this.boundingSphere);
-
             this.obbBoxHelper.scale.set(this.halfSize.x, this.halfSize.y, this.halfSize.z)
             this.obbBoxHelper.rotation.set(this.gameObject.PhysicsComponent.GetRotateEuler().x, this.gameObject.PhysicsComponent.GetRotateEuler().y, this.gameObject.PhysicsComponent.GetRotateEuler().z);
             this.obbBoxHelper.position.set(this.gameObject.PhysicsComponent.GetPosition().x, this.gameObject.PhysicsComponent.GetPosition().y, this.gameObject.PhysicsComponent.GetPosition().z);
