@@ -35818,6 +35818,7 @@ var HeightmapTerrain = class extends GameObject {
     this.textureUniformNeedUpdate = true;
     this.opacity = 1;
     this.cityUVFactor = 1;
+    this.maxHeight = 0;
     this.row = 0;
     this.col = 0;
     this.isDummy = false;
@@ -35901,6 +35902,10 @@ var HeightmapTerrain = class extends GameObject {
     this.heightIndexBuffer.forEach((element) => this.heightBuffer.push(this.planeGeometry.getAttribute("position").getY(element)));
     return this.heightBuffer;
   }
+  /** 타일 내 최대 정점 높이(로컬 y). 격자 DDA 의 조기 탈출이 쓸 값이다. */
+  get MaxHeight() {
+    return this.maxHeight;
+  }
   ApplyTextureUniform() {
     const shaderManager = ShaderManager.getInstance();
     this.material.uniforms.factoryTexture.value = this.useDirtTexture ? shaderManager.desertTexture : shaderManager.factoryTexture;
@@ -35923,94 +35928,95 @@ var HeightmapTerrain = class extends GameObject {
         this.planeGeometry.applyMatrix4(rotation);
       }
     }
-    this.planeGeometry.getAttribute("position").needsUpdate = true;
-    let height = this.planeGeometry.getAttribute("position").getY(index);
+    const position = this.planeGeometry.getAttribute("position");
+    position.needsUpdate = true;
+    let height = position.getY(index);
     if (value != void 0 && option == 0 /* TERRAIN_UP */) {
       value = Math.abs(value);
     }
     if (option == 1 /* TERRAIN_DOWN */) {
       value = Math.abs(value);
       value *= -1;
-      this.planeGeometry.getAttribute("position").setY(index, height += value);
+      position.setY(index, height += value);
     } else if (option == 2 /* TERRAIN_BALANCE */ || option == 3 /* TERRAIN_LOAD */) {
-      this.planeGeometry.getAttribute("position").setY(index, value);
+      position.setY(index, value);
     } else {
-      this.planeGeometry.getAttribute("position").setY(index, height += value);
+      position.setY(index, height += value);
     }
     if (this.isDummy == false) {
-      const objectList = ObjectManager.getInstance().GetObjectList;
-      const endPointIndex = this.planeGeometry.getAttribute("position").count - 1;
-      const oldheight = this.planeGeometry.getAttribute("position").getY(index);
-      if (this.planeGeometry.getAttribute("position").getX(index) == this.planSize / 2) {
-        if (objectList[0 /* OBJ_TERRAIN */][this.terrainIndex + 1]) {
-          const terrain = objectList[0 /* OBJ_TERRAIN */][this.terrainIndex + 1].GameObject;
-          terrain.planeGeometry.getAttribute("position").needsUpdate = true;
-          terrain.planeGeometry.getAttribute("position").setY(index - this.segmentHeight, oldheight);
-          if (index == endPointIndex) {
-            if (objectList[0 /* OBJ_TERRAIN */][this.terrainIndex + (this.row + 1)]) {
-              const terrain2 = objectList[0 /* OBJ_TERRAIN */][this.terrainIndex + (this.row + 1)].GameObject;
-              terrain2.planeGeometry.getAttribute("position").needsUpdate = true;
-              terrain2.planeGeometry.getAttribute("position").setY(0, oldheight);
-            }
-          } else if (index == this.segmentWidth) {
-            if (objectList[0 /* OBJ_TERRAIN */][this.terrainIndex - (this.row - 1)]) {
-              const terrain2 = objectList[0 /* OBJ_TERRAIN */][this.terrainIndex - (this.row - 1)].GameObject;
-              terrain2.planeGeometry.getAttribute("position").needsUpdate = true;
-              terrain2.planeGeometry.getAttribute("position").setY(endPointIndex - this.segmentWidth, oldheight);
-            }
-          }
+      const endPointIndex = position.count - 1;
+      const oldheight = position.getY(index);
+      if (position.getX(index) == this.planSize / 2) {
+        if (this.SyncNeighborVertex(this.terrainIndex + 1, index - this.segmentHeight, oldheight)) {
+          if (index == endPointIndex)
+            this.SyncNeighborVertex(this.terrainIndex + (this.row + 1), 0, oldheight);
+          else if (index == this.segmentWidth)
+            this.SyncNeighborVertex(this.terrainIndex - (this.row - 1), endPointIndex - this.segmentWidth, oldheight);
         }
       }
-      if (this.planeGeometry.getAttribute("position").getX(index) == -(this.planSize / 2)) {
-        if (objectList[0 /* OBJ_TERRAIN */][this.terrainIndex - 1]) {
-          const terrain = objectList[0 /* OBJ_TERRAIN */][this.terrainIndex - 1].GameObject;
-          terrain.planeGeometry.getAttribute("position").needsUpdate = true;
-          terrain.planeGeometry.getAttribute("position").setY(index + this.segmentHeight, oldheight);
-        }
-        if (index == 0) {
-          if (objectList[0 /* OBJ_TERRAIN */][this.terrainIndex - (this.row + 1)]) {
-            const terrain = objectList[0 /* OBJ_TERRAIN */][this.terrainIndex - (this.row + 1)].GameObject;
-            terrain.planeGeometry.getAttribute("position").needsUpdate = true;
-            terrain.planeGeometry.getAttribute("position").setY(endPointIndex, oldheight);
-          }
-        } else if (index == endPointIndex - this.segmentWidth) {
-          if (objectList[0 /* OBJ_TERRAIN */][this.terrainIndex + (this.row - 1)]) {
-            const terrain = objectList[0 /* OBJ_TERRAIN */][this.terrainIndex + (this.row - 1)].GameObject;
-            terrain.planeGeometry.getAttribute("position").needsUpdate = true;
-            terrain.planeGeometry.getAttribute("position").setY(this.segmentWidth, oldheight);
-          }
-        }
+      if (position.getX(index) == -(this.planSize / 2)) {
+        this.SyncNeighborVertex(this.terrainIndex - 1, index + this.segmentHeight, oldheight);
+        if (index == 0)
+          this.SyncNeighborVertex(this.terrainIndex - (this.row + 1), endPointIndex, oldheight);
+        else if (index == endPointIndex - this.segmentWidth)
+          this.SyncNeighborVertex(this.terrainIndex + (this.row - 1), this.segmentWidth, oldheight);
       }
-      if (this.planeGeometry.getAttribute("position").getZ(index) == this.planSize / 2) {
-        if (objectList[0 /* OBJ_TERRAIN */][this.terrainIndex + this.row]) {
-          const terrain = objectList[0 /* OBJ_TERRAIN */][this.terrainIndex + this.row].GameObject;
-          terrain.planeGeometry.getAttribute("position").needsUpdate = true;
-          terrain.planeGeometry.getAttribute("position").setY(index - (endPointIndex - this.segmentWidth), oldheight);
-        }
-      }
-      if (this.planeGeometry.getAttribute("position").getZ(index) == -(this.planSize / 2)) {
-        if (objectList[0 /* OBJ_TERRAIN */][this.terrainIndex - this.row]) {
-          const terrain = objectList[0 /* OBJ_TERRAIN */][this.terrainIndex - this.row].GameObject;
-          terrain.planeGeometry.getAttribute("position").needsUpdate = true;
-          terrain.planeGeometry.getAttribute("position").setY(index + (endPointIndex - this.segmentWidth), oldheight);
-        }
-      }
+      if (position.getZ(index) == this.planSize / 2)
+        this.SyncNeighborVertex(this.terrainIndex + this.row, index - (endPointIndex - this.segmentWidth), oldheight);
+      if (position.getZ(index) == -(this.planSize / 2))
+        this.SyncNeighborVertex(this.terrainIndex - this.row, index + (endPointIndex - this.segmentWidth), oldheight);
     }
     if (this.heightIndexBuffer.indexOf(index) == -1)
       this.heightIndexBuffer.push(index);
     this.vertexNormalNeedUpdate = true;
+  }
+  /**
+   * 이웃 타일의 대응 정점을 같은 높이로 맞춰 이음매를 없앤다.
+   *
+   * 이웃이 없으면 아무것도 하지 않고 false 를 반환한다 — 호출부의 중첩 조건이 이 값을 쓴다.
+   *
+   * 예전에는 정점만 쓰고 이웃의 vertexNormalNeedUpdate 를 세우지 않아서,
+   * 이음매 정점이 움직여도 이웃 타일의 법선이 다시 계산되지 않았다(경계에 조명 이음매).
+   * 이제는 바운딩 스피어와 높이 집계도 그 플래그에 물려 있으므로 반드시 세워야 한다.
+   */
+  SyncNeighborVertex(neighborIndex, vertexIndex, height) {
+    const objectSet = ObjectManager.getInstance().GetObjectList[0 /* OBJ_TERRAIN */][neighborIndex];
+    if (objectSet == void 0)
+      return false;
+    const neighbor = objectSet.GameObject;
+    const neighborPosition = neighbor.planeGeometry.getAttribute("position");
+    neighborPosition.needsUpdate = true;
+    neighborPosition.setY(vertexIndex, height);
+    neighbor.vertexNormalNeedUpdate = true;
+    return true;
+  }
+  /**
+   * 정점 높이에서 파생되는 값을 한 번의 순회로 모두 갱신한다.
+   *
+   * 예전에는 SetHeight 가 호출될 때마다 전 정점을 순회했고, 그 루프 안에서
+   * GetMaxVertex() 를 불러 다시 전 정점을 훑었다 → 호출 1회가 289×289.
+   * Picker 는 face.a/b/c 로 3번 부르고 브러시 드래그는 매 프레임이라 실측 렉의 주범이었다.
+   *
+   * 지금은 SetHeight 가 플래그만 세우고, 실제 집계는 프레임당 한 번 여기서 한다.
+   * computeVertexNormals() 가 어차피 전 정점을 훑는 자리이므로 추가 비용이 사실상 없다.
+   */
+  UpdateHeightStats() {
     const position = this.planeGeometry.getAttribute("position");
-    const positionLength = position.count;
+    const count = position.count;
     let useDirt = false;
     let cnt = 0;
-    for (let i = 0; i < positionLength; ++i) {
+    let maxY = -Infinity;
+    for (let i = 0; i < count; ++i) {
       const y = position.getY(i);
       if (y <= -3)
         useDirt = true;
       if (y == 1)
         ++cnt;
+      if (y > maxY)
+        maxY = y;
     }
-    const useCity = cnt >= 30 && this.physicsComponent.GetMaxVertex().y <= 110;
+    this.maxHeight = maxY;
+    const useCity = cnt >= 30 && maxY <= 110;
     if (this.useDirtTexture != useDirt || this.useCityTexture != useCity)
       this.textureUniformNeedUpdate = true;
     this.useDirtTexture = useDirt;
@@ -36050,6 +36056,9 @@ var HeightmapTerrain = class extends GameObject {
     }
     if (this.vertexNormalNeedUpdate) {
       this.planeGeometry.computeVertexNormals();
+      this.planeGeometry.computeBoundingSphere();
+      if (this.isDummy == false)
+        this.UpdateHeightStats();
       this.vertexNormalNeedUpdate = false;
     }
     this.inSectorObject = this.inSectorObject.filter((element) => element.IsDead == false);
