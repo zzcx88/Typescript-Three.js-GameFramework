@@ -22,17 +22,17 @@ export class CollisionManager
         return CollisionManager.instance;
     }
 
-    public CollideRayToTerrain(source: ObjectSet[])
+    public CollideRayToTerrain(source: HeightmapTerrain[])
     {
         source.forEach(function (src)
         {
-            const destination = (src.GameObject as HeightmapTerrain).inSectorObject;
+            const destination = src.inSectorObject;
             destination.forEach(function (dst)
             {
                 if (dst.CollisionComponent != null && dst.CollisionComponent.Raycaster != null)
-                    if ((src.GameObject != undefined && dst.IsClone == true && dst.IsRayOn == true) || SceneManager.getInstance().CurrentScene.NeedOnTerrain == true)
+                    if ((dst.IsClone == true && dst.IsRayOn == true) || SceneManager.getInstance().CurrentScene.NeedOnTerrain == true)
                     {
-                        const intersect = dst.CollisionComponent.Raycaster.intersectObject(src.GameObject.GameObjectInstance);
+                        const intersect = dst.CollisionComponent.Raycaster.intersectObject(src.GameObjectInstance);
                         if (intersect[0] != undefined)
                         {
                             if (intersect[0].distance < 1)
@@ -51,7 +51,7 @@ export class CollisionManager
                                     dst.PhysicsComponent.GetPosition().z),
                                 new THREE.Vector3(0, -1, 0)
                             );
-                            const intersect = dst.CollisionComponent.Raycaster.intersectObject(src.GameObject.GameObjectInstance);
+                            const intersect = dst.CollisionComponent.Raycaster.intersectObject(src.GameObjectInstance);
                             if (intersect[0] != undefined)
                             {
                                 dst.PhysicsComponent.SetPosition(intersect[0].point.x, intersect[0].point.y + 1, intersect[0].point.z);

@@ -35807,7 +35807,7 @@ var Cloud = class extends GameObject {
 };
 
 // Object/CommonObject/Terrain/HeightmapTerrain.ts
-var HeightmapTerrain = class extends GameObject {
+var _HeightmapTerrain = class _HeightmapTerrain extends GameObject {
   constructor(x, z, segmentWidth, segmentHeight, planSize = 900, isDummy = false) {
     super();
     this.heightIndexBuffer = [];
@@ -35819,8 +35819,6 @@ var HeightmapTerrain = class extends GameObject {
     this.opacity = 1;
     this.cityUVFactor = 1;
     this.maxHeight = 0;
-    this.row = 0;
-    this.col = 0;
     this.isDummy = false;
     this.inSector = false;
     this.useDirtTexture = false;
@@ -35906,6 +35904,36 @@ var HeightmapTerrain = class extends GameObject {
   get MaxHeight() {
     return this.maxHeight;
   }
+  get TerrainIndex() {
+    return this.terrainIndex;
+  }
+  /**
+   * 격자 제원. ModelLoadManager.LoadHeightmapTerrain() 이 한 번 세운다.
+   *
+   * 타일이 규칙적으로 놓이므로 월드 좌표에서 인덱스를 바로 구할 수 있다.
+   * 예전에는 오브젝트마다 타일 324장 전부와 sphere-box 를 검사해서 자기 타일을 찾았다.
+   */
+  static SetGridInfo(row, col, tileSize) {
+    _HeightmapTerrain.gridRow = row;
+    _HeightmapTerrain.gridCol = col;
+    _HeightmapTerrain.gridTileSize = tileSize;
+  }
+  /** 월드 축 좌표 → 격자 축 인덱스. 타일 j 는 [tileSize*j - tileSize/2, + tileSize/2) 를 덮는다. */
+  static WorldToGridAxis(value) {
+    const tileSize = _HeightmapTerrain.gridTileSize;
+    return Math.floor((value + tileSize / 2) / tileSize);
+  }
+  /** 격자 (i, j) → objectList[OBJ_TERRAIN] 인덱스. 격자 밖이면 -1. */
+  static GridToTerrainIndex(i, j) {
+    if (i < 0 || i >= _HeightmapTerrain.gridCol || j < 0 || j >= _HeightmapTerrain.gridRow)
+      return -1;
+    return i * _HeightmapTerrain.gridRow + j;
+  }
+  /** 광역 페이즈가 매 프레임 다시 채우므로 그 전에 비운다. */
+  ClearSector() {
+    this.inSectorObject.length = 0;
+    this.inSector = false;
+  }
   ApplyTextureUniform() {
     const shaderManager = ShaderManager.getInstance();
     this.material.uniforms.factoryTexture.value = this.useDirtTexture ? shaderManager.desertTexture : shaderManager.factoryTexture;
@@ -35949,22 +35977,22 @@ var HeightmapTerrain = class extends GameObject {
       if (position.getX(index) == this.planSize / 2) {
         if (this.SyncNeighborVertex(this.terrainIndex + 1, index - this.segmentHeight, oldheight)) {
           if (index == endPointIndex)
-            this.SyncNeighborVertex(this.terrainIndex + (this.row + 1), 0, oldheight);
+            this.SyncNeighborVertex(this.terrainIndex + (_HeightmapTerrain.gridRow + 1), 0, oldheight);
           else if (index == this.segmentWidth)
-            this.SyncNeighborVertex(this.terrainIndex - (this.row - 1), endPointIndex - this.segmentWidth, oldheight);
+            this.SyncNeighborVertex(this.terrainIndex - (_HeightmapTerrain.gridRow - 1), endPointIndex - this.segmentWidth, oldheight);
         }
       }
       if (position.getX(index) == -(this.planSize / 2)) {
         this.SyncNeighborVertex(this.terrainIndex - 1, index + this.segmentHeight, oldheight);
         if (index == 0)
-          this.SyncNeighborVertex(this.terrainIndex - (this.row + 1), endPointIndex, oldheight);
+          this.SyncNeighborVertex(this.terrainIndex - (_HeightmapTerrain.gridRow + 1), endPointIndex, oldheight);
         else if (index == endPointIndex - this.segmentWidth)
-          this.SyncNeighborVertex(this.terrainIndex + (this.row - 1), this.segmentWidth, oldheight);
+          this.SyncNeighborVertex(this.terrainIndex + (_HeightmapTerrain.gridRow - 1), this.segmentWidth, oldheight);
       }
       if (position.getZ(index) == this.planSize / 2)
-        this.SyncNeighborVertex(this.terrainIndex + this.row, index - (endPointIndex - this.segmentWidth), oldheight);
+        this.SyncNeighborVertex(this.terrainIndex + _HeightmapTerrain.gridRow, index - (endPointIndex - this.segmentWidth), oldheight);
       if (position.getZ(index) == -(this.planSize / 2))
-        this.SyncNeighborVertex(this.terrainIndex - this.row, index + (endPointIndex - this.segmentWidth), oldheight);
+        this.SyncNeighborVertex(this.terrainIndex - _HeightmapTerrain.gridRow, index + (endPointIndex - this.segmentWidth), oldheight);
     }
     if (this.heightIndexBuffer.indexOf(index) == -1)
       this.heightIndexBuffer.push(index);
@@ -36061,10 +36089,6 @@ var HeightmapTerrain = class extends GameObject {
         this.UpdateHeightStats();
       this.vertexNormalNeedUpdate = false;
     }
-    this.inSectorObject = this.inSectorObject.filter((element) => element.IsDead == false);
-    if (this.inSectorObject.length == 0) {
-      this.inSector = false;
-    }
     const cameraPosition = WorldManager.getInstance().MainCamera.PhysicsComponent.GetPosition().clone();
     if (CameraManager.getInstance().CameraMode === 1 /* CAMERA_3RD */)
       WorldManager.getInstance().MainCamera.CameraInstance.localToWorld(cameraPosition);
@@ -36075,6 +36099,11 @@ var HeightmapTerrain = class extends GameObject {
     }
   }
 };
+// 격자 제원은 전 타일이 공유한다. SetGridInfo() 가 한 번 세운다.
+_HeightmapTerrain.gridRow = 0;
+_HeightmapTerrain.gridCol = 0;
+_HeightmapTerrain.gridTileSize = 900;
+var HeightmapTerrain = _HeightmapTerrain;
 
 // Manager/CollisionManager.ts
 var CollisionManager = class _CollisionManager {
@@ -36086,11 +36115,11 @@ var CollisionManager = class _CollisionManager {
   }
   CollideRayToTerrain(source) {
     source.forEach(function(src) {
-      const destination = src.GameObject.inSectorObject;
+      const destination = src.inSectorObject;
       destination.forEach(function(dst) {
         if (dst.CollisionComponent != null && dst.CollisionComponent.Raycaster != null) {
-          if (src.GameObject != void 0 && dst.IsClone == true && dst.IsRayOn == true || SceneManager.getInstance().CurrentScene.NeedOnTerrain == true) {
-            const intersect2 = dst.CollisionComponent.Raycaster.intersectObject(src.GameObject.GameObjectInstance);
+          if (dst.IsClone == true && dst.IsRayOn == true || SceneManager.getInstance().CurrentScene.NeedOnTerrain == true) {
+            const intersect2 = dst.CollisionComponent.Raycaster.intersectObject(src.GameObjectInstance);
             if (intersect2[0] != void 0) {
               if (intersect2[0].distance < 1) {
                 dst.PhysicsComponent.SetPosition(intersect2[0].point.x, intersect2[0].point.y + 1, intersect2[0].point.z);
@@ -36106,7 +36135,7 @@ var CollisionManager = class _CollisionManager {
                 ),
                 new Vector3(0, -1, 0)
               );
-              const intersect3 = dst.CollisionComponent.Raycaster.intersectObject(src.GameObject.GameObjectInstance);
+              const intersect3 = dst.CollisionComponent.Raycaster.intersectObject(src.GameObjectInstance);
               if (intersect3[0] != void 0) {
                 dst.PhysicsComponent.SetPosition(intersect3[0].point.x, intersect3[0].point.y + 1, intersect3[0].point.z);
               }
@@ -39478,6 +39507,8 @@ var R60M = class extends Missile {
 var ObjectManager = class _ObjectManager {
   constructor() {
     this.objectId = 0;
+    // 이번 프레임에 오브젝트가 등록된 타일만 담는다. 매 프레임 재사용한다(재할당 없음).
+    this.sectoredTerrain = [];
     this.objectList = [[], [], [], [], [], [], [], []];
     this.exportObjectList = [];
   }
@@ -39626,6 +39657,7 @@ var ObjectManager = class _ObjectManager {
   RenderOffObject() {
   }
   Animate() {
+    this.ClearTerrainSector();
     for (let TYPE = 0; TYPE < 8 /* OBJ_END */; ++TYPE) {
       for (let OBJ = 0; OBJ < this.objectList[TYPE].length; ++OBJ) {
         if (this.objectList[TYPE][OBJ].GameObject.IsClone)
@@ -39640,24 +39672,61 @@ var ObjectManager = class _ObjectManager {
         }
       }
     }
-    CollisionManager.getInstance().CollideSphereToBox(
-      this.objectList[2 /* OBJ_OBJECT3D */],
-      this.objectList[0 /* OBJ_TERRAIN */].filter((o) => o.GameObject.IsDummy == false)
-    );
-    CollisionManager.getInstance().CollideSphereToBox(
-      this.objectList[5 /* OBJ_MISSILE */],
-      this.objectList[0 /* OBJ_TERRAIN */].filter((o) => o.GameObject.IsDummy == false)
-    );
-    const sectoredTerrain = this.objectList[0 /* OBJ_TERRAIN */].filter((element) => element.GameObject.inSector == true);
-    CollisionManager.getInstance().CollideRayToTerrain(sectoredTerrain);
+    this.BuildTerrainSector();
+    CollisionManager.getInstance().CollideRayToTerrain(this.sectoredTerrain);
     CollisionManager.getInstance().CollideRayToWater(this.objectList[1 /* OBJ_WATER */].filter((o_) => o_.GameObject.IsClone));
-    sectoredTerrain.forEach(function(src) {
-      CollisionManager.getInstance().CollideSphereToSphere(
-        src.GameObject.inSectorObject,
-        src.GameObject.inSectorObject
-      );
-    });
+    for (let i = 0; i < this.sectoredTerrain.length; ++i) {
+      const inSectorObject = this.sectoredTerrain[i].inSectorObject;
+      CollisionManager.getInstance().CollideSphereToSphere(inSectorObject, inSectorObject);
+    }
     InputManager.getInstance().UpdateKey();
+  }
+  /** 지난 프레임 등록을 비운다. 등록이 있었던 타일만 건드린다. */
+  ClearTerrainSector() {
+    for (let i = 0; i < this.sectoredTerrain.length; ++i)
+      this.sectoredTerrain[i].ClearSector();
+    this.sectoredTerrain.length = 0;
+  }
+  /**
+   * 광역 페이즈 — 오브젝트를 자기가 걸치는 터레인 타일에 등록한다.
+   *
+   * 예전에는 오브젝트마다 비-dummy 타일 324장 전부와 sphere-box 를 검사했다.
+   * 격자가 규칙적이라 좌표에서 인덱스를 바로 구할 수 있으므로 검사 자체가 필요 없다.
+   *
+   * 매 프레임 비우고 다시 채운다. 예전 방식은 겹치지 않는 타일마다
+   * CollisionDeActive() 를 불러 등록을 지웠는데, 그게 곧 전수 루프였다.
+   */
+  BuildTerrainSector() {
+    this.RegisterToTerrainSector(this.objectList[2 /* OBJ_OBJECT3D */]);
+    this.RegisterToTerrainSector(this.objectList[5 /* OBJ_MISSILE */]);
+  }
+  RegisterToTerrainSector(source) {
+    const terrainList = this.objectList[0 /* OBJ_TERRAIN */];
+    for (let i = 0; i < source.length; ++i) {
+      const gameObject = source[i].GameObject;
+      if (gameObject.IsClone == false || gameObject.CollisionComponent == null)
+        continue;
+      const sphere = gameObject.CollisionComponent.BoundingSphere;
+      if (sphere == null)
+        continue;
+      const minJ = HeightmapTerrain.WorldToGridAxis(sphere.center.x - sphere.radius);
+      const maxJ = HeightmapTerrain.WorldToGridAxis(sphere.center.x + sphere.radius);
+      const minI = HeightmapTerrain.WorldToGridAxis(sphere.center.z - sphere.radius);
+      const maxI = HeightmapTerrain.WorldToGridAxis(sphere.center.z + sphere.radius);
+      for (let gridI = minI; gridI <= maxI; ++gridI) {
+        for (let gridJ = minJ; gridJ <= maxJ; ++gridJ) {
+          const index = HeightmapTerrain.GridToTerrainIndex(gridI, gridJ);
+          if (index < 0 || terrainList[index] == void 0)
+            continue;
+          const terrain = terrainList[index].GameObject;
+          if (terrain.TerrainIndex != index || terrain.IsDummy)
+            continue;
+          if (terrain.inSector == false)
+            this.sectoredTerrain.push(terrain);
+          terrain.CollisionActive(gameObject);
+        }
+      }
+    }
   }
   Render() {
   }
@@ -42774,19 +42843,19 @@ var ModelLoadManager = class _ModelLoadManager {
     });
   }
   LoadHeightmapTerrain(row = 20, col = 20) {
+    const tileSize = 900;
+    HeightmapTerrain.SetGridInfo(row, col, tileSize);
     let terrainIndex = 0;
     for (let i = 0; i < col; ++i) {
       for (let j = 0; j < row; ++j) {
-        const terrainX = j * 900;
-        const terrainY = i * 900;
+        const terrainX = j * tileSize;
+        const terrainY = i * tileSize;
         const terrainWidth = 16;
         const terrainHeight = 16;
         if (i == 0 || i == col - 1 || j == 0 || j == row - 1)
-          this.terrain[terrainIndex] = new HeightmapTerrain(terrainX, terrainY, terrainWidth, terrainHeight, 900, true);
+          this.terrain[terrainIndex] = new HeightmapTerrain(terrainX, terrainY, terrainWidth, terrainHeight, tileSize, true);
         else
-          this.terrain[terrainIndex] = new HeightmapTerrain(terrainX, terrainY, terrainWidth, terrainHeight, 900, false);
-        this.terrain[terrainIndex].row = row;
-        this.terrain[terrainIndex].col = col;
+          this.terrain[terrainIndex] = new HeightmapTerrain(terrainX, terrainY, terrainWidth, terrainHeight, tileSize, false);
         terrainIndex++;
       }
     }

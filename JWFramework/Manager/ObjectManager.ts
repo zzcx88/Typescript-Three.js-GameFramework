@@ -221,6 +221,11 @@ export class ObjectManager
 
     public Animate()
     {
+        // 지난 프레임의 섹터 등록을 삭제 처리보다 **먼저** 비운다.
+        // 뒤에 두면 이번 프레임에 파괴된 터레인(DeleteObject 가 inSectorObject 를 null 로 만든다)을
+        // 참조한 채로 접근하게 된다 — 씬 재로드에서 터진다.
+        this.ClearTerrainSector();
+
         for (let TYPE = 0; TYPE < ObjectType.OBJ_END; ++TYPE) {
             for (let OBJ = 0; OBJ < this.objectList[TYPE].length; ++OBJ) {
 
@@ -243,28 +248,89 @@ export class ObjectManager
         //CollisionManager.getInstance().CollideBoxToBox(this.objectList[ObjectType.OBJ_TERRAIN], this.objectList[ObjectType.OBJ_CAMERA]);
         //CollisionManager.getInstance().CollideObbToObb(this.objectList[ObjectType.OBJ_OBJECT3D], this.objectList[ObjectType.OBJ_OBJECT3D]);
 
-        CollisionManager.getInstance().CollideSphereToBox(
-            this.objectList[ObjectType.OBJ_OBJECT3D],
-            this.objectList[ObjectType.OBJ_TERRAIN].filter(o => (o.GameObject as HeightmapTerrain).IsDummy == false));
+        this.BuildTerrainSector();
 
-        CollisionManager.getInstance().CollideSphereToBox(
-            this.objectList[ObjectType.OBJ_MISSILE],
-            this.objectList[ObjectType.OBJ_TERRAIN].filter(o => (o.GameObject as HeightmapTerrain).IsDummy == false));
-
-        const sectoredTerrain = this.objectList[ObjectType.OBJ_TERRAIN].filter((element) => (element.GameObject as unknown as HeightmapTerrain).inSector == true);
-        CollisionManager.getInstance().CollideRayToTerrain(sectoredTerrain);
+        CollisionManager.getInstance().CollideRayToTerrain(this.sectoredTerrain);
         CollisionManager.getInstance().CollideRayToWater(this.objectList[ObjectType.OBJ_WATER].filter(o_ => o_.GameObject.IsClone));
-        sectoredTerrain.forEach(function (src)
+        for (let i = 0; i < this.sectoredTerrain.length; ++i)
         {
-            CollisionManager.getInstance().CollideSphereToSphere(
-                (src.GameObject as HeightmapTerrain).inSectorObject,
-                (src.GameObject as HeightmapTerrain).inSectorObject);
-        });
+            const inSectorObject = this.sectoredTerrain[i].inSectorObject;
+            CollisionManager.getInstance().CollideSphereToSphere(inSectorObject, inSectorObject);
+        }
         InputManager.getInstance().UpdateKey();
+    }
+
+    /** 지난 프레임 등록을 비운다. 등록이 있었던 타일만 건드린다. */
+    private ClearTerrainSector()
+    {
+        for (let i = 0; i < this.sectoredTerrain.length; ++i)
+            this.sectoredTerrain[i].ClearSector();
+        this.sectoredTerrain.length = 0;
+    }
+
+    /**
+     * 광역 페이즈 — 오브젝트를 자기가 걸치는 터레인 타일에 등록한다.
+     *
+     * 예전에는 오브젝트마다 비-dummy 타일 324장 전부와 sphere-box 를 검사했다.
+     * 격자가 규칙적이라 좌표에서 인덱스를 바로 구할 수 있으므로 검사 자체가 필요 없다.
+     *
+     * 매 프레임 비우고 다시 채운다. 예전 방식은 겹치지 않는 타일마다
+     * CollisionDeActive() 를 불러 등록을 지웠는데, 그게 곧 전수 루프였다.
+     */
+    private BuildTerrainSector()
+    {
+        this.RegisterToTerrainSector(this.objectList[ObjectType.OBJ_OBJECT3D]);
+        this.RegisterToTerrainSector(this.objectList[ObjectType.OBJ_MISSILE]);
+    }
+
+    private RegisterToTerrainSector(source: ObjectSet[])
+    {
+        const terrainList = this.objectList[ObjectType.OBJ_TERRAIN];
+
+        for (let i = 0; i < source.length; ++i)
+        {
+            const gameObject = source[i].GameObject;
+            if (gameObject.IsClone == false || gameObject.CollisionComponent == null)
+                continue;
+
+            const sphere = gameObject.CollisionComponent.BoundingSphere;
+            if (sphere == null)
+                continue;
+
+            // 스피어가 걸치는 타일에 **전부** 등록해야 타일 경계를 넘는 충돌이 유지된다.
+            // y 는 보지 않는다 — 예전에는 타일 AABB 의 y 범위(-500~4500)에 걸려
+            // 고도 4500 위의 오브젝트가 어느 섹터에도 못 들어갔다.
+            const minJ = HeightmapTerrain.WorldToGridAxis(sphere.center.x - sphere.radius);
+            const maxJ = HeightmapTerrain.WorldToGridAxis(sphere.center.x + sphere.radius);
+            const minI = HeightmapTerrain.WorldToGridAxis(sphere.center.z - sphere.radius);
+            const maxI = HeightmapTerrain.WorldToGridAxis(sphere.center.z + sphere.radius);
+
+            for (let gridI = minI; gridI <= maxI; ++gridI)
+            {
+                for (let gridJ = minJ; gridJ <= maxJ; ++gridJ)
+                {
+                    const index = HeightmapTerrain.GridToTerrainIndex(gridI, gridJ);
+                    if (index < 0 || terrainList[index] == undefined)
+                        continue;
+
+                    const terrain = terrainList[index].GameObject as unknown as HeightmapTerrain;
+                    // objectList[OBJ_TERRAIN][k].terrainIndex == k 가 전제다.
+                    // 씬 재로드 중 배열이 압축되는 프레임에는 어긋날 수 있으므로 확인한다.
+                    if (terrain.TerrainIndex != index || terrain.IsDummy)
+                        continue;
+
+                    if (terrain.inSector == false)
+                        this.sectoredTerrain.push(terrain);
+                    terrain.CollisionActive(gameObject);
+                }
+            }
+        }
     }
 
     public Render() { }
 
+    // 이번 프레임에 오브젝트가 등록된 타일만 담는다. 매 프레임 재사용한다(재할당 없음).
+    private sectoredTerrain: HeightmapTerrain[] = [];
     private objectList: ObjectSet[][] = [[], [], [], [], [], [], [],[]];
     private exportObjectList = [];
 }

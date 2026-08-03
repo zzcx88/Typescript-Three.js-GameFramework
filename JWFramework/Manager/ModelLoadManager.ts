@@ -155,21 +155,23 @@ export class ModelLoadManager
 
     public LoadHeightmapTerrain(row: number = 20, col: number = 20)
     {
+        const tileSize = 900;
+        // 격자 제원을 먼저 세운다. 월드 좌표 → 타일 인덱스 변환이 이 값을 쓴다.
+        HeightmapTerrain.SetGridInfo(row, col, tileSize);
+
         let terrainIndex = 0; // 추가된 부분
         for (let i = 0; i < col; ++i)
         {
             for (let j = 0; j < row; ++j)
             {
-                const terrainX = j * 900;
-                const terrainY = i * 900;
+                const terrainX = j * tileSize;
+                const terrainY = i * tileSize;
                 const terrainWidth = 16;
                 const terrainHeight = 16;
                 if (i == 0 || i == col - 1 || j == 0 || j == row - 1) // 추가된 부분
-                    this.terrain[terrainIndex] = new HeightmapTerrain(terrainX, terrainY, terrainWidth, terrainHeight, 900, true);
+                    this.terrain[terrainIndex] = new HeightmapTerrain(terrainX, terrainY, terrainWidth, terrainHeight, tileSize, true);
                 else
-                    this.terrain[terrainIndex] = new HeightmapTerrain(terrainX, terrainY, terrainWidth, terrainHeight, 900, false);
-                this.terrain[terrainIndex].row = row;
-                this.terrain[terrainIndex].col = col;
+                    this.terrain[terrainIndex] = new HeightmapTerrain(terrainX, terrainY, terrainWidth, terrainHeight, tileSize, false);
                 terrainIndex++; // 추가된 부분
             }
         }

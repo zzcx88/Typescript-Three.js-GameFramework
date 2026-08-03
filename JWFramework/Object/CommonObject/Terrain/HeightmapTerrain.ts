@@ -144,6 +144,45 @@ export class HeightmapTerrain extends GameObject
         return this.maxHeight;
     }
 
+    public get TerrainIndex(): number {
+        return this.terrainIndex;
+    }
+
+    /**
+     * 격자 제원. ModelLoadManager.LoadHeightmapTerrain() 이 한 번 세운다.
+     *
+     * 타일이 규칙적으로 놓이므로 월드 좌표에서 인덱스를 바로 구할 수 있다.
+     * 예전에는 오브젝트마다 타일 324장 전부와 sphere-box 를 검사해서 자기 타일을 찾았다.
+     */
+    public static SetGridInfo(row: number, col: number, tileSize: number)
+    {
+        HeightmapTerrain.gridRow = row;
+        HeightmapTerrain.gridCol = col;
+        HeightmapTerrain.gridTileSize = tileSize;
+    }
+
+    /** 월드 축 좌표 → 격자 축 인덱스. 타일 j 는 [tileSize*j - tileSize/2, + tileSize/2) 를 덮는다. */
+    public static WorldToGridAxis(value: number): number
+    {
+        const tileSize = HeightmapTerrain.gridTileSize;
+        return Math.floor((value + tileSize / 2) / tileSize);
+    }
+
+    /** 격자 (i, j) → objectList[OBJ_TERRAIN] 인덱스. 격자 밖이면 -1. */
+    public static GridToTerrainIndex(i: number, j: number): number
+    {
+        if (i < 0 || i >= HeightmapTerrain.gridCol || j < 0 || j >= HeightmapTerrain.gridRow)
+            return -1;
+        return i * HeightmapTerrain.gridRow + j;
+    }
+
+    /** 광역 페이즈가 매 프레임 다시 채우므로 그 전에 비운다. */
+    public ClearSector()
+    {
+        this.inSectorObject.length = 0;
+        this.inSector = false;
+    }
+
     private ApplyTextureUniform()
     {
         const shaderManager = ShaderManager.getInstance();
@@ -205,9 +244,9 @@ export class HeightmapTerrain extends GameObject
                 // 대각 이웃은 가로 이웃이 있을 때만 따진다 (원래 중첩 구조 유지).
                 if (this.SyncNeighborVertex(this.terrainIndex + 1, index - this.segmentHeight, oldheight)) {
                     if (index == endPointIndex)
-                        this.SyncNeighborVertex(this.terrainIndex + (this.row + 1), 0, oldheight);
+                        this.SyncNeighborVertex(this.terrainIndex + (HeightmapTerrain.gridRow + 1), 0, oldheight);
                     else if (index == this.segmentWidth)
-                        this.SyncNeighborVertex(this.terrainIndex - (this.row - 1), endPointIndex - this.segmentWidth, oldheight);
+                        this.SyncNeighborVertex(this.terrainIndex - (HeightmapTerrain.gridRow - 1), endPointIndex - this.segmentWidth, oldheight);
                 }
             }
 
@@ -215,18 +254,18 @@ export class HeightmapTerrain extends GameObject
                 this.SyncNeighborVertex(this.terrainIndex - 1, index + this.segmentHeight, oldheight);
 
                 if (index == 0)
-                    this.SyncNeighborVertex(this.terrainIndex - (this.row + 1), endPointIndex, oldheight);
+                    this.SyncNeighborVertex(this.terrainIndex - (HeightmapTerrain.gridRow + 1), endPointIndex, oldheight);
                 else if (index == endPointIndex - this.segmentWidth)
-                    this.SyncNeighborVertex(this.terrainIndex + (this.row - 1), this.segmentWidth, oldheight);
+                    this.SyncNeighborVertex(this.terrainIndex + (HeightmapTerrain.gridRow - 1), this.segmentWidth, oldheight);
             }
 
             // 인덱스는 i*row + j 이므로 z 방향 이웃은 ± row 다 (± col 이 아니다).
             // row == col == 20 이라 지금까지 우연히 맞았다.
             if (position.getZ(index) == this.planSize / 2)
-                this.SyncNeighborVertex(this.terrainIndex + this.row, index - (endPointIndex - this.segmentWidth), oldheight);
+                this.SyncNeighborVertex(this.terrainIndex + HeightmapTerrain.gridRow, index - (endPointIndex - this.segmentWidth), oldheight);
 
             if (position.getZ(index) == -(this.planSize / 2))
-                this.SyncNeighborVertex(this.terrainIndex - this.row, index + (endPointIndex - this.segmentWidth), oldheight);
+                this.SyncNeighborVertex(this.terrainIndex - HeightmapTerrain.gridRow, index + (endPointIndex - this.segmentWidth), oldheight);
         }
 
         if (this.heightIndexBuffer.indexOf(index) == -1)
@@ -357,12 +396,9 @@ export class HeightmapTerrain extends GameObject
                 this.UpdateHeightStats();
             this.vertexNormalNeedUpdate = false;
         }
-        this.inSectorObject = this.inSectorObject.filter((element) => (element.IsDead == false));
-        if (this.inSectorObject.length == 0) {
-            //this.opacity = 1;
-            //this.material.uniforms['opacity'].value = this.opacity;
-            this.inSector = false;
-        }
+        // 죽은 오브젝트를 걸러내던 filter 는 없앴다. 광역 페이즈가 매 프레임
+        // ClearSector() 로 비우고 다시 채우므로 살아 있는 것만 들어온다.
+        // (타일마다 배열을 새로 만들던 자리라 프레임당 최대 400개 할당이 사라졌다.)
 
         const cameraPosition = WorldManager.getInstance().MainCamera.PhysicsComponent.GetPosition().clone();
         if (CameraManager.getInstance().CameraMode === CameraMode.CAMERA_3RD)
@@ -399,8 +435,11 @@ export class HeightmapTerrain extends GameObject
     private cityUVFactor: number = 1;
     private maxHeight: number = 0;
 
-    public row: number = 0;
-    public col: number = 0;
+    // 격자 제원은 전 타일이 공유한다. SetGridInfo() 가 한 번 세운다.
+    private static gridRow: number = 0;
+    private static gridCol: number = 0;
+    private static gridTileSize: number = 900;
+
     private isDummy = false;
     private planSize: number;
     public inSector: boolean = false
