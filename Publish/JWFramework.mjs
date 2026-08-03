@@ -99,7 +99,7 @@ var require_stats_min = __commonJS({
   }
 });
 
-// JWFramework/Main.ts
+// Main.ts
 var import_stats = __toESM(require_stats_min(), 1);
 
 // node_modules/three/build/three.module.js
@@ -26685,7 +26685,7 @@ var Water = class extends Mesh {
 };
 Water.prototype.isWater = true;
 
-// JWFramework/Component/ExportComponent.ts
+// Component/ExportComponent.ts
 var ExportComponent = class {
   constructor(gameObject) {
     this.gameObject = gameObject;
@@ -26745,7 +26745,7 @@ var ExportComponent = class {
   }
 };
 
-// JWFramework/Object/GameObject.ts
+// Object/GameObject.ts
 var GameObject = class {
   constructor() {
     this.name = "";
@@ -26877,7 +26877,7 @@ var GameObject = class {
   }
 };
 
-// JWFramework/Component/GraphicCompnent.ts
+// Component/GraphicCompnent.ts
 var GraphComponent = class {
   constructor(gameObject) {
     this.GameObject = gameObject;
@@ -26925,7 +26925,7 @@ function parallelTraverse(a2, b2, callback) {
   }
 }
 
-// JWFramework/Component/PhysicsComponent.ts
+// Component/PhysicsComponent.ts
 var PhysicsComponent = class {
   constructor(gameObject) {
     //private gameince: THREE.Object3D;
@@ -27494,7 +27494,7 @@ var BlendShader = {
   )
 };
 
-// JWFramework/Shader/SplettingShader.ts
+// Shader/SplettingShader.ts
 var SplattingShader = class {
   constructor() {
     this.vertexShader = `
@@ -27551,7 +27551,7 @@ var SplattingShader = class {
   }
 };
 
-// JWFramework/Manager/ShaderManager.ts
+// Manager/ShaderManager.ts
 var ShaderManager = class _ShaderManager {
   constructor() {
     this.BuildMotuinBlurShader();
@@ -27624,7 +27624,7 @@ var ShaderManager = class _ShaderManager {
   }
 };
 
-// JWFramework/Object/InGameObject/Weapons/Missile.ts
+// Object/InGameObject/Weapons/Missile.ts
 var Missile = class extends GameObject {
   constructor() {
     super();
@@ -27749,7 +27749,7 @@ var Missile = class extends GameObject {
   }
 };
 
-// JWFramework/Object/InGameObject/Weapons/IRMissile/AIM9H.ts
+// Object/InGameObject/Weapons/IRMissile/AIM9H.ts
 var AIM9H = class extends Missile {
   constructor() {
     super();
@@ -27784,7 +27784,7 @@ var AIM9H = class extends Missile {
   }
 };
 
-// JWFramework/Object/InGameObject/Weapons/IRMissile/AIM9L.ts
+// Object/InGameObject/Weapons/IRMissile/AIM9L.ts
 var AIM9L = class extends Missile {
   constructor() {
     super();
@@ -27819,7 +27819,7 @@ var AIM9L = class extends Missile {
   }
 };
 
-// JWFramework/Object/InGameObject/Envirument/Cloud.ts
+// Object/InGameObject/Envirument/Cloud.ts
 var Cloud = class extends GameObject {
   constructor() {
     super();
@@ -27894,7 +27894,7 @@ var Cloud = class extends GameObject {
   }
 };
 
-// JWFramework/Object/CommonObject/Terrain/HeightmapTerrain.ts
+// Object/CommonObject/Terrain/HeightmapTerrain.ts
 var HeightmapTerrain = class extends GameObject {
   constructor(x, z, segmentWidth, segmentHeight, planSize = 900, isDummy = false) {
     super();
@@ -28167,7 +28167,7 @@ var HeightmapTerrain = class extends GameObject {
   }
 };
 
-// JWFramework/Manager/CollisionManager.ts
+// Manager/CollisionManager.ts
 var CollisionManager = class _CollisionManager {
   static getInstance() {
     if (!_CollisionManager.instance) {
@@ -28348,7 +28348,7 @@ var CollisionManager = class _CollisionManager {
   }
 };
 
-// JWFramework/Manager/UnitConvertManager.ts
+// Manager/UnitConvertManager.ts
 var UnitConvertManager = class _UnitConvertManager {
   static getInstance() {
     if (!_UnitConvertManager.instance) {
@@ -28369,7 +28369,7 @@ var UnitConvertManager = class _UnitConvertManager {
   }
 };
 
-// JWFramework/Object/InGameUI/ObjectLabel.ts
+// Object/InGameUI/ObjectLabel.ts
 var ObjectLabel = class extends GameObject {
   constructor(name = null) {
     super();
@@ -28474,7 +28474,7 @@ var ObjectLabel = class extends GameObject {
   }
 };
 
-// JWFramework/Component/GUIComponent.ts
+// Component/GUIComponent.ts
 var GUIComponent = class {
   constructor(gameObject) {
     this.gameObject = gameObject;
@@ -30953,7 +30953,7 @@ function updateDisplays(controllerArray) {
 }
 var GUI$1 = GUI;
 
-// JWFramework/GUI/GUIControls/GUI_Base.ts
+// GUI/GUIControls/GUI_Base.ts
 var GUI_Base = class {
   constructor() {
   }
@@ -30961,7 +30961,7 @@ var GUI_Base = class {
   }
 };
 
-// JWFramework/GUI/GUIControls/GUI_SRT.ts
+// GUI/GUIControls/GUI_SRT.ts
 var GUI_SRT = class extends GUI_Base {
   constructor(gameObject) {
     super();
@@ -31103,7 +31103,7 @@ var GUI_SRT = class extends GUI_Base {
   }
 };
 
-// JWFramework/GUI/GUIControls/GUI_Select.ts
+// GUI/GUIControls/GUI_Select.ts
 var GUI_Select = class extends GUI_Base {
   constructor() {
     super();
@@ -31147,7 +31147,7 @@ var GUI_Select = class extends GUI_Base {
   }
 };
 
-// JWFramework/GUI/GUIControls/GUI_Terrain.ts
+// GUI/GUIControls/GUI_Terrain.ts
 var GUI_Terrain = class extends GUI_Base {
   constructor() {
     super();
@@ -31217,7 +31217,7 @@ var GUI_Terrain = class extends GUI_Base {
   //private terrainOffset: number = 0;
 };
 
-// JWFramework/Manager/GUIManager.ts
+// Manager/GUIManager.ts
 var GUIManager = class _GUIManager {
   static getInstance() {
     if (!_GUIManager.instance) {
@@ -31242,7 +31242,7 @@ var GUIManager = class _GUIManager {
   }
 };
 
-// JWFramework/Manager/InputManager.ts
+// Manager/InputManager.ts
 var InputManager = class _InputManager {
   constructor() {
     this.AddKey = (Code, name) => {
@@ -31339,7 +31339,7 @@ var InputManager = class _InputManager {
   }
 };
 
-// JWFramework/Object/EditObject/EditObject.ts
+// Object/EditObject/EditObject.ts
 var EditObject = class extends GameObject {
   constructor() {
     super();
@@ -31531,7 +31531,7 @@ var EditObject = class extends GameObject {
   //private raderFrustum: THREE.Frustum = new THREE.Frustum();
 };
 
-// JWFramework/Object/InGameObject/Weapons/IRMissile/R60M.ts
+// Object/InGameObject/Weapons/IRMissile/R60M.ts
 var R60M = class extends Missile {
   constructor() {
     super();
@@ -31565,7 +31565,7 @@ var R60M = class extends Missile {
   }
 };
 
-// JWFramework/Manager/ObjectManager.ts
+// Manager/ObjectManager.ts
 var ObjectManager = class _ObjectManager {
   constructor() {
     this.objectId = 0;
@@ -31764,7 +31764,7 @@ var ObjectManager = class _ObjectManager {
   }
 };
 
-// JWFramework/Object/InGameObject/Envirument/Water.ts
+// Object/InGameObject/Envirument/Water.ts
 var Water2 = class extends GameObject {
   constructor() {
     super();
@@ -31846,7 +31846,7 @@ var Water2 = class extends GameObject {
   }
 };
 
-// JWFramework/Manager/CameraManager.ts
+// Manager/CameraManager.ts
 var CameraManager = class _CameraManager {
   constructor() {
     this.cameraMode = 0 /* CAMERA_ORBIT */;
@@ -31911,7 +31911,7 @@ var CameraManager = class _CameraManager {
   }
 };
 
-// JWFramework/Object/Light/Light.ts
+// Object/Light/Light.ts
 var Light2 = class extends GameObject {
   constructor(type) {
     super();
@@ -31949,7 +31949,7 @@ var Light2 = class extends GameObject {
   }
 };
 
-// JWFramework/Object/InGameObject/LowCloud.ts
+// Object/InGameObject/LowCloud.ts
 var LowCloud = class extends GameObject {
   constructor() {
     super();
@@ -32045,7 +32045,7 @@ var LowCloud = class extends GameObject {
   }
 };
 
-// JWFramework/Object/InGameObject/MissileFog.ts
+// Object/InGameObject/MissileFog.ts
 var MissileFog = class extends GameObject {
   constructor() {
     super();
@@ -34417,7 +34417,7 @@ function toTrianglesDrawMode(geometry, drawMode) {
   return newGeometry;
 }
 
-// JWFramework/define.ts
+// define.ts
 var Define = class {
 };
 Define.SCREEN_WIDTH = window.innerWidth;
@@ -34497,7 +34497,7 @@ var modelSceneRegistry = {
   ModelSceneEdit
 };
 
-// JWFramework/Manager/ModelLoadManager.ts
+// Manager/ModelLoadManager.ts
 var ModelLoadManager = class _ModelLoadManager {
   constructor() {
     this.loadComplete = false;
@@ -34669,7 +34669,7 @@ var ModelLoadManager = class _ModelLoadManager {
   }
 };
 
-// JWFramework/ObjectPool/ObjectPool.ts
+// ObjectPool/ObjectPool.ts
 var ObjectPool = class {
   constructor(objectClass) {
     this.objects = [];
@@ -35328,7 +35328,7 @@ var OrbitControls = class extends EventDispatcher {
   }
 };
 
-// JWFramework/Picker/Picker.ts
+// Picker/Picker.ts
 var Picker = class {
   constructor() {
     this.pickPositionX = 0;
@@ -35517,7 +35517,7 @@ var Picker = class {
   }
 };
 
-// JWFramework/Scene/SceneBase.ts
+// Scene/SceneBase.ts
 var SceneBase = class {
   constructor(sceneManager) {
     this.reloadScene = false;
@@ -35555,7 +35555,7 @@ var SceneBase = class {
   }
 };
 
-// JWFramework/Scene/EditScene.ts
+// Scene/EditScene.ts
 var EditScene = class extends SceneBase {
   constructor(sceneManager) {
     super(sceneManager);
@@ -35777,7 +35777,7 @@ var EditScene = class extends SceneBase {
   }
 };
 
-// JWFramework/Manager/SceneManager.ts
+// Manager/SceneManager.ts
 var SceneManager = class _SceneManager {
   constructor() {
   }
@@ -35818,7 +35818,7 @@ var SceneManager = class _SceneManager {
   }
 };
 
-// JWFramework/Component/CollisionComponent.ts
+// Component/CollisionComponent.ts
 var CollisionComponent = class {
   constructor(gameObject) {
     //충돌체를 배열로 관리하도록 변경해야함
@@ -35974,7 +35974,7 @@ var CollisionComponent = class {
   }
 };
 
-// JWFramework/Object/Camera/Camera.ts
+// Object/Camera/Camera.ts
 var Camera2 = class extends GameObject {
   constructor() {
     super();
@@ -36037,7 +36037,7 @@ var Camera2 = class extends GameObject {
   }
 };
 
-// JWFramework/Manager/WorldManager.ts
+// Manager/WorldManager.ts
 var WorldManager = class _WorldManager {
   constructor() {
   }
@@ -36133,7 +36133,7 @@ var WorldManager = class _WorldManager {
   }
 };
 
-// JWFramework/Main.ts
+// Main.ts
 {
   const worldManager = WorldManager.getInstance();
   worldManager.InitializeWorld();

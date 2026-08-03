@@ -17,9 +17,9 @@ import { fileURLToPath } from 'node:url';
 import madge from 'madge';
 
 const HERE = path.dirname(fileURLToPath(import.meta.url));
-const ROOT = path.resolve(HERE, '..');
+const ROOT = path.resolve(HERE, '..');          // JWFramework/
 const BASELINE_PATH = path.join(HERE, 'cycles-baseline.json');
-const ENTRY = path.join(ROOT, 'JWFramework/Main.ts');
+const ENTRY = path.join(ROOT, 'Main.ts');
 
 /** Tarjan 강결합 요소 */
 function findSccs(graph)

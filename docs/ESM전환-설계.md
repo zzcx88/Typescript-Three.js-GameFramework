@@ -78,7 +78,7 @@ renderer.render(scope.waterScene, mirrorCamera);   // 순정: renderer.render(sc
 - ❌ **dat.GUI → lil-gui 교체** — npm의 `dat.gui@0.7.9` 그대로
 - ❌ **`strict` 켜기** — `false` 유지
 - ❌ **오타 API 이름 수정** — `SetPostion` 등 그대로
-- ❌ **성능 개선, 죽은 코드 삭제, 버그 수정** — [ROADMAP.md](../ROADMAP.md) P0 이후로
+- ❌ **성능 개선, 죽은 코드 삭제, 버그 수정** — [ROADMAP.md](ROADMAP.md) P0 이후로
 - ❌ **Visual Studio 프로젝트 제거** — `.csproj`/`.sln` 유지 (사용자 결정)
 
 > 예외: **§1.1의 패치 2건 원인 수정**은 목적 달성의 전제이므로 포함한다.
@@ -91,15 +91,13 @@ renderer.render(scope.waterScene, mirrorCamera);   // 순정: renderer.render(sc
 
 ```
 Typescript-Three.js-GameFramework/
-├── package.json            ← 의존성 + 빌드/실행 매크로
-├── tsconfig.json           ← 타입체크 전용 (--noEmit)
-├── .gitignore
-├── JWFramework/            ← 순수 소스만
+├── JWFramework/            ← 소스 + 툴체인
+│   ├── package.json  tsconfig.json  eslint.config.mjs  .madgerc  scripts/
 │   ├── Main.ts  define.ts  enum.ts  Style.css
 │   ├── Manager/ Component/ Object/ Scene/ GUI/ Picker/ ObjectPool/ Shader/
 │   ├── types/              ← 필요 시 보강 선언
 │   └── JWFramework.csproj  ← 유지 (열기용. TypeScript 빌드는 비활성)
-└── docs/                   ← 배포 산출물 = 로컬 실행 루트 (GitHub Pages)
+└── Publish/                ← 배포 산출물 = 로컬 실행 루트 (GitHub Pages)
     ├── index.html
     ├── JWFramework.mjs     ← 빌드 산출 (단일 번들)
     ├── JWFramework.css     ← 빌드 산출
@@ -108,18 +106,22 @@ Typescript-Three.js-GameFramework/
 
 `Lib/` 폴더는 **삭제**된다 — 전부 npm으로 대체.
 
+> 위 구조는 ESM 전환 **직후 기준**이다. 이후 폴더 정리로 툴체인이 `JWFramework/` 안으로 들어가고
+> 산출물 폴더가 `docs/` → `Publish/` 로 바뀌었다. 현재 구조는 [CLAUDE.md](../CLAUDE.md) §1 참조.
+
 ### 3.2 빌드 · 실행 (사내 참고 프로젝트의 빌드 규약을 따름)
 
-참고 프로젝트의 `esbuild 번들 → 배포 폴더 → npx serve <배포 폴더>` 패턴을 `docs/`에 그대로 적용.
+참고 프로젝트의 `esbuild 번들 → 배포 폴더 → npx serve <배포 폴더>` 패턴을 그대로 적용.
+명령은 `JWFramework/` 안에서 돈다. 최신 목록은 [CLAUDE.md](../CLAUDE.md) §1.
 
 | 매크로 | 명령 |
 |---|---|
 | `npm run typecheck` | `tsc -p tsconfig.json --noEmit` |
-| `npm run build:js` | `esbuild JWFramework/Main.ts --bundle --format=esm --target=es2020 --outfile=docs/JWFramework.mjs` |
-| `npm run build:css` | `esbuild JWFramework/Style.css --bundle --outfile=docs/JWFramework.css` |
+| `npm run build:js` | `esbuild Main.ts --bundle --format=esm --target=es2020 --outfile=../Publish/JWFramework.mjs` |
+| `npm run build:css` | `esbuild Style.css --bundle --outfile=../Publish/JWFramework.css` |
 | `npm run build` | typecheck → build:js → build:css |
 | `npm run watch` | esbuild `--watch --sourcemap` |
-| `npm run serve` | `serve docs -l 8080` |
+| `npm run serve` | `serve ../Publish -l 8080` |
 | `npm run start` | build:dev → serve |
 | `npm run check:cycles` | 순환 구조(SCC) 검사 + 기준선 래칫 (§3.4) |
 | `npm run verify` | typecheck + lint + check:cycles |
@@ -225,7 +227,7 @@ public get CollisionComponent(): CollisionComponent   // 게터 이름과 타입
 
 ### Phase 0-C — 산출물 · 실행 경로
 - [ ] `Model/` → `docs/Model/` 단일화, `JWFramework/Model` 삭제
-- [ ] `index.html` → `docs/index.html` 재작성
+- [ ] `index.html` → `Publish/index.html` 재작성
 - [ ] `Lib/` 삭제
 - [ ] `csproj`의 TypeScript 빌드 비활성 (파일 목록만 남김)
 - **검증**: `npm run build` 성공 → `npm run serve` → **§5 체크리스트 전항 통과**
@@ -285,8 +287,8 @@ Phase 0 병합 후 착수. `npm i three@latest @types/three@latest` → 아래 �
 ### 5.4 산출물
 - [ ] **물 반사에 스카이박스만 비치는가** ← 벤더 패치를 프로젝트 코드로 옮긴 지점(§1.1-나).
       지형이나 항공기가 수면에 비치면 **회귀**다
-- [ ] `docs/JWFramework.mjs` 단일 파일로 생성
-- [ ] `docs/JWFramework.css` 생성
+- [ ] `Publish/JWFramework.mjs` 단일 파일로 생성
+- [ ] `Publish/JWFramework.css` 생성
 - [ ] `npm run check:cycles` 결과를 기록 (0이 목표, 남으면 목록을 문서화)
 - [ ] `Lib/` 및 `JWFramework/Model/` 삭제 확인
 - [ ] **`npm i three@0.135.0` → 빌드 통과** ← 목적 달성 증명. 확인 후 0.134로 되돌린다
@@ -354,7 +356,7 @@ madge의 `--circular`은 *순환 경로*를 나열한다. 덩어리 하나에서
 
 > **ESM이 만든 게 아니다.** `namespace` + `outFile` 시절엔 전부 한 파일이라 의존 *방향*이라는 개념 자체가 없었을 뿐, 결합은 동일했다. ESM은 드러냈고, 이제 측정 가능해졌다.
 
-`scripts/check-cycles.mjs`(Tarjan SCC)가 이 수치를 내고 `scripts/cycles-baseline.json`을 래칫으로 쓴다 — 악화되면 `npm run verify` 실패. 감축은 [ROADMAP.md](../ROADMAP.md) P1-E · P4-B.
+`scripts/check-cycles.mjs`(Tarjan SCC)가 이 수치를 내고 `scripts/cycles-baseline.json`을 래칫으로 쓴다 — 악화되면 `npm run verify` 실패. 감축은 [ROADMAP.md](ROADMAP.md) P1-E · P4-B.
 
 **무해 판정** — `import type` 제외 전 96개 경로 → 제외 후 55개 경로(= SCC 1개).
 
@@ -369,7 +371,7 @@ ESM에서 순환 자체는 오류가 아니다. **`extends`가 순환 경로에 
 근본 원인이 해소된 덕이다 — `GameObject.ts`가 `import type` 만 갖게 되어(런타임 의존 0) 최상위 순환이 끊겼다.
 
 > **SCC 1개/33모듈**은 남은 빚이지 정상 상태가 아니다. 원인은 매니저 싱글턴 상호참조다.
-> 감축은 [ROADMAP.md](../ROADMAP.md) P1-C/P4-B. `npm run check:cycles` 로 상시 관측한다.
+> 감축은 [ROADMAP.md](ROADMAP.md) P1-C/P4-B. `npm run check:cycles` 로 상시 관측한다.
 > 참고 프로젝트(`circular-dependency-plugin`, `failOnError: false`)와 같은 방침 — **막지 않고 보이게 한다**.
 
 ### 7.3 설계 시점에 예상 못 했던 것
@@ -386,7 +388,7 @@ ESM에서 순환 자체는 오류가 아니다. **`extends`가 순환 경로에 
 
 - [x] **브라우저 실기 확인 — §5 체크리스트.** 통과 (fog 유니폼 수정 후)
 - [ ] `main` 병합
-- [ ] Phase 2 (three 최신화) → [ROADMAP.md](../ROADMAP.md) P1-A
+- [ ] Phase 2 (three 최신화) → [ROADMAP.md](ROADMAP.md) P1-A
 
 ### 7.5 자동 검증의 사각지대
 

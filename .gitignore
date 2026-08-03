@@ -11,13 +11,9 @@ node_modules/
 [Bb]in/
 [Oo]bj/
 
-# 구 TypeScript outFile 빌드 산출물 (ESM 전환으로 폐기)
-JWFramework/JWFramework.js
-JWFramework/JWFramework.js.map
-JWFramework/JWFramework.d.ts
-
 # ─────────────────────────────────────────────
-# docs/ 는 배포 산출물 폴더이지만 GitHub Pages 소스이므로 커밋한다.
-#   docs/JWFramework.mjs, docs/JWFramework.css  ← npm run build 산출물
-#   docs/Model/, docs/index.html                ← 정적 자원 (소스)
+# Publish/ 는 배포 산출물 폴더이지만 커밋한다.
+#   JWFramework.mjs / .css   ← npm run build 산출물
+#   index.html, Model/       ← 정적 자원 (소스)
+# GitHub Pages 는 .github/workflows/pages.yml 이 이 폴더를 올린다.
 # ─────────────────────────────────────────────

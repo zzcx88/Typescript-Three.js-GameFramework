@@ -3,12 +3,12 @@ import tseslint from 'typescript-eslint';
 
 export default tseslint.config(
     {
-        ignores: ['node_modules/**', 'docs/**', 'JWFramework/Lib/**', '**/*.d.ts', '**/*.js', '**/*.mjs'],
+        ignores: ['node_modules/**', 'scripts/**', '**/*.d.ts', '**/*.js', '**/*.mjs'],
     },
     js.configs.recommended,
     ...tseslint.configs.recommended,
     {
-        files: ['JWFramework/**/*.ts'],
+        files: ['**/*.ts'],
         languageOptions: {
             parser: tseslint.parser,
             parserOptions: { ecmaVersion: 2021, sourceType: 'module' },

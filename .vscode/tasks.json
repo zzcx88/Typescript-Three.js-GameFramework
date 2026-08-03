@@ -6,7 +6,7 @@
             "type": "shell",
             "command": "npm",
             "args": ["run", "build"],
-            "options": { "cwd": "${workspaceFolder}" },
+            "options": { "cwd": "${workspaceFolder}/JWFramework" },
             "problemMatcher": ["$tsc"],
             "group": { "kind": "build", "isDefault": true }
         },
@@ -15,7 +15,7 @@
             "type": "shell",
             "command": "npm",
             "args": ["run", "watch"],
-            "options": { "cwd": "${workspaceFolder}" },
+            "options": { "cwd": "${workspaceFolder}/JWFramework" },
             "isBackground": true,
             "problemMatcher": []
         },
@@ -24,7 +24,7 @@
             "type": "shell",
             "command": "npm",
             "args": ["run", "typecheck"],
-            "options": { "cwd": "${workspaceFolder}" },
+            "options": { "cwd": "${workspaceFolder}/JWFramework" },
             "problemMatcher": ["$tsc"]
         },
         {
@@ -32,15 +32,15 @@
             "type": "shell",
             "command": "npm",
             "args": ["run", "verify"],
-            "options": { "cwd": "${workspaceFolder}" },
+            "options": { "cwd": "${workspaceFolder}/JWFramework" },
             "problemMatcher": ["$tsc"]
         },
         {
-            "label": "Serve docs (8080)",
+            "label": "Serve Publish (8080)",
             "type": "shell",
             "command": "npm",
             "args": ["run", "serve"],
-            "options": { "cwd": "${workspaceFolder}" },
+            "options": { "cwd": "${workspaceFolder}/JWFramework" },
             "isBackground": true,
             "problemMatcher": []
         }

@@ -26,8 +26,8 @@
 **미구현**: 게임 루프(스테이지 진행·승패·리스폰), HUD, 적 AI, 데미지 모델, 사운드, 멀티플레이.
 
 - 라이브 데모: https://zzcx88.github.io/Typescript-Three.js-GameFramework/
-- 소스 루트: `JWFramework/` · 배포 미러: `docs/`
-- **작업 목록: [ROADMAP.md](ROADMAP.md)**
+- 소스 + 툴체인: `JWFramework/` · 배포 산출물: `Publish/` · 문서: `docs/`
+- **작업 목록: [ROADMAP.md](docs/ROADMAP.md)**
 
 > 이 코드베이스는 저자가 신입 시절 WebGL/프레임워크 학습용으로 직접 작성한 것이다. 레거시 패턴(전역 싱글턴, `instanceof` 분기, 이름 문자열 매칭, 오타 API)이 다수 남아 있다.
 > `namespace` + `outFile` 구조는 **ESM으로 전환 완료**([docs/ESM전환-설계.md](docs/ESM전환-설계.md)). 나머지 개선 항목은 ROADMAP에 있으며, **정리되기 전까지는 기존 관례를 따르는 것**이 원칙이다(§6, §7).
@@ -36,28 +36,60 @@
 
 ## 1. 빌드 · 실행
 
-**모든 명령은 저장소 루트에서** 실행한다. (설계·이력: [docs/ESM전환-설계.md](docs/ESM전환-설계.md))
+### 폴더 구조
 
 ```
+/
+├── CLAUDE.md  README.md  .gitignore  .gitattributes
+├── .github/workflows/pages.yml   ← Publish/ 를 GitHub Pages 로 배포
+├── .vscode/tasks.json            ← 빌드·서브 태스크 (cwd = JWFramework)
+├── JWFramework/     ← 소스 + 툴체인. npm 명령은 전부 여기서
+│   ├── package.json  tsconfig.json  eslint.config.mjs  .madgerc
+│   ├── scripts/     ← check-cycles.mjs, cycles-baseline.json
+│   ├── node_modules/
+│   ├── types/       ← 서드파티 타입 보강 (§2①)
+│   ├── Main.ts  define.ts  enum.ts  Style.css
+│   └── Manager/ Component/ Object/ Scene/ GUI/ Picker/ ObjectPool/ Shader/
+├── Publish/         ← 배포 산출물 = 로컬 실행 루트 = Pages 소스
+│   ├── index.html  JWFramework.mjs  JWFramework.css
+│   └── Model/       ← 에셋 (glb/gltf, 하이트맵, 스카이박스, Scene.json)
+└── docs/            ← 문서 (ROADMAP.md, 설계문서)
+```
+
+### 명령
+
+**`JWFramework/` 안에서** 실행한다. 루트가 아니다.
+
+```
+cd JWFramework
 npm install          # 최초 1회
-npm run build        # typecheck → esbuild 번들 → CSS  ⇒ docs/
-npm run serve        # http://localhost:8080  (docs/ 를 루트로)
+npm run build        # typecheck → esbuild 번들 → CSS  ⇒ ../Publish/
+npm run serve        # http://localhost:8080  (../Publish/ 를 루트로)
 npm start            # build:dev + serve
 npm run watch        # esbuild --watch (소스맵 포함)
-npm run verify       # typecheck + lint + 순환참조 검사
+npm run verify       # typecheck + lint + 순환 구조 검사
 ```
+
+루트에서 일회성으로 돌려야 하면 `--prefix`를 쓴다. 루트에 `package.json`을 두지 않는다.
+
+```
+npm --prefix JWFramework run build
+```
+
+VS Code 빌드 태스크(`Ctrl+Shift+B`)는 `cwd`가 `JWFramework`로 잡혀 있어 어디서 눌러도 된다.
 
 | 매크로 | 하는 일 |
 |---|---|
 | `typecheck` | `tsc --noEmit`. **타입 게이트** — esbuild는 타입을 보지 않는다 |
 | `lint` / `lint:fix` | ESLint. `import type` 승격 + §7.1 규칙 강제 |
-| `check:cycles` | `madge --circular`. 보고만 하고 실패시키지 않는다(§4.8) |
-| `build:js` / `build:css` | esbuild → `docs/JWFramework.mjs` · `docs/JWFramework.css` |
+| `check:cycles` | SCC 기준선 래칫. **악화되면 실패**한다 (§3) |
+| `build:js` / `build:css` | esbuild → `../Publish/JWFramework.mjs` · `.css` |
 
-- **소스는 `JWFramework/`, 산출물은 `docs/`.** 둘을 섞지 않는다.
-- `docs/`가 곧 **GitHub Pages 루트이자 로컬 실행 루트**다. 수동 복사 배포는 없어졌다.
+- **소스는 `JWFramework/`, 산출물은 `Publish/`.** 둘을 섞지 않는다.
 - `fetch("./Model/Scene.json")`을 쓰므로 `file://`로 열면 씬 로드가 실패한다. 반드시 `npm run serve`.
-- 산출물(`docs/*.mjs`, `*.css`)은 Pages 배포용이라 **커밋한다**. 소스를 고쳤으면 다시 빌드해서 함께 커밋.
+- 산출물(`Publish/*.mjs`, `*.css`)은 **커밋한다**. 소스를 고쳤으면 다시 빌드해서 함께 커밋.
+- **배포는 `.github/workflows/pages.yml`이 한다.** Pages 의 브랜치 배포는 `/` 또는 `/docs` 만 고를 수 있어서
+  `Publish/` 를 쓰려면 Actions 배포가 필요하다 (저장소 Settings → Pages → Source = GitHub Actions).
 - Visual Studio 프로젝트(`.csproj`/`.sln`)는 파일 열기용으로만 남아 있다. **빌드는 npm이 한다.**
 
 ---
@@ -95,7 +127,7 @@ npm run build && npm run serve   # → docs/ESM전환-설계.md §5 체크리스
 ```
 
 현재 **0.134 고정**. 최신은 0.185+ 라 컬러 관리(r152)·조명 강도(r155)·`TransformControls` 구조(r169)가 깨진다.
-업그레이드는 [ROADMAP.md](ROADMAP.md) P1-A의 독립 작업으로 진행한다.
+업그레이드는 [ROADMAP.md](docs/ROADMAP.md) P1-A의 독립 작업으로 진행한다.
 
 ### ③ 프레임 루프의 디버그 잔재
 
@@ -157,7 +189,7 @@ npm run check:cycles:paths        # madge 원본 경로 나열 (참고용)
 > "순환 경로 N건"으로 세지 않는다. 덩어리 하나에서 경로는 수십 개가 나오고 간선 하나만 바뀌어도 출렁여서 추세를 못 본다.
 
 **현재 기준선: SCC 1개 / 얽힌 모듈 33개 / 내부 간선 130개** (전체 41개 중).
-원인은 매니저 싱글턴 상호 호출이고, 무해함은 검증됐지만(설계문서 §7.2) 갚아야 할 빚이다 → [ROADMAP.md](ROADMAP.md) P1-E · P4-B.
+원인은 매니저 싱글턴 상호 호출이고, 무해함은 검증됐지만(설계문서 §7.2) 갚아야 할 빚이다 → [ROADMAP.md](docs/ROADMAP.md) P1-E · P4-B.
 
 `scripts/cycles-baseline.json`이 **래칫**이다. 악화되면 `npm run verify`가 **실패**한다.
 줄였다면 기준선 파일을 갱신해 새 기준으로 삼는다.
@@ -169,7 +201,7 @@ npm run check:cycles:paths        # madge 원본 경로 나열 (참고용)
 ### 4.1 프레임 흐름
 
 ```
-docs/index.html → docs/JWFramework.mjs   (esbuild 번들, 진입점 Main.ts)
+Publish/index.html → Publish/JWFramework.mjs   (esbuild 번들, 진입점 Main.ts)
 Main.ts (모듈 본문)
  └ WorldManager.InitializeWorld()
      CreateRendere()      WebGLRenderer ← <canvas id="c">
@@ -296,9 +328,11 @@ km/h  = (미터 / deltaTime) * 3.6
 | [JWFramework/ObjectPool/ObjectPool.ts](JWFramework/ObjectPool/ObjectPool.ts) | 제네릭 풀. 현재 `MissileFog` 500개에만 사용 |
 | [JWFramework/Shader/SplettingShader.ts](JWFramework/Shader/SplettingShader.ts) | 터레인 스플래팅 GLSL(문자열). 정점 Y 높이로 5개 텍스처를 `smoothstep` 블렌딩 |
 | [JWFramework/types/](JWFramework/types/) | 서드파티 타입 보강 선언. `as any` 대신 여기에 쓴다 (§2①) |
-| `docs/` | **배포 산출물 = 로컬 실행 루트 = GitHub Pages 루트.** `npm run build`가 채운다 |
-| `docs/Model/` | 에셋(glb/gltf, 하이트맵, 스카이박스) + `Scene.json`(저장된 씬), `Scene_mobil.json` |
-| `node_modules/three` 등 | 서드파티는 전부 npm. **수정 금지** (§2①) |
+| [JWFramework/scripts/](JWFramework/scripts/) | `check-cycles.mjs`(SCC 래칫) + `cycles-baseline.json` |
+| `Publish/` | **배포 산출물 = 로컬 실행 루트 = Pages 소스.** `npm run build`가 채운다 |
+| `Publish/Model/` | 에셋(glb/gltf, 하이트맵, 스카이박스) + `Scene.json`(저장된 씬), `Scene_mobil.json` |
+| [docs/](docs/) | 문서 — [ROADMAP.md](docs/ROADMAP.md), 설계문서 |
+| `JWFramework/node_modules/` | 서드파티는 전부 npm. **수정 금지** (§2①) |
 
 ### 조작 키 (에디터)
 
@@ -407,7 +441,7 @@ export class Foo extends GameObject
 **보조 규칙**
 
 - **3~5단계 산출물은 `.md`로 남긴다.** 대화에만 있으면 다음 세션에서 사라진다.
-  → 큰 작업은 `docs/작업명-설계.md`, 로드맵 수준이면 [ROADMAP.md](ROADMAP.md)에 반영.
+  → 큰 작업은 `docs/작업명-설계.md`, 로드맵 수준이면 [ROADMAP.md](docs/ROADMAP.md)에 반영.
 - **대규모 변경은 브랜치에서.** `main`에 직접 하지 않는다.
 - 페이즈 하나가 끝날 때마다 **빌드 통과 + 브라우저 확인**. 통과 못 하면 다음 페이즈로 넘어가지 않는다.
 - 사용자가 "바로 해줘"라고 명시한 소규모·저위험 작업은 2~5단계를 압축할 수 있다. 단 **압축했다는 사실을 보고에 명시**한다.
@@ -426,7 +460,7 @@ export class Foo extends GameObject
 | 원인 모르는 채 `if` 추가해 증상만 없애기 | 버그는 그대로 남고 재현 조건만 좁아진다 |
 | 크래시만 막는 방어적 null 체크 | "왜 null인가"가 진짜 문제다. 그걸 고쳐야 한다 |
 | **서드파티/벤더 파일 수정으로 우회** | 업그레이드 경로가 막힌다. ↓ 아래 실제 사례 참조 |
-| "일단 동작하게" 상태로 커밋 | 시간이 없으면 코드가 아니라 [ROADMAP.md](ROADMAP.md) 항목으로 남긴다 |
+| "일단 동작하게" 상태로 커밋 | 시간이 없으면 코드가 아니라 [ROADMAP.md](docs/ROADMAP.md) 항목으로 남긴다 |
 
 #### 이 프로젝트에서 실제로 벌어진 일 (반면교사)
 
@@ -457,7 +491,7 @@ fogColor: { type: "c", value: THREE.UniformsLib['fog'].fogColor },
 #### 적용 범위
 
 - **새로 쓰는 코드: 예외 없이 적용.**
-- **기존 코드: 만질 때 같이 고친다**(보이스카우트 규칙). 전면 개조는 [ROADMAP.md](ROADMAP.md) P1-B에서.
+- **기존 코드: 만질 때 같이 고친다**(보이스카우트 규칙). 전면 개조는 [ROADMAP.md](docs/ROADMAP.md) P1-B에서.
 - 기존의 `as unknown as HeightmapTerrain` 패턴은 **따라야 할 관례가 아니라 갚아야 할 빚**이다.
 - 정말 불가피한 예외는 **이유를 주석으로 남긴다**. 주석 없는 캐스팅은 리뷰에서 반려.
 
@@ -511,7 +545,7 @@ import 추가/변경, 이름 일괄 치환, 네임스페이스 제거, 파일 �
 1. `npm run verify` — typecheck **에러 0**, lint **에러 0**, 순환참조 증가 없음
 2. `npm run build && npm run serve` — 브라우저에서 실제 동작 확인
    (자동 검증은 렌더링 결과를 판정하지 못한다. 체크리스트: [docs/ESM전환-설계.md](docs/ESM전환-설계.md) §5)
-3. 소스를 고쳤으면 **`docs/JWFramework.mjs` / `.css` 재빌드분을 같이 커밋** (Pages 배포본)
+3. 소스를 고쳤으면 **`Publish/JWFramework.mjs` / `.css` 재빌드분을 같이 커밋** (Pages 배포본)
 4. `main`에 직접 커밋하지 않는다 (§7.0)
 
 ### 파일을 추가할 때
@@ -561,4 +595,5 @@ import 추가/변경, 이름 일괄 치환, 네임스페이스 제거, 파일 �
 **이 프로젝트 고유**
 - 기존 오타 API 이름 "수정" (§2④)
 - `ObjectType` enum 순서 변경 (§4.5)
-- `docs/`에 손으로 파일 두기 — 빌드 산출물 폴더다 (§1)
+- `Publish/`에 손으로 파일 두기 — 빌드 산출물 폴더다. 문서는 `docs/`, 소스는 `JWFramework/` (§1)
+- 루트에서 `npm run ...` — 명령은 `JWFramework/` 안에서 돈다 (§1)
