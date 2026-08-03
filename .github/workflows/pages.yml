@@ -1,0 +1,39 @@
+name: Deploy Pages
+
+# 배포 산출물은 Publish/ 에 있다.
+# GitHub Pages 의 "Deploy from a branch" 는 / 또는 /docs 만 지원해서 폴더 이름을 못 고른다.
+# 그래서 Source 를 "GitHub Actions" 로 두고 여기서 Publish/ 를 올린다.
+#   저장소 Settings > Pages > Source = GitHub Actions  (웹에서 1회 설정 필요)
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'Publish/**'
+      - '.github/workflows/pages.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# 배포는 한 번에 하나만. 진행 중인 건 취소하지 않는다.
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: Publish
+      - id: deployment
+        uses: actions/deploy-pages@v4
