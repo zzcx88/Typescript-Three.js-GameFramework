@@ -42,11 +42,17 @@ export class AIM9H extends Missile
         if (this.maxResultSpeed == 0)
             this.maxResultSpeed = this.maxVelocity + this.AirCraftSpeed;
 
-        const relativeSpeed = this.resultSpeed - (this.targetObject as EditObject).throttle;
-        if (relativeSpeed > (this.targetObject as EditObject).throttle)
-            this.endHomingStartLength = 100;
-        else
-            this.endHomingStartLength = 0;
+        // 유도 파라미터는 목표가 있을 때만 의미가 있다.
+        // 베이스 Animate() 는 targetObject 부재를 정상 상태로 다뤄 직선 비행으로 넘어가는데,
+        // 여기서 먼저 읽어버리면 그 경로에 닿기 전에 터졌다. ROADMAP P1-B
+        if (this.targetObject != undefined)
+        {
+            const relativeSpeed = this.resultSpeed - (this.targetObject as EditObject).throttle;
+            if (relativeSpeed > (this.targetObject as EditObject).throttle)
+                this.endHomingStartLength = 100;
+            else
+                this.endHomingStartLength = 0;
+        }
 
         super.Animate();
     }
