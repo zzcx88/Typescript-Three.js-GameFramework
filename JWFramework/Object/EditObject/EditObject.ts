@@ -142,21 +142,28 @@ export class EditObject extends GameObject
     private SeekerProcess()
     {
         const targetObject = ObjectManager.getInstance().GetObjectFromName("Target") as EditObject;
-        if (targetObject != null)
+
+        // 락온할 목표가 없으면 비유도 발사를 허용한다.
+        // 이때 발사된 미사일은 targetObject 가 null 이라 Missile.Animate() 의 직선 비행 경로를 탄다.
+        // (AIM-9B 식 고정 시커라 목표가 있을 때는 시야 10° 안의 락온을 그대로 요구한다.)
+        if (targetObject == null)
         {
-            const targetPos = targetObject.physicsComponent.GetPosition().clone();
-            const playerPos = this.physicsComponent.GetPosition().clone();
-            const lookVec = this.physicsComponent.Look.clone().normalize();
-            const targetVec = targetPos.clone().sub(playerPos).normalize();
-            const angleRad = Math.acos(lookVec.dot(targetVec));
-            const angleDeg = THREE.MathUtils.radToDeg(angleRad);
-            if (angleDeg <= 10)
-            {
-                this.canLaunch = true;
-            }
-            else
-                this.canLaunch = false;
+            this.canLaunch = true;
+            return;
         }
+
+        const targetPos = targetObject.physicsComponent.GetPosition().clone();
+        const playerPos = this.physicsComponent.GetPosition().clone();
+        const lookVec = this.physicsComponent.Look.clone().normalize();
+        const targetVec = targetPos.clone().sub(playerPos).normalize();
+        const angleRad = Math.acos(lookVec.dot(targetVec));
+        const angleDeg = THREE.MathUtils.radToDeg(angleRad);
+        if (angleDeg <= 10)
+        {
+            this.canLaunch = true;
+        }
+        else
+            this.canLaunch = false;
     }
 
     private TargetTest()

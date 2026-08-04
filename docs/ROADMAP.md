@@ -71,7 +71,8 @@ Phase 0에서 three를 **0.134에 고정한 채** ESM으로만 옮긴다. 그 �
   `strictNullChecks`가 가장 값어치 있다(아래 널 크래시들을 컴파일 타임에 잡음).
 
 - [ ] **알려진 널 크래시 정리**
-  - [Object/InGameObject/Weapons/IRMissile/](../JWFramework/Object/InGameObject/Weapons/IRMissile/) — `AIM9H/L`, `R60M`의 `Animate()`가 `(this.targetObject as EditObject).throttle`을 널 체크 없이 읽는다. `"Target"` 없이 발사하면 터짐.
+  - [x] ~~`AIM9H/L`, `R60M`의 `Animate()`가 `targetObject`를 널 체크 없이 읽어 `"Target"` 없이 발사하면 터짐~~ → **완료**.
+    베이스 `Missile.Animate()`는 이미 `targetObject` 부재를 정상 상태로 다뤄 직선 비행(`MoveForward(120)`)으로 넘어가는데, 파생 3종이 `super.Animate()` 호출 **전에** 읽어서 그 경로에 닿지 못했다.
   - [GUI/GUIControls/GUI_SRT.ts](../JWFramework/GUI/GUIControls/GUI_SRT.ts) `SetGameObject()`가 `CollisionComponent.OBBInclude`를 널 체크 없이 읽는데, `Picker`는 선택 실패 시 `undefined`를 넘긴다.
 
 - [ ] **`CollisionActive` / `CollisionDeActive` 시그니처 통일**
@@ -199,6 +200,17 @@ Phase 0에서 three를 **0.134에 고정한 채** ESM으로만 옮긴다. 그 �
   > 이 제약은 [터레인·충돌 개선안](터레인-충돌-개선안.md) 5단계(격자 인덱스)에서 없어진다 —
   > XZ 만으로 타일을 정하므로 고도와 무관해지기 때문이다.
   > **고도 상한은 그때부터 온전히 게임 규칙의 몫이 된다.**
+
+### P3-B-1. 무장 — 발사 조건과 미사일 수명
+
+- [ ] **비유도 발사 규칙 정리**
+  현재는 `"Target"` 이 씬에 없으면 락온 없이 발사되고(직선 비행), 있으면 AIM-9B 식 고정 시커라 시야 10° 안의 락온을 요구한다.
+  → 목표가 있어도 비유도 발사는 가능해야 자연스럽다. 락온 여부를 **발사 가능 조건이 아니라 유도 여부**로 분리할 것.
+
+- [ ] **타겟 없이 발사한 미사일이 영원히 난다** ← 위 변경으로 **실제 플레이에서 도달 가능해졌다**
+  감속·사망 판정이 전부 [Missile.Animate()](../JWFramework/Object/InGameObject/Weapons/Missile.ts)의 `if (targetObject != undefined)` 안에 있다.
+  타겟이 없으면 `MoveForward(120)`로 직선 비행만 하고, 지형에 맞지 않는 한 소멸하지 않는다 — `MissileFog`도 계속 뿜는다.
+  → 자체 수명(비행 시간/거리) 기반 소멸을 유도 여부와 무관하게 둔다.
 
 ### P3-C. HUD / UI
 

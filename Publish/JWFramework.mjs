@@ -35687,11 +35687,13 @@ var AIM9H = class extends Missile {
   Animate() {
     if (this.maxResultSpeed == 0)
       this.maxResultSpeed = this.maxVelocity + this.AirCraftSpeed;
-    const relativeSpeed = this.resultSpeed - this.targetObject.throttle;
-    if (relativeSpeed > this.targetObject.throttle)
-      this.endHomingStartLength = 100;
-    else
-      this.endHomingStartLength = 0;
+    if (this.targetObject != void 0) {
+      const relativeSpeed = this.resultSpeed - this.targetObject.throttle;
+      if (relativeSpeed > this.targetObject.throttle)
+        this.endHomingStartLength = 100;
+      else
+        this.endHomingStartLength = 0;
+    }
     super.Animate();
   }
 };
@@ -35722,11 +35724,13 @@ var AIM9L = class extends Missile {
   Animate() {
     if (this.maxResultSpeed == 0)
       this.maxResultSpeed = this.maxVelocity + this.AirCraftSpeed;
-    const relativeSpeed = this.resultSpeed - this.targetObject.throttle;
-    if (relativeSpeed > this.targetObject.throttle)
-      this.endHomingStartLength = 50;
-    else
-      this.endHomingStartLength = 0;
+    if (this.targetObject != void 0) {
+      const relativeSpeed = this.resultSpeed - this.targetObject.throttle;
+      if (relativeSpeed > this.targetObject.throttle)
+        this.endHomingStartLength = 50;
+      else
+        this.endHomingStartLength = 0;
+    }
     super.Animate();
   }
 };
@@ -39367,18 +39371,20 @@ var EditObject = class extends GameObject {
   }
   SeekerProcess() {
     const targetObject = ObjectManager.getInstance().GetObjectFromName("Target");
-    if (targetObject != null) {
-      const targetPos = targetObject.physicsComponent.GetPosition().clone();
-      const playerPos = this.physicsComponent.GetPosition().clone();
-      const lookVec = this.physicsComponent.Look.clone().normalize();
-      const targetVec = targetPos.clone().sub(playerPos).normalize();
-      const angleRad = Math.acos(lookVec.dot(targetVec));
-      const angleDeg = MathUtils.radToDeg(angleRad);
-      if (angleDeg <= 10) {
-        this.canLaunch = true;
-      } else
-        this.canLaunch = false;
+    if (targetObject == null) {
+      this.canLaunch = true;
+      return;
     }
+    const targetPos = targetObject.physicsComponent.GetPosition().clone();
+    const playerPos = this.physicsComponent.GetPosition().clone();
+    const lookVec = this.physicsComponent.Look.clone().normalize();
+    const targetVec = targetPos.clone().sub(playerPos).normalize();
+    const angleRad = Math.acos(lookVec.dot(targetVec));
+    const angleDeg = MathUtils.radToDeg(angleRad);
+    if (angleDeg <= 10) {
+      this.canLaunch = true;
+    } else
+      this.canLaunch = false;
   }
   TargetTest() {
     if (this.isTarget == true) {
@@ -39494,11 +39500,13 @@ var R60M = class extends Missile {
   Animate() {
     if (this.maxResultSpeed == 0)
       this.maxResultSpeed = this.maxVelocity + this.AirCraftSpeed;
-    const relativeSpeed = this.resultSpeed - this.targetObject.throttle;
-    if (relativeSpeed > this.targetObject.throttle)
-      this.endHomingStartLength = 50;
-    else
-      this.endHomingStartLength = 0;
+    if (this.targetObject != void 0) {
+      const relativeSpeed = this.resultSpeed - this.targetObject.throttle;
+      if (relativeSpeed > this.targetObject.throttle)
+        this.endHomingStartLength = 50;
+      else
+        this.endHomingStartLength = 0;
+    }
     super.Animate();
   }
 };
