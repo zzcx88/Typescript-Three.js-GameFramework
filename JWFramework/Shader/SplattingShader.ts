@@ -52,8 +52,14 @@ export class SplattingShader {
 
         gl_FragColor = vec4(0.0, 0.0, 0.0, opacity) + farm + mountain + factory + city + desert;
 
+        // 커스텀 ShaderMaterial 은 내장 셰이더와 달리 출력 변환이 자동으로 붙지 않는다.
+        // (linearToOutputTexel() 은 프리픽스에 주입되지만 호출부가 없다 — WebGLProgram.js)
+        // 인클루드 순서는 내장 셰이더와 동일하게 맞춘다: 톤매핑 → 색공간 → 포그.
+        // 포그가 색공간 뒤에 오는 것은 three 가 fogColor 를 출력 색공간으로 넘기기 때문이다.
+        #include <tonemapping_fragment>
+        #include <colorspace_fragment>
         #include <fog_fragment>
-     }  
+     }
      `
     }
 

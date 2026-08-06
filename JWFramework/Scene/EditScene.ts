@@ -25,7 +25,7 @@ export class EditScene extends SceneBase
 
     BuildSkyBox()
     {
-        this.SceneManager.SceneInstance.background = new THREE.CubeTextureLoader()
+        const skyBox = new THREE.CubeTextureLoader()
             .setPath('Model/SkyBox/')
             .load([
                 'Right.bmp',
@@ -35,7 +35,11 @@ export class EditScene extends SceneBase
                 'Front.bmp',
                 'Back.bmp'
             ]);
-        this.SceneManager.SceneInstance.environment = this.SceneManager.SceneInstance.background;
+        // 스카이박스 이미지의 바이트는 sRGB 값이다. 태그가 없으면 three 가 선형으로 오인해
+        // 디코딩을 건너뛰고, 출력에서 sRGB 인코딩만 한 번 더 걸려 허옇게 뜬다.
+        skyBox.colorSpace = THREE.SRGBColorSpace;
+        this.SceneManager.SceneInstance.background = skyBox;
+        this.SceneManager.SceneInstance.environment = skyBox;
     }
 
     BuildObject()

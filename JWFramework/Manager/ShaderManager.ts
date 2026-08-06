@@ -21,39 +21,54 @@ export class ShaderManager
         this.BuildMotionBlurShader();
         this.splattingShader = new SplattingShader();
 
+        // 아래 5종은 SplattingShader(커스텀 ShaderMaterial)가 쓴다.
+        // 커스텀 셰이더는 출력 sRGB 인코딩이 자동으로 붙지 않으므로,
+        // 여기의 태그(디코딩)와 SplattingShader 의 <colorspace_fragment>(인코딩)는
+        // **반드시 함께** 있어야 한다. 하나만 있으면 한쪽 방향으로만 감마가 걸린다.
         this.farmTexture = new THREE.TextureLoader().load("Model/Heightmap/farm.jpg");
         this.farmTexture.wrapS = THREE.RepeatWrapping;
         this.farmTexture.wrapT = THREE.RepeatWrapping;
+        this.farmTexture.colorSpace = THREE.SRGBColorSpace;
         //this.texture.repeat.set(1, 1);
 
         this.mountainTexture = new THREE.TextureLoader().load("Model/Heightmap/mountain.jpg");
         this.mountainTexture.wrapS = THREE.RepeatWrapping;
         this.mountainTexture.wrapT = THREE.RepeatWrapping;
+        this.mountainTexture.colorSpace = THREE.SRGBColorSpace;
         //this.mountainTexture.repeat.set(16, 16);
 
         this.factoryTexture = new THREE.TextureLoader().load("Model/Heightmap/factory.jpg");
         this.factoryTexture.wrapS = THREE.RepeatWrapping;
         this.factoryTexture.wrapT = THREE.RepeatWrapping;
+        this.factoryTexture.colorSpace = THREE.SRGBColorSpace;
 
         this.cityTexture = new THREE.TextureLoader().load("Model/Heightmap/city.jpg");
         this.cityTexture.wrapS = THREE.RepeatWrapping;
         this.cityTexture.wrapT = THREE.RepeatWrapping;
+        this.cityTexture.colorSpace = THREE.SRGBColorSpace;
 
         this.desertTexture = new THREE.TextureLoader().load("Model/Heightmap/desert.jpg");
         this.desertTexture.wrapS = THREE.RepeatWrapping;
         this.desertTexture.wrapT = THREE.RepeatWrapping;
+        this.desertTexture.colorSpace = THREE.SRGBColorSpace;
 
+        // 아래 3종은 내장 셰이더(SpriteMaterial / MeshBasicMaterial)를 통해 그려진다.
+        // 내장 셰이더는 출력 sRGB 인코딩을 이미 하므로, 태그만 붙이면 디코딩까지 짝이 맞는다.
+        // (스플래팅 텍스처 5종은 커스텀 셰이더라 인코딩이 없다 — 페이즈 2에서 함께 처리)
         this.fogTexture = new THREE.TextureLoader().load("Model/fog/fog.png");
         this.fogTexture.wrapS = THREE.RepeatWrapping;
         this.fogTexture.wrapT = THREE.RepeatWrapping;
+        this.fogTexture.colorSpace = THREE.SRGBColorSpace;
 
         this.cloudTexture = new THREE.TextureLoader().load("Model/Cloud/cloud3.png");
         this.cloudTexture.wrapS = THREE.RepeatWrapping;
         this.cloudTexture.wrapT = THREE.RepeatWrapping;
+        this.cloudTexture.colorSpace = THREE.SRGBColorSpace;
 
         this.missileFlameTexture = new THREE.TextureLoader().load("Model/MissileFlame/MissileFlame.png");
         this.missileFlameTexture.wrapS = THREE.RepeatWrapping;
         this.missileFlameTexture.wrapT = THREE.RepeatWrapping;
+        this.missileFlameTexture.colorSpace = THREE.SRGBColorSpace;
 
     }
 

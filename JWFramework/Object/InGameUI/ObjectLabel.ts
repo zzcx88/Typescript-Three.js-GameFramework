@@ -48,6 +48,8 @@ export class ObjectLabel extends GameObject
         labelTexture.minFilter = THREE.LinearFilter;
         labelTexture.wrapS = THREE.ClampToEdgeWrapping;
         labelTexture.wrapT = THREE.ClampToEdgeWrapping;
+        // 캔버스에 CSS 색으로 그린 값은 sRGB 다.
+        labelTexture.colorSpace = THREE.SRGBColorSpace;
         this.material = new THREE.SpriteMaterial({
             map: labelTexture,
             transparent: true,
