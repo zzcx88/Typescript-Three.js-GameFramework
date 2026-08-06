@@ -27,6 +27,14 @@ canvas {
     z-index: 10;
 }
 
+/* 색 조정 임시 패널 (GUI_Color). dat.GUI 교체 시 함께 제거 */
+#color-gui-container {
+    position: static;
+    top: auto;
+    right: 0px;
+    z-index: 10;
+}
+
 #info {
     position: absolute;
     top: auto;

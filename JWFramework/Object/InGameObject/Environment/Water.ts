@@ -2,6 +2,7 @@ import * as THREE from 'three';
 import { Water as ThreeWater } from 'three/examples/jsm/objects/Water.js';
 import { CollisionComponent } from '../../../Component/CollisionComponent';
 import { ExportComponent } from '../../../Component/ExportComponent';
+import { GUI_Color } from '../../../GUI/GUIControls/GUI_Color';
 import { GameObject } from '../../GameObject';
 import { GraphicComponent } from '../../../Component/GraphicComponent';
 import { ObjectManager } from '../../../Manager/ObjectManager';
@@ -30,6 +31,7 @@ export class Water extends GameObject
             this.CreateWaterMesh();
             this.GameObjectInstance.matrixAutoUpdate = true;
             this.GameObjectInstance.name = this.name;
+            GUI_Color.RegisterWater(this);
         }
         else
         {
@@ -117,6 +119,17 @@ export class Water extends GameObject
             this.reflectionScene.children = scene.children.filter(o_ => (o_ instanceof THREE.Light)).slice();
         }
         return this.reflectionScene;
+    }
+
+    /** 색 조정 임시 패널(GUI_Color)용. Color.set() 이 sRGB → 선형 변환까지 처리한다. */
+    public SetSunColor(hex: number)
+    {
+        this.mesh.material.uniforms['sunColor'].value.set(hex);
+    }
+
+    public SetWaterColor(hex: number)
+    {
+        this.mesh.material.uniforms['waterColor'].value.set(hex);
     }
 
     public Animate()

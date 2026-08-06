@@ -3,6 +3,7 @@ import { TransformControls } from 'three/examples/jsm/controls/TransformControls
 import { CameraManager } from '../Manager/CameraManager';
 import { CameraMode, KeyState, LightType, ObjectType, PickMode } from '../enum';
 import { GUIManager } from '../Manager/GUIManager';
+import { GUI_Color } from '../GUI/GUIControls/GUI_Color';
 import type { GameObject } from '../Object/GameObject';
 import { InputManager } from '../Manager/InputManager';
 import { Light } from '../Object/Light/Light';
@@ -75,6 +76,15 @@ export class EditScene extends SceneBase
         ObjectManager.getInstance().AddObject(this.ambientLight, "ambientLight", this.ambientLight.Type);
         this.ambientLight.SetColor(0xFFFFFF);
         this.ambientLight.Intensity = 1.5;
+
+        // 색 조정 임시 패널. 씬 재로드 때 BuildLight() 가 다시 불리므로 한 번만 만든다.
+        // GUIManager 를 거치지 않는 것은 의도다 — 나중에 이 블록만 지우면 통째로 빠진다.
+        if (this.colorPanel == null)
+        {
+            const worldManager = WorldManager.getInstance();
+            this.colorPanel = new GUI_Color(worldManager.Renderer, worldManager.Canvas.width / 8);
+        }
+        this.colorPanel.BindLight(this.directionalLight, this.ambientLight);
     }
 
     BuildFog()
@@ -337,6 +347,11 @@ export class EditScene extends SceneBase
     private testLoad = false;
     private directionalLight: Light;
     private ambientLight: Light;
+    // 임시 — dat.GUI 교체 시 제거.
+    // 초기화식(= null)을 붙이면 안 된다. 파생 클래스 필드 초기화는 super() 뒤에 실행되는데
+    // BuildLight() 는 SceneBase 생성자 안에서 이미 불리므로, 만들어 둔 참조를 덮어써
+    // 씬 재로드 때 패널이 하나 더 생긴다.
+    private colorPanel: GUI_Color;
     private madeCloud: boolean = false;
     private gizmo: TransformControls;
     private gizmoOnOff: boolean = true;
