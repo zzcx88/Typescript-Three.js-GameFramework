@@ -68,11 +68,11 @@ Phase 0에서 three를 **0.134에 고정한 채** ESM으로만 옮긴다. 그 �
   → **완료.** 텍스처 sRGB 태그 + 스플래팅 셰이더 출력 변환으로 파이프라인을 통일하고,
   조명·물빛을 다시 잡았다. **톤매핑은 따져본 뒤 쓰지 않기로 결정**(근거: 설계문서 §9.3).
   → 확정값·판단 근거는 [docs/색관리-재조정-설계.md](색관리-재조정-설계.md) §9
-- [ ] **색 조정용 임시 GUI 패널** — 색값을 코드에 박고 빌드·리로드를 반복하는 방식은 비용이 너무 크다.
-  물빛(`sunColor` / `waterColor`)을 맞추다가 실측했고, 조명 강도·노출도 같은 문제를 겪는다.
+- [x] ~~**색 조정용 임시 GUI 패널** — 색값을 코드에 박고 빌드·리로드를 반복하는 방식은 비용이 너무 크다.
+  물빛(`sunColor` / `waterColor`)을 맞추다가 실측했고, 조명 강도·노출도 같은 문제를 겪는다.~~
   dat.GUI 의 `addColor()` 로 런타임 조절 → 확정값만 소스에 반영하는 흐름이 필요하다.
-  대상: `Water` 의 `sunColor`·`waterColor`, `EditScene` 조명 강도, `toneMappingExposure`.
-  **에디터 전용 임시 패널**이며 dat.GUI 교체(P3-C) 시 함께 정리한다.
+  → **완료.** `GUI/GUIControls/GUI_Color.ts`. **임시 패널이며 제거 예정**이다
+  ([docs/UI시스템-설계.md](UI시스템-설계.md) 3단계에서 새 컴포넌트로 재작성).
 - [ ] 이후 정기 갱신 루틴 확립 — `npm i three@latest` + 회귀 체크리스트
 
 ### P1-B. 타입 안전성
@@ -228,6 +228,9 @@ Phase 0에서 three를 **0.134에 고정한 채** ESM으로만 옮긴다. 그 �
   → 자체 수명(비행 시간/거리) 기반 소멸을 유도 여부와 무관하게 둔다.
 
 ### P3-C. HUD / UI
+
+> 에디터 UI(dat.GUI 교체)는 **별도 작업**이다 → [docs/UI시스템-설계.md](UI시스템-설계.md).
+> HUD 는 인게임용이라 요구가 다르지만, 컴포넌트 계층은 공유할 수 있다.
 
 - [ ] 속도계 · 고도계 · 인공수평의 — 현재 `#speed` DOM 텍스트 하나뿐 ([Object/EditObject/EditObject.ts](../JWFramework/Object/EditObject/EditObject.ts) `SpeedIndicatorProcess`)
 - [ ] 조준환 / 리드 인디케이터 (`IRCircle` 활용)
