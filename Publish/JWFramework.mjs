@@ -34422,2032 +34422,6 @@ var ExportComponent = class {
   }
 };
 
-// Object/GameObject.ts
-var GameObject = class {
-  constructor() {
-    this.name = "";
-    this.isClone = false;
-    this.isPoolObject = true;
-    this.isDead = false;
-    this.isPlayer = false;
-    this.isRayOn = false;
-    this.physicsCompIncluded = false;
-    this.graphicCompIncluded = false;
-    this.picked = false;
-  }
-  InitializeAfterLoad() {
-  }
-  get Type() {
-    return this.type;
-  }
-  get Name() {
-    return this.name;
-  }
-  set Name(name) {
-    this.name = name;
-  }
-  get IsClone() {
-    return this.isClone;
-  }
-  set IsClone(isClone) {
-    this.isClone = isClone;
-  }
-  get IsPlayer() {
-    return this.isPlayer;
-  }
-  set IsPoolObject(isPoolObj) {
-    this.isPoolObject = isPoolObj;
-  }
-  get IsPoolObject() {
-    return this.isPoolObject;
-  }
-  set IsPlayer(flag) {
-    this.isPlayer = flag;
-  }
-  get PhysicsComponent() {
-    return this.physicsComponent;
-  }
-  get GraphicComponent() {
-    return this.graphicComponent;
-  }
-  get GUIComponent() {
-    return this.guiComponent;
-  }
-  get ExportComponent() {
-    return this.exportComponent;
-  }
-  get CollisionComponent() {
-    return this.collisionComponent;
-  }
-  get AnimationMixer() {
-    return this.animationMixer;
-  }
-  set AnimationMixer(animationMixer) {
-    this.animationMixer = animationMixer;
-  }
-  get PhysicsCompIncluded() {
-    return this.physicsCompIncluded;
-  }
-  get GraphicCompIncluded() {
-    return this.graphicCompIncluded;
-  }
-  set PhysicsCompIncluded(isIncluded) {
-    this.physicsCompIncluded = isIncluded;
-  }
-  set GraphicCompIncluded(isIncluded) {
-    this.graphicCompIncluded = isIncluded;
-  }
-  set Picked(picked) {
-    this.picked = picked;
-  }
-  get Picked() {
-    return this.picked;
-  }
-  get GameObjectInstance() {
-    return this.gameObjectInstance;
-  }
-  set GameObjectInstance(gameObjectInstance) {
-    this.gameObjectInstance = gameObjectInstance;
-  }
-  get ModelData() {
-    return this.modelData;
-  }
-  set ModelData(anim) {
-    this.modelData = anim;
-  }
-  get IsDead() {
-    return this.isDead;
-  }
-  set IsDead(flag) {
-    this.isDead = flag;
-  }
-  get IsRayOn() {
-    return this.isRayOn;
-  }
-  set IsRayOn(flag) {
-    this.isRayOn = flag;
-  }
-  CollisionActive(value = 0) {
-  }
-  CollisionDeActive(value = 0) {
-  }
-  Reset() {
-  }
-  Animate() {
-  }
-  DeleteObject() {
-    this.isDead = true;
-  }
-  DeleteAllComponent() {
-    delete this.physicsComponent;
-    this.physicsComponent = null;
-    delete this.collisionComponent;
-    this.collisionComponent = null;
-    delete this.exportComponent;
-    this.exportComponent = null;
-    delete this.graphicComponent;
-    this.graphicComponent = null;
-    if (this.guiComponent)
-      this.guiComponent.Dispose();
-    delete this.guiComponent;
-    this.guiComponent = null;
-  }
-};
-
-// Component/GraphicComponent.ts
-var GraphicComponent = class {
-  constructor(gameObject) {
-    this.GameObject = gameObject;
-    this.GameObject.GraphicCompIncluded = true;
-    this.renderSwitch = true;
-  }
-  SetRenderOnOff(renderSwitch) {
-    this.renderSwitch = renderSwitch;
-    if (renderSwitch == false) {
-      SceneManager.getInstance().SceneInstance.remove(this.GameObject.GameObjectInstance);
-    } else {
-      if (SceneManager.getInstance().SceneInstance)
-        SceneManager.getInstance().SceneInstance.add(this.GameObject.GameObjectInstance);
-    }
-  }
-};
-
-// node_modules/three/examples/jsm/utils/SkeletonUtils.js
-function clone(source) {
-  const sourceLookup = /* @__PURE__ */ new Map();
-  const cloneLookup = /* @__PURE__ */ new Map();
-  const clone2 = source.clone();
-  parallelTraverse(source, clone2, function(sourceNode, clonedNode) {
-    sourceLookup.set(clonedNode, sourceNode);
-    cloneLookup.set(sourceNode, clonedNode);
-  });
-  clone2.traverse(function(node) {
-    if (!node.isSkinnedMesh) return;
-    const clonedMesh = node;
-    const sourceMesh = sourceLookup.get(node);
-    const sourceBones = sourceMesh.skeleton.bones;
-    clonedMesh.skeleton = sourceMesh.skeleton.clone();
-    clonedMesh.bindMatrix.copy(sourceMesh.bindMatrix);
-    clonedMesh.skeleton.bones = sourceBones.map(function(bone) {
-      return cloneLookup.get(bone);
-    });
-    clonedMesh.bind(clonedMesh.skeleton, clonedMesh.bindMatrix);
-  });
-  return clone2;
-}
-function parallelTraverse(a2, b2, callback) {
-  callback(a2, b2);
-  for (let i = 0; i < a2.children.length; i++) {
-    parallelTraverse(a2.children[i], b2.children[i], callback);
-  }
-}
-
-// Component/PhysicsComponent.ts
-var PhysicsComponent = class {
-  constructor(gameObject) {
-    //private gameince: THREE.Object3D;
-    this.vec3Right = new Vector3(1, 0, 0);
-    this.vec3Up = new Vector3(0, 1, 0);
-    this.vec3Look = new Vector3(0, 0, 1);
-    this.vec3Position = new Vector3(0, 0, 0);
-    this.GameObject = gameObject;
-    this.GameObject.PhysicsCompIncluded = true;
-  }
-  get Up() {
-    return this.vec3Up;
-  }
-  get Right() {
-    return this.vec3Right;
-  }
-  get Look() {
-    return this.vec3Look;
-  }
-  set Up(vec3Up) {
-    this.vec3Up = vec3Up;
-  }
-  set Right(vec3Right) {
-    this.vec3Right = vec3Right;
-  }
-  set Look(vec3Look) {
-    this.vec3Look = vec3Look;
-  }
-  SetPosition(x, y, z) {
-    this.GameObject.GameObjectInstance.position.x = x;
-    this.GameObject.GameObjectInstance.position.y = y;
-    this.GameObject.GameObjectInstance.position.z = z;
-    this.UpdateMatrix();
-  }
-  SetPositionVec3(vec3) {
-    this.GameObject.GameObjectInstance.position.x = vec3.x;
-    this.GameObject.GameObjectInstance.position.y = vec3.y;
-    this.GameObject.GameObjectInstance.position.z = vec3.z;
-    this.UpdateMatrix();
-  }
-  SetScale(x, y, z) {
-    this.GameObject.GameObjectInstance.scale.set(x, y, z);
-    this.UpdateMatrix();
-  }
-  SetScaleScalar(scalar) {
-    this.GameObject.GameObjectInstance.scale.setScalar(scalar);
-    this.UpdateMatrix();
-  }
-  MoveForward(distance) {
-    const Look = new Vector3(0, 0, 1);
-    this.GameObject.GameObjectInstance.translateOnAxis(Look, distance * WorldManager.getInstance().GetDeltaTime());
-    this.UpdateMatrix();
-  }
-  MoveDirection(direction, distance) {
-    ;
-    this.GameObject.GameObjectInstance.translateOnAxis(direction, distance * WorldManager.getInstance().GetDeltaTime());
-    this.UpdateMatrix();
-  }
-  GetPosition() {
-    return this.GameObject.GameObjectInstance.position;
-  }
-  GetRotateEuler() {
-    return this.GameObject.GameObjectInstance.rotation;
-  }
-  GetRotateMatrix3() {
-    const rotatematrix = new Matrix3();
-    rotatematrix.set(
-      this.Right.x,
-      this.Right.y,
-      this.Right.z,
-      this.Up.x,
-      this.Up.y,
-      this.Up.z,
-      this.Look.x,
-      this.Look.y,
-      this.Look.z
-    );
-    return rotatematrix;
-  }
-  GetScale() {
-    return this.GameObject.GameObjectInstance.scale;
-  }
-  GetMaxVertex() {
-    const vertices = new Vector3();
-    const max = new Vector3(-Infinity, -Infinity, -Infinity);
-    this.GameObject.GameObjectInstance.traverse(function(child) {
-      if (child.geometry != void 0) {
-        const geo = child.geometry;
-        const position = geo.attributes.position;
-        for (let i = 0; i < position.count; i++) {
-          vertices.fromBufferAttribute(position, i);
-          max.max(vertices);
-        }
-      }
-    });
-    return max;
-  }
-  GetMinVertex() {
-    const vertices = new Vector3();
-    const min = new Vector3(Infinity, Infinity, Infinity);
-    this.GameObject.GameObjectInstance.traverse(function(child) {
-      if (child.geometry != void 0) {
-        const geo = child.geometry;
-        const position = geo.attributes.position;
-        for (let i = 0; i < position.count; i++) {
-          vertices.fromBufferAttribute(position, i);
-          min.min(vertices);
-        }
-      }
-    });
-    return min;
-  }
-  GetMatrix4() {
-    return this.GameObject.GameObjectInstance.matrixWorld;
-  }
-  //Object스페이스 축 기준 수치만큼 회전
-  SetRotate(x, y, z) {
-    this.GameObject.GameObjectInstance.rotateX(x);
-    this.GameObject.GameObjectInstance.rotateY(y);
-    this.GameObject.GameObjectInstance.rotateZ(z);
-    this.UpdateMatrix();
-  }
-  SetRotateVec3(vec3) {
-    this.GameObject.GameObjectInstance.rotateX(vec3.x);
-    this.GameObject.GameObjectInstance.rotateY(vec3.y);
-    this.GameObject.GameObjectInstance.rotateZ(vec3.z);
-    this.UpdateMatrix();
-  }
-  //Object스페이스 축 기준 회전
-  Rotate(x, y, z) {
-    this.GameObject.GameObjectInstance.rotateX(x * WorldManager.getInstance().GetDeltaTime());
-    this.GameObject.GameObjectInstance.rotateY(y * WorldManager.getInstance().GetDeltaTime());
-    this.GameObject.GameObjectInstance.rotateZ(z * WorldManager.getInstance().GetDeltaTime());
-    this.UpdateMatrix();
-  }
-  //월드 스페이스 축 기준 회전
-  RotateVec3(axis, angle) {
-    this.GameObject.GameObjectInstance.rotateOnWorldAxis(axis, angle * WorldManager.getInstance().GetDeltaTime());
-    this.UpdateMatrix();
-  }
-  UpdateMatrix() {
-    if (this.GameObject.Name != "MainCamera" && CameraManager.getInstance().CameraMode != 1 /* CAMERA_3RD */) {
-      this.GameObject.GameObjectInstance.getWorldPosition(this.vec3Position);
-    } else {
-      this.vec3Position = this.GameObject.GameObjectInstance.position;
-    }
-    this.GameObject.GameObjectInstance.getWorldDirection(this.vec3Look);
-    this.vec3Look = this.vec3Look.normalize();
-    this.vec3Up.set(this.GameObject.GameObjectInstance.matrix.elements[4], this.GameObject.GameObjectInstance.matrix.elements[5], this.GameObject.GameObjectInstance.matrix.elements[6]);
-    this.vec3Up = this.vec3Up.normalize();
-    this.vec3Right = this.vec3Right.crossVectors(this.vec3Up, this.vec3Look);
-    this.vec3Right = this.vec3Right.normalize();
-  }
-};
-
-// node_modules/three/examples/jsm/shaders/CopyShader.js
-var CopyShader = {
-  name: "CopyShader",
-  uniforms: {
-    "tDiffuse": { value: null },
-    "opacity": { value: 1 }
-  },
-  vertexShader: (
-    /* glsl */
-    `
-
-		varying vec2 vUv;
-
-		void main() {
-
-			vUv = uv;
-			gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );
-
-		}`
-  ),
-  fragmentShader: (
-    /* glsl */
-    `
-
-		uniform float opacity;
-
-		uniform sampler2D tDiffuse;
-
-		varying vec2 vUv;
-
-		void main() {
-
-			vec4 texel = texture2D( tDiffuse, vUv );
-			gl_FragColor = opacity * texel;
-
-
-		}`
-  )
-};
-
-// node_modules/three/examples/jsm/postprocessing/Pass.js
-var Pass = class {
-  /**
-   * Constructs a new pass.
-   */
-  constructor() {
-    this.isPass = true;
-    this.enabled = true;
-    this.needsSwap = true;
-    this.clear = false;
-    this.renderToScreen = false;
-  }
-  /**
-   * Sets the size of the pass.
-   *
-   * @abstract
-   * @param {number} width - The width to set.
-   * @param {number} height - The height to set.
-   */
-  setSize() {
-  }
-  /**
-   * This method holds the render logic of a pass. It must be implemented in all derived classes.
-   *
-   * @abstract
-   * @param {WebGLRenderer} renderer - The renderer.
-   * @param {WebGLRenderTarget} writeBuffer - The write buffer. This buffer is intended as the rendering
-   * destination for the pass.
-   * @param {WebGLRenderTarget} readBuffer - The read buffer. The pass can access the result from the
-   * previous pass from this buffer.
-   * @param {number} deltaTime - The delta time in seconds.
-   * @param {boolean} maskActive - Whether masking is active or not.
-   */
-  render() {
-    console.error("THREE.Pass: .render() must be implemented in derived pass.");
-  }
-  /**
-   * Frees the GPU-related resources allocated by this instance. Call this
-   * method whenever the pass is no longer used in your app.
-   *
-   * @abstract
-   */
-  dispose() {
-  }
-};
-var _camera = new OrthographicCamera(-1, 1, 1, -1, 0, 1);
-var FullscreenTriangleGeometry = class extends BufferGeometry {
-  constructor() {
-    super();
-    this.setAttribute("position", new Float32BufferAttribute([-1, 3, 0, -1, -1, 0, 3, -1, 0], 3));
-    this.setAttribute("uv", new Float32BufferAttribute([0, 2, 0, 0, 2, 0], 2));
-  }
-};
-var _geometry2 = new FullscreenTriangleGeometry();
-var FullScreenQuad = class {
-  /**
-   * Constructs a new full screen quad.
-   *
-   * @param {?Material} material - The material to render te full screen quad with.
-   */
-  constructor(material) {
-    this._mesh = new Mesh(_geometry2, material);
-  }
-  /**
-   * Frees the GPU-related resources allocated by this instance. Call this
-   * method whenever the instance is no longer used in your app.
-   */
-  dispose() {
-    this._mesh.geometry.dispose();
-  }
-  /**
-   * Renders the full screen quad.
-   *
-   * @param {WebGLRenderer} renderer - The renderer.
-   */
-  render(renderer) {
-    renderer.render(this._mesh, _camera);
-  }
-  /**
-   * The quad's material.
-   *
-   * @type {?Material}
-   */
-  get material() {
-    return this._mesh.material;
-  }
-  set material(value) {
-    this._mesh.material = value;
-  }
-};
-
-// node_modules/three/examples/jsm/postprocessing/ShaderPass.js
-var ShaderPass = class extends Pass {
-  /**
-   * Constructs a new shader pass.
-   *
-   * @param {Object|ShaderMaterial} [shader] - A shader object holding vertex and fragment shader as well as
-   * defines and uniforms. It's also valid to pass a custom shader material.
-   * @param {string} [textureID='tDiffuse'] - The name of the texture uniform that should sample
-   * the read buffer.
-   */
-  constructor(shader, textureID = "tDiffuse") {
-    super();
-    this.textureID = textureID;
-    this.uniforms = null;
-    this.material = null;
-    if (shader instanceof ShaderMaterial) {
-      this.uniforms = shader.uniforms;
-      this.material = shader;
-    } else if (shader) {
-      this.uniforms = UniformsUtils.clone(shader.uniforms);
-      this.material = new ShaderMaterial({
-        name: shader.name !== void 0 ? shader.name : "unspecified",
-        defines: Object.assign({}, shader.defines),
-        uniforms: this.uniforms,
-        vertexShader: shader.vertexShader,
-        fragmentShader: shader.fragmentShader
-      });
-    }
-    this._fsQuad = new FullScreenQuad(this.material);
-  }
-  /**
-   * Performs the shader pass.
-   *
-   * @param {WebGLRenderer} renderer - The renderer.
-   * @param {WebGLRenderTarget} writeBuffer - The write buffer. This buffer is intended as the rendering
-   * destination for the pass.
-   * @param {WebGLRenderTarget} readBuffer - The read buffer. The pass can access the result from the
-   * previous pass from this buffer.
-   * @param {number} deltaTime - The delta time in seconds.
-   * @param {boolean} maskActive - Whether masking is active or not.
-   */
-  render(renderer, writeBuffer, readBuffer) {
-    if (this.uniforms[this.textureID]) {
-      this.uniforms[this.textureID].value = readBuffer.texture;
-    }
-    this._fsQuad.material = this.material;
-    if (this.renderToScreen) {
-      renderer.setRenderTarget(null);
-      this._fsQuad.render(renderer);
-    } else {
-      renderer.setRenderTarget(writeBuffer);
-      if (this.clear) renderer.clear(renderer.autoClearColor, renderer.autoClearDepth, renderer.autoClearStencil);
-      this._fsQuad.render(renderer);
-    }
-  }
-  /**
-   * Frees the GPU-related resources allocated by this instance. Call this
-   * method whenever the pass is no longer used in your app.
-   */
-  dispose() {
-    this.material.dispose();
-    this._fsQuad.dispose();
-  }
-};
-
-// node_modules/three/examples/jsm/postprocessing/MaskPass.js
-var MaskPass = class extends Pass {
-  /**
-   * Constructs a new mask pass.
-   *
-   * @param {Scene} scene - The 3D objects in this scene will define the mask.
-   * @param {Camera} camera - The camera.
-   */
-  constructor(scene, camera) {
-    super();
-    this.scene = scene;
-    this.camera = camera;
-    this.clear = true;
-    this.needsSwap = false;
-    this.inverse = false;
-  }
-  /**
-   * Performs a mask pass with the configured scene and camera.
-   *
-   * @param {WebGLRenderer} renderer - The renderer.
-   * @param {WebGLRenderTarget} writeBuffer - The write buffer. This buffer is intended as the rendering
-   * destination for the pass.
-   * @param {WebGLRenderTarget} readBuffer - The read buffer. The pass can access the result from the
-   * previous pass from this buffer.
-   * @param {number} deltaTime - The delta time in seconds.
-   * @param {boolean} maskActive - Whether masking is active or not.
-   */
-  render(renderer, writeBuffer, readBuffer) {
-    const context = renderer.getContext();
-    const state = renderer.state;
-    state.buffers.color.setMask(false);
-    state.buffers.depth.setMask(false);
-    state.buffers.color.setLocked(true);
-    state.buffers.depth.setLocked(true);
-    let writeValue, clearValue;
-    if (this.inverse) {
-      writeValue = 0;
-      clearValue = 1;
-    } else {
-      writeValue = 1;
-      clearValue = 0;
-    }
-    state.buffers.stencil.setTest(true);
-    state.buffers.stencil.setOp(context.REPLACE, context.REPLACE, context.REPLACE);
-    state.buffers.stencil.setFunc(context.ALWAYS, writeValue, 4294967295);
-    state.buffers.stencil.setClear(clearValue);
-    state.buffers.stencil.setLocked(true);
-    renderer.setRenderTarget(readBuffer);
-    if (this.clear) renderer.clear();
-    renderer.render(this.scene, this.camera);
-    renderer.setRenderTarget(writeBuffer);
-    if (this.clear) renderer.clear();
-    renderer.render(this.scene, this.camera);
-    state.buffers.color.setLocked(false);
-    state.buffers.depth.setLocked(false);
-    state.buffers.color.setMask(true);
-    state.buffers.depth.setMask(true);
-    state.buffers.stencil.setLocked(false);
-    state.buffers.stencil.setFunc(context.EQUAL, 1, 4294967295);
-    state.buffers.stencil.setOp(context.KEEP, context.KEEP, context.KEEP);
-    state.buffers.stencil.setLocked(true);
-  }
-};
-var ClearMaskPass = class extends Pass {
-  /**
-   * Constructs a new clear mask pass.
-   */
-  constructor() {
-    super();
-    this.needsSwap = false;
-  }
-  /**
-   * Performs the clear of the currently defined mask.
-   *
-   * @param {WebGLRenderer} renderer - The renderer.
-   * @param {WebGLRenderTarget} writeBuffer - The write buffer. This buffer is intended as the rendering
-   * destination for the pass.
-   * @param {WebGLRenderTarget} readBuffer - The read buffer. The pass can access the result from the
-   * previous pass from this buffer.
-   * @param {number} deltaTime - The delta time in seconds.
-   * @param {boolean} maskActive - Whether masking is active or not.
-   */
-  render(renderer) {
-    renderer.state.buffers.stencil.setLocked(false);
-    renderer.state.buffers.stencil.setTest(false);
-  }
-};
-
-// node_modules/three/examples/jsm/postprocessing/EffectComposer.js
-var EffectComposer = class {
-  /**
-   * Constructs a new effect composer.
-   *
-   * @param {WebGLRenderer} renderer - The renderer.
-   * @param {WebGLRenderTarget} [renderTarget] - This render target and a clone will
-   * be used as the internal read and write buffers. If not given, the composer creates
-   * the buffers automatically.
-   */
-  constructor(renderer, renderTarget) {
-    this.renderer = renderer;
-    this._pixelRatio = renderer.getPixelRatio();
-    if (renderTarget === void 0) {
-      const size2 = renderer.getSize(new Vector2());
-      this._width = size2.width;
-      this._height = size2.height;
-      renderTarget = new WebGLRenderTarget(this._width * this._pixelRatio, this._height * this._pixelRatio, { type: HalfFloatType });
-      renderTarget.texture.name = "EffectComposer.rt1";
-    } else {
-      this._width = renderTarget.width;
-      this._height = renderTarget.height;
-    }
-    this.renderTarget1 = renderTarget;
-    this.renderTarget2 = renderTarget.clone();
-    this.renderTarget2.texture.name = "EffectComposer.rt2";
-    this.writeBuffer = this.renderTarget1;
-    this.readBuffer = this.renderTarget2;
-    this.renderToScreen = true;
-    this.passes = [];
-    this.copyPass = new ShaderPass(CopyShader);
-    this.copyPass.material.blending = NoBlending;
-    this.timer = new Timer();
-  }
-  /**
-   * Swaps the internal read/write buffers.
-   */
-  swapBuffers() {
-    const tmp = this.readBuffer;
-    this.readBuffer = this.writeBuffer;
-    this.writeBuffer = tmp;
-  }
-  /**
-   * Adds the given pass to the pass chain.
-   *
-   * @param {Pass} pass - The pass to add.
-   */
-  addPass(pass) {
-    this.passes.push(pass);
-    pass.setSize(this._width * this._pixelRatio, this._height * this._pixelRatio);
-  }
-  /**
-   * Inserts the given pass at a given index.
-   *
-   * @param {Pass} pass - The pass to insert.
-   * @param {number} index - The index into the pass chain.
-   */
-  insertPass(pass, index) {
-    this.passes.splice(index, 0, pass);
-    pass.setSize(this._width * this._pixelRatio, this._height * this._pixelRatio);
-  }
-  /**
-   * Removes the given pass from the pass chain.
-   *
-   * @param {Pass} pass - The pass to remove.
-   */
-  removePass(pass) {
-    const index = this.passes.indexOf(pass);
-    if (index !== -1) {
-      this.passes.splice(index, 1);
-    }
-  }
-  /**
-   * Returns `true` if the pass for the given index is the last enabled pass in the pass chain.
-   *
-   * @param {number} passIndex - The pass index.
-   * @return {boolean} Whether the pass for the given index is the last pass in the pass chain.
-   */
-  isLastEnabledPass(passIndex) {
-    for (let i = passIndex + 1; i < this.passes.length; i++) {
-      if (this.passes[i].enabled) {
-        return false;
-      }
-    }
-    return true;
-  }
-  /**
-   * Executes all enabled post-processing passes in order to produce the final frame.
-   *
-   * @param {number} deltaTime - The delta time in seconds. If not given, the composer computes
-   * its own time delta value.
-   */
-  render(deltaTime) {
-    this.timer.update();
-    if (deltaTime === void 0) {
-      deltaTime = this.timer.getDelta();
-    }
-    const currentRenderTarget = this.renderer.getRenderTarget();
-    let maskActive = false;
-    for (let i = 0, il = this.passes.length; i < il; i++) {
-      const pass = this.passes[i];
-      if (pass.enabled === false) continue;
-      pass.renderToScreen = this.renderToScreen && this.isLastEnabledPass(i);
-      pass.render(this.renderer, this.writeBuffer, this.readBuffer, deltaTime, maskActive);
-      if (pass.needsSwap) {
-        if (maskActive) {
-          const context = this.renderer.getContext();
-          const stencil = this.renderer.state.buffers.stencil;
-          stencil.setFunc(context.NOTEQUAL, 1, 4294967295);
-          this.copyPass.render(this.renderer, this.writeBuffer, this.readBuffer, deltaTime);
-          stencil.setFunc(context.EQUAL, 1, 4294967295);
-        }
-        this.swapBuffers();
-      }
-      if (MaskPass !== void 0) {
-        if (pass instanceof MaskPass) {
-          maskActive = true;
-        } else if (pass instanceof ClearMaskPass) {
-          maskActive = false;
-        }
-      }
-    }
-    this.renderer.setRenderTarget(currentRenderTarget);
-  }
-  /**
-   * Resets the internal state of the EffectComposer.
-   *
-   * @param {WebGLRenderTarget} [renderTarget] - This render target has the same purpose like
-   * the one from the constructor. If set, it is used to setup the read and write buffers.
-   */
-  reset(renderTarget) {
-    if (renderTarget === void 0) {
-      const size2 = this.renderer.getSize(new Vector2());
-      this._pixelRatio = this.renderer.getPixelRatio();
-      this._width = size2.width;
-      this._height = size2.height;
-      renderTarget = this.renderTarget1.clone();
-      renderTarget.setSize(this._width * this._pixelRatio, this._height * this._pixelRatio);
-    }
-    this.renderTarget1.dispose();
-    this.renderTarget2.dispose();
-    this.renderTarget1 = renderTarget;
-    this.renderTarget2 = renderTarget.clone();
-    this.writeBuffer = this.renderTarget1;
-    this.readBuffer = this.renderTarget2;
-  }
-  /**
-   * Resizes the internal read and write buffers as well as all passes. Similar to {@link WebGLRenderer#setSize},
-   * this method honors the current pixel ration.
-   *
-   * @param {number} width - The width in logical pixels.
-   * @param {number} height - The height in logical pixels.
-   */
-  setSize(width, height) {
-    this._width = width;
-    this._height = height;
-    const effectiveWidth = this._width * this._pixelRatio;
-    const effectiveHeight = this._height * this._pixelRatio;
-    this.renderTarget1.setSize(effectiveWidth, effectiveHeight);
-    this.renderTarget2.setSize(effectiveWidth, effectiveHeight);
-    for (let i = 0; i < this.passes.length; i++) {
-      this.passes[i].setSize(effectiveWidth, effectiveHeight);
-    }
-  }
-  /**
-   * Sets device pixel ratio. This is usually used for HiDPI device to prevent blurring output.
-   * Setting the pixel ratio will automatically resize the composer.
-   *
-   * @param {number} pixelRatio - The pixel ratio to set.
-   */
-  setPixelRatio(pixelRatio) {
-    this._pixelRatio = pixelRatio;
-    this.setSize(this._width, this._height);
-  }
-  /**
-   * Frees the GPU-related resources allocated by this instance. Call this
-   * method whenever the composer is no longer used in your app.
-   */
-  dispose() {
-    this.renderTarget1.dispose();
-    this.renderTarget2.dispose();
-    this.copyPass.dispose();
-  }
-};
-
-// node_modules/three/examples/jsm/postprocessing/RenderPass.js
-var RenderPass = class extends Pass {
-  /**
-   * Constructs a new render pass.
-   *
-   * @param {Scene} scene - The scene to render.
-   * @param {Camera} camera - The camera.
-   * @param {?Material} [overrideMaterial=null] - The override material. If set, this material is used
-   * for all objects in the scene.
-   * @param {?(number|Color|string)} [clearColor=null] - The clear color of the render pass.
-   * @param {?number} [clearAlpha=null] - The clear alpha of the render pass.
-   */
-  constructor(scene, camera, overrideMaterial = null, clearColor = null, clearAlpha = null) {
-    super();
-    this.scene = scene;
-    this.camera = camera;
-    this.overrideMaterial = overrideMaterial;
-    this.clearColor = clearColor;
-    this.clearAlpha = clearAlpha;
-    this.clear = true;
-    this.clearDepth = false;
-    this.needsSwap = false;
-    this.isRenderPass = true;
-    this._oldClearColor = new Color();
-  }
-  /**
-   * Performs a beauty pass with the configured scene and camera.
-   *
-   * @param {WebGLRenderer} renderer - The renderer.
-   * @param {WebGLRenderTarget} writeBuffer - The write buffer. This buffer is intended as the rendering
-   * destination for the pass.
-   * @param {WebGLRenderTarget} readBuffer - The read buffer. The pass can access the result from the
-   * previous pass from this buffer.
-   * @param {number} deltaTime - The delta time in seconds.
-   * @param {boolean} maskActive - Whether masking is active or not.
-   */
-  render(renderer, writeBuffer, readBuffer) {
-    const oldAutoClear = renderer.autoClear;
-    renderer.autoClear = false;
-    let oldClearAlpha, oldOverrideMaterial;
-    if (this.overrideMaterial !== null) {
-      oldOverrideMaterial = this.scene.overrideMaterial;
-      this.scene.overrideMaterial = this.overrideMaterial;
-    }
-    if (this.clearColor !== null) {
-      renderer.getClearColor(this._oldClearColor);
-      renderer.setClearColor(this.clearColor, renderer.getClearAlpha());
-    }
-    if (this.clearAlpha !== null) {
-      oldClearAlpha = renderer.getClearAlpha();
-      renderer.setClearAlpha(this.clearAlpha);
-    }
-    if (this.clearDepth == true) {
-      renderer.clearDepth();
-    }
-    renderer.setRenderTarget(this.renderToScreen ? null : readBuffer);
-    if (this.clear === true) {
-      renderer.clear(renderer.autoClearColor, renderer.autoClearDepth, renderer.autoClearStencil);
-    }
-    renderer.render(this.scene, this.camera);
-    if (this.clearColor !== null) {
-      renderer.setClearColor(this._oldClearColor);
-    }
-    if (this.clearAlpha !== null) {
-      renderer.setClearAlpha(oldClearAlpha);
-    }
-    if (this.overrideMaterial !== null) {
-      this.scene.overrideMaterial = oldOverrideMaterial;
-    }
-    renderer.autoClear = oldAutoClear;
-  }
-};
-
-// node_modules/three/examples/jsm/postprocessing/SavePass.js
-var SavePass = class extends Pass {
-  /**
-   * Constructs a new save pass.
-   *
-   * @param {WebGLRenderTarget} [renderTarget] - The render target for saving the read buffer.
-   * If not provided, the pass automatically creates a render target.
-   */
-  constructor(renderTarget) {
-    super();
-    this.uniforms = UniformsUtils.clone(CopyShader.uniforms);
-    this.material = new ShaderMaterial({
-      uniforms: this.uniforms,
-      vertexShader: CopyShader.vertexShader,
-      fragmentShader: CopyShader.fragmentShader,
-      blending: NoBlending
-    });
-    this.renderTarget = renderTarget;
-    if (this.renderTarget === void 0) {
-      this.renderTarget = new WebGLRenderTarget(1, 1, { type: HalfFloatType });
-      this.renderTarget.texture.name = "SavePass.rt";
-    }
-    this.needsSwap = false;
-    this._fsQuad = new FullScreenQuad(this.material);
-  }
-  /**
-   * Performs the save pass.
-   *
-   * @param {WebGLRenderer} renderer - The renderer.
-   * @param {WebGLRenderTarget} writeBuffer - The write buffer. This buffer is intended as the rendering
-   * destination for the pass.
-   * @param {WebGLRenderTarget} readBuffer - The read buffer. The pass can access the result from the
-   * previous pass from this buffer.
-   * @param {number} deltaTime - The delta time in seconds.
-   * @param {boolean} maskActive - Whether masking is active or not.
-   */
-  render(renderer, writeBuffer, readBuffer) {
-    this.uniforms["tDiffuse"].value = readBuffer.texture;
-    renderer.setRenderTarget(this.renderTarget);
-    if (this.clear) renderer.clear();
-    this._fsQuad.render(renderer);
-  }
-  /**
-   * Sets the size of the pass.
-   *
-   * @param {number} width - The width to set.
-   * @param {number} height - The height to set.
-   */
-  setSize(width, height) {
-    this.renderTarget.setSize(width, height);
-  }
-  /**
-   * Frees the GPU-related resources allocated by this instance. Call this
-   * method whenever the pass is no longer used in your app.
-   */
-  dispose() {
-    this.renderTarget.dispose();
-    this.material.dispose();
-    this._fsQuad.dispose();
-  }
-};
-
-// node_modules/three/examples/jsm/shaders/BlendShader.js
-var BlendShader = {
-  name: "BlendShader",
-  uniforms: {
-    "tDiffuse1": { value: null },
-    "tDiffuse2": { value: null },
-    "mixRatio": { value: 0.5 },
-    "opacity": { value: 1 }
-  },
-  vertexShader: (
-    /* glsl */
-    `
-
-		varying vec2 vUv;
-
-		void main() {
-
-			vUv = uv;
-			gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );
-
-		}`
-  ),
-  fragmentShader: (
-    /* glsl */
-    `
-
-		uniform float opacity;
-		uniform float mixRatio;
-
-		uniform sampler2D tDiffuse1;
-		uniform sampler2D tDiffuse2;
-
-		varying vec2 vUv;
-
-		void main() {
-
-			vec4 texel1 = texture2D( tDiffuse1, vUv );
-			vec4 texel2 = texture2D( tDiffuse2, vUv );
-			gl_FragColor = opacity * mix( texel1, texel2, mixRatio );
-
-		}`
-  )
-};
-
-// Shader/SplattingShader.ts
-var SplattingShader = class {
-  constructor() {
-    this.vertexShader = `
-     #include <fog_pars_vertex>
-     varying vec2 vUV;
-     varying vec4 Position;
-
-     void main() {
-        #include <begin_vertex>
-        #include <project_vertex>
-        #include <fog_vertex>
-        vUV = uv;
-        Position = vec4(position,1.0);
-       }
-     `;
-    this.fragmentShader = `
-     #include <fog_pars_fragment>
-
-     uniform sampler2D farmTexture;
-     uniform sampler2D mountainTexture;
-     uniform sampler2D factoryTexture;
-     uniform sampler2D cityTexture;
-     uniform sampler2D desertTexture;
-     uniform float opacity;
-     uniform float cityUVFactor;
-
-     varying vec2 vUV;
-     varying vec4 Position;
-
-     void main() 
-     {
-        vec4 factory = vec4(0.0);
-        vec4 farm = vec4(0.0);
-        vec4 city = vec4(0.0);
-        vec4 mountain = vec4(0.0);
-        vec4 desert = vec4(0.0);
-
-        factory = (smoothstep(-2.f, -1.f, Position.y) - smoothstep(-1.f, 0.f, Position.y)) * texture2D( factoryTexture, vUV * 9.5 );
-        factory[3] = 0.0;
-        farm = (smoothstep(-1.f, 0.f, Position.y) - smoothstep(0.f, 1.f, Position.y)) * texture2D( farmTexture, vUV * 1.0 );
-        farm[3] = 0.0;
-        city = (smoothstep(0.f, 1.f, Position.y) - smoothstep(1.f, 2.f, Position.y)) * texture2D( cityTexture, vUV * cityUVFactor );
-        city[3] = 0.0;
-        mountain = (smoothstep(1.f, 2.f, Position.y) - smoothstep(2.f, 1200.f, Position.y)) * texture2D( mountainTexture, vUV * 5.0);
-        mountain[3] = 0.0;
-        desert = (smoothstep(-1.f, -2.f, Position.y) - smoothstep(-2.f, -1200.f, Position.y)) * texture2D( desertTexture, vUV * 10.0 );
-        desert[3] = 0.0;
-
-        gl_FragColor = vec4(0.0, 0.0, 0.0, opacity) + farm + mountain + factory + city + desert;
-
-        #include <fog_fragment>
-     }  
-     `;
-  }
-};
-
-// Manager/ShaderManager.ts
-var ShaderManager = class _ShaderManager {
-  constructor() {
-    this.BuildMotionBlurShader();
-    this.splattingShader = new SplattingShader();
-    this.farmTexture = new TextureLoader().load("Model/Heightmap/farm.jpg");
-    this.farmTexture.wrapS = RepeatWrapping;
-    this.farmTexture.wrapT = RepeatWrapping;
-    this.mountainTexture = new TextureLoader().load("Model/Heightmap/mountain.jpg");
-    this.mountainTexture.wrapS = RepeatWrapping;
-    this.mountainTexture.wrapT = RepeatWrapping;
-    this.factoryTexture = new TextureLoader().load("Model/Heightmap/factory.jpg");
-    this.factoryTexture.wrapS = RepeatWrapping;
-    this.factoryTexture.wrapT = RepeatWrapping;
-    this.cityTexture = new TextureLoader().load("Model/Heightmap/city.jpg");
-    this.cityTexture.wrapS = RepeatWrapping;
-    this.cityTexture.wrapT = RepeatWrapping;
-    this.desertTexture = new TextureLoader().load("Model/Heightmap/desert.jpg");
-    this.desertTexture.wrapS = RepeatWrapping;
-    this.desertTexture.wrapT = RepeatWrapping;
-    this.fogTexture = new TextureLoader().load("Model/fog/fog.png");
-    this.fogTexture.wrapS = RepeatWrapping;
-    this.fogTexture.wrapT = RepeatWrapping;
-    this.cloudTexture = new TextureLoader().load("Model/Cloud/cloud3.png");
-    this.cloudTexture.wrapS = RepeatWrapping;
-    this.cloudTexture.wrapT = RepeatWrapping;
-    this.missileFlameTexture = new TextureLoader().load("Model/MissileFlame/MissileFlame.png");
-    this.missileFlameTexture.wrapS = RepeatWrapping;
-    this.missileFlameTexture.wrapT = RepeatWrapping;
-  }
-  static getInstance() {
-    if (!_ShaderManager.instance) {
-      _ShaderManager.instance = new _ShaderManager();
-    }
-    return _ShaderManager.instance;
-  }
-  BuildMotionBlurShader() {
-    const renderer = WorldManager.getInstance().Renderer;
-    const sceneInstance = SceneManager.getInstance().SceneInstance;
-    const camera = WorldManager.getInstance().MainCamera.CameraInstance;
-    const canvas = WorldManager.getInstance().Canvas;
-    this.composer = new EffectComposer(renderer);
-    this.renderPass = new RenderPass(sceneInstance, camera);
-    this.renderTargetParameters = {
-      minFilter: LinearFilter,
-      magFilter: LinearFilter,
-      stencilBuffer: false
-    };
-    this.savePass = new SavePass(
-      new WebGLRenderTarget(
-        canvas.clientWidth,
-        canvas.clientHeight,
-        this.renderTargetParameters
-      )
-    );
-    this.blendPass = new ShaderPass(BlendShader, "tDiffuse1");
-    this.blendPass.uniforms["tDiffuse2"].value = this.savePass.renderTarget.texture;
-    this.blendPass.uniforms["mixRatio"].value = 0;
-    this.outputPass = new ShaderPass(CopyShader);
-    this.composer.addPass(this.renderPass);
-    this.composer.addPass(this.blendPass);
-    this.composer.addPass(this.savePass);
-    this.composer.addPass(this.outputPass);
-    this.composer.renderToScreen = true;
-  }
-  get SplattingShader() {
-    return this.splattingShader;
-  }
-  ShadedRender() {
-    this.composer.render();
-  }
-};
-
-// Object/InGameObject/Weapons/Missile.ts
-var Missile = class extends GameObject {
-  constructor() {
-    super();
-    this.aircraftSpeed = 0;
-    this.velocity = 0;
-    this.velocityGain = 0;
-    this.velocityBreak = 0;
-    this.maxVelocity = 80;
-    this.maxResultSpeed = 0;
-    this.resultSpeed = 0;
-    this.rotateSpeed = 0;
-    //미사일 선회력
-    this.maxRotateSpeed = 20;
-    this.rotateSpeedAcceleration = 20;
-    this.predictionDistance = 200;
-    this.endHomingStartLength = 0;
-    this.angle = 500;
-    this.activeCollide = false;
-    this.deAcceleration = false;
-    this.type = 5 /* OBJ_MISSILE */;
-    this.physicsComponent = new PhysicsComponent(this);
-    this.graphicComponent = new GraphicComponent(this);
-    this.exportComponent = new ExportComponent(this);
-    this.collisionComponent = new CollisionComponent(this);
-  }
-  InitializeAfterLoad() {
-    this.targetObject = ObjectManager.getInstance().GetObjectFromName("Target");
-    this.GameObjectInstance.matrixAutoUpdate = true;
-    this.PhysicsComponent.SetScaleScalar(1);
-    this.GameObjectInstance.name = this.name;
-    if (this.IsClone == false)
-      ObjectManager.getInstance().AddObject(this, this.name, this.Type);
-    else {
-      const flameMaterial = new SpriteMaterial({
-        map: ShaderManager.getInstance().missileFlameTexture,
-        transparent: true
-        //side: THREE.DoubleSide
-      });
-      this.missileFlameMesh = new Sprite(flameMaterial);
-      this.GameObjectInstance.add(this.missileFlameMesh);
-      this.missileFlameMesh.scale.set(5, 5, 5);
-      this.missileFlameMesh.position.addScaledVector(this.PhysicsComponent.Look, -1.2);
-      this.missileFlameMesh.position.addScaledVector(this.PhysicsComponent.Right, -0.04);
-      this.missileFlameMesh.position.addScaledVector(this.PhysicsComponent.Up, 0.05);
-      this.CreateCollider();
-    }
-  }
-  CreateCollider() {
-    this.CollisionComponent.CreateBoundingSphere(this.physicsComponent.GetPosition(), 2);
-    this.CollisionComponent.CreateRaycaster();
-    this.CollisionComponent.ObbBoxHelper.visible = false;
-  }
-  CollisionActive(type = null) {
-    if (type == 0 /* OBJ_TERRAIN */)
-      this.activeCollide = true;
-    if (this.activeCollide == true)
-      this.isDead = true;
-  }
-  CollisionDeActive() {
-  }
-  get AirCraftSpeed() {
-    return this.aircraftSpeed;
-  }
-  set AirCraftSpeed(speed) {
-    this.aircraftSpeed = speed;
-  }
-  Animate() {
-    this.isRayOn = true;
-    if (this.targetObject != void 0) {
-      const length = new Vector3().subVectors(this.targetObject.PhysicsComponent.GetPosition().clone(), this.PhysicsComponent.GetPosition().clone()).length();
-      let targetDirection;
-      if (length < 100) {
-        this.activeCollide = true;
-      }
-      if (length >= this.endHomingStartLength) {
-        this.predictionDistance = length - length / 2;
-      } else {
-        this.predictionDistance = 0;
-      }
-      if (this.rotateSpeed < this.maxRotateSpeed)
-        this.rotateSpeed += this.rotateSpeedAcceleration * WorldManager.getInstance().GetDeltaTime();
-      else {
-        this.rotateSpeed = this.maxRotateSpeed;
-      }
-      const nextPos = this.targetObject.PhysicsComponent.GetPosition().clone().add(this.targetObject.PhysicsComponent.Look.clone().multiplyScalar(this.predictionDistance));
-      targetDirection = new Vector3().subVectors(nextPos, this.PhysicsComponent.GetPosition().clone()).normalize();
-      const currentDirection = new Vector3(0, 0, 1).applyEuler(this.PhysicsComponent.GetRotateEuler());
-      const angle = currentDirection.angleTo(targetDirection);
-      const axis = new Vector3().crossVectors(currentDirection, targetDirection).normalize();
-      const maxSpeed = this.rotateSpeed;
-      const maxRadius = this.angle;
-      let speed = maxSpeed * (angle / maxRadius);
-      speed = Math.min(speed, maxSpeed);
-      const quaternion = new Quaternion().setFromAxisAngle(axis, speed);
-      const currentRotation = new Quaternion();
-      currentRotation.setFromEuler(this.PhysicsComponent.GetRotateEuler());
-      const nextRotation = new Euler().setFromQuaternion(quaternion.multiply(currentRotation));
-      this.GameObjectInstance.setRotationFromEuler(nextRotation);
-      if (this.deAcceleration == false && this.velocity <= this.maxVelocity) {
-        this.velocity += this.velocityGain * WorldManager.getInstance().GetDeltaTime();
-        this.resultSpeed = this.aircraftSpeed + this.velocity;
-      } else if (this.deAcceleration == false && this.maxResultSpeed <= this.resultSpeed) {
-        this.deAcceleration = true;
-        this.resultSpeed = this.maxResultSpeed;
-      }
-      if (this.deAcceleration == true)
-        this.resultSpeed -= this.velocityBreak * WorldManager.getInstance().GetDeltaTime();
-      if (this.resultSpeed <= 60 && this.deAcceleration == true) {
-        this.IsDead = true;
-      }
-      this.PhysicsComponent.MoveForward(this.resultSpeed);
-    } else
-      this.PhysicsComponent.MoveForward(120);
-    const missileFog = SceneManager.getInstance().CurrentScene.missileFogPool.GetObject();
-    missileFog.IsPoolObject = true;
-    missileFog.PhysicsComponent.SetPosition(this.PhysicsComponent.GetPosition().x + Math.random() * 3, this.PhysicsComponent.GetPosition().y + Math.random() * 3, this.PhysicsComponent.GetPosition().z);
-    missileFog.PhysicsComponent.SetScale(0.5, 0.5, 0.5);
-    ObjectManager.getInstance().AddObject(missileFog, missileFog.Name, missileFog.Type);
-    if (this.isClone == true) {
-      this.CollisionComponent.Update();
-    }
-  }
-};
-
-// Object/InGameObject/Weapons/IRMissile/AIM9H.ts
-var AIM9H = class extends Missile {
-  constructor() {
-    super();
-  }
-  InitializeAfterLoad() {
-    super.InitializeAfterLoad();
-    this.velocityGain = 40;
-    this.velocityBreak = 1;
-    this.maxVelocity = 80;
-    this.maxRotateSpeed = 18;
-    this.rotateSpeedAcceleration = 5;
-  }
-  CreateCollider() {
-    this.CollisionComponent.CreateOrientedBoundingBox(this.physicsComponent.GetPosition(), new Vector3(1.5, 1.5, 1.5));
-    this.CollisionComponent.CreateRaycaster();
-    this.CollisionComponent.ObbBoxHelper.visible = false;
-  }
-  CollisionActive(type) {
-    super.CollisionActive(type);
-  }
-  CollisionDeActive() {
-  }
-  Animate() {
-    if (this.maxResultSpeed == 0)
-      this.maxResultSpeed = this.maxVelocity + this.AirCraftSpeed;
-    if (this.targetObject != void 0) {
-      const relativeSpeed = this.resultSpeed - this.targetObject.throttle;
-      if (relativeSpeed > this.targetObject.throttle)
-        this.endHomingStartLength = 100;
-      else
-        this.endHomingStartLength = 0;
-    }
-    super.Animate();
-  }
-};
-
-// Object/InGameObject/Weapons/IRMissile/AIM9L.ts
-var AIM9L = class extends Missile {
-  constructor() {
-    super();
-  }
-  InitializeAfterLoad() {
-    super.InitializeAfterLoad();
-    this.velocityGain = 40;
-    this.velocityBreak = 1.5;
-    this.maxVelocity = 80;
-    this.maxRotateSpeed = 30;
-    this.rotateSpeedAcceleration = 15;
-  }
-  CreateCollider() {
-    this.CollisionComponent.CreateOrientedBoundingBox(this.physicsComponent.GetPosition(), new Vector3(1.5, 1.5, 1.5));
-    this.CollisionComponent.CreateRaycaster();
-    this.CollisionComponent.ObbBoxHelper.visible = false;
-  }
-  CollisionActive(type) {
-    super.CollisionActive(type);
-  }
-  CollisionDeActive() {
-  }
-  Animate() {
-    if (this.maxResultSpeed == 0)
-      this.maxResultSpeed = this.maxVelocity + this.AirCraftSpeed;
-    if (this.targetObject != void 0) {
-      const relativeSpeed = this.resultSpeed - this.targetObject.throttle;
-      if (relativeSpeed > this.targetObject.throttle)
-        this.endHomingStartLength = 50;
-      else
-        this.endHomingStartLength = 0;
-    }
-    super.Animate();
-  }
-};
-
-// Object/InGameObject/Environment/Cloud.ts
-var Cloud = class extends GameObject {
-  constructor() {
-    super();
-    this.positions = [];
-    this.scales = [];
-    this.prevMatrix = [];
-    this.type = 3 /* OBJ_OBJECT2D */;
-    this.graphicComponent = new GraphicComponent(this);
-    this.isClone = false;
-  }
-  BuildClouds() {
-    this.CreateBillboardMesh();
-  }
-  InitializeAfterLoad() {
-    if (this.IsClone == true) {
-      this.BuildClouds();
-      this.GameObjectInstance.matrixAutoUpdate = false;
-      this.GameObjectInstance.name = this.name;
-    } else {
-      ObjectManager.getInstance().AddObject(this, this.name, this.Type);
-    }
-  }
-  SetMaterial(mesh) {
-    mesh.traverse((node) => {
-      if (node.isMesh || node.isGroup || node.isSprite) {
-        node.name = "CloudCloneNode";
-        if (node.geometry) {
-          node.material.color = new Color(0.45, 0.45, 0.45);
-          node.material.fog = false;
-          node.material.transparent = true;
-          node.material.opacity = 0.9;
-          node.material.alphaTest = 0.01;
-          node.material.depthWrite = false;
-          node.material.side = DoubleSide;
-        }
-        ;
-      }
-    });
-  }
-  CreateBillboardMesh() {
-    this.mesh = new Mesh();
-    const positions = [];
-    for (let i = 0; i < 30; ++i) {
-      const scale = new Vector3(
-        1e3 + Math.random() * 1600,
-        500 + Math.random() * 1e3,
-        1e3 + Math.random() * 1600
-      );
-      const position = new Vector3();
-      do {
-        position.set(
-          -1e4 + Math.random() * 2e4,
-          200 + Math.random() * 600,
-          -5e3 + Math.random() * 2e4
-        );
-      } while (positions.some((p) => p.distanceTo(position) < Math.max(scale.x, scale.z)));
-      const childMesh = ObjectManager.getInstance().GetObjectFromName("Cloud").GameObjectInstance.clone();
-      childMesh.name = "CloudCloneChild";
-      this.SetMaterial(childMesh);
-      childMesh.position.set(position.x, position.y, position.z);
-      childMesh.scale.set(scale.x, scale.y, scale.z);
-      childMesh.rotateY(Math.random() * 360);
-      childMesh.renderOrder = -1;
-      this.mesh.add(childMesh);
-      positions.push(position);
-    }
-    this.mesh.name = "CloudCloneMesh";
-    this.GameObjectInstance = this.mesh;
-    ObjectManager.getInstance().AddObject(this, this.name, this.Type);
-  }
-  Animate() {
-  }
-};
-
-// Object/CommonObject/Terrain/HeightmapTerrain.ts
-var _HeightmapTerrain = class _HeightmapTerrain extends GameObject {
-  constructor(x, z, segmentWidth, segmentHeight, planSize = 900, isDummy = false) {
-    super();
-    this.heightIndexBuffer = [];
-    this.heightBuffer = [];
-    this.inSectorObject = [];
-    this.vertexNormalNeedUpdate = false;
-    // 최초 1프레임에 한 번은 적용해야 한다 (생성 시 유니폼은 cityTexture 로 초기화된다).
-    this.textureUniformNeedUpdate = true;
-    this.opacity = 1;
-    this.cityUVFactor = 1;
-    this.maxHeight = 0;
-    this.isDummy = false;
-    this.inSector = false;
-    this.useDirtTexture = false;
-    this.useCityTexture = false;
-    this.isDummy = isDummy;
-    this.width = x;
-    this.height = z;
-    this.planSize = planSize;
-    this.segmentWidth = segmentWidth;
-    this.segmentHeight = segmentHeight;
-    this.name = "Terrain" + ObjectManager.getInstance().GetObjectList[0 /* OBJ_TERRAIN */].length;
-    this.terrainIndex = ObjectManager.getInstance().GetObjectList[0 /* OBJ_TERRAIN */].length;
-    this.type = 0 /* OBJ_TERRAIN */;
-    this.isClone = true;
-    this.physicsComponent = new PhysicsComponent(this);
-    this.graphicComponent = new GraphicComponent(this);
-    this.exportComponent = new ExportComponent(this);
-    this.collisionComponent = new CollisionComponent(this);
-    this.CreateTerrainMesh();
-  }
-  InitializeAfterLoad() {
-    this.PhysicsComponent.SetPosition(this.width, 0, this.height);
-    if (this.isDummy == false) {
-      this.CreateBoundingBox();
-    }
-    this.GameObjectInstance.matrixAutoUpdate = false;
-    SceneManager.getInstance().SceneInstance.add(this.gameObjectInstance);
-    ObjectManager.getInstance().AddObject(this, this.name, this.type);
-  }
-  CreateBoundingBox() {
-    this.CollisionComponent.CreateBoundingBox(this.planSize, 5e3, this.planSize);
-    this.CollisionComponent.BoxHelper.box.setFromCenterAndSize(new Vector3(this.width, 2e3, this.height), new Vector3(this.planSize, 5e3, this.planSize));
-    this.CollisionComponent.BoxHelper.visible = false;
-    this.CollisionComponent.BoxHelper.matrixAutoUpdate = false;
-  }
-  CreateTerrainMesh() {
-    if (this.isDummy == false)
-      this.planeGeometry = new PlaneGeometry(this.planSize, this.planSize, this.segmentWidth, this.segmentHeight);
-    else
-      this.planeGeometry = new PlaneGeometry(this.planSize, this.planSize, 1, 1);
-    const customUniforms = {
-      ...UniformsUtils.clone(UniformsLib["fog"]),
-      farmTexture: { value: ShaderManager.getInstance().farmTexture },
-      mountainTexture: { value: ShaderManager.getInstance().mountainTexture },
-      factoryTexture: { value: ShaderManager.getInstance().factoryTexture },
-      cityTexture: { value: ShaderManager.getInstance().cityTexture },
-      desertTexture: { value: ShaderManager.getInstance().desertTexture },
-      cityUVFactor: { value: this.cityUVFactor },
-      opacity: { value: this.opacity }
-    };
-    this.material = new ShaderMaterial(
-      {
-        uniforms: customUniforms,
-        vertexShader: ShaderManager.getInstance().SplattingShader.vertexShader.slice(),
-        fragmentShader: ShaderManager.getInstance().SplattingShader.fragmentShader.slice(),
-        //wireframe: true,
-        //side: THREE.DoubleSide,
-        fog: true,
-        transparent: false
-      }
-    );
-    const rotation = new Matrix4().makeRotationX(-Math.PI / 2);
-    this.planeGeometry.applyMatrix4(rotation);
-    this.planeGeometry.computeBoundingSphere();
-    this.planeGeometry.computeVertexNormals();
-    this.planeMesh = new Mesh(this.planeGeometry, this.material);
-    this.planeMesh.receiveShadow = true;
-    this.planeMesh.castShadow = true;
-    this.gameObjectInstance = this.planeMesh;
-    this.GameObjectInstance.name = this.name;
-    this.gameObjectInstance.frustumCulled = true;
-    this.InitializeAfterLoad();
-  }
-  get HeightIndexBuffer() {
-    return this.heightIndexBuffer;
-  }
-  get HeightBuffer() {
-    this.heightBuffer.length = 0;
-    this.heightIndexBuffer.forEach((element) => this.heightBuffer.push(this.planeGeometry.getAttribute("position").getY(element)));
-    return this.heightBuffer;
-  }
-  /** 타일 내 최대 정점 높이(로컬 y). 격자 DDA 의 조기 탈출이 쓸 값이다. */
-  get MaxHeight() {
-    return this.maxHeight;
-  }
-  get TerrainIndex() {
-    return this.terrainIndex;
-  }
-  /**
-   * 격자 제원. ModelLoadManager.LoadHeightmapTerrain() 이 한 번 세운다.
-   *
-   * 타일이 규칙적으로 놓이므로 월드 좌표에서 인덱스를 바로 구할 수 있다.
-   * 예전에는 오브젝트마다 타일 324장 전부와 sphere-box 를 검사해서 자기 타일을 찾았다.
-   */
-  static SetGridInfo(row, col, tileSize) {
-    _HeightmapTerrain.gridRow = row;
-    _HeightmapTerrain.gridCol = col;
-    _HeightmapTerrain.gridTileSize = tileSize;
-  }
-  /** 월드 축 좌표 → 격자 축 인덱스. 타일 j 는 [tileSize*j - tileSize/2, + tileSize/2) 를 덮는다. */
-  static WorldToGridAxis(value) {
-    const tileSize = _HeightmapTerrain.gridTileSize;
-    return Math.floor((value + tileSize / 2) / tileSize);
-  }
-  /** 격자 (i, j) → objectList[OBJ_TERRAIN] 인덱스. 격자 밖이면 -1. */
-  static GridToTerrainIndex(i, j) {
-    if (i < 0 || i >= _HeightmapTerrain.gridCol || j < 0 || j >= _HeightmapTerrain.gridRow)
-      return -1;
-    return i * _HeightmapTerrain.gridRow + j;
-  }
-  /** 광역 페이즈가 매 프레임 다시 채우므로 그 전에 비운다. */
-  ClearSector() {
-    this.inSectorObject.length = 0;
-    this.inSector = false;
-  }
-  ApplyTextureUniform() {
-    const shaderManager = ShaderManager.getInstance();
-    this.material.uniforms.factoryTexture.value = this.useDirtTexture ? shaderManager.desertTexture : shaderManager.factoryTexture;
-    this.material.uniforms.cityTexture.value = this.useCityTexture ? shaderManager.cityTexture : shaderManager.farmTexture;
-  }
-  get IsDummy() {
-    return this.isDummy;
-  }
-  set IsDummy(flag) {
-    this.isDummy = flag;
-  }
-  SetHeight(index, value = void 0, option = 0 /* TERRAIN_UP */) {
-    if (this.isDummy == true) {
-      if (this.collisionComponent.BoundingBox != null) {
-        this.collisionComponent.DeleteCollider();
-        this.planeGeometry.dispose();
-        this.planeGeometry = new PlaneGeometry(this.planSize, this.planSize, 1, 1);
-        this.planeMesh.geometry = this.planeGeometry;
-        const rotation = new Matrix4().makeRotationX(-Math.PI / 2);
-        this.planeGeometry.applyMatrix4(rotation);
-      }
-    }
-    const position = this.planeGeometry.getAttribute("position");
-    position.needsUpdate = true;
-    let height = position.getY(index);
-    if (value != void 0 && option == 0 /* TERRAIN_UP */) {
-      value = Math.abs(value);
-    }
-    if (option == 1 /* TERRAIN_DOWN */) {
-      value = Math.abs(value);
-      value *= -1;
-      position.setY(index, height += value);
-    } else if (option == 2 /* TERRAIN_BALANCE */ || option == 3 /* TERRAIN_LOAD */) {
-      position.setY(index, value);
-    } else {
-      position.setY(index, height += value);
-    }
-    if (this.isDummy == false) {
-      const endPointIndex = position.count - 1;
-      const oldheight = position.getY(index);
-      if (position.getX(index) == this.planSize / 2) {
-        if (this.SyncNeighborVertex(this.terrainIndex + 1, index - this.segmentHeight, oldheight)) {
-          if (index == endPointIndex)
-            this.SyncNeighborVertex(this.terrainIndex + (_HeightmapTerrain.gridRow + 1), 0, oldheight);
-          else if (index == this.segmentWidth)
-            this.SyncNeighborVertex(this.terrainIndex - (_HeightmapTerrain.gridRow - 1), endPointIndex - this.segmentWidth, oldheight);
-        }
-      }
-      if (position.getX(index) == -(this.planSize / 2)) {
-        this.SyncNeighborVertex(this.terrainIndex - 1, index + this.segmentHeight, oldheight);
-        if (index == 0)
-          this.SyncNeighborVertex(this.terrainIndex - (_HeightmapTerrain.gridRow + 1), endPointIndex, oldheight);
-        else if (index == endPointIndex - this.segmentWidth)
-          this.SyncNeighborVertex(this.terrainIndex + (_HeightmapTerrain.gridRow - 1), this.segmentWidth, oldheight);
-      }
-      if (position.getZ(index) == this.planSize / 2)
-        this.SyncNeighborVertex(this.terrainIndex + _HeightmapTerrain.gridRow, index - (endPointIndex - this.segmentWidth), oldheight);
-      if (position.getZ(index) == -(this.planSize / 2))
-        this.SyncNeighborVertex(this.terrainIndex - _HeightmapTerrain.gridRow, index + (endPointIndex - this.segmentWidth), oldheight);
-    }
-    if (this.heightIndexBuffer.indexOf(index) == -1)
-      this.heightIndexBuffer.push(index);
-    this.vertexNormalNeedUpdate = true;
-  }
-  /**
-   * 이웃 타일의 대응 정점을 같은 높이로 맞춰 이음매를 없앤다.
-   *
-   * 이웃이 없으면 아무것도 하지 않고 false 를 반환한다 — 호출부의 중첩 조건이 이 값을 쓴다.
-   *
-   * 예전에는 정점만 쓰고 이웃의 vertexNormalNeedUpdate 를 세우지 않아서,
-   * 이음매 정점이 움직여도 이웃 타일의 법선이 다시 계산되지 않았다(경계에 조명 이음매).
-   * 이제는 바운딩 스피어와 높이 집계도 그 플래그에 물려 있으므로 반드시 세워야 한다.
-   */
-  SyncNeighborVertex(neighborIndex, vertexIndex, height) {
-    const objectSet = ObjectManager.getInstance().GetObjectList[0 /* OBJ_TERRAIN */][neighborIndex];
-    if (objectSet == void 0)
-      return false;
-    const neighbor = objectSet.GameObject;
-    const neighborPosition = neighbor.planeGeometry.getAttribute("position");
-    neighborPosition.needsUpdate = true;
-    neighborPosition.setY(vertexIndex, height);
-    neighbor.vertexNormalNeedUpdate = true;
-    return true;
-  }
-  /**
-   * 정점 높이에서 파생되는 값을 한 번의 순회로 모두 갱신한다.
-   *
-   * 예전에는 SetHeight 가 호출될 때마다 전 정점을 순회했고, 그 루프 안에서
-   * GetMaxVertex() 를 불러 다시 전 정점을 훑었다 → 호출 1회가 289×289.
-   * Picker 는 face.a/b/c 로 3번 부르고 브러시 드래그는 매 프레임이라 실측 렉의 주범이었다.
-   *
-   * 지금은 SetHeight 가 플래그만 세우고, 실제 집계는 프레임당 한 번 여기서 한다.
-   * computeVertexNormals() 가 어차피 전 정점을 훑는 자리이므로 추가 비용이 사실상 없다.
-   */
-  UpdateHeightStats() {
-    const position = this.planeGeometry.getAttribute("position");
-    const count = position.count;
-    let useDirt = false;
-    let cnt = 0;
-    let maxY = -Infinity;
-    for (let i = 0; i < count; ++i) {
-      const y = position.getY(i);
-      if (y <= -3)
-        useDirt = true;
-      if (y == 1)
-        ++cnt;
-      if (y > maxY)
-        maxY = y;
-    }
-    this.maxHeight = maxY;
-    const useCity = cnt >= 30 && maxY <= 110;
-    if (this.useDirtTexture != useDirt || this.useCityTexture != useCity)
-      this.textureUniformNeedUpdate = true;
-    this.useDirtTexture = useDirt;
-    this.useCityTexture = useCity;
-    this.material.uniforms.cityUVFactor.value = useCity ? 6 : 1;
-  }
-  CollisionActive(object) {
-    if (this.isDummy == false) {
-      if (this.inSectorObject.includes(object) == false) {
-        this.inSectorObject.push(object);
-        this.inSector = true;
-      }
-    }
-  }
-  CollisionDeActive(object) {
-    if (this.inSectorObject.includes(object) == true) {
-      this.inSectorObject = this.inSectorObject.filter((element) => element != object).slice();
-    }
-  }
-  Animate() {
-    if (this.isDummy == true) {
-      if (this.collisionComponent.BoundingBox != null) {
-        this.collisionComponent.DeleteCollider();
-        this.planeGeometry.dispose();
-        this.planeGeometry = new PlaneGeometry(this.planSize, this.planSize, 1, 1);
-        this.planeMesh.geometry = this.planeGeometry;
-        const rotation = new Matrix4().makeRotationX(-Math.PI / 2);
-        this.planeGeometry.applyMatrix4(rotation);
-      }
-    } else {
-      if (this.textureUniformNeedUpdate) {
-        this.ApplyTextureUniform();
-        this.textureUniformNeedUpdate = false;
-      }
-      if (this.collisionComponent.BoundingBox == null)
-        this.CreateBoundingBox();
-    }
-    if (this.vertexNormalNeedUpdate) {
-      this.planeGeometry.computeVertexNormals();
-      this.planeGeometry.computeBoundingSphere();
-      if (this.isDummy == false)
-        this.UpdateHeightStats();
-      this.vertexNormalNeedUpdate = false;
-    }
-    const cameraPosition = WorldManager.getInstance().MainCamera.PhysicsComponent.GetPosition().clone();
-    if (CameraManager.getInstance().CameraMode === 1 /* CAMERA_3RD */)
-      WorldManager.getInstance().MainCamera.CameraInstance.localToWorld(cameraPosition);
-    if (cameraPosition.sub(this.physicsComponent.GetPosition()).length() > 4500) {
-      this.GameObjectInstance.visible = false;
-    } else {
-      this.GameObjectInstance.visible = true;
-    }
-  }
-};
-// 격자 제원은 전 타일이 공유한다. SetGridInfo() 가 한 번 세운다.
-_HeightmapTerrain.gridRow = 0;
-_HeightmapTerrain.gridCol = 0;
-_HeightmapTerrain.gridTileSize = 900;
-var HeightmapTerrain = _HeightmapTerrain;
-
-// Manager/CollisionManager.ts
-var CollisionManager = class _CollisionManager {
-  static getInstance() {
-    if (!_CollisionManager.instance) {
-      _CollisionManager.instance = new _CollisionManager();
-    }
-    return _CollisionManager.instance;
-  }
-  CollideRayToTerrain(source) {
-    source.forEach(function(src) {
-      const destination = src.inSectorObject;
-      destination.forEach(function(dst) {
-        if (dst.CollisionComponent != null && dst.CollisionComponent.Raycaster != null) {
-          if (dst.IsClone == true && dst.IsRayOn == true || SceneManager.getInstance().CurrentScene.NeedOnTerrain == true) {
-            const intersect2 = dst.CollisionComponent.Raycaster.intersectObject(src.GameObjectInstance);
-            if (intersect2[0] != void 0) {
-              if (intersect2[0].distance < 1) {
-                dst.PhysicsComponent.SetPosition(intersect2[0].point.x, intersect2[0].point.y + 1, intersect2[0].point.z);
-                if (dst instanceof Missile)
-                  dst.CollisionActive(0 /* OBJ_TERRAIN */);
-              }
-            } else {
-              dst.CollisionComponent.Raycaster.set(
-                new Vector3(
-                  dst.PhysicsComponent.GetPosition().x,
-                  2e3,
-                  dst.PhysicsComponent.GetPosition().z
-                ),
-                new Vector3(0, -1, 0)
-              );
-              const intersect3 = dst.CollisionComponent.Raycaster.intersectObject(src.GameObjectInstance);
-              if (intersect3[0] != void 0) {
-                dst.PhysicsComponent.SetPosition(intersect3[0].point.x, intersect3[0].point.y + 1, intersect3[0].point.z);
-              }
-              dst.CollisionComponent.Raycaster.set(dst.PhysicsComponent.GetPosition(), new Vector3(0, -1, 0));
-            }
-          }
-        }
-      });
-    });
-  }
-  CollideRayToWater(source) {
-    source.forEach(function(src) {
-      const destination = ObjectManager.getInstance().GetObjectList[2 /* OBJ_OBJECT3D */].filter((o_) => o_.GameObject.IsClone).map((o_) => o_.GameObject);
-      destination.forEach(function(dst) {
-        if (dst.CollisionComponent != null && dst.CollisionComponent.Raycaster != null) {
-          if (src.GameObject != void 0 && dst.IsRayOn == true || SceneManager.getInstance().CurrentScene.NeedOnTerrain == true) {
-            const intersect2 = dst.CollisionComponent.Raycaster.intersectObject(src.GameObject.GameObjectInstance);
-            if (intersect2[0] != void 0) {
-              if (intersect2[0].distance < 1) {
-                dst.PhysicsComponent.SetPosition(intersect2[0].point.x, intersect2[0].point.y + 1, intersect2[0].point.z);
-                if (dst instanceof Missile)
-                  dst.CollisionActive(0 /* OBJ_TERRAIN */);
-              }
-            } else {
-              dst.CollisionComponent.Raycaster.set(
-                new Vector3(
-                  dst.PhysicsComponent.GetPosition().x,
-                  2e3,
-                  dst.PhysicsComponent.GetPosition().z
-                ),
-                new Vector3(0, -1, 0)
-              );
-              const intersect3 = dst.CollisionComponent.Raycaster.intersectObject(src.GameObject.GameObjectInstance);
-              if (intersect3[0] != void 0) {
-                dst.PhysicsComponent.SetPosition(intersect3[0].point.x, intersect3[0].point.y + 1, intersect3[0].point.z);
-              }
-              dst.CollisionComponent.Raycaster.set(dst.PhysicsComponent.GetPosition(), new Vector3(0, -1, 0));
-            }
-          }
-        }
-      });
-    });
-  }
-  CollideBoxToBox(source, destination) {
-    source.forEach(function(src) {
-      destination.forEach(function(dst) {
-        if (src.GameObject.IsClone && dst.GameObject.IsClone) {
-          if (src.GameObject != dst.GameObject && src.GameObject.CollisionComponent.BoxHelper.box && dst.GameObject.CollisionComponent.BoxHelper.box) {
-            if (src.GameObject.CollisionComponent.BoxHelper.box.intersectsBox(dst.GameObject.CollisionComponent.BoxHelper.box)) {
-              src.GameObject.CollisionActive(dst.GameObject);
-              dst.GameObject.CollisionActive();
-            } else {
-              src.GameObject.CollisionDeActive(dst.GameObject);
-              dst.GameObject.CollisionDeActive();
-            }
-          }
-        }
-      });
-    });
-  }
-  CollideObbToObb(source, destination) {
-    source.forEach(function(src) {
-      destination.forEach(function(dst) {
-        if (src.IsClone && dst.IsClone) {
-          if (src != dst) {
-            if (src.CollisionComponent != null && dst.CollisionComponent != null) {
-              if (src.CollisionComponent.OBB && dst.CollisionComponent.OBB)
-                if (src.CollisionComponent.OBB.intersectsOBB(dst.CollisionComponent.OBB, Number.EPSILON)) {
-                  if (!(dst instanceof HeightmapTerrain) || !(src instanceof HeightmapTerrain))
-                    src.CollisionActive(dst.Type);
-                  dst.CollisionActive();
-                } else {
-                  if (!(dst instanceof HeightmapTerrain) || !(src instanceof HeightmapTerrain))
-                    src.CollisionDeActive(dst.Type);
-                  dst.CollisionDeActive();
-                }
-            }
-          }
-        }
-      });
-    });
-  }
-  CollideObbToBox(source, destination) {
-    source.forEach(function(src) {
-      destination.forEach(function(dst) {
-        if (src.GameObject.IsClone && dst.GameObject.IsClone) {
-          if (src.GameObject != dst.GameObject) {
-            if (src.GameObject.CollisionComponent.OBB && dst.GameObject.CollisionComponent.BoundingBox)
-              if (src.GameObject.CollisionComponent.OBB.intersectsBox3(dst.GameObject.CollisionComponent.BoundingBox)) {
-                if (!(dst.GameObject instanceof HeightmapTerrain)) {
-                  src.GameObject.CollisionActive();
-                }
-                dst.GameObject.CollisionActive(src.GameObject);
-              } else {
-                if (!(dst.GameObject instanceof HeightmapTerrain)) {
-                  src.GameObject.CollisionDeActive();
-                }
-                dst.GameObject.CollisionDeActive(src.GameObject);
-              }
-          }
-        }
-      });
-    });
-  }
-  CollideSphereToBox(source, destination) {
-    source.forEach(function(src) {
-      destination.forEach(function(dst) {
-        if (src.GameObject.IsClone && dst.GameObject.IsClone) {
-          if (src.GameObject != dst.GameObject) {
-            if (src.GameObject.CollisionComponent.BoundingSphere && dst.GameObject.CollisionComponent.BoundingBox)
-              if (src.GameObject.CollisionComponent.BoundingSphere.intersectsBox(dst.GameObject.CollisionComponent.BoundingBox)) {
-                if (!(dst.GameObject instanceof HeightmapTerrain)) {
-                  src.GameObject.CollisionActive();
-                }
-                dst.GameObject.CollisionActive(src.GameObject);
-              } else {
-                if (!(dst.GameObject instanceof HeightmapTerrain)) {
-                  src.GameObject.CollisionDeActive();
-                }
-                dst.GameObject.CollisionDeActive(src.GameObject);
-              }
-          }
-        }
-      });
-    });
-  }
-  CollideSphereToSphere(source, destination) {
-    source.forEach(function(src) {
-      destination.forEach(function(dst) {
-        if (src.IsClone && dst.IsClone) {
-          if (src != dst) {
-            if (src.CollisionComponent != null && dst.CollisionComponent != null) {
-              if (src.CollisionComponent.BoundingSphere && dst.CollisionComponent.BoundingSphere)
-                if (src.CollisionComponent.BoundingSphere.intersectsSphere(dst.CollisionComponent.BoundingSphere)) {
-                  if (!(dst instanceof HeightmapTerrain) || !(src instanceof HeightmapTerrain))
-                    src.CollisionActive(dst.Type);
-                  dst.CollisionActive();
-                } else {
-                  if (!(dst instanceof HeightmapTerrain) || !(src instanceof HeightmapTerrain))
-                    src.CollisionDeActive(dst.Type);
-                  dst.CollisionDeActive();
-                }
-            }
-          }
-        }
-      });
-    });
-  }
-};
-
-// Manager/UnitConvertManager.ts
-var UnitConvertManager = class _UnitConvertManager {
-  static getInstance() {
-    if (!_UnitConvertManager.instance) {
-      _UnitConvertManager.instance = new _UnitConvertManager();
-    }
-    return _UnitConvertManager.instance;
-  }
-  ConvertToSpeedForKmh(distance) {
-    const meterDistance = distance * 5760 / 900;
-    const timeInSeconds = WorldManager.getInstance().GetDeltaTime();
-    let speedInMeterPerSecond = meterDistance / timeInSeconds;
-    speedInMeterPerSecond = speedInMeterPerSecond * 3.6;
-    return Math.round(speedInMeterPerSecond);
-  }
-  ConvertToDistance(distance) {
-    const meterDistance = distance * 5760 / 900;
-    return meterDistance;
-  }
-};
-
-// Object/InGameUI/ObjectLabel.ts
-var ObjectLabel = class extends GameObject {
-  constructor(name = null) {
-    super();
-    this.type = 3 /* OBJ_OBJECT2D */;
-    if (name != null)
-      this.name = name;
-    else
-      this.name = "ObjectLabel" + ObjectManager.getInstance().GetObjectList[3 /* OBJ_OBJECT2D */].length;
-    this.physicsComponent = new PhysicsComponent(this);
-    this.graphicComponent = new GraphicComponent(this);
-    this.CreateBillboardMesh();
-  }
-  get ReferenceObject() {
-    return this.referenceObject;
-  }
-  set ReferenceObject(object) {
-    this.referenceObject = object;
-  }
-  InitializeAfterLoad() {
-    this.GameObjectInstance.matrixAutoUpdate = true;
-    this.GameObjectInstance.name = this.name;
-    SceneManager.getInstance().SceneInstance.add(this.gameObjectInstance);
-    ObjectManager.getInstance().AddObject(this, this.name, this.Type);
-  }
-  CreateBillboardMesh() {
-    const labelTexture = this.MakeCanvasTexture(this.name);
-    labelTexture.minFilter = LinearFilter;
-    labelTexture.wrapS = ClampToEdgeWrapping;
-    labelTexture.wrapT = ClampToEdgeWrapping;
-    this.material = new SpriteMaterial({
-      map: labelTexture,
-      transparent: true,
-      depthWrite: true,
-      depthTest: false,
-      fog: false,
-      sizeAttenuation: false
-    });
-    this.mesh = new Sprite(this.material);
-    const labelBaseScale = 65e-5;
-    this.mesh.scale.x = this.labelContext.canvas.width * labelBaseScale;
-    this.mesh.scale.y = this.labelContext.canvas.height * labelBaseScale;
-    this.GameObjectInstance = this.mesh;
-    this.InitializeAfterLoad();
-  }
-  MakeCanvasTexture(name, size2 = 40) {
-    const baseWidth = 300;
-    const borderSize = 2;
-    if (this.referenceObject == null)
-      this.labelContext = document.createElement("canvas").getContext("2d");
-    const font = `${size2}px bold Verdana`;
-    this.labelContext.font = font;
-    const textWidth = this.labelContext.measureText(name).width;
-    const doubleBorderSize = borderSize * 2;
-    const width = baseWidth + doubleBorderSize + 300;
-    const height = size2 + doubleBorderSize + 300;
-    this.labelContext.canvas.width = width;
-    this.labelContext.canvas.height = height;
-    this.labelContext.font = font;
-    this.labelContext.textBaseline = "middle";
-    this.labelContext.textAlign = "center";
-    this.labelContext.fillStyle = "rgba(0,0,0,0)";
-    this.labelContext.fillRect(0, 0, width, height);
-    const scaleFactor = Math.min(1, baseWidth / textWidth);
-    this.labelContext.translate(width / 2, height / 2);
-    this.labelContext.scale(scaleFactor, 1);
-    this.labelContext.fillStyle = "red";
-    if (this.referenceObject != null) {
-      this.labelContext.fillText(this.referenceObject.Name, 0, -50);
-    }
-    this.labelContext.fillText(name, 0, 50);
-    if (this.referenceObject == null)
-      return new CanvasTexture(this.labelContext.canvas);
-    else {
-      this.material.map.needsUpdate = true;
-      return null;
-    }
-  }
-  Animate() {
-    if (this.referenceObject != void 0) {
-      if (this.referenceObject.Picked == false && this.mesh.visible == true) {
-        this.material.visible = true;
-        const refObjectPosition = this.referenceObject.PhysicsComponent.GetPosition().clone();
-        this.physicsComponent.SetPosition(refObjectPosition.x, refObjectPosition.y, refObjectPosition.z);
-        if (this.referenceObject.Name == "Target") {
-          const pickObject = ObjectManager.getInstance().GetObjectList[2 /* OBJ_OBJECT3D */].filter((o) => o.GameObject.Picked == true);
-          if (pickObject[0] != void 0) {
-            let length = UnitConvertManager.getInstance().ConvertToDistance(this.referenceObject.PhysicsComponent.GetPosition().clone().sub(pickObject[0].GameObject.PhysicsComponent.GetPosition().clone()).length());
-            length = Math.round(length);
-            if (length > 1e5)
-              this.MakeCanvasTexture(length.toString()[0] + length.toString()[1] + length.toString()[2] + " km");
-            else if (length > 1e4)
-              this.MakeCanvasTexture(length.toString()[0] + length.toString()[1] + " km");
-            else if (length > 1e3)
-              this.MakeCanvasTexture(length.toString()[0] + "." + length.toString()[1] + length.toString()[2] + " km");
-            else
-              this.MakeCanvasTexture(length.toString() + " m");
-          }
-        }
-      } else
-        this.material.visible = false;
-    }
-  }
-};
-
-// Component/GUIComponent.ts
-var GUIComponent = class {
-  constructor(gameObject) {
-    this.gameObject = gameObject;
-  }
-  GetLabel() {
-    if (this.objectLabel != null)
-      return this.objectLabel;
-    else {
-      this.objectLabel = new ObjectLabel(this.gameObject.Name);
-      this.objectLabel.IsClone = true;
-      this.objectLabel.ReferenceObject = this.gameObject;
-      this.objectLabel.Name = this.gameObject.Name;
-    }
-  }
-  Dispose() {
-    this.DisposeLabel();
-  }
-  DisposeLabel() {
-    this.objectLabel.DeleteObject();
-    this.objectLabel.ReferenceObject = null;
-  }
-  UpdateDisplay() {
-    if (this.gameObject.PhysicsCompIncluded) {
-    }
-    if (this.gameObject.GraphicCompIncluded) {
-    }
-  }
-  ShowGUI(show2) {
-  }
-};
-
 // node_modules/dat.gui/build/dat.gui.module.js
 function ___$insertStyle(css2) {
   if (!css2) {
@@ -38903,6 +36877,2168 @@ var GUI_Base = class {
   }
 };
 
+// GUI/GUIControls/GUI_Color.ts
+var _GUI_Color = class _GUI_Color extends GUI_Base {
+  constructor(renderer, width) {
+    super();
+    this.directionalLight = null;
+    this.ambientLight = null;
+    // 소스의 현재 값과 일치시켜 둔다. 어긋나면 패널이 뜨는 순간 화면이 바뀐다.
+    // (Directional/Ambient 는 BindLight() 가 실제 Light 에서 다시 읽어 덮어쓰므로
+    //  어긋나도 동작에는 영향이 없다. 그래도 표시 기준값이라 맞춰 둔다.)
+    this.propList = {
+      ToneMapping: "None",
+      Exposure: 1,
+      Directional: 1,
+      Ambient: 1.5,
+      SunColor: "#c0c0c0",
+      WaterColor: "#080831"
+    };
+    // dat.GUI 는 함수 프로퍼티를 버튼으로 만든다.
+    this.printer = {
+      PrintValues: () => {
+        console.log(
+          `[GUI_Color] \uC544\uB798 \uAC12\uC744 \uC18C\uC2A4\uC5D0 \uBC18\uC601\uD558\uC138\uC694
+  WorldManager.CreateRenderer()  toneMapping = ${this.propList.ToneMapping}
+                                toneMappingExposure = ${this.propList.Exposure}
+  EditScene.BuildLight()        directional = ${this.propList.Directional}
+                                ambient     = ${this.propList.Ambient}
+  Water.CreateWaterMesh()       sunColor    = 0x${this.propList.SunColor.replace("#", "")}
+                                waterColor  = 0x${this.propList.WaterColor.replace("#", "")}`
+        );
+      }
+    };
+    this.renderer = renderer;
+    this.datGui = new GUI$1();
+    this.datGui.domElement.id = "color-gui-container";
+    this.datGui.open();
+    this.CreateFolder();
+    this.AddElement();
+    this.datGui.width = width;
+    _GUI_Color.instance = this;
+    for (let i = 0; i < _GUI_Color.waterList.length; ++i)
+      this.ApplyWaterColor(_GUI_Color.waterList[i]);
+  }
+  /**
+   * 물은 `Scene.json` 로드 시점에 생기므로 패널이 먼저일 수도, 물이 먼저일 수도 있다.
+   * 양쪽 다 되도록 목록에 담아두고 붙는 쪽에서 반영한다.
+   */
+  static RegisterWater(water) {
+    _GUI_Color.waterList.push(water);
+    if (_GUI_Color.instance != null)
+      _GUI_Color.instance.ApplyWaterColor(water);
+  }
+  BindLight(directional, ambient) {
+    this.directionalLight = directional;
+    this.ambientLight = ambient;
+    this.propList.Directional = directional.Intensity;
+    this.propList.Ambient = ambient.Intensity;
+  }
+  CreateFolder() {
+    this.toneFolder = this.datGui.addFolder("Tone");
+    this.lightFolder = this.datGui.addFolder("Light");
+    this.waterFolder = this.datGui.addFolder("Water");
+  }
+  AddElement() {
+    const toneItem = ["None", "ACESFilmic", "Neutral", "Reinhard", "Cineon", "AgX"];
+    this.toneFolder.add(this.propList, "ToneMapping", toneItem).listen().onChange(() => {
+      this.ApplyToneMapping();
+    });
+    this.toneFolder.add(this.propList, "Exposure", 0, 3).step(0.01).listen().onChange(() => {
+      this.renderer.toneMappingExposure = this.propList.Exposure;
+    });
+    this.toneFolder.open();
+    this.lightFolder.add(this.propList, "Directional", 0, 6).step(0.01).listen().onChange(() => {
+      if (this.directionalLight != null)
+        this.directionalLight.Intensity = this.propList.Directional;
+    });
+    this.lightFolder.add(this.propList, "Ambient", 0, 6).step(0.01).listen().onChange(() => {
+      if (this.ambientLight != null)
+        this.ambientLight.Intensity = this.propList.Ambient;
+    });
+    this.lightFolder.open();
+    this.waterFolder.addColor(this.propList, "SunColor").listen().onChange(() => {
+      this.ApplyWaterColorAll();
+    });
+    this.waterFolder.addColor(this.propList, "WaterColor").listen().onChange(() => {
+      this.ApplyWaterColorAll();
+    });
+    this.waterFolder.open();
+    this.datGui.add(this.printer, "PrintValues");
+  }
+  ApplyToneMapping() {
+    if (this.propList.ToneMapping == "ACESFilmic")
+      this.renderer.toneMapping = ACESFilmicToneMapping;
+    else if (this.propList.ToneMapping == "Neutral")
+      this.renderer.toneMapping = NeutralToneMapping;
+    else if (this.propList.ToneMapping == "Reinhard")
+      this.renderer.toneMapping = ReinhardToneMapping;
+    else if (this.propList.ToneMapping == "Cineon")
+      this.renderer.toneMapping = CineonToneMapping;
+    else if (this.propList.ToneMapping == "AgX")
+      this.renderer.toneMapping = AgXToneMapping;
+    else
+      this.renderer.toneMapping = NoToneMapping;
+  }
+  ApplyWaterColorAll() {
+    _GUI_Color.waterList = _GUI_Color.waterList.filter((water_) => water_.IsDead == false);
+    for (let i = 0; i < _GUI_Color.waterList.length; ++i)
+      this.ApplyWaterColor(_GUI_Color.waterList[i]);
+  }
+  ApplyWaterColor(water) {
+    water.SetSunColor(this.HexStringToNumber(this.propList.SunColor));
+    water.SetWaterColor(this.HexStringToNumber(this.propList.WaterColor));
+  }
+  /** dat.GUI 의 addColor 는 '#rrggbb' 문자열을 준다. */
+  HexStringToNumber(value) {
+    return parseInt(value.replace("#", ""), 16);
+  }
+};
+_GUI_Color.instance = null;
+_GUI_Color.waterList = [];
+var GUI_Color = _GUI_Color;
+
+// Object/GameObject.ts
+var GameObject = class {
+  constructor() {
+    this.name = "";
+    this.isClone = false;
+    this.isPoolObject = true;
+    this.isDead = false;
+    this.isPlayer = false;
+    this.isRayOn = false;
+    this.physicsCompIncluded = false;
+    this.graphicCompIncluded = false;
+    this.picked = false;
+  }
+  InitializeAfterLoad() {
+  }
+  get Type() {
+    return this.type;
+  }
+  get Name() {
+    return this.name;
+  }
+  set Name(name) {
+    this.name = name;
+  }
+  get IsClone() {
+    return this.isClone;
+  }
+  set IsClone(isClone) {
+    this.isClone = isClone;
+  }
+  get IsPlayer() {
+    return this.isPlayer;
+  }
+  set IsPoolObject(isPoolObj) {
+    this.isPoolObject = isPoolObj;
+  }
+  get IsPoolObject() {
+    return this.isPoolObject;
+  }
+  set IsPlayer(flag) {
+    this.isPlayer = flag;
+  }
+  get PhysicsComponent() {
+    return this.physicsComponent;
+  }
+  get GraphicComponent() {
+    return this.graphicComponent;
+  }
+  get GUIComponent() {
+    return this.guiComponent;
+  }
+  get ExportComponent() {
+    return this.exportComponent;
+  }
+  get CollisionComponent() {
+    return this.collisionComponent;
+  }
+  get AnimationMixer() {
+    return this.animationMixer;
+  }
+  set AnimationMixer(animationMixer) {
+    this.animationMixer = animationMixer;
+  }
+  get PhysicsCompIncluded() {
+    return this.physicsCompIncluded;
+  }
+  get GraphicCompIncluded() {
+    return this.graphicCompIncluded;
+  }
+  set PhysicsCompIncluded(isIncluded) {
+    this.physicsCompIncluded = isIncluded;
+  }
+  set GraphicCompIncluded(isIncluded) {
+    this.graphicCompIncluded = isIncluded;
+  }
+  set Picked(picked) {
+    this.picked = picked;
+  }
+  get Picked() {
+    return this.picked;
+  }
+  get GameObjectInstance() {
+    return this.gameObjectInstance;
+  }
+  set GameObjectInstance(gameObjectInstance) {
+    this.gameObjectInstance = gameObjectInstance;
+  }
+  get ModelData() {
+    return this.modelData;
+  }
+  set ModelData(anim) {
+    this.modelData = anim;
+  }
+  get IsDead() {
+    return this.isDead;
+  }
+  set IsDead(flag) {
+    this.isDead = flag;
+  }
+  get IsRayOn() {
+    return this.isRayOn;
+  }
+  set IsRayOn(flag) {
+    this.isRayOn = flag;
+  }
+  CollisionActive(value = 0) {
+  }
+  CollisionDeActive(value = 0) {
+  }
+  Reset() {
+  }
+  Animate() {
+  }
+  DeleteObject() {
+    this.isDead = true;
+  }
+  DeleteAllComponent() {
+    delete this.physicsComponent;
+    this.physicsComponent = null;
+    delete this.collisionComponent;
+    this.collisionComponent = null;
+    delete this.exportComponent;
+    this.exportComponent = null;
+    delete this.graphicComponent;
+    this.graphicComponent = null;
+    if (this.guiComponent)
+      this.guiComponent.Dispose();
+    delete this.guiComponent;
+    this.guiComponent = null;
+  }
+};
+
+// Component/GraphicComponent.ts
+var GraphicComponent = class {
+  constructor(gameObject) {
+    this.GameObject = gameObject;
+    this.GameObject.GraphicCompIncluded = true;
+    this.renderSwitch = true;
+  }
+  SetRenderOnOff(renderSwitch) {
+    this.renderSwitch = renderSwitch;
+    if (renderSwitch == false) {
+      SceneManager.getInstance().SceneInstance.remove(this.GameObject.GameObjectInstance);
+    } else {
+      if (SceneManager.getInstance().SceneInstance)
+        SceneManager.getInstance().SceneInstance.add(this.GameObject.GameObjectInstance);
+    }
+  }
+};
+
+// node_modules/three/examples/jsm/utils/SkeletonUtils.js
+function clone(source) {
+  const sourceLookup = /* @__PURE__ */ new Map();
+  const cloneLookup = /* @__PURE__ */ new Map();
+  const clone2 = source.clone();
+  parallelTraverse(source, clone2, function(sourceNode, clonedNode) {
+    sourceLookup.set(clonedNode, sourceNode);
+    cloneLookup.set(sourceNode, clonedNode);
+  });
+  clone2.traverse(function(node) {
+    if (!node.isSkinnedMesh) return;
+    const clonedMesh = node;
+    const sourceMesh = sourceLookup.get(node);
+    const sourceBones = sourceMesh.skeleton.bones;
+    clonedMesh.skeleton = sourceMesh.skeleton.clone();
+    clonedMesh.bindMatrix.copy(sourceMesh.bindMatrix);
+    clonedMesh.skeleton.bones = sourceBones.map(function(bone) {
+      return cloneLookup.get(bone);
+    });
+    clonedMesh.bind(clonedMesh.skeleton, clonedMesh.bindMatrix);
+  });
+  return clone2;
+}
+function parallelTraverse(a2, b2, callback) {
+  callback(a2, b2);
+  for (let i = 0; i < a2.children.length; i++) {
+    parallelTraverse(a2.children[i], b2.children[i], callback);
+  }
+}
+
+// Component/PhysicsComponent.ts
+var PhysicsComponent = class {
+  constructor(gameObject) {
+    //private gameince: THREE.Object3D;
+    this.vec3Right = new Vector3(1, 0, 0);
+    this.vec3Up = new Vector3(0, 1, 0);
+    this.vec3Look = new Vector3(0, 0, 1);
+    this.vec3Position = new Vector3(0, 0, 0);
+    this.GameObject = gameObject;
+    this.GameObject.PhysicsCompIncluded = true;
+  }
+  get Up() {
+    return this.vec3Up;
+  }
+  get Right() {
+    return this.vec3Right;
+  }
+  get Look() {
+    return this.vec3Look;
+  }
+  set Up(vec3Up) {
+    this.vec3Up = vec3Up;
+  }
+  set Right(vec3Right) {
+    this.vec3Right = vec3Right;
+  }
+  set Look(vec3Look) {
+    this.vec3Look = vec3Look;
+  }
+  SetPosition(x, y, z) {
+    this.GameObject.GameObjectInstance.position.x = x;
+    this.GameObject.GameObjectInstance.position.y = y;
+    this.GameObject.GameObjectInstance.position.z = z;
+    this.UpdateMatrix();
+  }
+  SetPositionVec3(vec3) {
+    this.GameObject.GameObjectInstance.position.x = vec3.x;
+    this.GameObject.GameObjectInstance.position.y = vec3.y;
+    this.GameObject.GameObjectInstance.position.z = vec3.z;
+    this.UpdateMatrix();
+  }
+  SetScale(x, y, z) {
+    this.GameObject.GameObjectInstance.scale.set(x, y, z);
+    this.UpdateMatrix();
+  }
+  SetScaleScalar(scalar) {
+    this.GameObject.GameObjectInstance.scale.setScalar(scalar);
+    this.UpdateMatrix();
+  }
+  MoveForward(distance) {
+    const Look = new Vector3(0, 0, 1);
+    this.GameObject.GameObjectInstance.translateOnAxis(Look, distance * WorldManager.getInstance().GetDeltaTime());
+    this.UpdateMatrix();
+  }
+  MoveDirection(direction, distance) {
+    ;
+    this.GameObject.GameObjectInstance.translateOnAxis(direction, distance * WorldManager.getInstance().GetDeltaTime());
+    this.UpdateMatrix();
+  }
+  GetPosition() {
+    return this.GameObject.GameObjectInstance.position;
+  }
+  GetRotateEuler() {
+    return this.GameObject.GameObjectInstance.rotation;
+  }
+  GetRotateMatrix3() {
+    const rotatematrix = new Matrix3();
+    rotatematrix.set(
+      this.Right.x,
+      this.Right.y,
+      this.Right.z,
+      this.Up.x,
+      this.Up.y,
+      this.Up.z,
+      this.Look.x,
+      this.Look.y,
+      this.Look.z
+    );
+    return rotatematrix;
+  }
+  GetScale() {
+    return this.GameObject.GameObjectInstance.scale;
+  }
+  GetMaxVertex() {
+    const vertices = new Vector3();
+    const max = new Vector3(-Infinity, -Infinity, -Infinity);
+    this.GameObject.GameObjectInstance.traverse(function(child) {
+      if (child.geometry != void 0) {
+        const geo = child.geometry;
+        const position = geo.attributes.position;
+        for (let i = 0; i < position.count; i++) {
+          vertices.fromBufferAttribute(position, i);
+          max.max(vertices);
+        }
+      }
+    });
+    return max;
+  }
+  GetMinVertex() {
+    const vertices = new Vector3();
+    const min = new Vector3(Infinity, Infinity, Infinity);
+    this.GameObject.GameObjectInstance.traverse(function(child) {
+      if (child.geometry != void 0) {
+        const geo = child.geometry;
+        const position = geo.attributes.position;
+        for (let i = 0; i < position.count; i++) {
+          vertices.fromBufferAttribute(position, i);
+          min.min(vertices);
+        }
+      }
+    });
+    return min;
+  }
+  GetMatrix4() {
+    return this.GameObject.GameObjectInstance.matrixWorld;
+  }
+  //Object스페이스 축 기준 수치만큼 회전
+  SetRotate(x, y, z) {
+    this.GameObject.GameObjectInstance.rotateX(x);
+    this.GameObject.GameObjectInstance.rotateY(y);
+    this.GameObject.GameObjectInstance.rotateZ(z);
+    this.UpdateMatrix();
+  }
+  SetRotateVec3(vec3) {
+    this.GameObject.GameObjectInstance.rotateX(vec3.x);
+    this.GameObject.GameObjectInstance.rotateY(vec3.y);
+    this.GameObject.GameObjectInstance.rotateZ(vec3.z);
+    this.UpdateMatrix();
+  }
+  //Object스페이스 축 기준 회전
+  Rotate(x, y, z) {
+    this.GameObject.GameObjectInstance.rotateX(x * WorldManager.getInstance().GetDeltaTime());
+    this.GameObject.GameObjectInstance.rotateY(y * WorldManager.getInstance().GetDeltaTime());
+    this.GameObject.GameObjectInstance.rotateZ(z * WorldManager.getInstance().GetDeltaTime());
+    this.UpdateMatrix();
+  }
+  //월드 스페이스 축 기준 회전
+  RotateVec3(axis, angle) {
+    this.GameObject.GameObjectInstance.rotateOnWorldAxis(axis, angle * WorldManager.getInstance().GetDeltaTime());
+    this.UpdateMatrix();
+  }
+  UpdateMatrix() {
+    if (this.GameObject.Name != "MainCamera" && CameraManager.getInstance().CameraMode != 1 /* CAMERA_3RD */) {
+      this.GameObject.GameObjectInstance.getWorldPosition(this.vec3Position);
+    } else {
+      this.vec3Position = this.GameObject.GameObjectInstance.position;
+    }
+    this.GameObject.GameObjectInstance.getWorldDirection(this.vec3Look);
+    this.vec3Look = this.vec3Look.normalize();
+    this.vec3Up.set(this.GameObject.GameObjectInstance.matrix.elements[4], this.GameObject.GameObjectInstance.matrix.elements[5], this.GameObject.GameObjectInstance.matrix.elements[6]);
+    this.vec3Up = this.vec3Up.normalize();
+    this.vec3Right = this.vec3Right.crossVectors(this.vec3Up, this.vec3Look);
+    this.vec3Right = this.vec3Right.normalize();
+  }
+};
+
+// node_modules/three/examples/jsm/shaders/CopyShader.js
+var CopyShader = {
+  name: "CopyShader",
+  uniforms: {
+    "tDiffuse": { value: null },
+    "opacity": { value: 1 }
+  },
+  vertexShader: (
+    /* glsl */
+    `
+
+		varying vec2 vUv;
+
+		void main() {
+
+			vUv = uv;
+			gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );
+
+		}`
+  ),
+  fragmentShader: (
+    /* glsl */
+    `
+
+		uniform float opacity;
+
+		uniform sampler2D tDiffuse;
+
+		varying vec2 vUv;
+
+		void main() {
+
+			vec4 texel = texture2D( tDiffuse, vUv );
+			gl_FragColor = opacity * texel;
+
+
+		}`
+  )
+};
+
+// node_modules/three/examples/jsm/postprocessing/Pass.js
+var Pass = class {
+  /**
+   * Constructs a new pass.
+   */
+  constructor() {
+    this.isPass = true;
+    this.enabled = true;
+    this.needsSwap = true;
+    this.clear = false;
+    this.renderToScreen = false;
+  }
+  /**
+   * Sets the size of the pass.
+   *
+   * @abstract
+   * @param {number} width - The width to set.
+   * @param {number} height - The height to set.
+   */
+  setSize() {
+  }
+  /**
+   * This method holds the render logic of a pass. It must be implemented in all derived classes.
+   *
+   * @abstract
+   * @param {WebGLRenderer} renderer - The renderer.
+   * @param {WebGLRenderTarget} writeBuffer - The write buffer. This buffer is intended as the rendering
+   * destination for the pass.
+   * @param {WebGLRenderTarget} readBuffer - The read buffer. The pass can access the result from the
+   * previous pass from this buffer.
+   * @param {number} deltaTime - The delta time in seconds.
+   * @param {boolean} maskActive - Whether masking is active or not.
+   */
+  render() {
+    console.error("THREE.Pass: .render() must be implemented in derived pass.");
+  }
+  /**
+   * Frees the GPU-related resources allocated by this instance. Call this
+   * method whenever the pass is no longer used in your app.
+   *
+   * @abstract
+   */
+  dispose() {
+  }
+};
+var _camera = new OrthographicCamera(-1, 1, 1, -1, 0, 1);
+var FullscreenTriangleGeometry = class extends BufferGeometry {
+  constructor() {
+    super();
+    this.setAttribute("position", new Float32BufferAttribute([-1, 3, 0, -1, -1, 0, 3, -1, 0], 3));
+    this.setAttribute("uv", new Float32BufferAttribute([0, 2, 0, 0, 2, 0], 2));
+  }
+};
+var _geometry2 = new FullscreenTriangleGeometry();
+var FullScreenQuad = class {
+  /**
+   * Constructs a new full screen quad.
+   *
+   * @param {?Material} material - The material to render te full screen quad with.
+   */
+  constructor(material) {
+    this._mesh = new Mesh(_geometry2, material);
+  }
+  /**
+   * Frees the GPU-related resources allocated by this instance. Call this
+   * method whenever the instance is no longer used in your app.
+   */
+  dispose() {
+    this._mesh.geometry.dispose();
+  }
+  /**
+   * Renders the full screen quad.
+   *
+   * @param {WebGLRenderer} renderer - The renderer.
+   */
+  render(renderer) {
+    renderer.render(this._mesh, _camera);
+  }
+  /**
+   * The quad's material.
+   *
+   * @type {?Material}
+   */
+  get material() {
+    return this._mesh.material;
+  }
+  set material(value) {
+    this._mesh.material = value;
+  }
+};
+
+// node_modules/three/examples/jsm/postprocessing/ShaderPass.js
+var ShaderPass = class extends Pass {
+  /**
+   * Constructs a new shader pass.
+   *
+   * @param {Object|ShaderMaterial} [shader] - A shader object holding vertex and fragment shader as well as
+   * defines and uniforms. It's also valid to pass a custom shader material.
+   * @param {string} [textureID='tDiffuse'] - The name of the texture uniform that should sample
+   * the read buffer.
+   */
+  constructor(shader, textureID = "tDiffuse") {
+    super();
+    this.textureID = textureID;
+    this.uniforms = null;
+    this.material = null;
+    if (shader instanceof ShaderMaterial) {
+      this.uniforms = shader.uniforms;
+      this.material = shader;
+    } else if (shader) {
+      this.uniforms = UniformsUtils.clone(shader.uniforms);
+      this.material = new ShaderMaterial({
+        name: shader.name !== void 0 ? shader.name : "unspecified",
+        defines: Object.assign({}, shader.defines),
+        uniforms: this.uniforms,
+        vertexShader: shader.vertexShader,
+        fragmentShader: shader.fragmentShader
+      });
+    }
+    this._fsQuad = new FullScreenQuad(this.material);
+  }
+  /**
+   * Performs the shader pass.
+   *
+   * @param {WebGLRenderer} renderer - The renderer.
+   * @param {WebGLRenderTarget} writeBuffer - The write buffer. This buffer is intended as the rendering
+   * destination for the pass.
+   * @param {WebGLRenderTarget} readBuffer - The read buffer. The pass can access the result from the
+   * previous pass from this buffer.
+   * @param {number} deltaTime - The delta time in seconds.
+   * @param {boolean} maskActive - Whether masking is active or not.
+   */
+  render(renderer, writeBuffer, readBuffer) {
+    if (this.uniforms[this.textureID]) {
+      this.uniforms[this.textureID].value = readBuffer.texture;
+    }
+    this._fsQuad.material = this.material;
+    if (this.renderToScreen) {
+      renderer.setRenderTarget(null);
+      this._fsQuad.render(renderer);
+    } else {
+      renderer.setRenderTarget(writeBuffer);
+      if (this.clear) renderer.clear(renderer.autoClearColor, renderer.autoClearDepth, renderer.autoClearStencil);
+      this._fsQuad.render(renderer);
+    }
+  }
+  /**
+   * Frees the GPU-related resources allocated by this instance. Call this
+   * method whenever the pass is no longer used in your app.
+   */
+  dispose() {
+    this.material.dispose();
+    this._fsQuad.dispose();
+  }
+};
+
+// node_modules/three/examples/jsm/postprocessing/MaskPass.js
+var MaskPass = class extends Pass {
+  /**
+   * Constructs a new mask pass.
+   *
+   * @param {Scene} scene - The 3D objects in this scene will define the mask.
+   * @param {Camera} camera - The camera.
+   */
+  constructor(scene, camera) {
+    super();
+    this.scene = scene;
+    this.camera = camera;
+    this.clear = true;
+    this.needsSwap = false;
+    this.inverse = false;
+  }
+  /**
+   * Performs a mask pass with the configured scene and camera.
+   *
+   * @param {WebGLRenderer} renderer - The renderer.
+   * @param {WebGLRenderTarget} writeBuffer - The write buffer. This buffer is intended as the rendering
+   * destination for the pass.
+   * @param {WebGLRenderTarget} readBuffer - The read buffer. The pass can access the result from the
+   * previous pass from this buffer.
+   * @param {number} deltaTime - The delta time in seconds.
+   * @param {boolean} maskActive - Whether masking is active or not.
+   */
+  render(renderer, writeBuffer, readBuffer) {
+    const context = renderer.getContext();
+    const state = renderer.state;
+    state.buffers.color.setMask(false);
+    state.buffers.depth.setMask(false);
+    state.buffers.color.setLocked(true);
+    state.buffers.depth.setLocked(true);
+    let writeValue, clearValue;
+    if (this.inverse) {
+      writeValue = 0;
+      clearValue = 1;
+    } else {
+      writeValue = 1;
+      clearValue = 0;
+    }
+    state.buffers.stencil.setTest(true);
+    state.buffers.stencil.setOp(context.REPLACE, context.REPLACE, context.REPLACE);
+    state.buffers.stencil.setFunc(context.ALWAYS, writeValue, 4294967295);
+    state.buffers.stencil.setClear(clearValue);
+    state.buffers.stencil.setLocked(true);
+    renderer.setRenderTarget(readBuffer);
+    if (this.clear) renderer.clear();
+    renderer.render(this.scene, this.camera);
+    renderer.setRenderTarget(writeBuffer);
+    if (this.clear) renderer.clear();
+    renderer.render(this.scene, this.camera);
+    state.buffers.color.setLocked(false);
+    state.buffers.depth.setLocked(false);
+    state.buffers.color.setMask(true);
+    state.buffers.depth.setMask(true);
+    state.buffers.stencil.setLocked(false);
+    state.buffers.stencil.setFunc(context.EQUAL, 1, 4294967295);
+    state.buffers.stencil.setOp(context.KEEP, context.KEEP, context.KEEP);
+    state.buffers.stencil.setLocked(true);
+  }
+};
+var ClearMaskPass = class extends Pass {
+  /**
+   * Constructs a new clear mask pass.
+   */
+  constructor() {
+    super();
+    this.needsSwap = false;
+  }
+  /**
+   * Performs the clear of the currently defined mask.
+   *
+   * @param {WebGLRenderer} renderer - The renderer.
+   * @param {WebGLRenderTarget} writeBuffer - The write buffer. This buffer is intended as the rendering
+   * destination for the pass.
+   * @param {WebGLRenderTarget} readBuffer - The read buffer. The pass can access the result from the
+   * previous pass from this buffer.
+   * @param {number} deltaTime - The delta time in seconds.
+   * @param {boolean} maskActive - Whether masking is active or not.
+   */
+  render(renderer) {
+    renderer.state.buffers.stencil.setLocked(false);
+    renderer.state.buffers.stencil.setTest(false);
+  }
+};
+
+// node_modules/three/examples/jsm/postprocessing/EffectComposer.js
+var EffectComposer = class {
+  /**
+   * Constructs a new effect composer.
+   *
+   * @param {WebGLRenderer} renderer - The renderer.
+   * @param {WebGLRenderTarget} [renderTarget] - This render target and a clone will
+   * be used as the internal read and write buffers. If not given, the composer creates
+   * the buffers automatically.
+   */
+  constructor(renderer, renderTarget) {
+    this.renderer = renderer;
+    this._pixelRatio = renderer.getPixelRatio();
+    if (renderTarget === void 0) {
+      const size2 = renderer.getSize(new Vector2());
+      this._width = size2.width;
+      this._height = size2.height;
+      renderTarget = new WebGLRenderTarget(this._width * this._pixelRatio, this._height * this._pixelRatio, { type: HalfFloatType });
+      renderTarget.texture.name = "EffectComposer.rt1";
+    } else {
+      this._width = renderTarget.width;
+      this._height = renderTarget.height;
+    }
+    this.renderTarget1 = renderTarget;
+    this.renderTarget2 = renderTarget.clone();
+    this.renderTarget2.texture.name = "EffectComposer.rt2";
+    this.writeBuffer = this.renderTarget1;
+    this.readBuffer = this.renderTarget2;
+    this.renderToScreen = true;
+    this.passes = [];
+    this.copyPass = new ShaderPass(CopyShader);
+    this.copyPass.material.blending = NoBlending;
+    this.timer = new Timer();
+  }
+  /**
+   * Swaps the internal read/write buffers.
+   */
+  swapBuffers() {
+    const tmp = this.readBuffer;
+    this.readBuffer = this.writeBuffer;
+    this.writeBuffer = tmp;
+  }
+  /**
+   * Adds the given pass to the pass chain.
+   *
+   * @param {Pass} pass - The pass to add.
+   */
+  addPass(pass) {
+    this.passes.push(pass);
+    pass.setSize(this._width * this._pixelRatio, this._height * this._pixelRatio);
+  }
+  /**
+   * Inserts the given pass at a given index.
+   *
+   * @param {Pass} pass - The pass to insert.
+   * @param {number} index - The index into the pass chain.
+   */
+  insertPass(pass, index) {
+    this.passes.splice(index, 0, pass);
+    pass.setSize(this._width * this._pixelRatio, this._height * this._pixelRatio);
+  }
+  /**
+   * Removes the given pass from the pass chain.
+   *
+   * @param {Pass} pass - The pass to remove.
+   */
+  removePass(pass) {
+    const index = this.passes.indexOf(pass);
+    if (index !== -1) {
+      this.passes.splice(index, 1);
+    }
+  }
+  /**
+   * Returns `true` if the pass for the given index is the last enabled pass in the pass chain.
+   *
+   * @param {number} passIndex - The pass index.
+   * @return {boolean} Whether the pass for the given index is the last pass in the pass chain.
+   */
+  isLastEnabledPass(passIndex) {
+    for (let i = passIndex + 1; i < this.passes.length; i++) {
+      if (this.passes[i].enabled) {
+        return false;
+      }
+    }
+    return true;
+  }
+  /**
+   * Executes all enabled post-processing passes in order to produce the final frame.
+   *
+   * @param {number} deltaTime - The delta time in seconds. If not given, the composer computes
+   * its own time delta value.
+   */
+  render(deltaTime) {
+    this.timer.update();
+    if (deltaTime === void 0) {
+      deltaTime = this.timer.getDelta();
+    }
+    const currentRenderTarget = this.renderer.getRenderTarget();
+    let maskActive = false;
+    for (let i = 0, il = this.passes.length; i < il; i++) {
+      const pass = this.passes[i];
+      if (pass.enabled === false) continue;
+      pass.renderToScreen = this.renderToScreen && this.isLastEnabledPass(i);
+      pass.render(this.renderer, this.writeBuffer, this.readBuffer, deltaTime, maskActive);
+      if (pass.needsSwap) {
+        if (maskActive) {
+          const context = this.renderer.getContext();
+          const stencil = this.renderer.state.buffers.stencil;
+          stencil.setFunc(context.NOTEQUAL, 1, 4294967295);
+          this.copyPass.render(this.renderer, this.writeBuffer, this.readBuffer, deltaTime);
+          stencil.setFunc(context.EQUAL, 1, 4294967295);
+        }
+        this.swapBuffers();
+      }
+      if (MaskPass !== void 0) {
+        if (pass instanceof MaskPass) {
+          maskActive = true;
+        } else if (pass instanceof ClearMaskPass) {
+          maskActive = false;
+        }
+      }
+    }
+    this.renderer.setRenderTarget(currentRenderTarget);
+  }
+  /**
+   * Resets the internal state of the EffectComposer.
+   *
+   * @param {WebGLRenderTarget} [renderTarget] - This render target has the same purpose like
+   * the one from the constructor. If set, it is used to setup the read and write buffers.
+   */
+  reset(renderTarget) {
+    if (renderTarget === void 0) {
+      const size2 = this.renderer.getSize(new Vector2());
+      this._pixelRatio = this.renderer.getPixelRatio();
+      this._width = size2.width;
+      this._height = size2.height;
+      renderTarget = this.renderTarget1.clone();
+      renderTarget.setSize(this._width * this._pixelRatio, this._height * this._pixelRatio);
+    }
+    this.renderTarget1.dispose();
+    this.renderTarget2.dispose();
+    this.renderTarget1 = renderTarget;
+    this.renderTarget2 = renderTarget.clone();
+    this.writeBuffer = this.renderTarget1;
+    this.readBuffer = this.renderTarget2;
+  }
+  /**
+   * Resizes the internal read and write buffers as well as all passes. Similar to {@link WebGLRenderer#setSize},
+   * this method honors the current pixel ration.
+   *
+   * @param {number} width - The width in logical pixels.
+   * @param {number} height - The height in logical pixels.
+   */
+  setSize(width, height) {
+    this._width = width;
+    this._height = height;
+    const effectiveWidth = this._width * this._pixelRatio;
+    const effectiveHeight = this._height * this._pixelRatio;
+    this.renderTarget1.setSize(effectiveWidth, effectiveHeight);
+    this.renderTarget2.setSize(effectiveWidth, effectiveHeight);
+    for (let i = 0; i < this.passes.length; i++) {
+      this.passes[i].setSize(effectiveWidth, effectiveHeight);
+    }
+  }
+  /**
+   * Sets device pixel ratio. This is usually used for HiDPI device to prevent blurring output.
+   * Setting the pixel ratio will automatically resize the composer.
+   *
+   * @param {number} pixelRatio - The pixel ratio to set.
+   */
+  setPixelRatio(pixelRatio) {
+    this._pixelRatio = pixelRatio;
+    this.setSize(this._width, this._height);
+  }
+  /**
+   * Frees the GPU-related resources allocated by this instance. Call this
+   * method whenever the composer is no longer used in your app.
+   */
+  dispose() {
+    this.renderTarget1.dispose();
+    this.renderTarget2.dispose();
+    this.copyPass.dispose();
+  }
+};
+
+// node_modules/three/examples/jsm/postprocessing/RenderPass.js
+var RenderPass = class extends Pass {
+  /**
+   * Constructs a new render pass.
+   *
+   * @param {Scene} scene - The scene to render.
+   * @param {Camera} camera - The camera.
+   * @param {?Material} [overrideMaterial=null] - The override material. If set, this material is used
+   * for all objects in the scene.
+   * @param {?(number|Color|string)} [clearColor=null] - The clear color of the render pass.
+   * @param {?number} [clearAlpha=null] - The clear alpha of the render pass.
+   */
+  constructor(scene, camera, overrideMaterial = null, clearColor = null, clearAlpha = null) {
+    super();
+    this.scene = scene;
+    this.camera = camera;
+    this.overrideMaterial = overrideMaterial;
+    this.clearColor = clearColor;
+    this.clearAlpha = clearAlpha;
+    this.clear = true;
+    this.clearDepth = false;
+    this.needsSwap = false;
+    this.isRenderPass = true;
+    this._oldClearColor = new Color();
+  }
+  /**
+   * Performs a beauty pass with the configured scene and camera.
+   *
+   * @param {WebGLRenderer} renderer - The renderer.
+   * @param {WebGLRenderTarget} writeBuffer - The write buffer. This buffer is intended as the rendering
+   * destination for the pass.
+   * @param {WebGLRenderTarget} readBuffer - The read buffer. The pass can access the result from the
+   * previous pass from this buffer.
+   * @param {number} deltaTime - The delta time in seconds.
+   * @param {boolean} maskActive - Whether masking is active or not.
+   */
+  render(renderer, writeBuffer, readBuffer) {
+    const oldAutoClear = renderer.autoClear;
+    renderer.autoClear = false;
+    let oldClearAlpha, oldOverrideMaterial;
+    if (this.overrideMaterial !== null) {
+      oldOverrideMaterial = this.scene.overrideMaterial;
+      this.scene.overrideMaterial = this.overrideMaterial;
+    }
+    if (this.clearColor !== null) {
+      renderer.getClearColor(this._oldClearColor);
+      renderer.setClearColor(this.clearColor, renderer.getClearAlpha());
+    }
+    if (this.clearAlpha !== null) {
+      oldClearAlpha = renderer.getClearAlpha();
+      renderer.setClearAlpha(this.clearAlpha);
+    }
+    if (this.clearDepth == true) {
+      renderer.clearDepth();
+    }
+    renderer.setRenderTarget(this.renderToScreen ? null : readBuffer);
+    if (this.clear === true) {
+      renderer.clear(renderer.autoClearColor, renderer.autoClearDepth, renderer.autoClearStencil);
+    }
+    renderer.render(this.scene, this.camera);
+    if (this.clearColor !== null) {
+      renderer.setClearColor(this._oldClearColor);
+    }
+    if (this.clearAlpha !== null) {
+      renderer.setClearAlpha(oldClearAlpha);
+    }
+    if (this.overrideMaterial !== null) {
+      this.scene.overrideMaterial = oldOverrideMaterial;
+    }
+    renderer.autoClear = oldAutoClear;
+  }
+};
+
+// node_modules/three/examples/jsm/postprocessing/SavePass.js
+var SavePass = class extends Pass {
+  /**
+   * Constructs a new save pass.
+   *
+   * @param {WebGLRenderTarget} [renderTarget] - The render target for saving the read buffer.
+   * If not provided, the pass automatically creates a render target.
+   */
+  constructor(renderTarget) {
+    super();
+    this.uniforms = UniformsUtils.clone(CopyShader.uniforms);
+    this.material = new ShaderMaterial({
+      uniforms: this.uniforms,
+      vertexShader: CopyShader.vertexShader,
+      fragmentShader: CopyShader.fragmentShader,
+      blending: NoBlending
+    });
+    this.renderTarget = renderTarget;
+    if (this.renderTarget === void 0) {
+      this.renderTarget = new WebGLRenderTarget(1, 1, { type: HalfFloatType });
+      this.renderTarget.texture.name = "SavePass.rt";
+    }
+    this.needsSwap = false;
+    this._fsQuad = new FullScreenQuad(this.material);
+  }
+  /**
+   * Performs the save pass.
+   *
+   * @param {WebGLRenderer} renderer - The renderer.
+   * @param {WebGLRenderTarget} writeBuffer - The write buffer. This buffer is intended as the rendering
+   * destination for the pass.
+   * @param {WebGLRenderTarget} readBuffer - The read buffer. The pass can access the result from the
+   * previous pass from this buffer.
+   * @param {number} deltaTime - The delta time in seconds.
+   * @param {boolean} maskActive - Whether masking is active or not.
+   */
+  render(renderer, writeBuffer, readBuffer) {
+    this.uniforms["tDiffuse"].value = readBuffer.texture;
+    renderer.setRenderTarget(this.renderTarget);
+    if (this.clear) renderer.clear();
+    this._fsQuad.render(renderer);
+  }
+  /**
+   * Sets the size of the pass.
+   *
+   * @param {number} width - The width to set.
+   * @param {number} height - The height to set.
+   */
+  setSize(width, height) {
+    this.renderTarget.setSize(width, height);
+  }
+  /**
+   * Frees the GPU-related resources allocated by this instance. Call this
+   * method whenever the pass is no longer used in your app.
+   */
+  dispose() {
+    this.renderTarget.dispose();
+    this.material.dispose();
+    this._fsQuad.dispose();
+  }
+};
+
+// node_modules/three/examples/jsm/shaders/BlendShader.js
+var BlendShader = {
+  name: "BlendShader",
+  uniforms: {
+    "tDiffuse1": { value: null },
+    "tDiffuse2": { value: null },
+    "mixRatio": { value: 0.5 },
+    "opacity": { value: 1 }
+  },
+  vertexShader: (
+    /* glsl */
+    `
+
+		varying vec2 vUv;
+
+		void main() {
+
+			vUv = uv;
+			gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );
+
+		}`
+  ),
+  fragmentShader: (
+    /* glsl */
+    `
+
+		uniform float opacity;
+		uniform float mixRatio;
+
+		uniform sampler2D tDiffuse1;
+		uniform sampler2D tDiffuse2;
+
+		varying vec2 vUv;
+
+		void main() {
+
+			vec4 texel1 = texture2D( tDiffuse1, vUv );
+			vec4 texel2 = texture2D( tDiffuse2, vUv );
+			gl_FragColor = opacity * mix( texel1, texel2, mixRatio );
+
+		}`
+  )
+};
+
+// Shader/SplattingShader.ts
+var SplattingShader = class {
+  constructor() {
+    this.vertexShader = `
+     #include <fog_pars_vertex>
+     varying vec2 vUV;
+     varying vec4 Position;
+
+     void main() {
+        #include <begin_vertex>
+        #include <project_vertex>
+        #include <fog_vertex>
+        vUV = uv;
+        Position = vec4(position,1.0);
+       }
+     `;
+    this.fragmentShader = `
+     #include <fog_pars_fragment>
+
+     uniform sampler2D farmTexture;
+     uniform sampler2D mountainTexture;
+     uniform sampler2D factoryTexture;
+     uniform sampler2D cityTexture;
+     uniform sampler2D desertTexture;
+     uniform float opacity;
+     uniform float cityUVFactor;
+
+     varying vec2 vUV;
+     varying vec4 Position;
+
+     void main() 
+     {
+        vec4 factory = vec4(0.0);
+        vec4 farm = vec4(0.0);
+        vec4 city = vec4(0.0);
+        vec4 mountain = vec4(0.0);
+        vec4 desert = vec4(0.0);
+
+        factory = (smoothstep(-2.f, -1.f, Position.y) - smoothstep(-1.f, 0.f, Position.y)) * texture2D( factoryTexture, vUV * 9.5 );
+        factory[3] = 0.0;
+        farm = (smoothstep(-1.f, 0.f, Position.y) - smoothstep(0.f, 1.f, Position.y)) * texture2D( farmTexture, vUV * 1.0 );
+        farm[3] = 0.0;
+        city = (smoothstep(0.f, 1.f, Position.y) - smoothstep(1.f, 2.f, Position.y)) * texture2D( cityTexture, vUV * cityUVFactor );
+        city[3] = 0.0;
+        mountain = (smoothstep(1.f, 2.f, Position.y) - smoothstep(2.f, 1200.f, Position.y)) * texture2D( mountainTexture, vUV * 5.0);
+        mountain[3] = 0.0;
+        desert = (smoothstep(-1.f, -2.f, Position.y) - smoothstep(-2.f, -1200.f, Position.y)) * texture2D( desertTexture, vUV * 10.0 );
+        desert[3] = 0.0;
+
+        gl_FragColor = vec4(0.0, 0.0, 0.0, opacity) + farm + mountain + factory + city + desert;
+
+        // \uCEE4\uC2A4\uD140 ShaderMaterial \uC740 \uB0B4\uC7A5 \uC170\uC774\uB354\uC640 \uB2EC\uB9AC \uCD9C\uB825 \uBCC0\uD658\uC774 \uC790\uB3D9\uC73C\uB85C \uBD99\uC9C0 \uC54A\uB294\uB2E4.
+        // (linearToOutputTexel() \uC740 \uD504\uB9AC\uD53D\uC2A4\uC5D0 \uC8FC\uC785\uB418\uC9C0\uB9CC \uD638\uCD9C\uBD80\uAC00 \uC5C6\uB2E4 \u2014 WebGLProgram.js)
+        // \uC778\uD074\uB8E8\uB4DC \uC21C\uC11C\uB294 \uB0B4\uC7A5 \uC170\uC774\uB354\uC640 \uB3D9\uC77C\uD558\uAC8C \uB9DE\uCD98\uB2E4: \uD1A4\uB9E4\uD551 \u2192 \uC0C9\uACF5\uAC04 \u2192 \uD3EC\uADF8.
+        // \uD3EC\uADF8\uAC00 \uC0C9\uACF5\uAC04 \uB4A4\uC5D0 \uC624\uB294 \uAC83\uC740 three \uAC00 fogColor \uB97C \uCD9C\uB825 \uC0C9\uACF5\uAC04\uC73C\uB85C \uB118\uAE30\uAE30 \uB54C\uBB38\uC774\uB2E4.
+        #include <tonemapping_fragment>
+        #include <colorspace_fragment>
+        #include <fog_fragment>
+     }
+     `;
+  }
+};
+
+// Manager/ShaderManager.ts
+var ShaderManager = class _ShaderManager {
+  constructor() {
+    this.BuildMotionBlurShader();
+    this.splattingShader = new SplattingShader();
+    this.farmTexture = new TextureLoader().load("Model/Heightmap/farm.jpg");
+    this.farmTexture.wrapS = RepeatWrapping;
+    this.farmTexture.wrapT = RepeatWrapping;
+    this.farmTexture.colorSpace = SRGBColorSpace;
+    this.mountainTexture = new TextureLoader().load("Model/Heightmap/mountain.jpg");
+    this.mountainTexture.wrapS = RepeatWrapping;
+    this.mountainTexture.wrapT = RepeatWrapping;
+    this.mountainTexture.colorSpace = SRGBColorSpace;
+    this.factoryTexture = new TextureLoader().load("Model/Heightmap/factory.jpg");
+    this.factoryTexture.wrapS = RepeatWrapping;
+    this.factoryTexture.wrapT = RepeatWrapping;
+    this.factoryTexture.colorSpace = SRGBColorSpace;
+    this.cityTexture = new TextureLoader().load("Model/Heightmap/city.jpg");
+    this.cityTexture.wrapS = RepeatWrapping;
+    this.cityTexture.wrapT = RepeatWrapping;
+    this.cityTexture.colorSpace = SRGBColorSpace;
+    this.desertTexture = new TextureLoader().load("Model/Heightmap/desert.jpg");
+    this.desertTexture.wrapS = RepeatWrapping;
+    this.desertTexture.wrapT = RepeatWrapping;
+    this.desertTexture.colorSpace = SRGBColorSpace;
+    this.fogTexture = new TextureLoader().load("Model/fog/fog.png");
+    this.fogTexture.wrapS = RepeatWrapping;
+    this.fogTexture.wrapT = RepeatWrapping;
+    this.fogTexture.colorSpace = SRGBColorSpace;
+    this.cloudTexture = new TextureLoader().load("Model/Cloud/cloud3.png");
+    this.cloudTexture.wrapS = RepeatWrapping;
+    this.cloudTexture.wrapT = RepeatWrapping;
+    this.cloudTexture.colorSpace = SRGBColorSpace;
+    this.missileFlameTexture = new TextureLoader().load("Model/MissileFlame/MissileFlame.png");
+    this.missileFlameTexture.wrapS = RepeatWrapping;
+    this.missileFlameTexture.wrapT = RepeatWrapping;
+    this.missileFlameTexture.colorSpace = SRGBColorSpace;
+  }
+  static getInstance() {
+    if (!_ShaderManager.instance) {
+      _ShaderManager.instance = new _ShaderManager();
+    }
+    return _ShaderManager.instance;
+  }
+  BuildMotionBlurShader() {
+    const renderer = WorldManager.getInstance().Renderer;
+    const sceneInstance = SceneManager.getInstance().SceneInstance;
+    const camera = WorldManager.getInstance().MainCamera.CameraInstance;
+    const canvas = WorldManager.getInstance().Canvas;
+    this.composer = new EffectComposer(renderer);
+    this.renderPass = new RenderPass(sceneInstance, camera);
+    this.renderTargetParameters = {
+      minFilter: LinearFilter,
+      magFilter: LinearFilter,
+      stencilBuffer: false
+    };
+    this.savePass = new SavePass(
+      new WebGLRenderTarget(
+        canvas.clientWidth,
+        canvas.clientHeight,
+        this.renderTargetParameters
+      )
+    );
+    this.blendPass = new ShaderPass(BlendShader, "tDiffuse1");
+    this.blendPass.uniforms["tDiffuse2"].value = this.savePass.renderTarget.texture;
+    this.blendPass.uniforms["mixRatio"].value = 0;
+    this.outputPass = new ShaderPass(CopyShader);
+    this.composer.addPass(this.renderPass);
+    this.composer.addPass(this.blendPass);
+    this.composer.addPass(this.savePass);
+    this.composer.addPass(this.outputPass);
+    this.composer.renderToScreen = true;
+  }
+  get SplattingShader() {
+    return this.splattingShader;
+  }
+  ShadedRender() {
+    this.composer.render();
+  }
+};
+
+// Object/InGameObject/Weapons/Missile.ts
+var Missile = class extends GameObject {
+  constructor() {
+    super();
+    this.aircraftSpeed = 0;
+    this.velocity = 0;
+    this.velocityGain = 0;
+    this.velocityBreak = 0;
+    this.maxVelocity = 80;
+    this.maxResultSpeed = 0;
+    this.resultSpeed = 0;
+    this.rotateSpeed = 0;
+    //미사일 선회력
+    this.maxRotateSpeed = 20;
+    this.rotateSpeedAcceleration = 20;
+    this.predictionDistance = 200;
+    this.endHomingStartLength = 0;
+    this.angle = 500;
+    this.activeCollide = false;
+    this.deAcceleration = false;
+    this.type = 5 /* OBJ_MISSILE */;
+    this.physicsComponent = new PhysicsComponent(this);
+    this.graphicComponent = new GraphicComponent(this);
+    this.exportComponent = new ExportComponent(this);
+    this.collisionComponent = new CollisionComponent(this);
+  }
+  InitializeAfterLoad() {
+    this.targetObject = ObjectManager.getInstance().GetObjectFromName("Target");
+    this.GameObjectInstance.matrixAutoUpdate = true;
+    this.PhysicsComponent.SetScaleScalar(1);
+    this.GameObjectInstance.name = this.name;
+    if (this.IsClone == false)
+      ObjectManager.getInstance().AddObject(this, this.name, this.Type);
+    else {
+      const flameMaterial = new SpriteMaterial({
+        map: ShaderManager.getInstance().missileFlameTexture,
+        transparent: true
+        //side: THREE.DoubleSide
+      });
+      this.missileFlameMesh = new Sprite(flameMaterial);
+      this.GameObjectInstance.add(this.missileFlameMesh);
+      this.missileFlameMesh.scale.set(5, 5, 5);
+      this.missileFlameMesh.position.addScaledVector(this.PhysicsComponent.Look, -1.2);
+      this.missileFlameMesh.position.addScaledVector(this.PhysicsComponent.Right, -0.04);
+      this.missileFlameMesh.position.addScaledVector(this.PhysicsComponent.Up, 0.05);
+      this.CreateCollider();
+    }
+  }
+  CreateCollider() {
+    this.CollisionComponent.CreateBoundingSphere(this.physicsComponent.GetPosition(), 2);
+    this.CollisionComponent.CreateRaycaster();
+    this.CollisionComponent.ObbBoxHelper.visible = false;
+  }
+  CollisionActive(type = null) {
+    if (type == 0 /* OBJ_TERRAIN */)
+      this.activeCollide = true;
+    if (this.activeCollide == true)
+      this.isDead = true;
+  }
+  CollisionDeActive() {
+  }
+  get AirCraftSpeed() {
+    return this.aircraftSpeed;
+  }
+  set AirCraftSpeed(speed) {
+    this.aircraftSpeed = speed;
+  }
+  Animate() {
+    this.isRayOn = true;
+    if (this.targetObject != void 0) {
+      const length = new Vector3().subVectors(this.targetObject.PhysicsComponent.GetPosition().clone(), this.PhysicsComponent.GetPosition().clone()).length();
+      let targetDirection;
+      if (length < 100) {
+        this.activeCollide = true;
+      }
+      if (length >= this.endHomingStartLength) {
+        this.predictionDistance = length - length / 2;
+      } else {
+        this.predictionDistance = 0;
+      }
+      if (this.rotateSpeed < this.maxRotateSpeed)
+        this.rotateSpeed += this.rotateSpeedAcceleration * WorldManager.getInstance().GetDeltaTime();
+      else {
+        this.rotateSpeed = this.maxRotateSpeed;
+      }
+      const nextPos = this.targetObject.PhysicsComponent.GetPosition().clone().add(this.targetObject.PhysicsComponent.Look.clone().multiplyScalar(this.predictionDistance));
+      targetDirection = new Vector3().subVectors(nextPos, this.PhysicsComponent.GetPosition().clone()).normalize();
+      const currentDirection = new Vector3(0, 0, 1).applyEuler(this.PhysicsComponent.GetRotateEuler());
+      const angle = currentDirection.angleTo(targetDirection);
+      const axis = new Vector3().crossVectors(currentDirection, targetDirection).normalize();
+      const maxSpeed = this.rotateSpeed;
+      const maxRadius = this.angle;
+      let speed = maxSpeed * (angle / maxRadius);
+      speed = Math.min(speed, maxSpeed);
+      const quaternion = new Quaternion().setFromAxisAngle(axis, speed);
+      const currentRotation = new Quaternion();
+      currentRotation.setFromEuler(this.PhysicsComponent.GetRotateEuler());
+      const nextRotation = new Euler().setFromQuaternion(quaternion.multiply(currentRotation));
+      this.GameObjectInstance.setRotationFromEuler(nextRotation);
+      if (this.deAcceleration == false && this.velocity <= this.maxVelocity) {
+        this.velocity += this.velocityGain * WorldManager.getInstance().GetDeltaTime();
+        this.resultSpeed = this.aircraftSpeed + this.velocity;
+      } else if (this.deAcceleration == false && this.maxResultSpeed <= this.resultSpeed) {
+        this.deAcceleration = true;
+        this.resultSpeed = this.maxResultSpeed;
+      }
+      if (this.deAcceleration == true)
+        this.resultSpeed -= this.velocityBreak * WorldManager.getInstance().GetDeltaTime();
+      if (this.resultSpeed <= 60 && this.deAcceleration == true) {
+        this.IsDead = true;
+      }
+      this.PhysicsComponent.MoveForward(this.resultSpeed);
+    } else
+      this.PhysicsComponent.MoveForward(120);
+    const missileFog = SceneManager.getInstance().CurrentScene.missileFogPool.GetObject();
+    missileFog.IsPoolObject = true;
+    missileFog.PhysicsComponent.SetPosition(this.PhysicsComponent.GetPosition().x + Math.random() * 3, this.PhysicsComponent.GetPosition().y + Math.random() * 3, this.PhysicsComponent.GetPosition().z);
+    missileFog.PhysicsComponent.SetScale(0.5, 0.5, 0.5);
+    ObjectManager.getInstance().AddObject(missileFog, missileFog.Name, missileFog.Type);
+    if (this.isClone == true) {
+      this.CollisionComponent.Update();
+    }
+  }
+};
+
+// Object/InGameObject/Weapons/IRMissile/AIM9H.ts
+var AIM9H = class extends Missile {
+  constructor() {
+    super();
+  }
+  InitializeAfterLoad() {
+    super.InitializeAfterLoad();
+    this.velocityGain = 40;
+    this.velocityBreak = 1;
+    this.maxVelocity = 80;
+    this.maxRotateSpeed = 18;
+    this.rotateSpeedAcceleration = 5;
+  }
+  CreateCollider() {
+    this.CollisionComponent.CreateOrientedBoundingBox(this.physicsComponent.GetPosition(), new Vector3(1.5, 1.5, 1.5));
+    this.CollisionComponent.CreateRaycaster();
+    this.CollisionComponent.ObbBoxHelper.visible = false;
+  }
+  CollisionActive(type) {
+    super.CollisionActive(type);
+  }
+  CollisionDeActive() {
+  }
+  Animate() {
+    if (this.maxResultSpeed == 0)
+      this.maxResultSpeed = this.maxVelocity + this.AirCraftSpeed;
+    if (this.targetObject != void 0) {
+      const relativeSpeed = this.resultSpeed - this.targetObject.throttle;
+      if (relativeSpeed > this.targetObject.throttle)
+        this.endHomingStartLength = 100;
+      else
+        this.endHomingStartLength = 0;
+    }
+    super.Animate();
+  }
+};
+
+// Object/InGameObject/Weapons/IRMissile/AIM9L.ts
+var AIM9L = class extends Missile {
+  constructor() {
+    super();
+  }
+  InitializeAfterLoad() {
+    super.InitializeAfterLoad();
+    this.velocityGain = 40;
+    this.velocityBreak = 1.5;
+    this.maxVelocity = 80;
+    this.maxRotateSpeed = 30;
+    this.rotateSpeedAcceleration = 15;
+  }
+  CreateCollider() {
+    this.CollisionComponent.CreateOrientedBoundingBox(this.physicsComponent.GetPosition(), new Vector3(1.5, 1.5, 1.5));
+    this.CollisionComponent.CreateRaycaster();
+    this.CollisionComponent.ObbBoxHelper.visible = false;
+  }
+  CollisionActive(type) {
+    super.CollisionActive(type);
+  }
+  CollisionDeActive() {
+  }
+  Animate() {
+    if (this.maxResultSpeed == 0)
+      this.maxResultSpeed = this.maxVelocity + this.AirCraftSpeed;
+    if (this.targetObject != void 0) {
+      const relativeSpeed = this.resultSpeed - this.targetObject.throttle;
+      if (relativeSpeed > this.targetObject.throttle)
+        this.endHomingStartLength = 50;
+      else
+        this.endHomingStartLength = 0;
+    }
+    super.Animate();
+  }
+};
+
+// Object/InGameObject/Environment/Cloud.ts
+var Cloud = class extends GameObject {
+  constructor() {
+    super();
+    this.positions = [];
+    this.scales = [];
+    this.prevMatrix = [];
+    this.type = 3 /* OBJ_OBJECT2D */;
+    this.graphicComponent = new GraphicComponent(this);
+    this.isClone = false;
+  }
+  BuildClouds() {
+    this.CreateBillboardMesh();
+  }
+  InitializeAfterLoad() {
+    if (this.IsClone == true) {
+      this.BuildClouds();
+      this.GameObjectInstance.matrixAutoUpdate = false;
+      this.GameObjectInstance.name = this.name;
+    } else {
+      ObjectManager.getInstance().AddObject(this, this.name, this.Type);
+    }
+  }
+  SetMaterial(mesh) {
+    mesh.traverse((node) => {
+      if (node.isMesh || node.isGroup || node.isSprite) {
+        node.name = "CloudCloneNode";
+        if (node.geometry) {
+          node.material.color = new Color(0.45, 0.45, 0.45);
+          node.material.fog = false;
+          node.material.transparent = true;
+          node.material.opacity = 0.9;
+          node.material.alphaTest = 0.01;
+          node.material.depthWrite = false;
+          node.material.side = DoubleSide;
+        }
+        ;
+      }
+    });
+  }
+  CreateBillboardMesh() {
+    this.mesh = new Mesh();
+    const positions = [];
+    for (let i = 0; i < 30; ++i) {
+      const scale = new Vector3(
+        1e3 + Math.random() * 1600,
+        500 + Math.random() * 1e3,
+        1e3 + Math.random() * 1600
+      );
+      const position = new Vector3();
+      do {
+        position.set(
+          -1e4 + Math.random() * 2e4,
+          200 + Math.random() * 600,
+          -5e3 + Math.random() * 2e4
+        );
+      } while (positions.some((p) => p.distanceTo(position) < Math.max(scale.x, scale.z)));
+      const childMesh = ObjectManager.getInstance().GetObjectFromName("Cloud").GameObjectInstance.clone();
+      childMesh.name = "CloudCloneChild";
+      this.SetMaterial(childMesh);
+      childMesh.position.set(position.x, position.y, position.z);
+      childMesh.scale.set(scale.x, scale.y, scale.z);
+      childMesh.rotateY(Math.random() * 360);
+      childMesh.renderOrder = -1;
+      this.mesh.add(childMesh);
+      positions.push(position);
+    }
+    this.mesh.name = "CloudCloneMesh";
+    this.GameObjectInstance = this.mesh;
+    ObjectManager.getInstance().AddObject(this, this.name, this.Type);
+  }
+  Animate() {
+  }
+};
+
+// Object/CommonObject/Terrain/HeightmapTerrain.ts
+var _HeightmapTerrain = class _HeightmapTerrain extends GameObject {
+  constructor(x, z, segmentWidth, segmentHeight, planSize = 900, isDummy = false) {
+    super();
+    this.heightIndexBuffer = [];
+    this.heightBuffer = [];
+    this.inSectorObject = [];
+    this.vertexNormalNeedUpdate = false;
+    // 최초 1프레임에 한 번은 적용해야 한다 (생성 시 유니폼은 cityTexture 로 초기화된다).
+    this.textureUniformNeedUpdate = true;
+    this.opacity = 1;
+    this.cityUVFactor = 1;
+    this.maxHeight = 0;
+    this.isDummy = false;
+    this.inSector = false;
+    this.useDirtTexture = false;
+    this.useCityTexture = false;
+    this.isDummy = isDummy;
+    this.width = x;
+    this.height = z;
+    this.planSize = planSize;
+    this.segmentWidth = segmentWidth;
+    this.segmentHeight = segmentHeight;
+    this.name = "Terrain" + ObjectManager.getInstance().GetObjectList[0 /* OBJ_TERRAIN */].length;
+    this.terrainIndex = ObjectManager.getInstance().GetObjectList[0 /* OBJ_TERRAIN */].length;
+    this.type = 0 /* OBJ_TERRAIN */;
+    this.isClone = true;
+    this.physicsComponent = new PhysicsComponent(this);
+    this.graphicComponent = new GraphicComponent(this);
+    this.exportComponent = new ExportComponent(this);
+    this.collisionComponent = new CollisionComponent(this);
+    this.CreateTerrainMesh();
+  }
+  InitializeAfterLoad() {
+    this.PhysicsComponent.SetPosition(this.width, 0, this.height);
+    if (this.isDummy == false) {
+      this.CreateBoundingBox();
+    }
+    this.GameObjectInstance.matrixAutoUpdate = false;
+    SceneManager.getInstance().SceneInstance.add(this.gameObjectInstance);
+    ObjectManager.getInstance().AddObject(this, this.name, this.type);
+  }
+  CreateBoundingBox() {
+    this.CollisionComponent.CreateBoundingBox(this.planSize, 5e3, this.planSize);
+    this.CollisionComponent.BoxHelper.box.setFromCenterAndSize(new Vector3(this.width, 2e3, this.height), new Vector3(this.planSize, 5e3, this.planSize));
+    this.CollisionComponent.BoxHelper.visible = false;
+    this.CollisionComponent.BoxHelper.matrixAutoUpdate = false;
+  }
+  CreateTerrainMesh() {
+    if (this.isDummy == false)
+      this.planeGeometry = new PlaneGeometry(this.planSize, this.planSize, this.segmentWidth, this.segmentHeight);
+    else
+      this.planeGeometry = new PlaneGeometry(this.planSize, this.planSize, 1, 1);
+    const customUniforms = {
+      ...UniformsUtils.clone(UniformsLib["fog"]),
+      farmTexture: { value: ShaderManager.getInstance().farmTexture },
+      mountainTexture: { value: ShaderManager.getInstance().mountainTexture },
+      factoryTexture: { value: ShaderManager.getInstance().factoryTexture },
+      cityTexture: { value: ShaderManager.getInstance().cityTexture },
+      desertTexture: { value: ShaderManager.getInstance().desertTexture },
+      cityUVFactor: { value: this.cityUVFactor },
+      opacity: { value: this.opacity }
+    };
+    this.material = new ShaderMaterial(
+      {
+        uniforms: customUniforms,
+        vertexShader: ShaderManager.getInstance().SplattingShader.vertexShader.slice(),
+        fragmentShader: ShaderManager.getInstance().SplattingShader.fragmentShader.slice(),
+        //wireframe: true,
+        //side: THREE.DoubleSide,
+        fog: true,
+        transparent: false
+      }
+    );
+    const rotation = new Matrix4().makeRotationX(-Math.PI / 2);
+    this.planeGeometry.applyMatrix4(rotation);
+    this.planeGeometry.computeBoundingSphere();
+    this.planeGeometry.computeVertexNormals();
+    this.planeMesh = new Mesh(this.planeGeometry, this.material);
+    this.planeMesh.receiveShadow = true;
+    this.planeMesh.castShadow = true;
+    this.gameObjectInstance = this.planeMesh;
+    this.GameObjectInstance.name = this.name;
+    this.gameObjectInstance.frustumCulled = true;
+    this.InitializeAfterLoad();
+  }
+  get HeightIndexBuffer() {
+    return this.heightIndexBuffer;
+  }
+  get HeightBuffer() {
+    this.heightBuffer.length = 0;
+    this.heightIndexBuffer.forEach((element) => this.heightBuffer.push(this.planeGeometry.getAttribute("position").getY(element)));
+    return this.heightBuffer;
+  }
+  /** 타일 내 최대 정점 높이(로컬 y). 격자 DDA 의 조기 탈출이 쓸 값이다. */
+  get MaxHeight() {
+    return this.maxHeight;
+  }
+  get TerrainIndex() {
+    return this.terrainIndex;
+  }
+  /**
+   * 격자 제원. ModelLoadManager.LoadHeightmapTerrain() 이 한 번 세운다.
+   *
+   * 타일이 규칙적으로 놓이므로 월드 좌표에서 인덱스를 바로 구할 수 있다.
+   * 예전에는 오브젝트마다 타일 324장 전부와 sphere-box 를 검사해서 자기 타일을 찾았다.
+   */
+  static SetGridInfo(row, col, tileSize) {
+    _HeightmapTerrain.gridRow = row;
+    _HeightmapTerrain.gridCol = col;
+    _HeightmapTerrain.gridTileSize = tileSize;
+  }
+  /** 월드 축 좌표 → 격자 축 인덱스. 타일 j 는 [tileSize*j - tileSize/2, + tileSize/2) 를 덮는다. */
+  static WorldToGridAxis(value) {
+    const tileSize = _HeightmapTerrain.gridTileSize;
+    return Math.floor((value + tileSize / 2) / tileSize);
+  }
+  /** 격자 (i, j) → objectList[OBJ_TERRAIN] 인덱스. 격자 밖이면 -1. */
+  static GridToTerrainIndex(i, j) {
+    if (i < 0 || i >= _HeightmapTerrain.gridCol || j < 0 || j >= _HeightmapTerrain.gridRow)
+      return -1;
+    return i * _HeightmapTerrain.gridRow + j;
+  }
+  /** 광역 페이즈가 매 프레임 다시 채우므로 그 전에 비운다. */
+  ClearSector() {
+    this.inSectorObject.length = 0;
+    this.inSector = false;
+  }
+  ApplyTextureUniform() {
+    const shaderManager = ShaderManager.getInstance();
+    this.material.uniforms.factoryTexture.value = this.useDirtTexture ? shaderManager.desertTexture : shaderManager.factoryTexture;
+    this.material.uniforms.cityTexture.value = this.useCityTexture ? shaderManager.cityTexture : shaderManager.farmTexture;
+  }
+  get IsDummy() {
+    return this.isDummy;
+  }
+  set IsDummy(flag) {
+    this.isDummy = flag;
+  }
+  SetHeight(index, value = void 0, option = 0 /* TERRAIN_UP */) {
+    if (this.isDummy == true) {
+      if (this.collisionComponent.BoundingBox != null) {
+        this.collisionComponent.DeleteCollider();
+        this.planeGeometry.dispose();
+        this.planeGeometry = new PlaneGeometry(this.planSize, this.planSize, 1, 1);
+        this.planeMesh.geometry = this.planeGeometry;
+        const rotation = new Matrix4().makeRotationX(-Math.PI / 2);
+        this.planeGeometry.applyMatrix4(rotation);
+      }
+    }
+    const position = this.planeGeometry.getAttribute("position");
+    position.needsUpdate = true;
+    let height = position.getY(index);
+    if (value != void 0 && option == 0 /* TERRAIN_UP */) {
+      value = Math.abs(value);
+    }
+    if (option == 1 /* TERRAIN_DOWN */) {
+      value = Math.abs(value);
+      value *= -1;
+      position.setY(index, height += value);
+    } else if (option == 2 /* TERRAIN_BALANCE */ || option == 3 /* TERRAIN_LOAD */) {
+      position.setY(index, value);
+    } else {
+      position.setY(index, height += value);
+    }
+    if (this.isDummy == false) {
+      const endPointIndex = position.count - 1;
+      const oldheight = position.getY(index);
+      if (position.getX(index) == this.planSize / 2) {
+        if (this.SyncNeighborVertex(this.terrainIndex + 1, index - this.segmentHeight, oldheight)) {
+          if (index == endPointIndex)
+            this.SyncNeighborVertex(this.terrainIndex + (_HeightmapTerrain.gridRow + 1), 0, oldheight);
+          else if (index == this.segmentWidth)
+            this.SyncNeighborVertex(this.terrainIndex - (_HeightmapTerrain.gridRow - 1), endPointIndex - this.segmentWidth, oldheight);
+        }
+      }
+      if (position.getX(index) == -(this.planSize / 2)) {
+        this.SyncNeighborVertex(this.terrainIndex - 1, index + this.segmentHeight, oldheight);
+        if (index == 0)
+          this.SyncNeighborVertex(this.terrainIndex - (_HeightmapTerrain.gridRow + 1), endPointIndex, oldheight);
+        else if (index == endPointIndex - this.segmentWidth)
+          this.SyncNeighborVertex(this.terrainIndex + (_HeightmapTerrain.gridRow - 1), this.segmentWidth, oldheight);
+      }
+      if (position.getZ(index) == this.planSize / 2)
+        this.SyncNeighborVertex(this.terrainIndex + _HeightmapTerrain.gridRow, index - (endPointIndex - this.segmentWidth), oldheight);
+      if (position.getZ(index) == -(this.planSize / 2))
+        this.SyncNeighborVertex(this.terrainIndex - _HeightmapTerrain.gridRow, index + (endPointIndex - this.segmentWidth), oldheight);
+    }
+    if (this.heightIndexBuffer.indexOf(index) == -1)
+      this.heightIndexBuffer.push(index);
+    this.vertexNormalNeedUpdate = true;
+  }
+  /**
+   * 이웃 타일의 대응 정점을 같은 높이로 맞춰 이음매를 없앤다.
+   *
+   * 이웃이 없으면 아무것도 하지 않고 false 를 반환한다 — 호출부의 중첩 조건이 이 값을 쓴다.
+   *
+   * 예전에는 정점만 쓰고 이웃의 vertexNormalNeedUpdate 를 세우지 않아서,
+   * 이음매 정점이 움직여도 이웃 타일의 법선이 다시 계산되지 않았다(경계에 조명 이음매).
+   * 이제는 바운딩 스피어와 높이 집계도 그 플래그에 물려 있으므로 반드시 세워야 한다.
+   */
+  SyncNeighborVertex(neighborIndex, vertexIndex, height) {
+    const objectSet = ObjectManager.getInstance().GetObjectList[0 /* OBJ_TERRAIN */][neighborIndex];
+    if (objectSet == void 0)
+      return false;
+    const neighbor = objectSet.GameObject;
+    const neighborPosition = neighbor.planeGeometry.getAttribute("position");
+    neighborPosition.needsUpdate = true;
+    neighborPosition.setY(vertexIndex, height);
+    neighbor.vertexNormalNeedUpdate = true;
+    return true;
+  }
+  /**
+   * 정점 높이에서 파생되는 값을 한 번의 순회로 모두 갱신한다.
+   *
+   * 예전에는 SetHeight 가 호출될 때마다 전 정점을 순회했고, 그 루프 안에서
+   * GetMaxVertex() 를 불러 다시 전 정점을 훑었다 → 호출 1회가 289×289.
+   * Picker 는 face.a/b/c 로 3번 부르고 브러시 드래그는 매 프레임이라 실측 렉의 주범이었다.
+   *
+   * 지금은 SetHeight 가 플래그만 세우고, 실제 집계는 프레임당 한 번 여기서 한다.
+   * computeVertexNormals() 가 어차피 전 정점을 훑는 자리이므로 추가 비용이 사실상 없다.
+   */
+  UpdateHeightStats() {
+    const position = this.planeGeometry.getAttribute("position");
+    const count = position.count;
+    let useDirt = false;
+    let cnt = 0;
+    let maxY = -Infinity;
+    for (let i = 0; i < count; ++i) {
+      const y = position.getY(i);
+      if (y <= -3)
+        useDirt = true;
+      if (y == 1)
+        ++cnt;
+      if (y > maxY)
+        maxY = y;
+    }
+    this.maxHeight = maxY;
+    const useCity = cnt >= 30 && maxY <= 110;
+    if (this.useDirtTexture != useDirt || this.useCityTexture != useCity)
+      this.textureUniformNeedUpdate = true;
+    this.useDirtTexture = useDirt;
+    this.useCityTexture = useCity;
+    this.material.uniforms.cityUVFactor.value = useCity ? 6 : 1;
+  }
+  CollisionActive(object) {
+    if (this.isDummy == false) {
+      if (this.inSectorObject.includes(object) == false) {
+        this.inSectorObject.push(object);
+        this.inSector = true;
+      }
+    }
+  }
+  CollisionDeActive(object) {
+    if (this.inSectorObject.includes(object) == true) {
+      this.inSectorObject = this.inSectorObject.filter((element) => element != object).slice();
+    }
+  }
+  Animate() {
+    if (this.isDummy == true) {
+      if (this.collisionComponent.BoundingBox != null) {
+        this.collisionComponent.DeleteCollider();
+        this.planeGeometry.dispose();
+        this.planeGeometry = new PlaneGeometry(this.planSize, this.planSize, 1, 1);
+        this.planeMesh.geometry = this.planeGeometry;
+        const rotation = new Matrix4().makeRotationX(-Math.PI / 2);
+        this.planeGeometry.applyMatrix4(rotation);
+      }
+    } else {
+      if (this.textureUniformNeedUpdate) {
+        this.ApplyTextureUniform();
+        this.textureUniformNeedUpdate = false;
+      }
+      if (this.collisionComponent.BoundingBox == null)
+        this.CreateBoundingBox();
+    }
+    if (this.vertexNormalNeedUpdate) {
+      this.planeGeometry.computeVertexNormals();
+      this.planeGeometry.computeBoundingSphere();
+      if (this.isDummy == false)
+        this.UpdateHeightStats();
+      this.vertexNormalNeedUpdate = false;
+    }
+    const cameraPosition = WorldManager.getInstance().MainCamera.PhysicsComponent.GetPosition().clone();
+    if (CameraManager.getInstance().CameraMode === 1 /* CAMERA_3RD */)
+      WorldManager.getInstance().MainCamera.CameraInstance.localToWorld(cameraPosition);
+    if (cameraPosition.sub(this.physicsComponent.GetPosition()).length() > 4500) {
+      this.GameObjectInstance.visible = false;
+    } else {
+      this.GameObjectInstance.visible = true;
+    }
+  }
+};
+// 격자 제원은 전 타일이 공유한다. SetGridInfo() 가 한 번 세운다.
+_HeightmapTerrain.gridRow = 0;
+_HeightmapTerrain.gridCol = 0;
+_HeightmapTerrain.gridTileSize = 900;
+var HeightmapTerrain = _HeightmapTerrain;
+
+// Manager/CollisionManager.ts
+var CollisionManager = class _CollisionManager {
+  static getInstance() {
+    if (!_CollisionManager.instance) {
+      _CollisionManager.instance = new _CollisionManager();
+    }
+    return _CollisionManager.instance;
+  }
+  CollideRayToTerrain(source) {
+    source.forEach(function(src) {
+      const destination = src.inSectorObject;
+      destination.forEach(function(dst) {
+        if (dst.CollisionComponent != null && dst.CollisionComponent.Raycaster != null) {
+          if (dst.IsClone == true && dst.IsRayOn == true || SceneManager.getInstance().CurrentScene.NeedOnTerrain == true) {
+            const intersect2 = dst.CollisionComponent.Raycaster.intersectObject(src.GameObjectInstance);
+            if (intersect2[0] != void 0) {
+              if (intersect2[0].distance < 1) {
+                dst.PhysicsComponent.SetPosition(intersect2[0].point.x, intersect2[0].point.y + 1, intersect2[0].point.z);
+                if (dst instanceof Missile)
+                  dst.CollisionActive(0 /* OBJ_TERRAIN */);
+              }
+            } else {
+              dst.CollisionComponent.Raycaster.set(
+                new Vector3(
+                  dst.PhysicsComponent.GetPosition().x,
+                  2e3,
+                  dst.PhysicsComponent.GetPosition().z
+                ),
+                new Vector3(0, -1, 0)
+              );
+              const intersect3 = dst.CollisionComponent.Raycaster.intersectObject(src.GameObjectInstance);
+              if (intersect3[0] != void 0) {
+                dst.PhysicsComponent.SetPosition(intersect3[0].point.x, intersect3[0].point.y + 1, intersect3[0].point.z);
+              }
+              dst.CollisionComponent.Raycaster.set(dst.PhysicsComponent.GetPosition(), new Vector3(0, -1, 0));
+            }
+          }
+        }
+      });
+    });
+  }
+  CollideRayToWater(source) {
+    source.forEach(function(src) {
+      const destination = ObjectManager.getInstance().GetObjectList[2 /* OBJ_OBJECT3D */].filter((o_) => o_.GameObject.IsClone).map((o_) => o_.GameObject);
+      destination.forEach(function(dst) {
+        if (dst.CollisionComponent != null && dst.CollisionComponent.Raycaster != null) {
+          if (src.GameObject != void 0 && dst.IsRayOn == true || SceneManager.getInstance().CurrentScene.NeedOnTerrain == true) {
+            const intersect2 = dst.CollisionComponent.Raycaster.intersectObject(src.GameObject.GameObjectInstance);
+            if (intersect2[0] != void 0) {
+              if (intersect2[0].distance < 1) {
+                dst.PhysicsComponent.SetPosition(intersect2[0].point.x, intersect2[0].point.y + 1, intersect2[0].point.z);
+                if (dst instanceof Missile)
+                  dst.CollisionActive(0 /* OBJ_TERRAIN */);
+              }
+            } else {
+              dst.CollisionComponent.Raycaster.set(
+                new Vector3(
+                  dst.PhysicsComponent.GetPosition().x,
+                  2e3,
+                  dst.PhysicsComponent.GetPosition().z
+                ),
+                new Vector3(0, -1, 0)
+              );
+              const intersect3 = dst.CollisionComponent.Raycaster.intersectObject(src.GameObject.GameObjectInstance);
+              if (intersect3[0] != void 0) {
+                dst.PhysicsComponent.SetPosition(intersect3[0].point.x, intersect3[0].point.y + 1, intersect3[0].point.z);
+              }
+              dst.CollisionComponent.Raycaster.set(dst.PhysicsComponent.GetPosition(), new Vector3(0, -1, 0));
+            }
+          }
+        }
+      });
+    });
+  }
+  CollideBoxToBox(source, destination) {
+    source.forEach(function(src) {
+      destination.forEach(function(dst) {
+        if (src.GameObject.IsClone && dst.GameObject.IsClone) {
+          if (src.GameObject != dst.GameObject && src.GameObject.CollisionComponent.BoxHelper.box && dst.GameObject.CollisionComponent.BoxHelper.box) {
+            if (src.GameObject.CollisionComponent.BoxHelper.box.intersectsBox(dst.GameObject.CollisionComponent.BoxHelper.box)) {
+              src.GameObject.CollisionActive(dst.GameObject);
+              dst.GameObject.CollisionActive();
+            } else {
+              src.GameObject.CollisionDeActive(dst.GameObject);
+              dst.GameObject.CollisionDeActive();
+            }
+          }
+        }
+      });
+    });
+  }
+  CollideObbToObb(source, destination) {
+    source.forEach(function(src) {
+      destination.forEach(function(dst) {
+        if (src.IsClone && dst.IsClone) {
+          if (src != dst) {
+            if (src.CollisionComponent != null && dst.CollisionComponent != null) {
+              if (src.CollisionComponent.OBB && dst.CollisionComponent.OBB)
+                if (src.CollisionComponent.OBB.intersectsOBB(dst.CollisionComponent.OBB, Number.EPSILON)) {
+                  if (!(dst instanceof HeightmapTerrain) || !(src instanceof HeightmapTerrain))
+                    src.CollisionActive(dst.Type);
+                  dst.CollisionActive();
+                } else {
+                  if (!(dst instanceof HeightmapTerrain) || !(src instanceof HeightmapTerrain))
+                    src.CollisionDeActive(dst.Type);
+                  dst.CollisionDeActive();
+                }
+            }
+          }
+        }
+      });
+    });
+  }
+  CollideObbToBox(source, destination) {
+    source.forEach(function(src) {
+      destination.forEach(function(dst) {
+        if (src.GameObject.IsClone && dst.GameObject.IsClone) {
+          if (src.GameObject != dst.GameObject) {
+            if (src.GameObject.CollisionComponent.OBB && dst.GameObject.CollisionComponent.BoundingBox)
+              if (src.GameObject.CollisionComponent.OBB.intersectsBox3(dst.GameObject.CollisionComponent.BoundingBox)) {
+                if (!(dst.GameObject instanceof HeightmapTerrain)) {
+                  src.GameObject.CollisionActive();
+                }
+                dst.GameObject.CollisionActive(src.GameObject);
+              } else {
+                if (!(dst.GameObject instanceof HeightmapTerrain)) {
+                  src.GameObject.CollisionDeActive();
+                }
+                dst.GameObject.CollisionDeActive(src.GameObject);
+              }
+          }
+        }
+      });
+    });
+  }
+  CollideSphereToBox(source, destination) {
+    source.forEach(function(src) {
+      destination.forEach(function(dst) {
+        if (src.GameObject.IsClone && dst.GameObject.IsClone) {
+          if (src.GameObject != dst.GameObject) {
+            if (src.GameObject.CollisionComponent.BoundingSphere && dst.GameObject.CollisionComponent.BoundingBox)
+              if (src.GameObject.CollisionComponent.BoundingSphere.intersectsBox(dst.GameObject.CollisionComponent.BoundingBox)) {
+                if (!(dst.GameObject instanceof HeightmapTerrain)) {
+                  src.GameObject.CollisionActive();
+                }
+                dst.GameObject.CollisionActive(src.GameObject);
+              } else {
+                if (!(dst.GameObject instanceof HeightmapTerrain)) {
+                  src.GameObject.CollisionDeActive();
+                }
+                dst.GameObject.CollisionDeActive(src.GameObject);
+              }
+          }
+        }
+      });
+    });
+  }
+  CollideSphereToSphere(source, destination) {
+    source.forEach(function(src) {
+      destination.forEach(function(dst) {
+        if (src.IsClone && dst.IsClone) {
+          if (src != dst) {
+            if (src.CollisionComponent != null && dst.CollisionComponent != null) {
+              if (src.CollisionComponent.BoundingSphere && dst.CollisionComponent.BoundingSphere)
+                if (src.CollisionComponent.BoundingSphere.intersectsSphere(dst.CollisionComponent.BoundingSphere)) {
+                  if (!(dst instanceof HeightmapTerrain) || !(src instanceof HeightmapTerrain))
+                    src.CollisionActive(dst.Type);
+                  dst.CollisionActive();
+                } else {
+                  if (!(dst instanceof HeightmapTerrain) || !(src instanceof HeightmapTerrain))
+                    src.CollisionDeActive(dst.Type);
+                  dst.CollisionDeActive();
+                }
+            }
+          }
+        }
+      });
+    });
+  }
+};
+
+// Manager/UnitConvertManager.ts
+var UnitConvertManager = class _UnitConvertManager {
+  static getInstance() {
+    if (!_UnitConvertManager.instance) {
+      _UnitConvertManager.instance = new _UnitConvertManager();
+    }
+    return _UnitConvertManager.instance;
+  }
+  ConvertToSpeedForKmh(distance) {
+    const meterDistance = distance * 5760 / 900;
+    const timeInSeconds = WorldManager.getInstance().GetDeltaTime();
+    let speedInMeterPerSecond = meterDistance / timeInSeconds;
+    speedInMeterPerSecond = speedInMeterPerSecond * 3.6;
+    return Math.round(speedInMeterPerSecond);
+  }
+  ConvertToDistance(distance) {
+    const meterDistance = distance * 5760 / 900;
+    return meterDistance;
+  }
+};
+
+// Object/InGameUI/ObjectLabel.ts
+var ObjectLabel = class extends GameObject {
+  constructor(name = null) {
+    super();
+    this.type = 3 /* OBJ_OBJECT2D */;
+    if (name != null)
+      this.name = name;
+    else
+      this.name = "ObjectLabel" + ObjectManager.getInstance().GetObjectList[3 /* OBJ_OBJECT2D */].length;
+    this.physicsComponent = new PhysicsComponent(this);
+    this.graphicComponent = new GraphicComponent(this);
+    this.CreateBillboardMesh();
+  }
+  get ReferenceObject() {
+    return this.referenceObject;
+  }
+  set ReferenceObject(object) {
+    this.referenceObject = object;
+  }
+  InitializeAfterLoad() {
+    this.GameObjectInstance.matrixAutoUpdate = true;
+    this.GameObjectInstance.name = this.name;
+    SceneManager.getInstance().SceneInstance.add(this.gameObjectInstance);
+    ObjectManager.getInstance().AddObject(this, this.name, this.Type);
+  }
+  CreateBillboardMesh() {
+    const labelTexture = this.MakeCanvasTexture(this.name);
+    labelTexture.minFilter = LinearFilter;
+    labelTexture.wrapS = ClampToEdgeWrapping;
+    labelTexture.wrapT = ClampToEdgeWrapping;
+    labelTexture.colorSpace = SRGBColorSpace;
+    this.material = new SpriteMaterial({
+      map: labelTexture,
+      transparent: true,
+      depthWrite: true,
+      depthTest: false,
+      fog: false,
+      sizeAttenuation: false
+    });
+    this.mesh = new Sprite(this.material);
+    const labelBaseScale = 65e-5;
+    this.mesh.scale.x = this.labelContext.canvas.width * labelBaseScale;
+    this.mesh.scale.y = this.labelContext.canvas.height * labelBaseScale;
+    this.GameObjectInstance = this.mesh;
+    this.InitializeAfterLoad();
+  }
+  MakeCanvasTexture(name, size2 = 40) {
+    const baseWidth = 300;
+    const borderSize = 2;
+    if (this.referenceObject == null)
+      this.labelContext = document.createElement("canvas").getContext("2d");
+    const font = `${size2}px bold Verdana`;
+    this.labelContext.font = font;
+    const textWidth = this.labelContext.measureText(name).width;
+    const doubleBorderSize = borderSize * 2;
+    const width = baseWidth + doubleBorderSize + 300;
+    const height = size2 + doubleBorderSize + 300;
+    this.labelContext.canvas.width = width;
+    this.labelContext.canvas.height = height;
+    this.labelContext.font = font;
+    this.labelContext.textBaseline = "middle";
+    this.labelContext.textAlign = "center";
+    this.labelContext.fillStyle = "rgba(0,0,0,0)";
+    this.labelContext.fillRect(0, 0, width, height);
+    const scaleFactor = Math.min(1, baseWidth / textWidth);
+    this.labelContext.translate(width / 2, height / 2);
+    this.labelContext.scale(scaleFactor, 1);
+    this.labelContext.fillStyle = "red";
+    if (this.referenceObject != null) {
+      this.labelContext.fillText(this.referenceObject.Name, 0, -50);
+    }
+    this.labelContext.fillText(name, 0, 50);
+    if (this.referenceObject == null)
+      return new CanvasTexture(this.labelContext.canvas);
+    else {
+      this.material.map.needsUpdate = true;
+      return null;
+    }
+  }
+  Animate() {
+    if (this.referenceObject != void 0) {
+      if (this.referenceObject.Picked == false && this.mesh.visible == true) {
+        this.material.visible = true;
+        const refObjectPosition = this.referenceObject.PhysicsComponent.GetPosition().clone();
+        this.physicsComponent.SetPosition(refObjectPosition.x, refObjectPosition.y, refObjectPosition.z);
+        if (this.referenceObject.Name == "Target") {
+          const pickObject = ObjectManager.getInstance().GetObjectList[2 /* OBJ_OBJECT3D */].filter((o) => o.GameObject.Picked == true);
+          if (pickObject[0] != void 0) {
+            let length = UnitConvertManager.getInstance().ConvertToDistance(this.referenceObject.PhysicsComponent.GetPosition().clone().sub(pickObject[0].GameObject.PhysicsComponent.GetPosition().clone()).length());
+            length = Math.round(length);
+            if (length > 1e5)
+              this.MakeCanvasTexture(length.toString()[0] + length.toString()[1] + length.toString()[2] + " km");
+            else if (length > 1e4)
+              this.MakeCanvasTexture(length.toString()[0] + length.toString()[1] + " km");
+            else if (length > 1e3)
+              this.MakeCanvasTexture(length.toString()[0] + "." + length.toString()[1] + length.toString()[2] + " km");
+            else
+              this.MakeCanvasTexture(length.toString() + " m");
+          }
+        }
+      } else
+        this.material.visible = false;
+    }
+  }
+};
+
+// Component/GUIComponent.ts
+var GUIComponent = class {
+  constructor(gameObject) {
+    this.gameObject = gameObject;
+  }
+  GetLabel() {
+    if (this.objectLabel != null)
+      return this.objectLabel;
+    else {
+      this.objectLabel = new ObjectLabel(this.gameObject.Name);
+      this.objectLabel.IsClone = true;
+      this.objectLabel.ReferenceObject = this.gameObject;
+      this.objectLabel.Name = this.gameObject.Name;
+    }
+  }
+  Dispose() {
+    this.DisposeLabel();
+  }
+  DisposeLabel() {
+    this.objectLabel.DeleteObject();
+    this.objectLabel.ReferenceObject = null;
+  }
+  UpdateDisplay() {
+    if (this.gameObject.PhysicsCompIncluded) {
+    }
+    if (this.gameObject.GraphicCompIncluded) {
+    }
+  }
+  ShowGUI(show2) {
+  }
+};
+
 // GUI/GUIControls/GUI_SRT.ts
 var GUI_SRT = class extends GUI_Base {
   constructor(gameObject) {
@@ -39757,6 +39893,7 @@ var Water2 = class extends GameObject {
       this.CreateWaterMesh();
       this.GameObjectInstance.matrixAutoUpdate = true;
       this.GameObjectInstance.name = this.name;
+      GUI_Color.RegisterWater(this);
     } else {
       ObjectManager.getInstance().AddObject(this, this.name, this.Type);
     }
@@ -39771,9 +39908,27 @@ var Water2 = class extends GameObject {
         waterNormals: new TextureLoader().load("Object/InGameObject/Environment/waternormals.jpg", function(texture) {
           texture.wrapS = texture.wrapT = RepeatWrapping;
         }),
-        sunDirection: new Vector3(1, 1, 0),
-        sunColor: 16777215,
-        waterColor: 7695,
+        // Water.js 의 물빛은 두 항의 합이다 (벤더 셰이더 기준).
+        //   albedo = sunColor * diffuseLight * 0.3  +  dot(N,E) * waterColor
+        //            └── 무채색 바닥 ────────────┘     └── 색조 ──────────┘
+        //
+        // waterColor 는 **더하기만** 하므로 이것만으로는 어둡게 만들 수 없다.
+        // 검푸른 바다처럼 어둡고 진한 색을 내려면 바닥부터 낮춰야 하고,
+        // 그 레버가 sunColor 다 — diffuseLight 가 이미 sunColor 를 품고 있어
+        // **제곱으로** 듣는다. 바닥 = sunColor^2 * dot(sunDir, N) * 0.5 * 0.3
+        //
+        // 벤더는 sunDirection 을 정규화하지 않고 그대로 dot() 에 쓴다(Water.js:231).
+        // 예전 값 (1,1,0) 은 길이가 1.414 라 바닥이 41% 부풀어 있었다 → 정규화.
+        //
+        // 아래 두 값은 GUI_Color 로 눈으로 맞춰 확정한 것이다.
+        // 바닥이 0.020 → 0.029 로 오르고 waterColor 의 청색 기여가 0.107 → 0.031 로
+        // 내려가, 이전(39,55,100)보다 밝고 채도가 낮은 — 청록보다 잿빛에 가까운 — 바다다.
+        // 결과 선형값 약 (0.032, 0.032, 0.060) → 화면 RGB 약 (50, 50, 69)
+        // 위는 수면을 정면에서 내려다볼 때(dot(N,eye)≈1) 기준이고,
+        // 스침각으로 갈수록 색조 항이 사라져 무채색 바닥만 남는다.
+        sunDirection: new Vector3(0.70707, 0.70707, 0),
+        sunColor: 12632256,
+        waterColor: 526385,
         distortionScale: 2,
         fog: true
       }
@@ -39816,6 +39971,13 @@ var Water2 = class extends GameObject {
       this.reflectionScene.children = scene.children.filter((o_) => o_ instanceof Light).slice();
     }
     return this.reflectionScene;
+  }
+  /** 색 조정 임시 패널(GUI_Color)용. Color.set() 이 sRGB → 선형 변환까지 처리한다. */
+  SetSunColor(hex) {
+    this.mesh.material.uniforms["sunColor"].value.set(hex);
+  }
+  SetWaterColor(hex) {
+    this.mesh.material.uniforms["waterColor"].value.set(hex);
   }
   Animate() {
     this.mesh.material.uniforms["time"].value += 1 * WorldManager.getInstance().GetDeltaTime();
@@ -44085,7 +44247,7 @@ var EditScene = class extends SceneBase {
     this.gizmoOnOff = true;
   }
   BuildSkyBox() {
-    this.SceneManager.SceneInstance.background = new CubeTextureLoader().setPath("Model/SkyBox/").load([
+    const skyBox = new CubeTextureLoader().setPath("Model/SkyBox/").load([
       "Right.bmp",
       "Left.bmp",
       "Up.bmp",
@@ -44093,7 +44255,9 @@ var EditScene = class extends SceneBase {
       "Front.bmp",
       "Back.bmp"
     ]);
-    this.SceneManager.SceneInstance.environment = this.SceneManager.SceneInstance.background;
+    skyBox.colorSpace = SRGBColorSpace;
+    this.SceneManager.SceneInstance.background = skyBox;
+    this.SceneManager.SceneInstance.environment = skyBox;
   }
   BuildObject() {
     ModelLoadManager.getInstance().LoadScene();
@@ -44110,12 +44274,17 @@ var EditScene = class extends SceneBase {
     this.directionalLight = new Light2(0 /* LIGHT_DIRECTIONAL */);
     ObjectManager.getInstance().AddObject(this.directionalLight, "directionalLight", this.directionalLight.Type);
     this.directionalLight.SetColor(16777215);
-    this.directionalLight.Intensity = 0.6;
+    this.directionalLight.Intensity = 1;
     this.directionalLight.PhysicsComponent.SetPositionVec3(new Vector3(1, 1, 0));
     this.ambientLight = new Light2(1 /* LIGHT_AMBIENT */);
     ObjectManager.getInstance().AddObject(this.ambientLight, "ambientLight", this.ambientLight.Type);
     this.ambientLight.SetColor(16777215);
-    this.ambientLight.Intensity = 0.5;
+    this.ambientLight.Intensity = 1.5;
+    if (this.colorPanel == null) {
+      const worldManager = WorldManager.getInstance();
+      this.colorPanel = new GUI_Color(worldManager.Renderer, worldManager.Canvas.width / 8);
+    }
+    this.colorPanel.BindLight(this.directionalLight, this.ambientLight);
   }
   BuildFog() {
     const sceneInstance = this.SceneManager.SceneInstance;
@@ -44594,6 +44763,8 @@ var WorldManager = class _WorldManager {
     this.renderer.setViewport(0, 0, Define.SCREEN_WIDTH, Define.SCREEN_HEIGHT);
     this.renderer.setScissor(0, 0, 0, 0);
     this.renderer.setClearColor(0);
+    this.renderer.toneMapping = NoToneMapping;
+    this.renderer.toneMappingExposure = 1;
     this.renderer.shadowMap.enabled = true;
     this.renderer.autoClearStencil = true;
     console.log("is webgl2?: ", this.renderer.capabilities.isWebGL2);

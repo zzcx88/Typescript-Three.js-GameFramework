@@ -24,6 +24,12 @@ canvas {
   right: 0px;
   z-index: 10;
 }
+#color-gui-container {
+  position: static;
+  top: auto;
+  right: 0px;
+  z-index: 10;
+}
 #info {
   position: absolute;
   top: auto;
