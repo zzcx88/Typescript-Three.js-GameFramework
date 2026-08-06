@@ -49,9 +49,27 @@ export class Water extends GameObject
                 {
                     texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
                 }),
-                sunDirection: new THREE.Vector3(1, 1, 0),
-                sunColor: 0xffffff,
-                waterColor: 0x001e0f,
+                // Water.js 의 물빛은 두 항의 합이다 (벤더 셰이더 기준).
+                //   albedo = sunColor * diffuseLight * 0.3  +  dot(N,E) * waterColor
+                //            └── 무채색 바닥 ────────────┘     └── 색조 ──────────┘
+                //
+                // waterColor 는 **더하기만** 하므로 이것만으로는 어둡게 만들 수 없다.
+                // 검푸른 바다처럼 어둡고 진한 색을 내려면 바닥부터 낮춰야 하고,
+                // 그 레버가 sunColor 다 — diffuseLight 가 이미 sunColor 를 품고 있어
+                // **제곱으로** 듣는다. 바닥 = sunColor^2 * dot(sunDir, N) * 0.5 * 0.3
+                //
+                // 벤더는 sunDirection 을 정규화하지 않고 그대로 dot() 에 쓴다(Water.js:231).
+                // 예전 값 (1,1,0) 은 길이가 1.414 라 바닥이 41% 부풀어 있었다 → 정규화.
+                //
+                // 아래 두 값은 GUI_Color 로 눈으로 맞춰 확정한 것이다.
+                // 바닥이 0.020 → 0.029 로 오르고 waterColor 의 청색 기여가 0.107 → 0.031 로
+                // 내려가, 이전(39,55,100)보다 밝고 채도가 낮은 — 청록보다 잿빛에 가까운 — 바다다.
+                // 결과 선형값 약 (0.032, 0.032, 0.060) → 화면 RGB 약 (50, 50, 69)
+                // 위는 수면을 정면에서 내려다볼 때(dot(N,eye)≈1) 기준이고,
+                // 스침각으로 갈수록 색조 항이 사라져 무채색 바닥만 남는다.
+                sunDirection: new THREE.Vector3(0.70707, 0.70707, 0),
+                sunColor: 0xc0c0c0,
+                waterColor: 0x080831,
                 distortionScale: 2,
                 fog: true
             }
