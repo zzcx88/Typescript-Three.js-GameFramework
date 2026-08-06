@@ -30,14 +30,25 @@ export class StageScene extends SceneBase
 
     BuildLight()
     {
+        // r165 에서 레거시 조명 모드(intensity × π)가 제거되어 값을 다시 잡아야 했다.
+        // EditScene 은 π 배(0.6 → 1.885)에서 출발해 눈으로 1 까지 내렸다 — 실효 배율 1.666.
+        // 여기도 같은 배율을 옛 값에 적용한다:  1.5 × 1.666 = 2.5  ·  0.7 × 1.666 = 1.167
+        //
+        // 키:필 비율(1.5 : 0.7)을 그대로 두려고 배율만 곱했다. EditScene 처럼 개별 조정하지
+        // 않은 것은 **이 씬이 아직 생성되지 않아 눈으로 확인할 방법이 없기 때문**이다
+        // (SceneManager.BuildScene() 의 SCENE_STAGE case 가 비어 있다).
+        //
+        // ⚠ 검증된 값이 아니다. 여기 라이트 2개는 개발 초기 잔재이고,
+        //   씬을 살릴 때는 **EditScene 과 동일한 환경(조명·포그·스카이박스)으로 새로 잡는다.**
+        //   이 블록을 그대로 쓰지 말 것 — ROADMAP P3-A
         this.light = new Light(LightType.LIGHT_DIRECTIONAL);
         this.light.SetColor(0xFFFFFF);
-        this.light.Intensity = 1.5;
+        this.light.Intensity = 2.5;
         this.light.GameObjectInstance.position.set(10000, 10000, 0);
 
         this.light2 = new Light(LightType.LIGHT_DIRECTIONAL);
         this.light2.SetColor(0xFFFFFF);
-        this.light2.Intensity = 0.7;
+        this.light2.Intensity = 1.167;
         this.light2.GameObjectInstance.position.set(-10000, -10000, 0);
 
         this.SceneManager.SceneInstance.add(this.light.GameObjectInstance);

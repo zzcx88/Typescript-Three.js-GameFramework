@@ -53,6 +53,10 @@ export class WorldManager
         this.renderer.setViewport(0, 0, Define.SCREEN_WIDTH, Define.SCREEN_HEIGHT);
         this.renderer.setScissor(0, 0, 0, 0);
         this.renderer.setClearColor(0x000000);
+        // 색 조정(GUI_Color)에서 확정한 값. 둘 다 three 기본값과 같지만,
+        // 톤매핑을 "쓰지 않기로 했다"는 선택을 코드에 남겨 둔다.
+        this.renderer.toneMapping = THREE.NoToneMapping;
+        this.renderer.toneMappingExposure = 1;
         this.renderer.shadowMap.enabled = true;
         this.renderer.autoClearStencil = true;
         console.log("is webgl2?: ", this.renderer.capabilities.isWebGL2);

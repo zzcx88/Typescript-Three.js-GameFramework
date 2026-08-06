@@ -58,18 +58,23 @@ export class EditScene extends SceneBase
 
     BuildLight()
     {
+        // r165 이전에는 WebGLLights 가 조명 intensity 에 π 를 곱했다(레거시 모드).
+        // 그 보정이 사라졌으므로 소스에서 되돌려 같은 조도에서 다시 시작했다.
+        // 출발점은 0.6 * π = 1.885 · 0.5 * π = 1.571 이었고,
+        // 아래 값은 거기서 GUI_Color 로 눈으로 맞춰 확정한 것이다.
+
         ////Directional Light
         this.directionalLight = new Light(LightType.LIGHT_DIRECTIONAL);
         ObjectManager.getInstance().AddObject(this.directionalLight, "directionalLight", this.directionalLight.Type);
         this.directionalLight.SetColor(0xFFFFFF);
-        this.directionalLight.Intensity = 0.6;
+        this.directionalLight.Intensity = 1;
         this.directionalLight.PhysicsComponent.SetPositionVec3(new THREE.Vector3(1, 1, 0));
-        
+
         //AmbientLight
         this.ambientLight = new Light(LightType.LIGHT_AMBIENT);
         ObjectManager.getInstance().AddObject(this.ambientLight, "ambientLight", this.ambientLight.Type);
         this.ambientLight.SetColor(0xFFFFFF);
-        this.ambientLight.Intensity = 0.5;
+        this.ambientLight.Intensity = 1.5;
     }
 
     BuildFog()
